@@ -1,0 +1,122 @@
+[
+  {
+    "id": "S01",
+    "title": "Jaipur Studio Ceramics",
+    "route": "/",
+    "folder": "web/app/(routes)/(marketing)"
+  },
+  {
+    "id": "S02",
+    "title": "Shop",
+    "route": "/shop",
+    "folder": "web/app/(routes)/(marketing)/shop"
+  },
+  {
+    "id": "S03",
+    "title": "The piece's title (FD01)",
+    "route": "/shop/[pieceId]",
+    "folder": "web/app/(routes)/(marketing)/shop/[pieceId]"
+  },
+  {
+    "id": "S04",
+    "title": "Your cart",
+    "route": "/cart",
+    "folder": "web/app/(routes)/(marketing)/cart"
+  },
+  {
+    "id": "S05",
+    "title": "Checkout",
+    "route": "/checkout",
+    "folder": "web/app/(routes)/(marketing)/checkout"
+  },
+  {
+    "id": "S06",
+    "title": "The order reference (FD17), as in \"Order JSC-4821\"",
+    "route": "/orders/[orderReference]",
+    "folder": "web/app/(routes)/(marketing)/orders/[orderReference]"
+  },
+  {
+    "id": "S07",
+    "title": "Look up an order",
+    "route": "/order-lookup",
+    "folder": "web/app/(routes)/(marketing)/order-lookup"
+  },
+  {
+    "id": "S08",
+    "title": "Studio owner sign in",
+    "route": "/sign-in",
+    "folder": "web/app/(routes)/(marketing)/sign-in"
+  },
+  {
+    "id": "S09",
+    "title": "Create the studio owner account",
+    "route": "/sign-up",
+    "folder": "web/app/(routes)/(marketing)/sign-up"
+  },
+  {
+    "id": "S10",
+    "title": "Home",
+    "route": "/dashboard",
+    "folder": "web/app/(routes)/(app)/dashboard"
+  },
+  {
+    "id": "S11",
+    "title": "Pieces",
+    "route": "/dashboard/pieces",
+    "folder": "web/app/(routes)/(app)/dashboard/pieces"
+  },
+  {
+    "id": "S12",
+    "title": "Add a piece",
+    "route": "/dashboard/pieces/new",
+    "folder": "web/app/(routes)/(app)/dashboard/pieces/new"
+  },
+  {
+    "id": "S13",
+    "title": "The piece's title (FD01)",
+    "route": "/dashboard/pieces/[pieceId]",
+    "folder": "web/app/(routes)/(app)/dashboard/pieces/[pieceId]"
+  },
+  {
+    "id": "S14",
+    "title": "Edit the piece's title (FD01), as in \"Edit Speckled Chai Mug\"",
+    "route": "/dashboard/pieces/[pieceId]/edit",
+    "folder": "web/app/(routes)/(app)/dashboard/pieces/[pieceId]/edit"
+  },
+  {
+    "id": "S15",
+    "title": "Orders",
+    "route": "/dashboard/orders",
+    "folder": "web/app/(routes)/(app)/dashboard/orders"
+  },
+  {
+    "id": "S16",
+    "title": "The order reference (FD17), as in \"Order JSC-4821\"",
+    "route": "/dashboard/orders/[orderId]",
+    "folder": "web/app/(routes)/(app)/dashboard/orders/[orderId]"
+  },
+  {
+    "id": "S17",
+    "title": "Discount codes",
+    "route": "/dashboard/discount-codes",
+    "folder": "web/app/(routes)/(app)/dashboard/discount-codes"
+  },
+  {
+    "id": "S18",
+    "title": "Create a discount code",
+    "route": "/dashboard/discount-codes/new",
+    "folder": "web/app/(routes)/(app)/dashboard/discount-codes/new"
+  },
+  {
+    "id": "S19",
+    "title": "The discount code (FD19), as in \"WEEKEND10\"",
+    "route": "/dashboard/discount-codes/[discountCodeId]",
+    "folder": "web/app/(routes)/(app)/dashboard/discount-codes/[discountCodeId]"
+  },
+  {
+    "id": "S20",
+    "title": "Account",
+    "route": "/dashboard/account",
+    "folder": "web/app/(routes)/(app)/dashboard/account"
+  }
+]
