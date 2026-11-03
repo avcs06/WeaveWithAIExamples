@@ -1,0 +1,844 @@
+{
+  "enums": [
+    {
+      "name": "Category",
+      "values": [
+        {
+          "key": "mugs",
+          "label": "Mugs"
+        },
+        {
+          "key": "bowls",
+          "label": "Bowls"
+        },
+        {
+          "key": "planters",
+          "label": "Planters"
+        },
+        {
+          "key": "vases",
+          "label": "Vases"
+        }
+      ]
+    },
+    {
+      "name": "FulfilmentChoice",
+      "values": [
+        {
+          "key": "studio_pickup",
+          "label": "Studio pickup"
+        },
+        {
+          "key": "courier_delivery",
+          "label": "Courier delivery"
+        }
+      ]
+    },
+    {
+      "name": "DiscountType",
+      "values": [
+        {
+          "key": "percentage",
+          "label": "Percentage"
+        },
+        {
+          "key": "fixed_amount",
+          "label": "Fixed amount"
+        }
+      ]
+    },
+    {
+      "name": "FulfilmentStatus",
+      "values": [
+        {
+          "key": "new",
+          "label": "New"
+        },
+        {
+          "key": "packed",
+          "label": "Packed"
+        },
+        {
+          "key": "shipped",
+          "label": "Shipped"
+        },
+        {
+          "key": "picked_up",
+          "label": "Picked Up"
+        },
+        {
+          "key": "cancelled",
+          "label": "Cancelled"
+        }
+      ]
+    },
+    {
+      "name": "PaymentStatus",
+      "values": [
+        {
+          "key": "unpaid",
+          "label": "Unpaid"
+        },
+        {
+          "key": "paid",
+          "label": "Paid"
+        }
+      ]
+    },
+    {
+      "name": "DiscountCodeStatus",
+      "values": [
+        {
+          "key": "active",
+          "label": "Active"
+        },
+        {
+          "key": "deactivated",
+          "label": "Deactivated"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "name": "Piece",
+      "noun": "Piece",
+      "fields": [
+        {
+          "name": "name",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "description",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "price",
+          "kind": "money",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "photos",
+          "kind": "url",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "category",
+          "kind": "enum",
+          "enum": "Category",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "glaze",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "size",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "variantStockQuantity",
+          "kind": "int",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "noun": "Order",
+      "fields": [
+        {
+          "name": "buyerName",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "phoneNumber",
+          "kind": "phone",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "fulfilmentChoice",
+          "kind": "enum",
+          "enum": "FulfilmentChoice",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "deliveryAddress",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "city",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "pinCode",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "quantity",
+          "kind": "int",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "orderReference",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "pieces",
+          "kind": "ref",
+          "enum": "",
+          "ref": "Piece",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "fulfilmentStatus",
+          "kind": "enum",
+          "enum": "FulfilmentStatus",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "paymentStatus",
+          "kind": "enum",
+          "enum": "PaymentStatus",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "subtotal",
+          "kind": "money",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "discountTotal",
+          "kind": "money",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "shippingTotal",
+          "kind": "money",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "total",
+          "kind": "money",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "discountCode",
+          "kind": "ref",
+          "enum": "",
+          "ref": "DiscountCode",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "orderedPieceName",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "orderedGlaze",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "orderedSize",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        },
+        {
+          "name": "orderedPrice",
+          "kind": "money",
+          "enum": "",
+          "ref": "",
+          "list": true,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "DiscountCode",
+      "noun": "DiscountCode",
+      "fields": [
+        {
+          "name": "discountCode",
+          "kind": "text",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": false
+        },
+        {
+          "name": "discountType",
+          "kind": "enum",
+          "enum": "DiscountType",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "discountValue",
+          "kind": "decimal",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "expiryDate",
+          "kind": "date",
+          "enum": "",
+          "ref": "",
+          "list": false,
+          "required": true
+        },
+        {
+          "name": "status",
+          "kind": "enum",
+          "enum": "DiscountCodeStatus",
+          "ref": "",
+          "list": false,
+          "required": true
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "listPieces",
+      "kind": "list",
+      "entity": "Piece",
+      "summary": "List pieces with photos, price and variant availability, optionally filtered by search words and category.",
+      "inputs": [
+        {
+          "field": "FD25",
+          "as": "q"
+        },
+        {
+          "field": "FD05",
+          "as": "category"
+        }
+      ],
+      "flowSteps": [
+        "F01.S01",
+        "F02.S01",
+        "F02.S02",
+        "F05.S01",
+        "F05.S04",
+        "F07.S01",
+        "F12.S01",
+        "F19.S01",
+        "F19.S02"
+      ]
+    },
+    {
+      "id": "getPiece",
+      "kind": "get",
+      "entity": "Piece",
+      "summary": "Get one piece with its photos and glaze-and-size variant stock.",
+      "inputs": [],
+      "flowSteps": [
+        "F03.S01",
+        "F03.S02",
+        "F04.S01",
+        "F04.S02",
+        "F20.S01",
+        "F22.S01"
+      ]
+    },
+    {
+      "id": "createPiece",
+      "kind": "create",
+      "entity": "Piece",
+      "summary": "Create a piece with photos, price, category and glaze-size variant stock.",
+      "inputs": [
+        {
+          "field": "FD01",
+          "as": "name"
+        },
+        {
+          "field": "FD02",
+          "as": "description"
+        },
+        {
+          "field": "FD03",
+          "as": "price"
+        },
+        {
+          "field": "FD04",
+          "as": "photos"
+        },
+        {
+          "field": "FD05",
+          "as": "category"
+        },
+        {
+          "field": "FD06",
+          "as": "glaze"
+        },
+        {
+          "field": "FD07",
+          "as": "size"
+        },
+        {
+          "field": "FD08",
+          "as": "variantStockQuantity"
+        }
+      ],
+      "flowSteps": [
+        "F21.S02"
+      ]
+    },
+    {
+      "id": "updatePiece",
+      "kind": "update",
+      "entity": "Piece",
+      "summary": "Update a piece including its variant stock, also used to reduce stock on order placement and restore stock on cancellation.",
+      "inputs": [
+        {
+          "field": "FD01",
+          "as": "name"
+        },
+        {
+          "field": "FD02",
+          "as": "description"
+        },
+        {
+          "field": "FD03",
+          "as": "price"
+        },
+        {
+          "field": "FD04",
+          "as": "photos"
+        },
+        {
+          "field": "FD05",
+          "as": "category"
+        },
+        {
+          "field": "FD06",
+          "as": "glaze"
+        },
+        {
+          "field": "FD07",
+          "as": "size"
+        },
+        {
+          "field": "FD08",
+          "as": "variantStockQuantity"
+        }
+      ],
+      "flowSteps": [
+        "F07.S02",
+        "F18.S01",
+        "F22.S02"
+      ]
+    },
+    {
+      "id": "deletePiece",
+      "kind": "delete",
+      "entity": "Piece",
+      "summary": "Remove a piece from the shop while keeping existing orders and their snapshots.",
+      "inputs": [],
+      "flowSteps": [
+        "F23.S01"
+      ]
+    },
+    {
+      "id": "listOrders",
+      "kind": "list",
+      "entity": "Order",
+      "summary": "List orders newest first, optionally filtered by fulfilment or payment status.",
+      "inputs": [
+        {
+          "field": "FD26",
+          "as": "fulfilmentStatus"
+        },
+        {
+          "field": "FD26",
+          "as": "paymentStatus"
+        }
+      ],
+      "flowSteps": [
+        "F12.S01",
+        "F13.S01",
+        "F13.S02"
+      ]
+    },
+    {
+      "id": "getOrder",
+      "kind": "get",
+      "entity": "Order",
+      "summary": "Get one order with buyer, items snapshot, totals and payment and fulfilment status.",
+      "inputs": [],
+      "flowSteps": [
+        "F08.S01",
+        "F14.S01"
+      ]
+    },
+    {
+      "id": "lookupOrder",
+      "kind": "get",
+      "entity": "Order",
+      "summary": "Look up an order by its order reference together with the buyer phone number.",
+      "inputs": [
+        {
+          "field": "FD24",
+          "as": "orderReference"
+        },
+        {
+          "field": "FD11",
+          "as": "phoneNumber"
+        }
+      ],
+      "flowSteps": [
+        "F08.S03"
+      ]
+    },
+    {
+      "id": "createOrder",
+      "kind": "create",
+      "entity": "Order",
+      "summary": "Place a guest order with buyer details, fulfilment choice, quantities and optional discount code.",
+      "inputs": [
+        {
+          "field": "FD10",
+          "as": "buyerName"
+        },
+        {
+          "field": "FD11",
+          "as": "phoneNumber"
+        },
+        {
+          "field": "FD12",
+          "as": "fulfilmentChoice"
+        },
+        {
+          "field": "FD13",
+          "as": "deliveryAddress"
+        },
+        {
+          "field": "FD14",
+          "as": "city"
+        },
+        {
+          "field": "FD15",
+          "as": "pinCode"
+        },
+        {
+          "field": "FD17",
+          "as": "discountCode"
+        },
+        {
+          "field": "FD09",
+          "as": "quantity"
+        }
+      ],
+      "flowSteps": [
+        "F07.S02"
+      ]
+    },
+    {
+      "id": "markOrderPacked",
+      "kind": "update",
+      "entity": "Order",
+      "summary": "Mark a New order as Packed.",
+      "inputs": [],
+      "flowSteps": [
+        "F15.S01"
+      ]
+    },
+    {
+      "id": "markOrderShipped",
+      "kind": "update",
+      "entity": "Order",
+      "summary": "Mark a Packed courier order as Shipped.",
+      "inputs": [],
+      "flowSteps": [
+        "F16.S01"
+      ]
+    },
+    {
+      "id": "markOrderPaid",
+      "kind": "update",
+      "entity": "Order",
+      "summary": "Mark an Unpaid order as Paid without changing fulfilment status.",
+      "inputs": [],
+      "flowSteps": [
+        "F17.S01"
+      ]
+    },
+    {
+      "id": "cancelOrder",
+      "kind": "update",
+      "entity": "Order",
+      "summary": "Cancel a New or Packed order and restore its variant stock.",
+      "inputs": [],
+      "flowSteps": [
+        "F18.S01"
+      ]
+    },
+    {
+      "id": "markOrderPickedUp",
+      "kind": "update",
+      "entity": "Order",
+      "summary": "Mark a Packed studio pickup order as Picked Up.",
+      "inputs": [],
+      "flowSteps": [
+        "F28.S01"
+      ]
+    },
+    {
+      "id": "listDiscountCodes",
+      "kind": "list",
+      "entity": "DiscountCode",
+      "summary": "List discount codes with type, value, expiry and Active or Deactivated status.",
+      "inputs": [],
+      "flowSteps": [
+        "F24.S01"
+      ]
+    },
+    {
+      "id": "getDiscountCode",
+      "kind": "get",
+      "entity": "DiscountCode",
+      "summary": "Check a typed discount code for validity, expiry and active state.",
+      "inputs": [
+        {
+          "field": "FD17",
+          "as": "discountCode"
+        }
+      ],
+      "flowSteps": [
+        "F06.S01",
+        "F07.S02"
+      ]
+    },
+    {
+      "id": "createDiscountCode",
+      "kind": "create",
+      "entity": "DiscountCode",
+      "summary": "Create a new Active percentage or fixed-amount discount code.",
+      "inputs": [
+        {
+          "field": "FD17",
+          "as": "discountCode"
+        },
+        {
+          "field": "FD18",
+          "as": "discountType"
+        },
+        {
+          "field": "FD19",
+          "as": "discountValue"
+        },
+        {
+          "field": "FD20",
+          "as": "expiryDate"
+        }
+      ],
+      "flowSteps": [
+        "F25.S02"
+      ]
+    },
+    {
+      "id": "deactivateDiscountCode",
+      "kind": "update",
+      "entity": "DiscountCode",
+      "summary": "Deactivate an Active discount code so it can no longer be used.",
+      "inputs": [],
+      "flowSteps": [
+        "F26.S01"
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "screen": "S01",
+      "reads": [
+        "listPieces"
+      ]
+    },
+    {
+      "screen": "S02",
+      "reads": [
+        "listPieces"
+      ]
+    },
+    {
+      "screen": "S03",
+      "reads": [
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "S04",
+      "reads": [
+        "listPieces"
+      ]
+    },
+    {
+      "screen": "S05",
+      "reads": [
+        "listPieces",
+        "getDiscountCode"
+      ]
+    },
+    {
+      "screen": "S06",
+      "reads": [
+        "getOrder",
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "S07",
+      "reads": [
+        "lookupOrder",
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "S10",
+      "reads": [
+        "listOrders",
+        "listPieces"
+      ]
+    },
+    {
+      "screen": "S11",
+      "reads": [
+        "listOrders"
+      ]
+    },
+    {
+      "screen": "S12",
+      "reads": [
+        "getOrder",
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "S13",
+      "reads": [
+        "listPieces"
+      ]
+    },
+    {
+      "screen": "S14",
+      "reads": [
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "S16",
+      "reads": [
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "S17",
+      "reads": [
+        "listDiscountCodes"
+      ]
+    },
+    {
+      "screen": "D01",
+      "reads": [
+        "getPiece"
+      ]
+    },
+    {
+      "screen": "D02",
+      "reads": [
+        "listDiscountCodes"
+      ]
+    },
+    {
+      "screen": "D03",
+      "reads": [
+        "getOrder"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "questions": [],
+  "known": [
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The flow requires viewing the confirmation in F08.S01 before the lookup alternative F08.A04, so a buyer starting on the order lookup page cannot follow it. Fix: Write the confirmation view and the order lookup as followable main steps from the flow's two starts, with the lookup submit using FM04 as a flow step and its invalid, failure and notFound alternatives branching from that flow step. (addressed in the final fix, not re-reviewed)",
+      "at": "F08",
+      "stage": "flows-expand-3"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Alternatives F08.A01, F08.A02 and F08.A03 branch from alternative step F08.A04.S02 and resume there instead of branching from and resuming at a step of the flow. Fix: Branch the lookup invalid, failure and notFound alternatives from the flow's lookup-submit step and set each resumesAt to that flow step, or to \"\" only when the flow ends there. (addressed in the final fix, not re-reviewed)",
+      "at": "F08.A01",
+      "stage": "flows-expand-3"
+    }
+  ]
+}

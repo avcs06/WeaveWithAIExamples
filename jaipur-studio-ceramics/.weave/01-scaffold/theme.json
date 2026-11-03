@@ -1,0 +1,406 @@
+{
+  "brief": {
+    "audience": "People in India buying small-batch handmade ceramics in occasional, unhurried visits, and the single Jaipur studio owner who manages pieces, stock, discount codes and orders.",
+    "personality": [
+      "earthy",
+      "warm",
+      "honest",
+      "calm",
+      "unhurried"
+    ],
+    "voice": "plain, warm, second person",
+    "density": "spacious",
+    "signature": "A warm off-white page framed in pale sand, with Fraunces headings and terracotta DM Mono figures for prices, stock and totals.",
+    "feel": [
+      "earthy",
+      "minimal"
+    ],
+    "colorScheme": "light",
+    "seedHue": 53,
+    "seedChroma": "balanced",
+    "frameHue": 53,
+    "frameChroma": "balanced",
+    "baseHue": 53,
+    "baseChroma": "muted",
+    "statusHues": {
+      "success": 155,
+      "warning": 84,
+      "error": 32,
+      "info": 246
+    },
+    "fonts": {
+      "ui": [
+        {
+          "family": "Fira Sans",
+          "reason": "A warm, highly legible humanist sans that feels friendly for buyers and remains clear for the owner's order and stock work."
+        },
+        {
+          "family": "Lato",
+          "reason": "Its warm, semi-rounded forms suit the studio's friendly personality and read comfortably at generous sizes."
+        },
+        {
+          "family": "Nunito Sans",
+          "reason": "A clean geometric sans near Avenir that would keep the shop feeling soft, modern and approachable."
+        }
+      ],
+      "display": [
+        {
+          "family": "Fraunces",
+          "reason": "Its soft, expressive old-style serif forms feel handmade, warm and crafted, suiting small-batch ceramics without becoming decorative or hard to read."
+        },
+        {
+          "family": "DM Serif Display",
+          "reason": "A refined transitional serif that would give headings a calm, gallery-like quality for the ceramics."
+        },
+        {
+          "family": "Cormorant Garamond",
+          "reason": "Its graceful literary forms suit an artisanal studio, though they are more delicate than Fraunces at shop heading sizes."
+        }
+      ],
+      "mono": [
+        {
+          "family": "DM Mono",
+          "reason": "Clean geometric figures line up clearly for prices, stock counts, order references and totals while staying warm and untechnical."
+        },
+        {
+          "family": "IBM Plex Mono",
+          "reason": "Its engineered, highly legible figures would work well for order references and stock counts, with a slightly more corporate feel."
+        },
+        {
+          "family": "JetBrains Mono",
+          "reason": "A clear monospace with a tall x-height that keeps figures and references easy to compare."
+        }
+      ]
+    },
+    "radius": "soft",
+    "focusRing": "halo",
+    "entities": [
+      {
+        "noun": "Piece",
+        "colored": false,
+        "hue": 0
+      },
+      {
+        "noun": "Order",
+        "colored": false,
+        "hue": 0
+      },
+      {
+        "noun": "DiscountCode",
+        "colored": false,
+        "hue": 0
+      }
+    ],
+    "imagery": "icons",
+    "references": []
+  },
+  "theme": {
+    "modes": [
+      "light"
+    ],
+    "colors": {
+      "light": {
+        "theme": {
+          "bg": "#FFF9F5",
+          "fg": "#311300",
+          "fgMuted": "#894100",
+          "border": "#9D5218",
+          "hoverBg": "#FFEEE4",
+          "accentBg": "#9D5218",
+          "accentFg": "#FFF9F5",
+          "accentBorder": "#9D5218",
+          "accentHoverBg": "#894100",
+          "focus": "#9D5218",
+          "accentFocus": "#FFF9F5",
+          "shadow": "#311300"
+        },
+        "base": {
+          "bg": "#FFF9F5",
+          "fg": "#28190F",
+          "fgMuted": "#734F38",
+          "border": "#855F48",
+          "hoverBg": "#FAEFE9",
+          "accentBg": "#573B2A",
+          "accentFg": "#FFF9F5",
+          "accentBorder": "#573B2A",
+          "accentHoverBg": "#28190F",
+          "focus": "#855F48",
+          "accentFocus": "#FFF9F5",
+          "shadow": "#28190F"
+        },
+        "page": {
+          "pageBg": "#FFF9F5",
+          "pageFg": "#28190F",
+          "pageFgMuted": "#734F38",
+          "frameBg": "#FFEEE4",
+          "divider": "#EAD6CB",
+          "backdrop": "#28190F",
+          "skeleton": "#EAD6CB",
+          "pageBackground": "oklch(0.985 0.009 53)"
+        },
+        "entity": {},
+        "status": {
+          "success": {
+            "bg": "#F1FEF5",
+            "fg": "#002410",
+            "fgMuted": "#006A3A",
+            "border": "#187C49",
+            "hoverBg": "#E3F8E9",
+            "accentBg": "#187C49",
+            "accentFg": "#F1FEF5",
+            "accentBorder": "#187C49",
+            "accentHoverBg": "#006A3A",
+            "focus": "#187C49",
+            "accentFocus": "#F1FEF5",
+            "shadow": "#002410"
+          },
+          "warning": {
+            "bg": "#FFFAEF",
+            "fg": "#271B00",
+            "fgMuted": "#715200",
+            "border": "#866200",
+            "hoverBg": "#FBF1DC",
+            "accentBg": "#866200",
+            "accentFg": "#FFFAEF",
+            "accentBorder": "#866200",
+            "accentHoverBg": "#715200",
+            "focus": "#866200",
+            "accentFocus": "#FFFAEF",
+            "shadow": "#271B00"
+          },
+          "error": {
+            "bg": "#FFF8F7",
+            "fg": "#341009",
+            "fgMuted": "#8F392A",
+            "border": "#A24B3B",
+            "hoverBg": "#FFEDEA",
+            "accentBg": "#A24B3B",
+            "accentFg": "#FFF8F7",
+            "accentBorder": "#A24B3B",
+            "accentHoverBg": "#8F392A",
+            "focus": "#A24B3B",
+            "accentFocus": "#FFF8F7",
+            "shadow": "#341009"
+          },
+          "info": {
+            "bg": "#F6FBFF",
+            "fg": "#001F37",
+            "fgMuted": "#005C95",
+            "border": "#1D6EA9",
+            "hoverBg": "#E7F4FF",
+            "accentBg": "#1D6EA9",
+            "accentFg": "#F6FBFF",
+            "accentBorder": "#1D6EA9",
+            "accentHoverBg": "#005C95",
+            "focus": "#1D6EA9",
+            "accentFocus": "#F6FBFF",
+            "shadow": "#001F37"
+          }
+        }
+      }
+    },
+    "fonts": {
+      "ui": "Fira Sans",
+      "display": "Fraunces",
+      "mono": "DM Mono"
+    },
+    "radius": {
+      "surface": "8px",
+      "control": "6px"
+    },
+    "focusRing": "halo",
+    "logo": {
+      "family": "Fraunces",
+      "weight": "600",
+      "case": "as written",
+      "letterSpacing": "-0.02em",
+      "colors": {
+        "light": "#9D5218"
+      }
+    },
+    "layouts": {
+      "app": {
+        "docksFirst": "sidebars",
+        "header": {
+          "needed": false,
+          "start": "",
+          "center": "",
+          "end": "",
+          "heightPx": 0,
+          "padding": "0",
+          "gap": "0",
+          "separation": "none",
+          "overlay": false,
+          "sticky": false
+        },
+        "sidebar": {
+          "needed": true,
+          "side": "left",
+          "top": "logo",
+          "items": "navigation",
+          "bottom": "account",
+          "widthPx": 248,
+          "separation": "divider"
+        },
+        "footer": {
+          "needed": false,
+          "start": "",
+          "center": "",
+          "end": "",
+          "heightPx": 0,
+          "padding": "0",
+          "gap": "0",
+          "separation": "none"
+        },
+        "main": {
+          "container": "fixed",
+          "maxWidthPx": 1000,
+          "padding": "9",
+          "align": "start",
+          "separation": "none"
+        },
+        "logo": "sidebar",
+        "account": "sidebar"
+      },
+      "marketing": {
+        "docksFirst": "header",
+        "header": {
+          "needed": true,
+          "start": "logo",
+          "center": "navigation",
+          "end": "cart, account",
+          "heightPx": 72,
+          "padding": "4",
+          "gap": "4",
+          "separation": "divider",
+          "overlay": false,
+          "sticky": true
+        },
+        "sidebar": {
+          "needed": false,
+          "side": "left",
+          "top": "",
+          "items": "",
+          "bottom": "",
+          "widthPx": 0,
+          "separation": "none"
+        },
+        "footer": {
+          "needed": true,
+          "start": "Studio pickup information",
+          "center": "",
+          "end": "Order lookup",
+          "heightPx": 0,
+          "padding": "6",
+          "gap": "4",
+          "separation": "divider"
+        },
+        "main": {
+          "container": "fixed",
+          "maxWidthPx": 1240,
+          "padding": "10",
+          "align": "center",
+          "separation": "none"
+        },
+        "logo": "header",
+        "account": "header"
+      }
+    },
+    "defaults": {
+      "Textarea": {
+        "look": "outline"
+      },
+      "Tag": {
+        "variant": "base",
+        "size": "sm",
+        "look": "bordered"
+      },
+      "Tabs": {
+        "variant": "default"
+      },
+      "Switch": {
+        "variant": "default",
+        "size": "md"
+      },
+      "MultiSelect": {
+        "look": "outline"
+      },
+      "Select": {
+        "look": "outline"
+      },
+      "Radio": {
+        "variant": "default",
+        "size": "md"
+      },
+      "PopoverButton": {
+        "look": "rounded ghost"
+      },
+      "Link": {
+        "variant": "default",
+        "look": ""
+      },
+      "Input": {
+        "look": "outline"
+      },
+      "DateInput": {
+        "look": "outline"
+      },
+      "NumberInput": {
+        "look": "outline"
+      },
+      "PasswordInput": {
+        "look": "outline"
+      },
+      "QuantitySelector": {
+        "look": "outline"
+      },
+      "SearchInput": {
+        "look": "outline"
+      },
+      "FormControl": {
+        "variant": "default",
+        "size": "md",
+        "look": "outline"
+      },
+      "Dialog": {
+        "size": "md"
+      },
+      "Chip": {
+        "variant": "default",
+        "size": "md",
+        "look": "outline rounded"
+      },
+      "ChipGroup": {
+        "look": "collapsed"
+      },
+      "Checkbox": {
+        "variant": "default",
+        "size": "md"
+      },
+      "Card": {
+        "variant": "default",
+        "look": "outline"
+      },
+      "Button": {
+        "variant": "default",
+        "size": "md",
+        "look": "rounded"
+      },
+      "IconButton": {
+        "look": "rounded ghost"
+      },
+      "Avatar": {
+        "size": "md"
+      },
+      "Accordion": {
+        "look": "bordered"
+      },
+      "Collapsible": {
+        "look": "bordered"
+      },
+      "Toast": {
+        "status": "info"
+      }
+    }
+  }
+}

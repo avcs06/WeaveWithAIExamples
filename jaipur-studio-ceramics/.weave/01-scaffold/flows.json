@@ -1,0 +1,2886 @@
+{
+  "flows": [
+    {
+      "id": "F01",
+      "name": "Visit the shop landing page",
+      "role": "buyer",
+      "kind": "landing",
+      "noun": "",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "On the public web address of the shop",
+      "goal": "Understand this is the studio's own shop and start browsing in-stock ceramics.",
+      "preconditions": [
+        "Not signed in."
+      ],
+      "steps": [
+        {
+          "id": "F01.S01",
+          "kind": "user",
+          "userAction": "The visitor opens the shop's public address.",
+          "websiteResponse": "The website shows the landing page saying this is the Jaipur studio's own ceramics shop, with featured in-stock pieces showing photos and price, an invitation to order without messaging the studio, and studio pickup and courier delivery as fulfilment choices.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        },
+        {
+          "id": "F01.S02",
+          "kind": "user",
+          "userAction": "The visitor chooses to browse all pieces.",
+          "websiteResponse": "The website shows the catalog of pieces with photos, price and availability.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F01.A01",
+          "from": "F01.S01",
+          "kind": "empty",
+          "condition": "No pieces are in stock to feature.",
+          "steps": [
+            {
+              "id": "F01.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website shows the landing page without featured pieces and says everything is sold out and a new batch is being made, while keeping the way to browse all pieces.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F01.S02"
+        }
+      ],
+      "outcome": "The visitor knows how to start; nothing is stored and a refresh shows the same shop page."
+    },
+    {
+      "id": "F02",
+      "name": "Browse pieces",
+      "role": "buyer",
+      "kind": "browse",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "On the landing page or the catalog",
+      "goal": "Find in-stock mugs, bowls, planters or vases to buy.",
+      "preconditions": [],
+      "steps": [
+        {
+          "id": "F02.S01",
+          "kind": "user",
+          "userAction": "The buyer chooses to browse all pieces.",
+          "websiteResponse": "The website shows the catalog with every Piece's photos, price, category and availability of how many are left or sold out.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        },
+        {
+          "id": "F02.S02",
+          "kind": "user",
+          "userAction": "The buyer narrows the list with search words and a category.",
+          "websiteResponse": "The website shows only the Pieces matching the search words and category, with the same photos, price and availability.",
+          "fields": [
+            "FD25",
+            "FD05"
+          ],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F02.A01",
+          "from": "F02.S01",
+          "kind": "empty",
+          "condition": "No Pieces are for sale yet.",
+          "steps": [
+            {
+              "id": "F02.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says no pieces are available right now, that the studio is preparing the next batch, and keeps the option to return to the landing page and check back later.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F02.A02",
+          "from": "F02.S02",
+          "kind": "empty",
+          "condition": "No Pieces match the search words and category.",
+          "steps": [
+            {
+              "id": "F02.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says nothing matches, keeps the typed search and chosen category, and offers to clear them to see all pieces again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F02.S02"
+        },
+        {
+          "id": "F02.A03",
+          "from": "F02.S02",
+          "kind": "failure",
+          "condition": "Showing the filtered list fails.",
+          "steps": [
+            {
+              "id": "F02.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the typed search and chosen category and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F02.S02"
+        }
+      ],
+      "outcome": "The buyer has seen what is available; nothing is stored and a refresh shows the same list."
+    },
+    {
+      "id": "F03",
+      "name": "View a piece and choose options",
+      "role": "buyer",
+      "kind": "view",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "On the catalog or landing page",
+      "goal": "See a piece's details and choose a glaze, size and quantity that is actually available.",
+      "preconditions": [],
+      "steps": [
+        {
+          "id": "F03.S01",
+          "kind": "user",
+          "userAction": "The buyer opens a Piece from the catalog or landing page.",
+          "websiteResponse": "The website shows the Piece's photos, name, description, price and per-variant availability of how many are left or sold out.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "read"
+            }
+          ]
+        },
+        {
+          "id": "F03.S02",
+          "kind": "user",
+          "userAction": "The buyer chooses a glaze, a size and a quantity.",
+          "websiteResponse": "The website shows the availability for that glaze-and-size variant, whether the quantity can be ordered, and the line total.",
+          "fields": [
+            "FD06",
+            "FD07",
+            "FD09"
+          ],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F03.A01",
+          "from": "F03.S01",
+          "kind": "notFound",
+          "condition": "The Piece was removed in the meantime.",
+          "steps": [
+            {
+              "id": "F03.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the piece is no longer available and shows the catalog to choose another piece.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F03.A02",
+          "from": "F03.S02",
+          "kind": "invalid",
+          "condition": "The quantity is empty, zero or not a whole number.",
+          "steps": [
+            {
+              "id": "F03.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks the quantity, keeps the chosen glaze and size and what was typed, and asks for a quantity of 1 or more.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F03.S02"
+        },
+        {
+          "id": "F03.A03",
+          "from": "F03.S02",
+          "kind": "failure",
+          "condition": "Checking the variant availability fails.",
+          "steps": [
+            {
+              "id": "F03.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the chosen glaze, size and quantity and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F03.S02"
+        },
+        {
+          "id": "F03.A04",
+          "from": "F03.S02",
+          "kind": "other",
+          "condition": "The quantity is more than the stock left for the chosen glaze-and-size variant.",
+          "steps": [
+            {
+              "id": "F03.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only how many are left for that glaze-and-size variant, keeps the choice, and offers to lower the quantity.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F03.S02"
+        },
+        {
+          "id": "F03.A05",
+          "from": "F03.S02",
+          "kind": "other",
+          "condition": "The chosen glaze-and-size variant is sold out.",
+          "steps": [
+            {
+              "id": "F03.A05.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says that glaze-and-size variant is sold out and cannot be ordered, keeps the piece on screen, and offers to choose another glaze or size.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F03.S02"
+        }
+      ],
+      "outcome": "The buyer has seen the piece and a valid choice; nothing is stored yet and a refresh shows the same piece."
+    },
+    {
+      "id": "F04",
+      "name": "Add pieces to the cart",
+      "role": "buyer",
+      "kind": "act",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "On a piece's page",
+      "goal": "Put chosen pieces with glaze, size and quantity into the cart.",
+      "preconditions": [
+        "A Piece with available variant stock has been viewed."
+      ],
+      "steps": [
+        {
+          "id": "F04.S01",
+          "kind": "user",
+          "userAction": "The buyer chooses a glaze, a size and a quantity.",
+          "websiteResponse": "The website shows the availability for that glaze-and-size variant and whether the quantity can be added.",
+          "fields": [
+            "FD06",
+            "FD07",
+            "FD09"
+          ],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "read"
+            }
+          ]
+        },
+        {
+          "id": "F04.S02",
+          "kind": "user",
+          "userAction": "The buyer chooses to add the chosen variant and quantity to the cart.",
+          "websiteResponse": "The website adds the variant and quantity to the guest cart and confirms the cart contents with glaze, size, quantity and subtotal.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F04.A01",
+          "from": "F04.S01",
+          "kind": "invalid",
+          "condition": "The quantity is empty, zero or not a whole number.",
+          "steps": [
+            {
+              "id": "F04.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks the quantity, keeps the chosen glaze and size and what was typed, and asks for a quantity of 1 or more.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F04.S01"
+        },
+        {
+          "id": "F04.A02",
+          "from": "F04.S01",
+          "kind": "failure",
+          "condition": "Checking the variant availability fails.",
+          "steps": [
+            {
+              "id": "F04.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the chosen glaze, size and quantity and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F04.S01"
+        },
+        {
+          "id": "F04.A03",
+          "from": "F04.S01",
+          "kind": "other",
+          "condition": "The quantity is more than the stock left for the chosen glaze-and-size variant.",
+          "steps": [
+            {
+              "id": "F04.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only how many are left for that glaze-and-size variant, keeps the choice, and offers to lower the quantity.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F04.S01"
+        },
+        {
+          "id": "F04.A04",
+          "from": "F04.S01",
+          "kind": "other",
+          "condition": "The chosen glaze-and-size variant is sold out.",
+          "steps": [
+            {
+              "id": "F04.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says that glaze-and-size variant is sold out and cannot be ordered, keeps the piece on screen, and offers to choose another glaze or size.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F04.S01"
+        },
+        {
+          "id": "F04.A05",
+          "from": "F04.S02",
+          "kind": "notFound",
+          "condition": "The Piece was removed in the meantime.",
+          "steps": [
+            {
+              "id": "F04.A05.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the piece is no longer available and shows the catalog to choose another piece.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F04.A06",
+          "from": "F04.S02",
+          "kind": "failure",
+          "condition": "Adding to the cart fails.",
+          "steps": [
+            {
+              "id": "F04.A06.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the chosen glaze, size and quantity and offers to try adding again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F04.S02"
+        },
+        {
+          "id": "F04.A07",
+          "from": "F04.S02",
+          "kind": "other",
+          "condition": "The stock left changed and the quantity can no longer be added.",
+          "steps": [
+            {
+              "id": "F04.A07.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only how many are left for that glaze-and-size variant and offers to change the quantity.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F04.S01"
+        }
+      ],
+      "outcome": "The cart holds the chosen variants and quantities; after a refresh the cart is still there in the same browser."
+    },
+    {
+      "id": "F05",
+      "name": "Review the cart",
+      "role": "buyer",
+      "kind": "edit",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "On any shop page with items in the cart",
+      "goal": "Check the cart and fix quantities before checkout.",
+      "preconditions": [
+        "At least one variant is in the cart."
+      ],
+      "steps": [
+        {
+          "id": "F05.S01",
+          "kind": "user",
+          "userAction": "The buyer opens the cart.",
+          "websiteResponse": "The website shows each cart line with piece name, glaze, size, price and quantity, plus the subtotal and the shipping of ₹99 for courier or free when the discounted subtotal is above ₹1,500 and free studio pickup.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        },
+        {
+          "id": "F05.S02",
+          "kind": "user",
+          "userAction": "The buyer changes a quantity.",
+          "websiteResponse": "The website updates the cart, recalculates the subtotal and shipping, and confirms the cart contents.",
+          "fields": [
+            "FD09"
+          ],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F05.S03",
+          "kind": "user",
+          "userAction": "The buyer removes a line from the cart.",
+          "websiteResponse": "The website removes the line, recalculates the subtotal and shipping, and confirms the cart contents.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F05.S04",
+          "kind": "user",
+          "userAction": "The buyer chooses to go to checkout.",
+          "websiteResponse": "The website shows the checkout with the cart totals.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F05.A01",
+          "from": "F05.S01",
+          "kind": "empty",
+          "condition": "The cart is empty.",
+          "steps": [
+            {
+              "id": "F05.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the cart is empty and invites the buyer to browse pieces.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F05.A02",
+          "from": "F05.S02",
+          "kind": "invalid",
+          "condition": "A quantity is empty, zero, or greater than the stock left for that variant.",
+          "steps": [
+            {
+              "id": "F05.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks the quantity, keeps what was typed, shows the stock left for that variant, and asks for a quantity within stock.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F05.S02"
+        },
+        {
+          "id": "F05.A03",
+          "from": "F05.S02",
+          "kind": "failure",
+          "condition": "Saving the cart change fails.",
+          "steps": [
+            {
+              "id": "F05.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the cart values and offers to try saving again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F05.S02"
+        },
+        {
+          "id": "F05.A04",
+          "from": "F05.S04",
+          "kind": "other",
+          "condition": "A cart line no longer has enough stock left.",
+          "steps": [
+            {
+              "id": "F05.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says which piece with glaze and size is short, shows how many are left, and asks the buyer to fix the quantity before checkout.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F05.S02"
+        },
+        {
+          "id": "F05.A05",
+          "from": "F05.S04",
+          "kind": "empty",
+          "condition": "The cart is empty.",
+          "steps": [
+            {
+              "id": "F05.A05.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the cart is empty and invites the buyer to browse pieces.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The cart reflects the wanted quantities; after a refresh the same cart is shown."
+    },
+    {
+      "id": "F06",
+      "name": "Apply a discount code",
+      "role": "buyer",
+      "kind": "act",
+      "noun": "DiscountCode",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "At checkout with items in the cart",
+      "goal": "Get a promotion off the order with an Instagram discount code.",
+      "preconditions": [
+        "At least one variant is in the cart."
+      ],
+      "steps": [
+        {
+          "id": "F06.S01",
+          "kind": "user",
+          "userAction": "The buyer types a discount code and chooses to apply it.",
+          "websiteResponse": "The website checks the code and shows the checkout totals with the discount taken off the subtotal and shipping recalculated: courier shipping is free when the discounted subtotal is above ₹1,500, otherwise ₹99 for courier and free for studio pickup. If a code was already applied it is replaced by the new code.",
+          "fields": [
+            "FD17"
+          ],
+          "form": "",
+          "effects": [
+            {
+              "noun": "DiscountCode",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F06.A01",
+          "from": "F06.S01",
+          "kind": "invalid",
+          "condition": "The code matches no discount code.",
+          "steps": [
+            {
+              "id": "F06.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the code is not recognized, keeps what was typed, leaves the cart without any discount and lets the buyer try another code or continue to place the order without a code.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F06.S01"
+        },
+        {
+          "id": "F06.A02",
+          "from": "F06.S01",
+          "kind": "other",
+          "condition": "The code is past its expiry date.",
+          "steps": [
+            {
+              "id": "F06.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the code has expired, keeps what was typed, leaves the cart without any discount and lets the buyer try another code or continue to place the order without a code.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F06.S01"
+        },
+        {
+          "id": "F06.A03",
+          "from": "F06.S01",
+          "kind": "other",
+          "condition": "The code has been deactivated by the owner.",
+          "steps": [
+            {
+              "id": "F06.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the code is no longer active, keeps what was typed, leaves the cart without any discount and lets the buyer try another code or continue to place the order without a code.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F06.S01"
+        },
+        {
+          "id": "F06.A04",
+          "from": "F06.S01",
+          "kind": "failure",
+          "condition": "Checking the code fails.",
+          "steps": [
+            {
+              "id": "F06.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the typed code and the cart unchanged and offers to try applying the code again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F06.S01"
+        }
+      ],
+      "outcome": "A valid code reduces the totals or an invalid code is rejected; the cart is unchanged otherwise and a refresh keeps the same cart and code result."
+    },
+    {
+      "id": "F07",
+      "name": "Check out as a guest",
+      "role": "buyer",
+      "kind": "create",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "At checkout with items in the cart",
+      "goal": "Place the order as a guest without paying online.",
+      "preconditions": [
+        "At least one cart line is within remaining stock."
+      ],
+      "steps": [
+        {
+          "id": "F07.S01",
+          "kind": "user",
+          "userAction": "The buyer views the checkout.",
+          "websiteResponse": "The website shows each cart line with piece name, glaze, size, price and quantity, the discounted subtotal, shipping of ₹99 for courier or free when the discounted subtotal is above ₹1,500 and free studio pickup, the total, the studio pickup address and instructions, and the checkout form.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        },
+        {
+          "id": "F07.S02",
+          "kind": "user",
+          "userAction": "The buyer fills in the checkout form and places the order without paying online.",
+          "websiteResponse": "The website creates the order with an order reference, immediately reduces the stock of the ordered variants, and shows the confirmation with the order reference, pieces with glaze, size and quantities, discount and shipping totals, total, fulfilment choice and the note that the owner will collect payment by UPI later.",
+          "fields": [],
+          "form": "FM02",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "create"
+            },
+            {
+              "noun": "Piece",
+              "change": "update"
+            },
+            {
+              "noun": "DiscountCode",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F07.A01",
+          "from": "F07.S01",
+          "kind": "empty",
+          "condition": "The cart is empty.",
+          "steps": [
+            {
+              "id": "F07.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the cart is empty and invites the buyer to browse pieces.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F07.A02",
+          "from": "F07.S02",
+          "kind": "invalid",
+          "condition": "A required value is missing or wrong: name is empty, phone is not a phone number, fulfilment choice is not chosen, delivery address, city or PIN code is missing for courier delivery, PIN code is not 6 characters, or a quantity is greater than the stock left.",
+          "steps": [
+            {
+              "id": "F07.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong, keeps what was typed, and asks the buyer to fix it.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F07.S02"
+        },
+        {
+          "id": "F07.A03",
+          "from": "F07.S02",
+          "kind": "failure",
+          "condition": "Placing the order fails.",
+          "steps": [
+            {
+              "id": "F07.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps all typed values and offers to try placing the order again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F07.S02"
+        },
+        {
+          "id": "F07.A04",
+          "from": "F07.S02",
+          "kind": "other",
+          "condition": "The discount code is invalid, expired or deactivated.",
+          "steps": [
+            {
+              "id": "F07.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the code cannot be used, shows totals without the discount, keeps the other typed values, and lets the buyer place the order without it.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F07.S02"
+        },
+        {
+          "id": "F07.A05",
+          "from": "F07.S02",
+          "kind": "other",
+          "condition": "An ordered variant no longer has enough stock left.",
+          "steps": [
+            {
+              "id": "F07.A05.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says which piece with glaze and size is short, shows how many are left, and invites the buyer to open the cart to fix the quantities before ordering.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "An Order is stored with reduced stock; after a refresh the confirmation with reference and UPI-later note is still shown and stock stays reduced."
+    },
+    {
+      "id": "F08",
+      "name": "View order confirmation and look up an order",
+      "role": "buyer",
+      "kind": "view",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": true,
+      "start": "On the confirmation after checkout, or on the order lookup page",
+      "goal": "See what was ordered and find it again later.",
+      "preconditions": [
+        "An Order was placed, with its reference and phone number for lookup."
+      ],
+      "steps": [
+        {
+          "id": "F08.S01",
+          "kind": "user",
+          "userAction": "The buyer views the order confirmation.",
+          "websiteResponse": "The website shows the order reference, pieces with glaze, size and quantities, discount and shipping totals, total, fulfilment choice with studio pickup instructions or courier delivery address, and the note that the owner will collect payment by UPI later.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "read"
+            }
+          ]
+        },
+        {
+          "id": "F08.S02",
+          "kind": "user",
+          "userAction": "The buyer opens the order lookup.",
+          "websiteResponse": "The website shows the order lookup form.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F08.S03",
+          "kind": "user",
+          "userAction": "The buyer fills in the order reference and phone number and submits the lookup.",
+          "websiteResponse": "The website shows the same order details with reference, pieces with glaze, size and quantities, discount and shipping totals, total, fulfilment choice and the UPI-later note.",
+          "fields": [],
+          "form": "FM04",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F08.A01",
+          "from": "F08.S03",
+          "kind": "invalid",
+          "condition": "The order reference is empty or the phone number is not a phone number.",
+          "steps": [
+            {
+              "id": "F08.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong, keeps what was typed, and asks the buyer to fix it.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F08.S03"
+        },
+        {
+          "id": "F08.A02",
+          "from": "F08.S03",
+          "kind": "failure",
+          "condition": "Looking up the order fails.",
+          "steps": [
+            {
+              "id": "F08.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the typed values and offers to try the lookup again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F08.S03"
+        },
+        {
+          "id": "F08.A03",
+          "from": "F08.S03",
+          "kind": "notFound",
+          "condition": "No order matches the reference together with the phone number.",
+          "steps": [
+            {
+              "id": "F08.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says no order was found for that reference and phone number and invites the buyer to check the values and try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F08.S03"
+        }
+      ],
+      "outcome": "The buyer has seen the order details; nothing changes and a refresh shows the same order."
+    },
+    {
+      "id": "F09",
+      "name": "Owner sign up",
+      "role": "shopOwner",
+      "kind": "auth",
+      "noun": "",
+      "authKind": "signUp",
+      "signedOut": true,
+      "start": "On the landing page choosing to sign up",
+      "goal": "Create the owner's shop account.",
+      "preconditions": [
+        "Not signed in.",
+        "No owner account exists yet."
+      ],
+      "steps": [
+        {
+          "id": "F09.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to sign up.",
+          "websiteResponse": "The website shows the sign-up form.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F09.S02",
+          "kind": "user",
+          "userAction": "The owner fills in the form and submits it.",
+          "websiteResponse": "The website creates the single shop account, signs the owner in and shows the dashboard with new orders and low stock.",
+          "fields": [],
+          "form": "FM05",
+          "effects": []
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F09.A01",
+          "from": "F09.S02",
+          "kind": "invalid",
+          "condition": "The email is not an address or the password is shorter than 8 characters.",
+          "steps": [
+            {
+              "id": "F09.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F09.S02"
+        },
+        {
+          "id": "F09.A02",
+          "from": "F09.S02",
+          "kind": "failure",
+          "condition": "Creating the account fails.",
+          "steps": [
+            {
+              "id": "F09.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the values and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F09.S02"
+        },
+        {
+          "id": "F09.A03",
+          "from": "F09.S02",
+          "kind": "conflict",
+          "condition": "An owner account already exists.",
+          "steps": [
+            {
+              "id": "F09.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says an owner account already exists and offers to sign in instead.",
+              "fields": [],
+              "form": ""
+            },
+            {
+              "id": "F09.A03.S02",
+              "kind": "user",
+              "userAction": "The owner chooses to sign in.",
+              "websiteResponse": "The website shows the sign-in form.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The owner has an account and is signed in; after a refresh they stay signed in."
+    },
+    {
+      "id": "F10",
+      "name": "Owner sign in",
+      "role": "shopOwner",
+      "kind": "auth",
+      "noun": "",
+      "authKind": "signIn",
+      "signedOut": true,
+      "start": "On the landing page choosing to sign in",
+      "goal": "Sign in to manage the shop.",
+      "preconditions": [
+        "Not signed in.",
+        "An owner account exists."
+      ],
+      "steps": [
+        {
+          "id": "F10.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to sign in.",
+          "websiteResponse": "The website shows the sign-in form.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F10.S02",
+          "kind": "user",
+          "userAction": "The owner fills in the form and submits it.",
+          "websiteResponse": "The website signs the owner in and shows the dashboard with new orders and low stock.",
+          "fields": [],
+          "form": "FM05",
+          "effects": []
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F10.A01",
+          "from": "F10.S02",
+          "kind": "invalid",
+          "condition": "The email is not an address.",
+          "steps": [
+            {
+              "id": "F10.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks the email and keeps what was typed.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F10.S02"
+        },
+        {
+          "id": "F10.A02",
+          "from": "F10.S02",
+          "kind": "denied",
+          "condition": "The email and password match no owner account or the password is wrong.",
+          "steps": [
+            {
+              "id": "F10.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the sign-in did not match and keeps what was typed so the owner can try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F10.S02"
+        },
+        {
+          "id": "F10.A03",
+          "from": "F10.S02",
+          "kind": "failure",
+          "condition": "Signing in fails.",
+          "steps": [
+            {
+              "id": "F10.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the values and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F10.S02"
+        }
+      ],
+      "outcome": "The owner is signed in; after a refresh they stay signed in."
+    },
+    {
+      "id": "F11",
+      "name": "Owner sign out",
+      "role": "shopOwner",
+      "kind": "auth",
+      "noun": "",
+      "authKind": "signOut",
+      "signedOut": false,
+      "start": "On any owner page while signed in",
+      "goal": "Leave the shop safely signed out.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F11.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to sign out.",
+          "websiteResponse": "The website signs the owner out and shows the public shop page.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        }
+      ],
+      "alternatives": [],
+      "outcome": "The owner is signed out; after a refresh they stay signed out."
+    },
+    {
+      "id": "F12",
+      "name": "See the shop dashboard",
+      "role": "shopOwner",
+      "kind": "home",
+      "noun": "",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "Just after signing in",
+      "goal": "See what needs packing and what is running low.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F12.S01",
+          "kind": "user",
+          "userAction": "The owner views the dashboard.",
+          "websiteResponse": "The website shows new orders newest first with sales totals and pieces with low-stock warnings at 3 or fewer left and sold out at 0, with ways to open the order list and the piece list.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "list"
+            },
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F12.A01",
+          "from": "F12.S01",
+          "kind": "empty",
+          "condition": "There are no orders and no pieces yet.",
+          "steps": [
+            {
+              "id": "F12.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says there are no orders yet and no pieces yet and offers to add the first piece.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The owner has seen new orders and low stock; nothing changes and a refresh shows updated counts."
+    },
+    {
+      "id": "F13",
+      "name": "Browse orders",
+      "role": "shopOwner",
+      "kind": "browse",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the dashboard",
+      "goal": "Find orders by status, newest first.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F13.S01",
+          "kind": "user",
+          "userAction": "The owner opens the order list.",
+          "websiteResponse": "The website shows all Orders newest first with New Orders clearly marked as new, each with order reference, buyer name, total, payment status and fulfilment status.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "list"
+            }
+          ]
+        },
+        {
+          "id": "F13.S02",
+          "kind": "user",
+          "userAction": "The owner chooses an order status filter.",
+          "websiteResponse": "The website shows only Orders matching the chosen fulfilment or payment state, still newest first.",
+          "fields": [
+            "FD26"
+          ],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "list"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F13.A01",
+          "from": "F13.S01",
+          "kind": "empty",
+          "condition": "There are no Orders yet.",
+          "steps": [
+            {
+              "id": "F13.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says there are no orders yet and explains new guest orders will appear here.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F13.A02",
+          "from": "F13.S02",
+          "kind": "empty",
+          "condition": "No Orders match the chosen filter.",
+          "steps": [
+            {
+              "id": "F13.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says no orders match the filter and offers to clear the filter to see all orders.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F13.S02"
+        }
+      ],
+      "outcome": "The owner has seen the matching orders; nothing changes and a refresh shows the same list."
+    },
+    {
+      "id": "F14",
+      "name": "View an order",
+      "role": "shopOwner",
+      "kind": "view",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the order list",
+      "goal": "See everything needed to collect UPI, pack and send or hold for pickup.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "At least one Order exists."
+      ],
+      "steps": [
+        {
+          "id": "F14.S01",
+          "kind": "user",
+          "userAction": "The owner opens an Order from the list.",
+          "websiteResponse": "The website shows the Order with order reference, buyer name, phone number, items with glaze and size and quantities, discount used, shipping and total, payment status, and fulfilment choice with delivery address, city and PIN code for courier orders.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F14.A01",
+          "from": "F14.S01",
+          "kind": "notFound",
+          "condition": "The Order cannot be found.",
+          "steps": [
+            {
+              "id": "F14.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the order cannot be found and shows the order list.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The owner has seen the order details; nothing changes and a refresh shows the same order."
+    },
+    {
+      "id": "F15",
+      "name": "Mark an order as Packed",
+      "role": "shopOwner",
+      "kind": "act",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On an order's page",
+      "goal": "Show an order is packed.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "The Order is New."
+      ],
+      "steps": [
+        {
+          "id": "F15.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to mark the New Order as Packed.",
+          "websiteResponse": "The website updates the fulfilment status from New to Packed and shows the Order as Packed.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F15.A01",
+          "from": "F15.S01",
+          "kind": "failure",
+          "condition": "Updating the Order fails.",
+          "steps": [
+            {
+              "id": "F15.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the Order as New and offers to try marking it Packed again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F15.S01"
+        },
+        {
+          "id": "F15.A02",
+          "from": "F15.S01",
+          "kind": "denied",
+          "condition": "The Order is no longer New.",
+          "steps": [
+            {
+              "id": "F15.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only a New Order can be marked Packed and shows the Order with its current fulfilment status.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The Order moves from New to Packed; after a refresh it is still Packed."
+    },
+    {
+      "id": "F16",
+      "name": "Mark a courier order as Shipped",
+      "role": "shopOwner",
+      "kind": "act",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On a packed order's page",
+      "goal": "Finish fulfilment for courier orders by marking them shipped.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "The Order is Packed.",
+        "The Order is a courier delivery Order."
+      ],
+      "steps": [
+        {
+          "id": "F16.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to mark the Packed courier Order as Shipped.",
+          "websiteResponse": "The website updates the fulfilment status from Packed to Shipped and shows the Order as Shipped.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F16.A01",
+          "from": "F16.S01",
+          "kind": "failure",
+          "condition": "Updating the Order fails.",
+          "steps": [
+            {
+              "id": "F16.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the Order as Packed and offers to try marking it Shipped again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F16.S01"
+        },
+        {
+          "id": "F16.A02",
+          "from": "F16.S01",
+          "kind": "denied",
+          "condition": "The Order is not Packed or is not a courier delivery Order.",
+          "steps": [
+            {
+              "id": "F16.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only a Packed courier Order can be marked Shipped and shows the Order with its current fulfilment status.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "A courier Order moves from Packed to Shipped; after a refresh it is still Shipped."
+    },
+    {
+      "id": "F17",
+      "name": "Mark an order as Paid",
+      "role": "shopOwner",
+      "kind": "act",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On an order's page",
+      "goal": "Record that UPI payment was collected.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "The Order is Unpaid."
+      ],
+      "steps": [
+        {
+          "id": "F17.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to mark the Unpaid Order as Paid.",
+          "websiteResponse": "The website updates the payment status from Unpaid to Paid and shows the Order as Paid with fulfilment status unchanged.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F17.A01",
+          "from": "F17.S01",
+          "kind": "failure",
+          "condition": "Updating the Order fails.",
+          "steps": [
+            {
+              "id": "F17.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the Order as Unpaid and offers to try marking it Paid again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F17.S01"
+        },
+        {
+          "id": "F17.A02",
+          "from": "F17.S01",
+          "kind": "denied",
+          "condition": "The Order is already Paid.",
+          "steps": [
+            {
+              "id": "F17.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the Order is already Paid and shows the Order with its current payment and fulfilment states.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The Order is Paid and stays Paid after a refresh; fulfilment state is unchanged."
+    },
+    {
+      "id": "F18",
+      "name": "Cancel an order",
+      "role": "shopOwner",
+      "kind": "act",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On a New or Packed order's page",
+      "goal": "Cancel an order before shipping or pickup and put stock back.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "The Order is New or Packed."
+      ],
+      "steps": [
+        {
+          "id": "F18.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to cancel the New or Packed Order.",
+          "websiteResponse": "The website updates the fulfilment status to Cancelled, restores the stock of its ordered variants so the pieces become available again, and shows the Order as Cancelled.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "update"
+            },
+            {
+              "noun": "Piece",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F18.A01",
+          "from": "F18.S01",
+          "kind": "failure",
+          "condition": "Cancelling the Order fails.",
+          "steps": [
+            {
+              "id": "F18.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the Order with its current status and stock unchanged and offers to try cancelling again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F18.S01"
+        },
+        {
+          "id": "F18.A02",
+          "from": "F18.S01",
+          "kind": "denied",
+          "condition": "The Order is already Shipped, Picked Up or Cancelled.",
+          "steps": [
+            {
+              "id": "F18.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only a New or Packed Order can be cancelled and shows the Order with its current fulfilment status.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The Order is Cancelled and its variant stock is restored; after a refresh it stays Cancelled with stock restored."
+    },
+    {
+      "id": "F19",
+      "name": "Browse pieces to manage stock",
+      "role": "shopOwner",
+      "kind": "browse",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the dashboard",
+      "goal": "See all pieces and which glazes and variants are nearly gone.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F19.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to view pieces.",
+          "websiteResponse": "The website shows every Piece with photos, price and stock per glaze-and-size variant, marking variants with 3 or fewer left as low stock and 0 as sold out.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        },
+        {
+          "id": "F19.S02",
+          "kind": "user",
+          "userAction": "The owner types words to search and searches.",
+          "websiteResponse": "The website shows only Pieces whose name or glaze matches the words, keeping the same low-stock and sold-out warnings.",
+          "fields": [
+            "FD25"
+          ],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "list"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F19.A01",
+          "from": "F19.S01",
+          "kind": "empty",
+          "condition": "No Pieces exist yet.",
+          "steps": [
+            {
+              "id": "F19.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says there are no pieces yet and offers to add a piece.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F19.A02",
+          "from": "F19.S02",
+          "kind": "empty",
+          "condition": "No Pieces match the search words.",
+          "steps": [
+            {
+              "id": "F19.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says nothing matches and offers to clear the search or add a piece.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F19.S02"
+        }
+      ],
+      "outcome": "The owner has seen pieces and stock warnings; nothing changes and a refresh shows the same list."
+    },
+    {
+      "id": "F20",
+      "name": "View a piece as owner",
+      "role": "shopOwner",
+      "kind": "view",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the piece list",
+      "goal": "Look at a piece and its variant stock.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "At least one Piece exists."
+      ],
+      "steps": [
+        {
+          "id": "F20.S01",
+          "kind": "user",
+          "userAction": "The owner opens a Piece from the list.",
+          "websiteResponse": "The website shows the Piece's photos, name, description, price, category and each glaze-and-size variant with its stock quantity, marking low stock at 3 or fewer left and sold out at 0.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "read"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F20.A01",
+          "from": "F20.S01",
+          "kind": "notFound",
+          "condition": "The Piece was removed in the meantime.",
+          "steps": [
+            {
+              "id": "F20.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the piece is gone and shows the piece list.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The owner has seen the piece details; nothing changes and a refresh shows the same piece."
+    },
+    {
+      "id": "F21",
+      "name": "Add a piece",
+      "role": "shopOwner",
+      "kind": "create",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the piece list",
+      "goal": "Put a new ceramic piece on sale with photos, price and stock.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F21.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to add a piece.",
+          "websiteResponse": "The website shows an empty piece form.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F21.S02",
+          "kind": "user",
+          "userAction": "The owner fills in the piece form and saves it.",
+          "websiteResponse": "The website saves the Piece with its glaze, size and variant stock and shows it in the piece list.",
+          "fields": [],
+          "form": "FM01",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "create"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F21.A01",
+          "from": "F21.S02",
+          "kind": "invalid",
+          "condition": "A required value is missing, the price is not at least ₹1, the variant stock is negative, or a photo is not a valid address.",
+          "steps": [
+            {
+              "id": "F21.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F21.S02"
+        },
+        {
+          "id": "F21.A02",
+          "from": "F21.S02",
+          "kind": "failure",
+          "condition": "Saving the Piece fails.",
+          "steps": [
+            {
+              "id": "F21.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the entered values and offers to try saving again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F21.S02"
+        },
+        {
+          "id": "F21.A03",
+          "from": "F21.S01",
+          "kind": "cancel",
+          "condition": "The owner cancels without saving.",
+          "steps": [
+            {
+              "id": "F21.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "Nothing is saved; the website shows the piece list as it was.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The new Piece is for sale with its variant stock; after a refresh it is still listed."
+    },
+    {
+      "id": "F22",
+      "name": "Edit a piece",
+      "role": "shopOwner",
+      "kind": "edit",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On a piece's page",
+      "goal": "Update a piece, its price or its variant stock.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "At least one Piece exists."
+      ],
+      "steps": [
+        {
+          "id": "F22.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to edit the Piece.",
+          "websiteResponse": "The website shows the piece form filled with the current name, description, price, photos, category, glaze, size and variant stock quantity.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "read"
+            }
+          ]
+        },
+        {
+          "id": "F22.S02",
+          "kind": "user",
+          "userAction": "The owner edits the details and saves them.",
+          "websiteResponse": "The website saves the changes and shows the updated Piece; existing Orders keep their item snapshot.",
+          "fields": [],
+          "form": "FM01",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F22.A01",
+          "from": "F22.S01",
+          "kind": "notFound",
+          "condition": "The Piece was removed in the meantime.",
+          "steps": [
+            {
+              "id": "F22.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the piece is gone and shows the piece list.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F22.A02",
+          "from": "F22.S02",
+          "kind": "invalid",
+          "condition": "A required value is missing, the price is not at least ₹1, the variant stock is negative, or a photo is not a valid address.",
+          "steps": [
+            {
+              "id": "F22.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F22.S02"
+        },
+        {
+          "id": "F22.A03",
+          "from": "F22.S02",
+          "kind": "failure",
+          "condition": "Saving the changes fails.",
+          "steps": [
+            {
+              "id": "F22.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the entered values and offers to try saving again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F22.S02"
+        },
+        {
+          "id": "F22.A04",
+          "from": "F22.S02",
+          "kind": "cancel",
+          "condition": "The owner cancels without saving.",
+          "steps": [
+            {
+              "id": "F22.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "Nothing is changed; the website shows the Piece as it was.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The Piece shows the new details and stock; after a refresh the changes stay and old Orders are unchanged."
+    },
+    {
+      "id": "F23",
+      "name": "Remove a piece",
+      "role": "shopOwner",
+      "kind": "delete",
+      "noun": "Piece",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On a piece's page",
+      "goal": "Take a piece off the shop.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "The Piece is not in any New or Packed Order."
+      ],
+      "steps": [
+        {
+          "id": "F23.S01",
+          "kind": "user",
+          "userAction": "The owner chooses Remove on the Piece.",
+          "websiteResponse": "The website asks the owner to confirm deleting the Piece.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Piece",
+              "change": "delete"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F23.A01",
+          "from": "F23.S01",
+          "kind": "confirm",
+          "condition": "The owner confirms the deletion.",
+          "steps": [
+            {
+              "id": "F23.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website removes the Piece and shows the updated piece list; existing Orders keep their item snapshot.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F23.A02",
+          "from": "F23.S01",
+          "kind": "cancel",
+          "condition": "The owner cancels.",
+          "steps": [
+            {
+              "id": "F23.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "Nothing is removed; the website shows the Piece again, unchanged.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F23.A03",
+          "from": "F23.S01",
+          "kind": "denied",
+          "condition": "The Piece is in a New or Packed Order.",
+          "steps": [
+            {
+              "id": "F23.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the Piece cannot be removed while it is in a New or Packed Order and shows the Piece again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F23.A04",
+          "from": "F23.S01",
+          "kind": "notFound",
+          "condition": "The Piece was already removed.",
+          "steps": [
+            {
+              "id": "F23.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the Piece is already gone and shows the piece list.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The Piece is gone from the shop but its past Orders remain; after a refresh it stays gone."
+    },
+    {
+      "id": "F24",
+      "name": "Browse discount codes",
+      "role": "shopOwner",
+      "kind": "browse",
+      "noun": "DiscountCode",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the dashboard",
+      "goal": "Review promotion codes for Instagram offers.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F24.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to view discount codes.",
+          "websiteResponse": "The website shows the discount code list with each code's code, discount type, discount value, expiry date and status.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "DiscountCode",
+              "change": "list"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F24.A01",
+          "from": "F24.S01",
+          "kind": "empty",
+          "condition": "There are no discount codes yet.",
+          "steps": [
+            {
+              "id": "F24.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website shows that no discount codes exist yet and offers to create one.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The owner has seen all codes and their states; nothing changes and a refresh shows the same list."
+    },
+    {
+      "id": "F25",
+      "name": "Create a discount code",
+      "role": "shopOwner",
+      "kind": "create",
+      "noun": "DiscountCode",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the discount code list",
+      "goal": "Make a new percentage or fixed-amount promotion code.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F25.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to create a discount code.",
+          "websiteResponse": "The website shows an empty discount code form.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F25.S02",
+          "kind": "user",
+          "userAction": "The owner fills in the code, discount type, discount value and expiry date and saves it.",
+          "websiteResponse": "The website saves the code as Active and shows the discount code list with the new code.",
+          "fields": [],
+          "form": "FM03",
+          "effects": [
+            {
+              "noun": "DiscountCode",
+              "change": "create"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F25.A01",
+          "from": "F25.S02",
+          "kind": "invalid",
+          "condition": "The code is empty or longer than 30 characters, the discount type is missing, the discount value is missing or not greater than zero, a percentage value is greater than 100, or the expiry date is missing or is not a future date.",
+          "steps": [
+            {
+              "id": "F25.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F25.S02"
+        },
+        {
+          "id": "F25.A02",
+          "from": "F25.S02",
+          "kind": "failure",
+          "condition": "Saving the code fails.",
+          "steps": [
+            {
+              "id": "F25.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the entered values and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F25.S02"
+        },
+        {
+          "id": "F25.A03",
+          "from": "F25.S02",
+          "kind": "conflict",
+          "condition": "The code already exists for another discount code, ignoring upper and lower case.",
+          "steps": [
+            {
+              "id": "F25.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says the code is already used and keeps what was typed so the owner can enter a different code.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F25.S02"
+        },
+        {
+          "id": "F25.A04",
+          "from": "F25.S01",
+          "kind": "cancel",
+          "condition": "The owner cancels without saving.",
+          "steps": [
+            {
+              "id": "F25.A04.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "Nothing is saved; the website shows the discount code list as it was.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "The new Active code can be used at checkout; after a refresh it is still listed."
+    },
+    {
+      "id": "F26",
+      "name": "Deactivate a discount code",
+      "role": "shopOwner",
+      "kind": "act",
+      "noun": "DiscountCode",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the discount code list",
+      "goal": "Stop a promotion code from being used.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "At least one Active DiscountCode exists."
+      ],
+      "steps": [
+        {
+          "id": "F26.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to deactivate an Active discount code.",
+          "websiteResponse": "The website asks the owner to confirm deactivating the code.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "DiscountCode",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F26.A01",
+          "from": "F26.S01",
+          "kind": "confirm",
+          "condition": "The owner confirmed the deactivation.",
+          "steps": [
+            {
+              "id": "F26.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website shows the discount code list with the code as Deactivated.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F26.A02",
+          "from": "F26.S01",
+          "kind": "cancel",
+          "condition": "The owner cancelled.",
+          "steps": [
+            {
+              "id": "F26.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "Nothing changes; the website shows the discount code list with the code still Active.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        },
+        {
+          "id": "F26.A03",
+          "from": "F26.S01",
+          "kind": "failure",
+          "condition": "Deactivating the code fails.",
+          "steps": [
+            {
+              "id": "F26.A03.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the code as Active and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F26.S01"
+        }
+      ],
+      "outcome": "The code is Deactivated and no longer works; after a refresh it stays Deactivated."
+    },
+    {
+      "id": "F27",
+      "name": "Manage owner account",
+      "role": "shopOwner",
+      "kind": "account",
+      "noun": "",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On the dashboard",
+      "goal": "Keep the owner's sign-in working.",
+      "preconditions": [
+        "Signed in as shop owner."
+      ],
+      "steps": [
+        {
+          "id": "F27.S01",
+          "kind": "user",
+          "userAction": "The owner opens their account.",
+          "websiteResponse": "The website shows the account with the sign-in email.",
+          "fields": [],
+          "form": "",
+          "effects": []
+        },
+        {
+          "id": "F27.S02",
+          "kind": "user",
+          "userAction": "The owner edits the email and password and saves the changes.",
+          "websiteResponse": "The website saves the new email and password and shows the account with the updated email.",
+          "fields": [],
+          "form": "FM05",
+          "effects": []
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F27.A01",
+          "from": "F27.S02",
+          "kind": "invalid",
+          "condition": "The email is not an address or the password is shorter than 8 characters.",
+          "steps": [
+            {
+              "id": "F27.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F27.S02"
+        },
+        {
+          "id": "F27.A02",
+          "from": "F27.S02",
+          "kind": "failure",
+          "condition": "Saving the account changes fails.",
+          "steps": [
+            {
+              "id": "F27.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the values and offers to try again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F27.S02"
+        }
+      ],
+      "outcome": "Account changes are saved; after a refresh the new details stay."
+    },
+    {
+      "id": "F28",
+      "name": "Mark a pickup order as Picked Up",
+      "role": "shopOwner",
+      "kind": "act",
+      "noun": "Order",
+      "authKind": "none",
+      "signedOut": false,
+      "start": "On a packed order's page",
+      "goal": "Finish fulfilment for studio pickup orders by marking them picked up.",
+      "preconditions": [
+        "Signed in as shop owner.",
+        "The Order is Packed.",
+        "The Order is a studio pickup Order."
+      ],
+      "steps": [
+        {
+          "id": "F28.S01",
+          "kind": "user",
+          "userAction": "The owner chooses to mark the Packed studio pickup Order as Picked Up.",
+          "websiteResponse": "The website updates the fulfilment status from Packed to Picked Up and shows the Order as Picked Up.",
+          "fields": [],
+          "form": "",
+          "effects": [
+            {
+              "noun": "Order",
+              "change": "update"
+            }
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "id": "F28.A01",
+          "from": "F28.S01",
+          "kind": "failure",
+          "condition": "Updating the Order fails.",
+          "steps": [
+            {
+              "id": "F28.A01.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website keeps the Order as Packed and offers to try marking it Picked Up again.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": "F28.S01"
+        },
+        {
+          "id": "F28.A02",
+          "from": "F28.S01",
+          "kind": "denied",
+          "condition": "The Order is not Packed or is not a studio pickup Order.",
+          "steps": [
+            {
+              "id": "F28.A02.S01",
+              "kind": "system",
+              "userAction": "",
+              "websiteResponse": "The website says only a Packed studio pickup Order can be marked Picked Up and shows the Order with its current fulfilment status.",
+              "fields": [],
+              "form": ""
+            }
+          ],
+          "resumesAt": ""
+        }
+      ],
+      "outcome": "A pickup Order moves from Packed to Picked Up; after a refresh it is still Picked Up."
+    }
+  ],
+  "fields": [
+    {
+      "id": "FD01",
+      "noun": "Piece",
+      "label": "Name",
+      "meaning": "How the piece is called in the shop",
+      "type": "text",
+      "required": true,
+      "min": null,
+      "max": 120,
+      "options": [],
+      "optionsFrom": "",
+      "example": "Speckled Stoneware Mug"
+    },
+    {
+      "id": "FD02",
+      "noun": "Piece",
+      "label": "Description",
+      "meaning": "What the piece is, how it is made and how it looks",
+      "type": "longText",
+      "required": false,
+      "min": null,
+      "max": 1000,
+      "options": [],
+      "optionsFrom": "",
+      "example": "Hand-thrown mug with speckled matte glaze, 300 ml."
+    },
+    {
+      "id": "FD03",
+      "noun": "Piece",
+      "label": "Price",
+      "meaning": "How much one piece costs in rupees before discount and shipping",
+      "type": "money",
+      "required": true,
+      "min": 1,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "650"
+    },
+    {
+      "id": "FD04",
+      "noun": "Piece",
+      "label": "Photos",
+      "meaning": "Images showing the piece so photos do the talking",
+      "type": "url",
+      "required": true,
+      "min": null,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "https://example.com/mug-white-1.jpg"
+    },
+    {
+      "id": "FD05",
+      "noun": "Piece",
+      "label": "Category",
+      "meaning": "Which kind of ceramics the piece is",
+      "type": "singleChoice",
+      "required": true,
+      "min": null,
+      "max": null,
+      "options": [
+        "Mugs",
+        "Bowls",
+        "Planters",
+        "Vases"
+      ],
+      "optionsFrom": "",
+      "example": "Mugs"
+    },
+    {
+      "id": "FD06",
+      "noun": "Piece",
+      "label": "Glaze",
+      "meaning": "The glaze colour and finish of a variant",
+      "type": "text",
+      "required": true,
+      "min": null,
+      "max": 80,
+      "options": [],
+      "optionsFrom": "",
+      "example": "Matte White"
+    },
+    {
+      "id": "FD07",
+      "noun": "Piece",
+      "label": "Size",
+      "meaning": "The size option of a variant",
+      "type": "text",
+      "required": true,
+      "min": null,
+      "max": 80,
+      "options": [],
+      "optionsFrom": "",
+      "example": "300 ml"
+    },
+    {
+      "id": "FD08",
+      "noun": "Piece",
+      "label": "Variant stock quantity",
+      "meaning": "How many pieces are left for one glaze-and-size variant",
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "12"
+    },
+    {
+      "id": "FD09",
+      "noun": "Order",
+      "label": "Quantity",
+      "meaning": "How many of the chosen glaze-and-size variant the buyer wants",
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "2"
+    },
+    {
+      "id": "FD10",
+      "noun": "Order",
+      "label": "Buyer name",
+      "meaning": "Who placed the order and who picks up or receives it",
+      "type": "text",
+      "required": true,
+      "min": null,
+      "max": 120,
+      "options": [],
+      "optionsFrom": "",
+      "example": "Priya Sharma"
+    },
+    {
+      "id": "FD11",
+      "noun": "Order",
+      "label": "Phone number",
+      "meaning": "How the studio reaches the buyer and how the buyer looks the order up again",
+      "type": "phone",
+      "required": true,
+      "min": null,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "9829012345"
+    },
+    {
+      "id": "FD12",
+      "noun": "Order",
+      "label": "Fulfilment choice",
+      "meaning": "Whether the buyer picks up at the Jaipur studio or gets a courier",
+      "type": "singleChoice",
+      "required": true,
+      "min": null,
+      "max": null,
+      "options": [
+        "Studio pickup",
+        "Courier delivery"
+      ],
+      "optionsFrom": "",
+      "example": "Courier delivery"
+    },
+    {
+      "id": "FD13",
+      "noun": "Order",
+      "label": "Delivery address",
+      "meaning": "Street address where the courier should deliver, required only when fulfilment choice is Courier delivery and not asked for studio pickup",
+      "type": "longText",
+      "required": false,
+      "min": null,
+      "max": 500,
+      "options": [],
+      "optionsFrom": "",
+      "example": "14 Rose Lane, C-Scheme"
+    },
+    {
+      "id": "FD14",
+      "noun": "Order",
+      "label": "City",
+      "meaning": "City for courier delivery, required only when fulfilment choice is Courier delivery and not asked for studio pickup",
+      "type": "text",
+      "required": false,
+      "min": null,
+      "max": 120,
+      "options": [],
+      "optionsFrom": "",
+      "example": "Jaipur"
+    },
+    {
+      "id": "FD15",
+      "noun": "Order",
+      "label": "PIN code",
+      "meaning": "Postal code for courier delivery, required only when fulfilment choice is Courier delivery and not asked for studio pickup",
+      "type": "text",
+      "required": false,
+      "min": 6,
+      "max": 6,
+      "options": [],
+      "optionsFrom": "",
+      "example": "302001"
+    },
+    {
+      "id": "FD17",
+      "noun": "DiscountCode",
+      "label": "Discount code",
+      "meaning": "The promotional text buyers type at checkout to get money off",
+      "type": "text",
+      "required": false,
+      "min": null,
+      "max": 30,
+      "options": [],
+      "optionsFrom": "",
+      "example": "WEEKEND10"
+    },
+    {
+      "id": "FD18",
+      "noun": "DiscountCode",
+      "label": "Discount type",
+      "meaning": "Whether the code takes a percent or a fixed rupee amount off the subtotal",
+      "type": "singleChoice",
+      "required": true,
+      "min": null,
+      "max": null,
+      "options": [
+        "Percentage",
+        "Fixed amount"
+      ],
+      "optionsFrom": "",
+      "example": "Percentage"
+    },
+    {
+      "id": "FD19",
+      "noun": "DiscountCode",
+      "label": "Discount value",
+      "meaning": "How much is taken off: percent when type is Percentage, rupees when type is Fixed amount",
+      "type": "decimal",
+      "required": true,
+      "min": 1,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "10"
+    },
+    {
+      "id": "FD20",
+      "noun": "DiscountCode",
+      "label": "Expiry date",
+      "meaning": "Last date the code can be used",
+      "type": "date",
+      "required": true,
+      "min": null,
+      "max": null,
+      "options": [],
+      "optionsFrom": "",
+      "example": "2026-11-08"
+    },
+    {
+      "id": "FD22",
+      "noun": "",
+      "label": "Email",
+      "meaning": "How the shop owner signs in",
+      "type": "email",
+      "required": true,
+      "min": null,
+      "max": 254,
+      "options": [],
+      "optionsFrom": "",
+      "example": "studio@example.com"
+    },
+    {
+      "id": "FD23",
+      "noun": "",
+      "label": "Password",
+      "meaning": "The secret that protects the owner's shop",
+      "type": "password",
+      "required": true,
+      "min": 8,
+      "max": 128,
+      "options": [],
+      "optionsFrom": "",
+      "example": "correct-horse-battery"
+    },
+    {
+      "id": "FD24",
+      "noun": "Order",
+      "label": "Order reference",
+      "meaning": "The reference shown at confirmation that identifies the order together with the phone number",
+      "type": "text",
+      "required": true,
+      "min": null,
+      "max": 30,
+      "options": [],
+      "optionsFrom": "",
+      "example": "JSC-1024"
+    },
+    {
+      "id": "FD25",
+      "noun": "",
+      "label": "Search pieces",
+      "meaning": "Words to find pieces by name or glaze",
+      "type": "text",
+      "required": false,
+      "min": null,
+      "max": 100,
+      "options": [],
+      "optionsFrom": "",
+      "example": "mug"
+    },
+    {
+      "id": "FD26",
+      "noun": "",
+      "label": "Order status filter",
+      "meaning": "Which fulfilment and payment states to show in the owner's order list",
+      "type": "singleChoice",
+      "required": false,
+      "min": null,
+      "max": null,
+      "options": [
+        "All",
+        "New",
+        "Packed",
+        "Shipped",
+        "Picked Up",
+        "Cancelled",
+        "Unpaid",
+        "Paid"
+      ],
+      "optionsFrom": "",
+      "example": "New"
+    }
+  ],
+  "forms": [
+    {
+      "id": "FM01",
+      "name": "Piece form",
+      "fields": [
+        "FD01",
+        "FD02",
+        "FD03",
+        "FD04",
+        "FD05",
+        "FD06",
+        "FD07",
+        "FD08"
+      ]
+    },
+    {
+      "id": "FM02",
+      "name": "Checkout form - delivery address, city and PIN code required only for Courier delivery",
+      "fields": [
+        "FD10",
+        "FD11",
+        "FD12",
+        "FD13",
+        "FD14",
+        "FD15",
+        "FD17"
+      ]
+    },
+    {
+      "id": "FM03",
+      "name": "Discount code form",
+      "fields": [
+        "FD17",
+        "FD18",
+        "FD19",
+        "FD20"
+      ]
+    },
+    {
+      "id": "FM04",
+      "name": "Order lookup form",
+      "fields": [
+        "FD24",
+        "FD11"
+      ]
+    },
+    {
+      "id": "FM05",
+      "name": "Owner auth form",
+      "fields": [
+        "FD22",
+        "FD23"
+      ]
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A10",
+      "text": "The cart is kept in the buyer's browser as a guest cart and is not a stored Order until checkout; changing quantities or removing lines only changes the cart.",
+      "kind": "data",
+      "affects": []
+    },
+    {
+      "id": "A11",
+      "text": "Removing a Piece never deletes existing Orders and Orders keep their item snapshot (piece name, glaze, size, price at order time); a Piece in a New or Packed Order cannot be removed.",
+      "kind": "behavior",
+      "affects": []
+    },
+    {
+      "id": "A12",
+      "text": "There is a single shop owner account; buyers never sign in and the owner never places Orders as a buyer.",
+      "kind": "permission",
+      "affects": []
+    }
+  ],
+  "questions": []
+}

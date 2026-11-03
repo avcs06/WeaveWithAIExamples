@@ -1,0 +1,116 @@
+[
+  {
+    "id": "S01",
+    "title": "Jaipur Studio Ceramics",
+    "route": "/",
+    "folder": "web/app/(routes)/(marketing)"
+  },
+  {
+    "id": "S02",
+    "title": "Browse pieces",
+    "route": "/pieces",
+    "folder": "web/app/(routes)/(marketing)/pieces"
+  },
+  {
+    "id": "S03",
+    "title": "The piece's name",
+    "route": "/pieces/[pieceId]",
+    "folder": "web/app/(routes)/(marketing)/pieces/[pieceId]"
+  },
+  {
+    "id": "S04",
+    "title": "Your cart",
+    "route": "/cart",
+    "folder": "web/app/(routes)/(marketing)/cart"
+  },
+  {
+    "id": "S05",
+    "title": "Checkout",
+    "route": "/checkout",
+    "folder": "web/app/(routes)/(marketing)/checkout"
+  },
+  {
+    "id": "S06",
+    "title": "The order's reference, as in \"Order JSC-1024\"",
+    "route": "/order-confirmation/[orderId]",
+    "folder": "web/app/(routes)/(marketing)/order-confirmation/[orderId]"
+  },
+  {
+    "id": "S07",
+    "title": "Find your order",
+    "route": "/order-lookup",
+    "folder": "web/app/(routes)/(marketing)/order-lookup"
+  },
+  {
+    "id": "S08",
+    "title": "Sign in",
+    "route": "/sign-in",
+    "folder": "web/app/(routes)/(marketing)/sign-in"
+  },
+  {
+    "id": "S09",
+    "title": "Create owner account",
+    "route": "/sign-up",
+    "folder": "web/app/(routes)/(marketing)/sign-up"
+  },
+  {
+    "id": "S10",
+    "title": "Dashboard",
+    "route": "/dashboard",
+    "folder": "web/app/(routes)/(app)/dashboard"
+  },
+  {
+    "id": "S11",
+    "title": "Orders",
+    "route": "/orders",
+    "folder": "web/app/(routes)/(app)/orders"
+  },
+  {
+    "id": "S12",
+    "title": "The order's reference, as in \"Order JSC-1024\"",
+    "route": "/orders/[orderId]",
+    "folder": "web/app/(routes)/(app)/orders/[orderId]"
+  },
+  {
+    "id": "S13",
+    "title": "Pieces",
+    "route": "/studio/pieces",
+    "folder": "web/app/(routes)/(app)/studio/pieces"
+  },
+  {
+    "id": "S14",
+    "title": "The piece's name",
+    "route": "/studio/pieces/[pieceId]",
+    "folder": "web/app/(routes)/(app)/studio/pieces/[pieceId]"
+  },
+  {
+    "id": "S15",
+    "title": "Add a piece",
+    "route": "/studio/pieces/new",
+    "folder": "web/app/(routes)/(app)/studio/pieces/new"
+  },
+  {
+    "id": "S16",
+    "title": "Edit the piece's name, as in \"Edit Speckled Stoneware Mug\"",
+    "route": "/studio/pieces/[pieceId]/edit",
+    "folder": "web/app/(routes)/(app)/studio/pieces/[pieceId]/edit"
+  },
+  {
+    "id": "S17",
+    "title": "Discount codes",
+    "route": "/discount-codes",
+    "folder": "web/app/(routes)/(app)/discount-codes"
+  },
+  {
+    "id": "S18",
+    "title": "Create discount code",
+    "route": "/discount-codes/new",
+    "folder": "web/app/(routes)/(app)/discount-codes/new"
+  },
+  {
+    "id": "S19",
+    "title": "Account",
+    "route": "/account",
+    "folder": "web/app/(routes)/(app)/account"
+  }
+]

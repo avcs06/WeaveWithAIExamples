@@ -1,0 +1,896 @@
+[
+  {
+    "path": "colors.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "tokens.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/styles/src/fonts.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/.storybook/preview-head.html",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/PageLayout/layouts.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Switch/Switch.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Radio/Radio.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/FormControl/FormControl.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Chip/Chip.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Checkbox/Checkbox.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Button/Button.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Root/UIRoot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/PageLogo/PageLogo.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/entities/auth/index.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebarHeader/AppSidebarHeader.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebar/AppSidebar.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/(app)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeaderLeftSlot/MarketingHeaderLeftSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeader/MarketingHeader.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/(marketing)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderLeftSlot/AppHeaderLeftSlot.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderLeftSlot/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeader/AppHeader.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeader/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderRightSlot/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppFooter/AppFooter.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppFooter/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/entities/enums/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/piece/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/piece/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/piece/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/piece/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/piece/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/order/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/order/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/order/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/order/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/order/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/discountCode/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/discountCode/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/discountCode/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/discountCode/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/discountCode/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/Cart/CartLink.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/Cart/cartStore.ts",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/Cart/index.ts",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebar/AppSidebar.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingHeader/MarketingHeader.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "D",
+    "path": "web/app/blocks/Cart/CartLink.tsx",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "D",
+    "path": "web/app/blocks/Cart/cartStore.ts",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "D",
+    "path": "web/app/blocks/Cart/index.ts",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.css.ts",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.tsx",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/CartLink/CartLink.tsx",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/CartLink/index.ts",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/entities/cart/index.ts",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboard/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/discount-codes/new/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/discount-codes/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/orders/[orderId]/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/orders/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/components/RemovePieceDialog.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/edit/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/studio/pieces/new/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/studio/pieces/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/cart/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/checkout/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/order-confirmation/[orderId]/components/LinePhoto.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/order-confirmation/[orderId]/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/order-lookup/components/LinePhoto.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/order-lookup/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/pieces/[pieceId]/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/pieces/page.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/OrderDetails/OrderDetails.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/OrderDetails/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/PieceCard/PieceCard.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/PieceCard/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/PieceForm/PieceForm.tsx",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/PieceForm/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/cartTotals/cartTotals.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/cartTotals/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/money/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/money/money.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/shopInfo/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/shopInfo/shopInfo.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/stock/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/stock/stock.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/cart/index.ts",
+    "origin": "model",
+    "session": "pages-resume"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/dashboard/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/discount-codes/new/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/discount-codes/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/orders/[orderId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/orders/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/studio/pieces/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/checkout/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/order-confirmation/[orderId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "D",
+    "path": "web/app/(routes)/(marketing)/order-lookup/components/LinePhoto.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/order-lookup/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/pieces/[pieceId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/blocks/LinePhoto/LinePhoto.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/LinePhoto/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/OrderDetails/OrderDetails.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/cartTotals/cartTotals.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/cartTotals/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/orderStatus/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/orderStatus/orderStatus.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/auth/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/cart/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": ".weave/02-contract/entities.md",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/dashboard/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/discount-codes/new/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/discount-codes/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/orders/[orderId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/orders/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/components/RemovePieceDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/edit/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/studio/pieces/[pieceId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/studio/pieces/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/cart/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/checkout/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/order-confirmation/[orderId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/order-lookup/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/pieces/[pieceId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/pieces/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/LinePhoto/LinePhoto.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/PieceCard/PieceCard.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/PieceCard/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/PieceForm/PieceForm.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/PieceForm/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/LoadingView/LoadingView.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/LoadingView/LoadingView.types.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/LoadingView/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  }
+]

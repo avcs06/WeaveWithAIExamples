@@ -1,0 +1,1 @@
+export { STUDIO_PICKUP_ADDRESS, STUDIO_PICKUP_INSTRUCTIONS } from './shopInfo';
