@@ -10,7 +10,7 @@
 | Screens measured | 18 |
 | Issues raised | 37 |
 | Issues fixed | 33 |
-| AI discussion threads | 0 |
+| AI discussion threads<br><sub>Issues an agent kept<br>open to discuss</sub> | 0 |
 | Accessibility violations (axe, WCAG 2.2 AA) | 0 |
 | Contrast failures | 0 |
 | Controls without a name | 0 |

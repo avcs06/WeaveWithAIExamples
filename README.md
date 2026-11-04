@@ -13,7 +13,7 @@ Three apps that [Weave](https://github.com/avcs06/WeaveWithAI) generated, each f
 | Screens measured | 18 | 14 | 4 |
 | Issues raised | 37 | 53 | 129 |
 | Issues fixed | 33 | 41 | 101 |
-| AI discussion threads | 0 | 1 | 3 |
+| AI discussion threads<br><sub>Issues an agent kept<br>open to discuss</sub> | 0 | 1 | 3 |
 | Accessibility violations (axe, WCAG 2.2 AA) | 0 | 0 | 0 |
 | Contrast failures | 0 | 0 | 0 |
 | Controls without a name | 0 | 0 | 0 |
