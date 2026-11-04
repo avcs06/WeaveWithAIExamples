@@ -1,0 +1,82 @@
+{
+  "questions": [],
+  "known": [
+    {
+      "rule": "CONTRACT-011",
+      "severity": "mandatory",
+      "message": "F09.S01 creates Widget, but no create operation on Widget serves it.",
+      "at": "F09.S01",
+      "stage": "contract"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Home flow adds search/filter by name (FD14) that scope inScope does not include and that new assumption A17 says MVP has no search/filter. Fix: Remove Search (FD14) from F05 description and fields, or add search to inScope and update A17 to allow filtering; keep catalog consistent. (addressed in the final fix, not re-reviewed)",
+      "at": "F05",
+      "stage": "flows-catalog"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Flow name promises title and settings but description only edits title and explicitly defers all type-specific settings to F17-F19. Fix: Rename F12 to title-only or expand its description to edit the type-specific settings it claims to cover with correct field ids. (addressed in the final fix, not re-reviewed)",
+      "at": "F12",
+      "stage": "flows-catalog"
+    },
+    {
+      "rule": "FLOW-016",
+      "severity": "mandatory",
+      "message": "F05.A05 branches from \"F05.A04.S01\", which is not a step of F05; use one of its step ids.",
+      "at": "F05.A05",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Home list is described as having a Search field (FD14) but no step references FD14, so the field is never asked for and will be flagged as unused. Fix: Add FD14 to F05.S01 fields and reference FD14 in F05.A02.S01 where the user types to filter dashboards by name; keep filtering as type-as-you-go with no submit. (addressed in the final fix, not re-reviewed)",
+      "at": "F05.S01",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Empty-state alternative F05.A01.S02 creates a new Dashboard inside an alternative, but alternatives must not change records and creation belongs to F07. Fix: Keep F05.A01 as an empty-state message that invites creating the first dashboard and offers the Create action that starts F07; remove the create effect and navigation from the alternative. (addressed in the final fix, not re-reviewed)",
+      "at": "F05.A01",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "notFound alternative branches from the list step F05.S01 instead of from the open-dashboard action, so it cannot trigger when opening a dashboard that was deleted. Fix: Branch notFound from F05.A04.S01 (the step that opens a dashboard) with condition 'The dashboard was deleted in the meantime' and response that says it is gone and shows the home list again. (addressed in the final fix, not re-reviewed)",
+      "at": "F05.A05",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Alternative for choosing sign-in instead branches from F01.S02 which is already the choose-to-sign-up step, instead of from viewing the landing page where the choice is made. Fix: Branch F01.A01 from F01.S01 so the visitor viewing the landing page can choose either sign-up (F01.S02) or sign-in (alternative) as two options from the same step. (addressed in the final fix, not re-reviewed)",
+      "at": "F01.A01",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Step shows and uses Search field FD14 but fields is empty; filtering step F05.A02.S01 also omits FD14. Fix: Add FD14 to F05.S01 fields/form or keep list display without input, and add fields: [\"FD14\"] to F05.A02.S01 where user types to filter, so fields match words. (addressed in the final fix, not re-reviewed)",
+      "at": "F05.S01",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "notFound alternative branches from list step F05.S01 instead of the step that opens a single Dashboard. Fix: Move notFound to branch from F05.A04.S01 (the open-dashboard step) with condition dashboard was deleted in the meantime and website says it is gone and shows home list again. (addressed in the final fix, not re-reviewed)",
+      "at": "F05.A05",
+      "stage": "flows-expand-1"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Home flow creates a Dashboard in an alternative, doing F07's job and changing records inside an alternative which must have no effects. Fix: Keep F05 empty alternative to only show empty-state message and invite to create; remove creation/open-editor from F05 and let F07 Create a new dashboard handle creation. Alternative should resume at F05.S01 or end without creating. (addressed in the final fix, not re-reviewed)",
+      "at": "F05.A01.S02",
+      "stage": "flows-expand-1"
+    }
+  ]
+}

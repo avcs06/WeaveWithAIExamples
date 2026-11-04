@@ -1,0 +1,212 @@
+[
+  {
+    "id": "T01",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T02",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T03",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T04",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T05",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T06",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T07",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T08",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T09",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T10",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T11",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T12",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T13",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T14",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T15",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T16",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T17",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T18",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T19",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T20",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T21",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T22",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T23",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T24",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T25",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T26",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T27",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T28",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T29",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T30",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T31",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T32",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T33",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T34",
+    "status": "closed",
+    "reason": "Injected get_recipe log entries and kept usage per recipe."
+  },
+  {
+    "id": "T47",
+    "status": "closed",
+    "reason": "Added goneMessage state showing This dashboard is no longer available on update/delete error; AppHeader hides Create when list empty and not loading."
+  },
+  {
+    "id": "T48",
+    "status": "closed",
+    "reason": "Added widgetGoneIds tracking via useEffect comparing previous and current widget ids, showing This widget is gone. status."
+  },
+  {
+    "id": "T62",
+    "status": "closed",
+    "reason": "Removed useWidgetStore import; DeleteDashboardDialog now calls deleteWidgetsByDashboard entity operation."
+  },
+  {
+    "id": "T63",
+    "status": "closed",
+    "reason": "Split page into DashboardHeader, NoteWidget, CounterWidget, ChecklistWidget, LinkListWidget and dialogs."
+  },
+  {
+    "id": "T64",
+    "status": "closed",
+    "reason": "Fixed import order to shared->entities->components->blocks->routes via lint --fix."
+  },
+  {
+    "id": "T65",
+    "status": "closed",
+    "reason": "Duplicate now tracks created widget ids and rolls back dashboard and widgets on failure."
+  },
+  {
+    "id": "T66",
+    "status": "closed",
+    "reason": "Create and duplicate now rollback partial records on failure with cleanup."
+  },
+  {
+    "id": "T67",
+    "status": "closed",
+    "reason": "Added wTitleSaving pending guard with loadingWithReason on widget title save."
+  }
+]

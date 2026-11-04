@@ -1,0 +1,93 @@
+{
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "Should deleted dashboards be recoverable via trash/undo?",
+      "answer": "No, permanent delete with confirmation is sufficient for MVP",
+      "from": "scope"
+    },
+    {
+      "id": "Q02",
+      "question": "Should there be a hard limit on number of dashboards per user or widgets per dashboard?",
+      "answer": "No hard limit enforced in UI for MVP; assume soft guard of 50 dashboards and 20 widgets per dashboard",
+      "from": "scope"
+    },
+    {
+      "id": "Q03",
+      "question": "Should checklist items support editing and deleting after creation, or only add and tick?",
+      "answer": "Allow add, tick/untick, edit text and remove items for a complete checklist loop",
+      "from": "scope"
+    },
+    {
+      "id": "Q04",
+      "question": "Should counter support custom step size or min/max constraints?",
+      "answer": "No, fixed step of 1 with no min/max for MVP",
+      "from": "scope"
+    }
+  ],
+  "known": [
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "listWidgets filters by Widget.dashboard but uses FD03 (Dashboard Name) as the filter field, which does not identify a dashboard Fix: Remove the input from listWidgets (or use no inputs and resolve dashboard from route context) so the list is not filtered by a name field; FD03 must not be used to filter by ref dashboard (addressed in the final fix, not re-reviewed)",
+      "at": "operations.listWidgets.inputs",
+      "stage": "contract"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "createWidget lists F09.S01 (Duplicate dashboard) but duplicate creates widgets by copying with no type/title/size supplied, so the required inputs type/title/size do not exist at that step Fix: Remove F09.S01 from createWidget.flowSteps; let duplicateDashboard alone serve the Widget create effect of F09.S01 or add a dedicated duplicateWidgets operation with no user inputs (addressed in the final fix, not re-reviewed)",
+      "at": "operations.createWidget.flowSteps",
+      "stage": "contract"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Input maps FD03 (Dashboard Name) to entity field dashboard; a Name field cannot filter by dashboard ref. Fix: Remove the input or replace it with a dashboard-scoped list with no inputs (dashboard is taken from route context). Do not use FD03 as dashboard. (addressed in the final fix, not re-reviewed)",
+      "at": "operations.listWidgets.inputs[0]",
+      "stage": "contract"
+    },
+    {
+      "rule": "THEME-001",
+      "severity": "mandatory",
+      "message": "page dark: pageFgMuted on the background's #004346 is 4.35:1; text needs 4.5:1.",
+      "at": "page.dark.pageFgMuted",
+      "stage": "design-theme"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link default is `plain` app-wide, which hides every link and violates the component defaults rule. Fix: Change Link default to not use `plain` (use the default underlined look, e.g. omit `look` or set it to `none`/default) so links remain recognizable. (addressed in the final fix, not re-reviewed)",
+      "at": "defaults.Link.look",
+      "stage": "design-theme"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link defaults to `plain` which hides every link app-wide. Fix: Remove the plain look from Link defaults and use the default none look (e.g., omit `look` or set to none) so links are visibly distinct. (addressed in the final fix, not re-reviewed)",
+      "at": "defaults.Link.look",
+      "stage": "design-theme"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Assumption A17 says no search/filter in MVP but F05 implements Search (FD14) and describes filtering dashboards by name. Fix: Make them consistent: either remove Search FD14 from F05 and keep A17, or update A17 to state home list includes search by name (FD14) to satisfy the editor must-have browse/search expectation and P08. (addressed in the final fix, not re-reviewed)",
+      "at": "A17 vs F05",
+      "stage": "flows-catalog"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Checklist checked state is a boolean but defined as singleChoice with options checked/unchecked instead of boolean type. Fix: Change FD10 type to boolean (or keep singleChoice but justify) and ensure example and options match the type. (addressed in the final fix, not re-reviewed)",
+      "at": "FD10",
+      "stage": "flows-catalog"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Form FM06 Checklist item form is defined but no flow description references it by id. Fix: Reference FM06 in F18 description where checklist item text is entered, or remove the unused form. (addressed in the final fix, not re-reviewed)",
+      "at": "FM06",
+      "stage": "flows-catalog"
+    }
+  ]
+}

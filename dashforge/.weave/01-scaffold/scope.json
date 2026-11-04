@@ -1,0 +1,229 @@
+{
+  "app": {
+    "name": "DashForge",
+    "summary": "For individuals who want a single personal space for notes, numbers, tasks and links. They struggle to keep scattered information visible and actionable in one place. DashForge lets them create dashboards, add and arrange note, counter, checklist and link-list widgets in a glowing console editor, with every change saved automatically.",
+    "audience": "Individuals building personal dashboards for themselves"
+  },
+  "domains": [
+    "editor"
+  ],
+  "roles": [
+    {
+      "id": "user",
+      "name": "User",
+      "description": "Owner of personal dashboards who creates and edits dashboards and widgets",
+      "signedIn": true
+    }
+  ],
+  "vocabulary": [
+    {
+      "noun": "Dashboard",
+      "description": "A personal dashboard that contains an ordered set of widgets",
+      "belongsTo": "user"
+    },
+    {
+      "noun": "Widget",
+      "description": "A block inside a dashboard of type note, counter, checklist or linkList with title, position, size and type-specific settings",
+      "belongsTo": "user"
+    }
+  ],
+  "inScope": [
+    "Public landing page that explains personal dashboards, previews the dark glowing console style with neon controls and grid, and has a clear Create / Get Started call to action to sign up or sign in",
+    "Account sign up with email and password, sign in, sign out and persistent session so dashboards are private to their owner",
+    "Create a new dashboard with a default name and immediately land in the editor; editor saves all changes automatically with visible Saving/Saved status",
+    "List all of my dashboards showing dashboard name and when each was last edited, sorted by most recently edited first, with empty state that invites creating the first dashboard",
+    "Open any dashboard from the list in the editor, rename the dashboard, duplicate it including all widgets and their content, and delete it with confirmation",
+    "Add widgets to a dashboard: note widget (plain text), counter widget (number with label and increase/decrease controls), checklist widget (items that can be added and ticked/unticked), link list widget (titles and web addresses)",
+    "Configure any widget: edit its title, edit its type-specific settings, change its position relative to other widgets, resize it between small, medium and large, and remove it from the dashboard",
+    "Interact with widget content in the editor: type and edit note text, increase or decrease counter value by 1, add/tick/untick/edit/remove checklist items, add/edit/remove links and open links in a new tab",
+    "Automatic saving of dashboard name, widget order, size, titles, settings and content; last edited timestamp updates on any change and survives a page refresh",
+    "Business rules: dashboard name is required; widget title is optional and defaults to widget type; widget size defaults to medium and is one of small/medium/large; counter starts at 0 and changes by 1 and can go negative; checklist items have text and checked state; links require title and valid http/https URL; deleting a dashboard or widget permanently removes it and its contents; position is relative order rendered by design"
+  ],
+  "outOfScope": [
+    {
+      "item": "Public sharing, shared links or collaboration on dashboards",
+      "reason": "Idea describes personal dashboards only with a private list per user; no sharing is mentioned",
+      "placeholder": "All dashboards remain private to their owner; no share links, invites or public views"
+    },
+    {
+      "item": "Custom widget types beyond the four listed and widget marketplace/templates",
+      "reason": "MVP focuses on one core loop with four widget types done well",
+      "placeholder": "Only note, counter, checklist and link list widgets are available; users start from a blank dashboard"
+    },
+    {
+      "item": "Free-form canvas positioning with pixel coordinates",
+      "reason": "Idea says position relative to other widgets and where widgets sit on screen is up to the design",
+      "placeholder": "Widgets are ordered in a single ordered list/grid; position is changed via move up/down or drag to reorder within that order"
+    },
+    {
+      "item": "Import/export, teams/workspaces and native mobile apps",
+      "reason": "Not mentioned in idea and not needed for core personal-dashboard loop",
+      "placeholder": "No import/export, no teams, web only"
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A01",
+      "text": "Dashboard name is required, defaults to 'Untitled Dashboard' plus number (e.g., Untitled Dashboard 2) on create, max 80 characters, uniqueness not required",
+      "kind": "data",
+      "affects": [
+        "Dashboard name",
+        "Duplicate naming"
+      ]
+    },
+    {
+      "id": "A02",
+      "text": "New dashboard starts empty with no widgets",
+      "kind": "behavior",
+      "affects": [
+        "Create dashboard"
+      ]
+    },
+    {
+      "id": "A03",
+      "text": "Duplicate creates a copy named '{original name} Copy' with all widgets, their order, sizes, titles and content copied exactly, placed at top of list",
+      "kind": "behavior",
+      "affects": [
+        "Duplicate dashboard"
+      ]
+    },
+    {
+      "id": "A04",
+      "text": "Delete dashboard requires confirmation and permanently removes the dashboard and all its widgets with no trash or undo in MVP",
+      "kind": "behavior",
+      "affects": [
+        "Delete dashboard"
+      ]
+    },
+    {
+      "id": "A05",
+      "text": "lastEditedAt updates on any dashboard or widget change, list is sorted by lastEditedAt descending, shown as relative time (just now, 2m ago) with full timestamp on hover",
+      "kind": "behavior",
+      "affects": [
+        "Dashboard list"
+      ]
+    },
+    {
+      "id": "A06",
+      "text": "Auto-save triggers on every change with ~500ms debounce, shows Saving/Saved indicator; refresh restores last saved state; no manual save button",
+      "kind": "behavior",
+      "affects": [
+        "Editor",
+        "Auto-save"
+      ]
+    },
+    {
+      "id": "A07",
+      "text": "Widget title is optional, defaults to capitalized type name (Note, Counter, Checklist, Link List), max 60 characters, can be renamed at any time",
+      "kind": "data",
+      "affects": [
+        "Widget configuration"
+      ]
+    },
+    {
+      "id": "A08",
+      "text": "Note widget stores plain text only with no formatting, max 5000 characters",
+      "kind": "data",
+      "affects": [
+        "Note widget"
+      ]
+    },
+    {
+      "id": "A09",
+      "text": "Counter widget has optional label (max 40 chars) and integer value starting at 0, increased/decreased by 1 per click, can go negative, no min/max in MVP",
+      "kind": "behavior",
+      "affects": [
+        "Counter widget"
+      ]
+    },
+    {
+      "id": "A10",
+      "text": "Checklist widget stores ordered items each with text (max 120 chars) and checked boolean; users can add, tick/untick, edit text and remove items",
+      "kind": "data",
+      "affects": [
+        "Checklist widget"
+      ]
+    },
+    {
+      "id": "A11",
+      "text": "Link list widget stores ordered links each with title (max 80 chars, required) and URL (required, must be valid http:// or https://); clicking opens in new tab",
+      "kind": "data",
+      "affects": [
+        "Link list widget"
+      ]
+    },
+    {
+      "id": "A12",
+      "text": "Widget position is relative order (integer order index); changing position reorders the list via up/down controls or drag handle; design renders order in a responsive grid",
+      "kind": "behavior",
+      "affects": [
+        "Widget position"
+      ]
+    },
+    {
+      "id": "A13",
+      "text": "Widget size is one of small, medium, large, defaults to medium on add, affects visual footprint only",
+      "kind": "presentation",
+      "affects": [
+        "Widget resize"
+      ]
+    },
+    {
+      "id": "A14",
+      "text": "All dashboards and widgets are private to the signed-in user who created them; no sharing, no teams, no public views",
+      "kind": "permission",
+      "affects": [
+        "Ownership",
+        "Privacy"
+      ]
+    },
+    {
+      "id": "A15",
+      "text": "Authentication is email and password only for MVP; session persists until sign out",
+      "kind": "scope",
+      "affects": [
+        "Sign up",
+        "Sign in"
+      ]
+    },
+    {
+      "id": "A16",
+      "text": "Visual style is a single dark, screen-like glowing console with neon edges/numbers, monospace figures and faint grid behind widgets; no theme switcher in MVP but all widgets remain easy to read",
+      "kind": "presentation",
+      "affects": [
+        "Theming",
+        "Styling"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "Should deleted dashboards be recoverable via trash/undo?",
+      "whyItMatters": "Changes delete from permanent to soft-delete and requires trash UI and retention rules",
+      "defaultAnswer": "No, permanent delete with confirmation is sufficient for MVP",
+      "blocking": false
+    },
+    {
+      "id": "Q02",
+      "question": "Should there be a hard limit on number of dashboards per user or widgets per dashboard?",
+      "whyItMatters": "Affects limits, validation messages and performance safeguards",
+      "defaultAnswer": "No hard limit enforced in UI for MVP; assume soft guard of 50 dashboards and 20 widgets per dashboard",
+      "blocking": false
+    },
+    {
+      "id": "Q03",
+      "question": "Should checklist items support editing and deleting after creation, or only add and tick?",
+      "whyItMatters": "Idea says add and tick off, silent on edit/delete which changes widget interactions",
+      "defaultAnswer": "Allow add, tick/untick, edit text and remove items for a complete checklist loop",
+      "blocking": false
+    },
+    {
+      "id": "Q04",
+      "question": "Should counter support custom step size or min/max constraints?",
+      "whyItMatters": "Changes counter settings and validation beyond simple increase/decrease",
+      "defaultAnswer": "No, fixed step of 1 with no min/max for MVP",
+      "blocking": false
+    }
+  ]
+}

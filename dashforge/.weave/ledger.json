@@ -1,0 +1,482 @@
+[
+  {
+    "path": "colors.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "tokens.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/styles/src/fonts.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/.storybook/preview-head.html",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/PageLayout/layouts.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Link/Link.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Card/Card.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Button/Button.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Root/UIRoot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/PageLogo/PageLogo.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/entities/auth/index.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebarHeader/AppSidebarHeader.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebar/AppSidebar.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/(app)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeaderLeftSlot/MarketingHeaderLeftSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeader/MarketingHeader.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/(marketing)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderLeftSlot/AppHeaderLeftSlot.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderLeftSlot/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeader/AppHeader.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeader/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppFooter/AppFooter.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppFooter/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/entities/enums/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/dashboard/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/dashboard/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/dashboard/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/dashboard/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/dashboard/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/widget/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/widget/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/widget/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/widget/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/widget/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebar/AppSidebar.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebarHeader/AppSidebarHeader.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/PageLogo/PageLogo.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/PageLogo/PageLogo.types.ts",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/UserMenu/UserMenu.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/auth/index.ts",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "A",
+    "path": ".weave/replies.json",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "frames-fix-1"
+  },
+  {
+    "status": "A",
+    "path": ".weave/replies.json",
+    "origin": "model",
+    "session": "frames-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "origin": "model",
+    "session": "frames-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboards/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/page.css.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/DeleteDashboardDialog/index.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": ".weave/replies.json",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/components/ChecklistWidget.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/components/CounterWidget.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/components/LinkListWidget.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/components/NoteWidget.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/dashboards/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/auth/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": ".weave/replies.json",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/dashboards/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/DashboardHeader/DashboardHeader.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/DashboardHeader/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "A",
+    "path": "web/app/entities/widget/deleteByDashboard.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/widget/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  }
+]
