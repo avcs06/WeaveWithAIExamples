@@ -1,0 +1,85 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-marketing: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/weave-frame-app: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-app: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports and reads entity store directly (useDashboardStore from @app/entities/dashboard/store) instead of using entity layer hooks/functions. Fix: Remove import of useDashboardStore/store inner file. Read existing dashboards via the entity hook (e.g. useListDashboards) called unconditionally before any early return, and derive the unique 'Untitled Dashboard' name from its data.",
+          "at": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-marketing: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/weave-frame-app: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-app: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Footer repeats the same destination \"/\" on 6 links (DashForge, Resources, Docs, Support, Privacy, Terms), duplicating the logo destination and creating noise Fix: Keep one link to \"/\" (the logo). Give every other footer link a distinct href or remove it if the destination does not exist; do not list multiple plain links that all go to \"/\".",
+          "at": "FR01 MarketingFooter at web/app/components/MarketingFooter/MarketingFooter.tsx"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-marketing: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/weave-frame-app: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-app: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Footer repeats the same destination \"/\" on 6 links (DashForge, Resources, Docs, Support, Privacy, Terms), duplicating the logo destination and creating noise Fix: Keep one link to \"/\" (the logo). Give every other footer link a distinct href or remove it if the destination does not exist; do not list multiple plain links that all go to \"/\". (addressed in the final fix, not re-reviewed)",
+          "at": "FR01 MarketingFooter at web/app/components/MarketingFooter/MarketingFooter.tsx"
+        }
+      ]
+    }
+  ]
+}

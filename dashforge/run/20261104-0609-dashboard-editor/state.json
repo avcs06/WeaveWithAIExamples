@@ -1,0 +1,110 @@
+{
+  "id": "20261104-0609-dashboard-editor",
+  "idea": "fixtures/ideas/dashboard-editor.md",
+  "createdAt": "2026-11-04T00:39:21.305Z",
+  "stages": {
+    "flows-scope": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:40:14.771Z",
+      "rounds": 1,
+      "known": 0,
+      "version": 1,
+      "hash": "657ac613ddf2280da3a4796cf32dabe3a5f541d519da6148e7da35b0ab1648a1"
+    },
+    "flows-catalog": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:42:09.202Z",
+      "rounds": 3,
+      "known": 5,
+      "version": 1,
+      "hash": "44115ca0e2a7d1ffde1aab9650f0dfa5412e924501ccddaec62bcbbbbe9b502a"
+    },
+    "flows-expand": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:43:56.999Z",
+      "version": 1,
+      "hash": "232afe2a836cd5e78f4c879bf4a49906132cf240a7cbef60669c61716e3e4e8e",
+      "rounds": 6,
+      "known": 8,
+      "batches": 3
+    },
+    "flows-expand-1": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:43:44.973Z",
+      "rounds": 3,
+      "known": 8
+    },
+    "flows-expand-2": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:43:13.706Z",
+      "rounds": 2,
+      "known": 0
+    },
+    "flows-expand-3": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:42:55.728Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-assemble": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:43:56.997Z",
+      "rounds": 2,
+      "known": 0
+    },
+    "design-theme": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:45:56.347Z",
+      "rounds": 3,
+      "known": 3,
+      "version": 1,
+      "hash": "b6930843f4da7e1baf4f653950d256a4108380a0dd770bfb2a79e6b612d813ca"
+    },
+    "design-architect": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:51:00.891Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "25ff14d233562a4a0012b57c49218d4c7c6fa61bd78881916ccb02b09bd068ba"
+    },
+    "contract": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:52:34.465Z",
+      "rounds": 3,
+      "known": 4,
+      "version": 1,
+      "hash": "cd76aade8c1d42cda1f3c0552a81cab49728e90c78110781b7e7767e9c9fffbd"
+    },
+    "code-scaffold": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:53:50.081Z"
+    },
+    "code-contract": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:54:42.671Z",
+      "rounds": 1,
+      "known": 0,
+      "version": 1,
+      "hash": "52ffb3ddc4320fb761575ce9f8064347ae2592e0db2465d53a5b2ae8bfbd64fd"
+    },
+    "code-frames": {
+      "status": "done",
+      "updatedAt": "2026-11-04T01:02:27.928Z",
+      "rounds": 3,
+      "known": 1,
+      "batches": 1
+    },
+    "code-pages": {
+      "status": "done",
+      "updatedAt": "2026-11-04T01:37:31.420Z",
+      "rounds": 3,
+      "known": 8,
+      "batches": 1
+    },
+    "bench": {
+      "status": "done",
+      "updatedAt": "2026-11-04T08:23:36.305Z"
+    }
+  }
+}

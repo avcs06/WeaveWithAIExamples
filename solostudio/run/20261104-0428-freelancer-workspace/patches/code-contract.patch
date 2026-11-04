@@ -1,0 +1,1309 @@
+code-contract: ad908f2..38241d3
+
+ web/app/entities/availability/index.ts      |  2 +
+ web/app/entities/availability/operations.ts | 23 ++++++++++
+ web/app/entities/availability/seed.ts       | 46 +++++++++++++++++++
+ web/app/entities/availability/store.ts      | 13 ++++++
+ web/app/entities/availability/types.ts      | 13 ++++++
+ web/app/entities/booking/index.ts           |  2 +
+ web/app/entities/booking/operations.ts      | 45 +++++++++++++++++++
+ web/app/entities/booking/seed.ts            | 70 +++++++++++++++++++++++++++++
+ web/app/entities/booking/store.ts           | 13 ++++++
+ web/app/entities/booking/types.ts           | 14 ++++++
+ web/app/entities/client/index.ts            |  2 +
+ web/app/entities/client/operations.ts       | 45 +++++++++++++++++++
+ web/app/entities/client/seed.ts             | 54 ++++++++++++++++++++++
+ web/app/entities/client/store.ts            | 13 ++++++
+ web/app/entities/client/types.ts            | 15 +++++++
+ web/app/entities/enums/index.ts             | 35 +++++++++++++++
+ web/app/entities/note/index.ts              |  2 +
+ web/app/entities/note/operations.ts         | 63 ++++++++++++++++++++++++++
+ web/app/entities/note/seed.ts               | 48 ++++++++++++++++++++
+ web/app/entities/note/store.ts              | 13 ++++++
+ web/app/entities/note/types.ts              | 12 +++++
+ web/app/entities/project/index.ts           |  2 +
+ web/app/entities/project/operations.ts      | 45 +++++++++++++++++++
+ web/app/entities/project/seed.ts            | 49 ++++++++++++++++++++
+ web/app/entities/project/store.ts           | 13 ++++++
+ web/app/entities/project/types.ts           | 12 +++++
+ web/app/entities/sessionType/index.ts       |  2 +
+ web/app/entities/sessionType/operations.ts  | 40 +++++++++++++++++
+ web/app/entities/sessionType/seed.ts        | 40 +++++++++++++++++
+ web/app/entities/sessionType/store.ts       | 13 ++++++
+ web/app/entities/sessionType/types.ts       | 12 +++++
+ web/app/entities/slot/index.ts              |  2 +
+ web/app/entities/slot/operations.ts         | 28 ++++++++++++
+ web/app/entities/slot/seed.ts               | 46 +++++++++++++++++++
+ web/app/entities/slot/store.ts              | 13 ++++++
+ web/app/entities/slot/types.ts              | 10 +++++
+ web/app/entities/task/index.ts              |  2 +
+ web/app/entities/task/operations.ts         | 54 ++++++++++++++++++++++
+ web/app/entities/task/seed.ts               | 64 ++++++++++++++++++++++++++
+ web/app/entities/task/store.ts              | 13 ++++++
+ web/app/entities/task/types.ts              | 15 +++++++
+ 41 files changed, 1018 insertions(+)
+
+diff --git a/web/app/entities/availability/index.ts b/web/app/entities/availability/index.ts
+new file mode 100644
+index 0000000..7a975a6
+--- /dev/null
++++ b/web/app/entities/availability/index.ts
+@@ -0,0 +1,2 @@
++export type { Availability, AvailabilityInput } from './types';
++export { getAvailability, useGetAvailability, updateAvailability } from './operations';
+diff --git a/web/app/entities/availability/operations.ts b/web/app/entities/availability/operations.ts
+new file mode 100644
+index 0000000..3ea3e32
+--- /dev/null
++++ b/web/app/entities/availability/operations.ts
+@@ -0,0 +1,23 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useAvailabilityStore } from './store';
++
++import type { Availability, AvailabilityInput } from './types';
++
++export async function getAvailability(id: string): Promise<Availability | undefined> {
++  await mockCall('getAvailability');
++  return useAvailabilityStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetAvailability(id: string): Read<Availability | undefined> {
++  return useRead('getAvailability', useAvailabilityStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function updateAvailability(id: string, changes: Partial<AvailabilityInput>): Promise<Availability> {
++  await mockCall('updateAvailability');
++  const current = useAvailabilityStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Availability not found');
++  const record: Availability = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useAvailabilityStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
+diff --git a/web/app/entities/availability/seed.ts b/web/app/entities/availability/seed.ts
+new file mode 100644
+index 0000000..8ea871f
+--- /dev/null
++++ b/web/app/entities/availability/seed.ts
+@@ -0,0 +1,46 @@
++import type { Availability } from './types';
++
++export const availabilitySeed: Availability[] = [
++  {
++    "id": "availability-1",
++    "createdAt": "2026-10-26T23:36:45.424Z",
++    "updatedAt": "2026-10-27T00:36:45.424Z",
++    "days": [
++      "monday",
++      "tuesday"
++    ],
++    "fromTime": "10:00",
++    "toTime": "17:00"
++  },
++  {
++    "id": "availability-2",
++    "createdAt": "2026-10-28T23:36:45.424Z",
++    "updatedAt": "2026-10-29T01:36:45.424Z",
++    "days": [
++      "wednesday",
++      "thursday"
++    ],
++    "fromTime": "10:00",
++    "toTime": "15:00"
++  },
++  {
++    "id": "availability-3",
++    "createdAt": "2026-10-30T23:36:45.424Z",
++    "updatedAt": "2026-10-31T02:36:45.424Z",
++    "days": [
++      "friday"
++    ],
++    "fromTime": "09:00",
++    "toTime": "13:00"
++  },
++  {
++    "id": "availability-4",
++    "createdAt": "2026-11-01T23:36:45.424Z",
++    "updatedAt": "2026-11-02T03:36:45.424Z",
++    "days": [
++      "saturday"
++    ],
++    "fromTime": "11:00",
++    "toTime": "13:00"
++  }
++];
+diff --git a/web/app/entities/availability/store.ts b/web/app/entities/availability/store.ts
+new file mode 100644
+index 0000000..0a3f4af
+--- /dev/null
++++ b/web/app/entities/availability/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { availabilitySeed } from './seed';
++
++import type { Availability } from './types';
++
++type AvailabilityState = { records: Availability[] };
++
++/** Every Availability, saved in the browser so a reload keeps what the user changed. */
++export const useAvailabilityStore = createPersistentStore<AvailabilityState>(
++  () => ({ records: availabilitySeed }),
++  'weave:20261104-0428-freelancer-workspace:availability',
++);
+diff --git a/web/app/entities/availability/types.ts b/web/app/entities/availability/types.ts
+new file mode 100644
+index 0000000..f10eaf5
+--- /dev/null
++++ b/web/app/entities/availability/types.ts
+@@ -0,0 +1,13 @@
++import type { DayOfWeek } from '../enums';
++
++export type Availability = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  days?: DayOfWeek[];
++  fromTime?: string;
++  toTime?: string;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type AvailabilityInput = Omit<Availability, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/booking/index.ts b/web/app/entities/booking/index.ts
+new file mode 100644
+index 0000000..1f71b37
+--- /dev/null
++++ b/web/app/entities/booking/index.ts
+@@ -0,0 +1,2 @@
++export type { Booking, BookingInput } from './types';
++export { listBookings, useListBookings, getBooking, useGetBooking, createBooking, cancelBooking, deleteBooking } from './operations';
+diff --git a/web/app/entities/booking/operations.ts b/web/app/entities/booking/operations.ts
+new file mode 100644
+index 0000000..3563877
+--- /dev/null
++++ b/web/app/entities/booking/operations.ts
+@@ -0,0 +1,45 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useBookingStore } from './store';
++
++import type { Booking, BookingInput } from './types';
++
++export async function listBookings(): Promise<Booking[]> {
++  await mockCall('listBookings');
++  return useBookingStore.getState().records;
++}
++
++export function useListBookings(): Read<Booking[]> {
++  return useRead('listBookings', useBookingStore('records'));
++}
++
++export async function getBooking(id: string): Promise<Booking | undefined> {
++  await mockCall('getBooking');
++  return useBookingStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetBooking(id: string): Read<Booking | undefined> {
++  return useRead('getBooking', useBookingStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function createBooking(input: BookingInput): Promise<Booking> {
++  await mockCall('createBooking');
++  const now = new Date().toISOString();
++  const record: Booking = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useBookingStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function cancelBooking(id: string, changes: Partial<BookingInput>): Promise<Booking> {
++  await mockCall('cancelBooking');
++  const current = useBookingStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Booking not found');
++  const record: Booking = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useBookingStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function deleteBooking(id: string): Promise<void> {
++  await mockCall('deleteBooking');
++  useBookingStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/booking/seed.ts b/web/app/entities/booking/seed.ts
+new file mode 100644
+index 0000000..91f61fd
+--- /dev/null
++++ b/web/app/entities/booking/seed.ts
+@@ -0,0 +1,70 @@
++import type { Booking } from './types';
++
++export const bookingSeed: Booking[] = [
++  {
++    "id": "booking-1",
++    "createdAt": "2026-10-22T23:36:45.424Z",
++    "updatedAt": "2026-10-23T00:36:45.424Z",
++    "name": "Priya Nair",
++    "email": "priya@loomandleaf.in",
++    "sessionType": "sessionType-1",
++    "slot": "slot-1",
++    "client": "client-3",
++    "isCancelled": false
++  },
++  {
++    "id": "booking-2",
++    "createdAt": "2026-10-24T23:36:45.424Z",
++    "updatedAt": "2026-10-25T01:36:45.424Z",
++    "name": "Daniel Okafor",
++    "email": "daniel@okaforlaw.com",
++    "sessionType": "sessionType-1",
++    "slot": "slot-2",
++    "client": "client-4",
++    "isCancelled": false
++  },
++  {
++    "id": "booking-3",
++    "createdAt": "2026-10-26T23:36:45.424Z",
++    "updatedAt": "2026-10-27T02:36:45.424Z",
++    "name": "Maya Sharma",
++    "email": "maya@acme.co",
++    "sessionType": "sessionType-2",
++    "slot": "slot-3",
++    "client": "client-1",
++    "isCancelled": false
++  },
++  {
++    "id": "booking-4",
++    "createdAt": "2026-10-28T23:36:45.424Z",
++    "updatedAt": "2026-10-29T03:36:45.424Z",
++    "name": "Jonas Weber",
++    "email": "jonas@weberfit.de",
++    "sessionType": "sessionType-2",
++    "slot": "slot-4",
++    "client": "client-2",
++    "isCancelled": false
++  },
++  {
++    "id": "booking-5",
++    "createdAt": "2026-10-30T23:36:45.424Z",
++    "updatedAt": "2026-10-31T04:36:45.424Z",
++    "name": "Priya Nair",
++    "email": "priya@loomandleaf.in",
++    "sessionType": "sessionType-3",
++    "slot": "slot-5",
++    "client": "client-3",
++    "isCancelled": false
++  },
++  {
++    "id": "booking-6",
++    "createdAt": "2026-11-01T23:36:45.424Z",
++    "updatedAt": "2026-11-02T05:36:45.424Z",
++    "name": "Sofia Marchetti",
++    "email": "sofia@casamarchetti.it",
++    "sessionType": "sessionType-4",
++    "slot": "slot-6",
++    "client": "client-5",
++    "isCancelled": true
++  }
++];
+diff --git a/web/app/entities/booking/store.ts b/web/app/entities/booking/store.ts
+new file mode 100644
+index 0000000..f470978
+--- /dev/null
++++ b/web/app/entities/booking/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { bookingSeed } from './seed';
++
++import type { Booking } from './types';
++
++type BookingState = { records: Booking[] };
++
++/** Every Booking, saved in the browser so a reload keeps what the user changed. */
++export const useBookingStore = createPersistentStore<BookingState>(
++  () => ({ records: bookingSeed }),
++  'weave:20261104-0428-freelancer-workspace:booking',
++);
+diff --git a/web/app/entities/booking/types.ts b/web/app/entities/booking/types.ts
+new file mode 100644
+index 0000000..8d3dcc2
+--- /dev/null
++++ b/web/app/entities/booking/types.ts
+@@ -0,0 +1,14 @@
++export type Booking = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  name: string;
++  email: string;
++  sessionType: string;
++  slot: string;
++  client?: string;
++  isCancelled?: boolean;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type BookingInput = Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/client/index.ts b/web/app/entities/client/index.ts
+new file mode 100644
+index 0000000..bb0a228
+--- /dev/null
++++ b/web/app/entities/client/index.ts
+@@ -0,0 +1,2 @@
++export type { Client, ClientInput } from './types';
++export { listClients, useListClients, getClient, useGetClient, createClient, updateClient, deleteClient } from './operations';
+diff --git a/web/app/entities/client/operations.ts b/web/app/entities/client/operations.ts
+new file mode 100644
+index 0000000..e6af6b8
+--- /dev/null
++++ b/web/app/entities/client/operations.ts
+@@ -0,0 +1,45 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useClientStore } from './store';
++
++import type { Client, ClientInput } from './types';
++
++export async function listClients(): Promise<Client[]> {
++  await mockCall('listClients');
++  return useClientStore.getState().records;
++}
++
++export function useListClients(): Read<Client[]> {
++  return useRead('listClients', useClientStore('records'));
++}
++
++export async function getClient(email: Client['email']): Promise<Client | undefined> {
++  await mockCall('getClient');
++  return useClientStore.getState().records.find((record) => record.email === email);
++}
++
++export function useGetClient(email: Client['email']): Read<Client | undefined> {
++  return useRead('getClient', useClientStore(({ records }) => records.find((record) => record.email === email)));
++}
++
++export async function createClient(input: ClientInput): Promise<Client> {
++  await mockCall('createClient');
++  const now = new Date().toISOString();
++  const record: Client = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useClientStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function updateClient(id: string, changes: Partial<ClientInput>): Promise<Client> {
++  await mockCall('updateClient');
++  const current = useClientStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Client not found');
++  const record: Client = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useClientStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function deleteClient(id: string): Promise<void> {
++  await mockCall('deleteClient');
++  useClientStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/client/seed.ts b/web/app/entities/client/seed.ts
+new file mode 100644
+index 0000000..c28dc50
+--- /dev/null
++++ b/web/app/entities/client/seed.ts
+@@ -0,0 +1,54 @@
++import type { Client } from './types';
++
++export const clientSeed: Client[] = [
++  {
++    "id": "client-1",
++    "createdAt": "2026-10-24T23:36:45.423Z",
++    "updatedAt": "2026-10-25T00:36:45.423Z",
++    "name": "Maya Sharma",
++    "email": "maya@acme.co",
++    "company": "Acme",
++    "profile": "Runs a D2C skincare brand, met at a meetup, pays 80000 per project",
++    "status": "active"
++  },
++  {
++    "id": "client-2",
++    "createdAt": "2026-10-26T23:36:45.423Z",
++    "updatedAt": "2026-10-27T01:36:45.423Z",
++    "name": "Jonas Weber",
++    "email": "jonas@weberfit.de",
++    "company": "Weber Fit",
++    "profile": "Owns boutique fitness studio chain, needs booking flow redesign, on 2500 monthly retainer",
++    "status": "active"
++  },
++  {
++    "id": "client-3",
++    "createdAt": "2026-10-28T23:36:45.423Z",
++    "updatedAt": "2026-10-29T02:36:45.423Z",
++    "name": "Priya Nair",
++    "email": "priya@loomandleaf.in",
++    "company": "Loom & Leaf",
++    "profile": "Handloom home decor startup, wants calm homepage redo, budget around 1800",
++    "status": "lead"
++  },
++  {
++    "id": "client-4",
++    "createdAt": "2026-10-30T23:36:45.423Z",
++    "updatedAt": "2026-10-31T03:36:45.423Z",
++    "name": "Daniel Okafor",
++    "email": "daniel@okaforlaw.com",
++    "company": "Okafor Legal",
++    "profile": "Solo law practice, needs trust-building landing page, referred by Sofia",
++    "status": "lead"
++  },
++  {
++    "id": "client-5",
++    "createdAt": "2026-11-01T23:36:45.423Z",
++    "updatedAt": "2026-11-02T04:36:45.423Z",
++    "name": "Sofia Marchetti",
++    "email": "sofia@casamarchetti.it",
++    "company": "Casa Marchetti",
++    "profile": "Italian restaurant group, menu site shipped in August, may return for reservations revamp",
++    "status": "past"
++  }
++];
+diff --git a/web/app/entities/client/store.ts b/web/app/entities/client/store.ts
+new file mode 100644
+index 0000000..d67a6a1
+--- /dev/null
++++ b/web/app/entities/client/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { clientSeed } from './seed';
++
++import type { Client } from './types';
++
++type ClientState = { records: Client[] };
++
++/** Every Client, saved in the browser so a reload keeps what the user changed. */
++export const useClientStore = createPersistentStore<ClientState>(
++  () => ({ records: clientSeed }),
++  'weave:20261104-0428-freelancer-workspace:client',
++);
+diff --git a/web/app/entities/client/types.ts b/web/app/entities/client/types.ts
+new file mode 100644
+index 0000000..6607d8a
+--- /dev/null
++++ b/web/app/entities/client/types.ts
+@@ -0,0 +1,15 @@
++import type { ClientStatus } from '../enums';
++
++export type Client = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  name: string;
++  email: string;
++  company?: string;
++  profile?: string;
++  status: ClientStatus;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type ClientInput = Omit<Client, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/enums/index.ts b/web/app/entities/enums/index.ts
+new file mode 100644
+index 0000000..e076782
+--- /dev/null
++++ b/web/app/entities/enums/index.ts
+@@ -0,0 +1,35 @@
++export const ClientStatusOptions = [
++  { key: 'lead', label: "Lead" },
++  { key: 'active', label: "Active" },
++  { key: 'past', label: "Past" },
++] as const;
++
++export type ClientStatus = (typeof ClientStatusOptions)[number]['key'];
++
++export const TaskStatusOptions = [
++  { key: 'to_do', label: "To do" },
++  { key: 'in_progress', label: "In progress" },
++  { key: 'done', label: "Done" },
++] as const;
++
++export type TaskStatus = (typeof TaskStatusOptions)[number]['key'];
++
++export const TaskPriorityOptions = [
++  { key: 'low', label: "Low" },
++  { key: 'medium', label: "Medium" },
++  { key: 'high', label: "High" },
++] as const;
++
++export type TaskPriority = (typeof TaskPriorityOptions)[number]['key'];
++
++export const DayOfWeekOptions = [
++  { key: 'monday', label: "Monday" },
++  { key: 'tuesday', label: "Tuesday" },
++  { key: 'wednesday', label: "Wednesday" },
++  { key: 'thursday', label: "Thursday" },
++  { key: 'friday', label: "Friday" },
++  { key: 'saturday', label: "Saturday" },
++  { key: 'sunday', label: "Sunday" },
++] as const;
++
++export type DayOfWeek = (typeof DayOfWeekOptions)[number]['key'];
+diff --git a/web/app/entities/note/index.ts b/web/app/entities/note/index.ts
+new file mode 100644
+index 0000000..02d7d3e
+--- /dev/null
++++ b/web/app/entities/note/index.ts
+@@ -0,0 +1,2 @@
++export type { Note, NoteInput } from './types';
++export { listNotes, useListNotes, getNote, useGetNote, createNote, updateNote, markFollowUpDone, pushFollowUpWeek, deleteNote } from './operations';
+diff --git a/web/app/entities/note/operations.ts b/web/app/entities/note/operations.ts
+new file mode 100644
+index 0000000..b9c8f15
+--- /dev/null
++++ b/web/app/entities/note/operations.ts
+@@ -0,0 +1,63 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useNoteStore } from './store';
++
++import type { Note, NoteInput } from './types';
++
++export async function listNotes(): Promise<Note[]> {
++  await mockCall('listNotes');
++  return useNoteStore.getState().records;
++}
++
++export function useListNotes(): Read<Note[]> {
++  return useRead('listNotes', useNoteStore('records'));
++}
++
++export async function getNote(id: string): Promise<Note | undefined> {
++  await mockCall('getNote');
++  return useNoteStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetNote(id: string): Read<Note | undefined> {
++  return useRead('getNote', useNoteStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function createNote(input: NoteInput): Promise<Note> {
++  await mockCall('createNote');
++  const now = new Date().toISOString();
++  const record: Note = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useNoteStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function updateNote(id: string, changes: Partial<NoteInput>): Promise<Note> {
++  await mockCall('updateNote');
++  const current = useNoteStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Note not found');
++  const record: Note = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useNoteStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function markFollowUpDone(id: string, changes: Partial<NoteInput>): Promise<Note> {
++  await mockCall('markFollowUpDone');
++  const current = useNoteStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Note not found');
++  const record: Note = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useNoteStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function pushFollowUpWeek(id: string, changes: Partial<NoteInput>): Promise<Note> {
++  await mockCall('pushFollowUpWeek');
++  const current = useNoteStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Note not found');
++  const record: Note = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useNoteStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function deleteNote(id: string): Promise<void> {
++  await mockCall('deleteNote');
++  useNoteStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/note/seed.ts b/web/app/entities/note/seed.ts
+new file mode 100644
+index 0000000..ad62cea
+--- /dev/null
++++ b/web/app/entities/note/seed.ts
+@@ -0,0 +1,48 @@
++import type { Note } from './types';
++
++export const noteSeed: Note[] = [
++  {
++    "id": "note-1",
++    "createdAt": "2026-10-24T23:36:45.423Z",
++    "updatedAt": "2026-10-25T00:36:45.423Z",
++    "noteText": "Call about homepage redo, likes calm layouts, send proposal",
++    "noteDate": "2026-10-28",
++    "followUpDate": "2026-11-10",
++    "client": "client-1"
++  },
++  {
++    "id": "note-2",
++    "createdAt": "2026-10-26T23:36:45.423Z",
++    "updatedAt": "2026-10-27T01:36:45.423Z",
++    "noteText": "Walked through class booking drop-off, wants mobile checkout fixed first",
++    "noteDate": "2026-10-30",
++    "followUpDate": "2026-11-06",
++    "client": "client-2"
++  },
++  {
++    "id": "note-3",
++    "createdAt": "2026-10-28T23:36:45.423Z",
++    "updatedAt": "2026-10-29T02:36:45.423Z",
++    "noteText": "Discovery intro, loves earthy tones, will share competitor links by Friday",
++    "noteDate": "2026-11-02",
++    "followUpDate": "2026-11-10",
++    "client": "client-3"
++  },
++  {
++    "id": "note-4",
++    "createdAt": "2026-10-30T23:36:45.423Z",
++    "updatedAt": "2026-10-31T03:36:45.423Z",
++    "noteText": "Needs intake form that filters time-wasters, worried about sounding too corporate",
++    "noteDate": "2026-11-01",
++    "followUpDate": "2026-11-08",
++    "client": "client-4"
++  },
++  {
++    "id": "note-5",
++    "createdAt": "2026-11-01T23:36:45.423Z",
++    "updatedAt": "2026-11-02T04:36:45.423Z",
++    "noteText": "Handoff done, sent Figma files and care guide, asked for testimonial",
++    "noteDate": "2026-10-20",
++    "client": "client-5"
++  }
++];
+diff --git a/web/app/entities/note/store.ts b/web/app/entities/note/store.ts
+new file mode 100644
+index 0000000..6579bdd
+--- /dev/null
++++ b/web/app/entities/note/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { noteSeed } from './seed';
++
++import type { Note } from './types';
++
++type NoteState = { records: Note[] };
++
++/** Every Note, saved in the browser so a reload keeps what the user changed. */
++export const useNoteStore = createPersistentStore<NoteState>(
++  () => ({ records: noteSeed }),
++  'weave:20261104-0428-freelancer-workspace:note',
++);
+diff --git a/web/app/entities/note/types.ts b/web/app/entities/note/types.ts
+new file mode 100644
+index 0000000..54ec7d9
+--- /dev/null
++++ b/web/app/entities/note/types.ts
+@@ -0,0 +1,12 @@
++export type Note = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  noteText: string;
++  noteDate: string;
++  followUpDate?: string;
++  client: string;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type NoteInput = Omit<Note, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/project/index.ts b/web/app/entities/project/index.ts
+new file mode 100644
+index 0000000..a3a35fd
+--- /dev/null
++++ b/web/app/entities/project/index.ts
+@@ -0,0 +1,2 @@
++export type { Project, ProjectInput } from './types';
++export { listProjects, useListProjects, getProject, useGetProject, createProject, updateProject, deleteProject } from './operations';
+diff --git a/web/app/entities/project/operations.ts b/web/app/entities/project/operations.ts
+new file mode 100644
+index 0000000..b5d351c
+--- /dev/null
++++ b/web/app/entities/project/operations.ts
+@@ -0,0 +1,45 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useProjectStore } from './store';
++
++import type { Project, ProjectInput } from './types';
++
++export async function listProjects(): Promise<Project[]> {
++  await mockCall('listProjects');
++  return useProjectStore.getState().records;
++}
++
++export function useListProjects(): Read<Project[]> {
++  return useRead('listProjects', useProjectStore('records'));
++}
++
++export async function getProject(id: string): Promise<Project | undefined> {
++  await mockCall('getProject');
++  return useProjectStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetProject(id: string): Read<Project | undefined> {
++  return useRead('getProject', useProjectStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function createProject(input: ProjectInput): Promise<Project> {
++  await mockCall('createProject');
++  const now = new Date().toISOString();
++  const record: Project = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useProjectStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function updateProject(id: string, changes: Partial<ProjectInput>): Promise<Project> {
++  await mockCall('updateProject');
++  const current = useProjectStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Project not found');
++  const record: Project = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useProjectStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function deleteProject(id: string): Promise<void> {
++  await mockCall('deleteProject');
++  useProjectStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/project/seed.ts b/web/app/entities/project/seed.ts
+new file mode 100644
+index 0000000..e284a53
+--- /dev/null
++++ b/web/app/entities/project/seed.ts
+@@ -0,0 +1,49 @@
++import type { Project } from './types';
++
++export const projectSeed: Project[] = [
++  {
++    "id": "project-1",
++    "createdAt": "2026-10-24T23:36:45.424Z",
++    "updatedAt": "2026-10-25T00:36:45.424Z",
++    "name": "Acme homepage",
++    "description": "Redesign homepage and pricing page",
++    "dueDate": "2026-12-15",
++    "client": "client-1"
++  },
++  {
++    "id": "project-2",
++    "createdAt": "2026-10-26T23:36:45.424Z",
++    "updatedAt": "2026-10-27T01:36:45.424Z",
++    "name": "Weber Fit booking flow",
++    "description": "Redesign class booking flow and mobile checkout",
++    "dueDate": "2026-11-20",
++    "client": "client-2"
++  },
++  {
++    "id": "project-3",
++    "createdAt": "2026-10-28T23:36:45.424Z",
++    "updatedAt": "2026-10-29T02:36:45.424Z",
++    "name": "Loom & Leaf concept",
++    "description": "Discovery concept and moodboards for homepage redo",
++    "dueDate": "2026-11-15",
++    "client": "client-3"
++  },
++  {
++    "id": "project-4",
++    "createdAt": "2026-10-30T23:36:45.424Z",
++    "updatedAt": "2026-10-31T03:36:45.424Z",
++    "name": "Okafor landing page",
++    "description": "Trust-building landing page with intake form",
++    "dueDate": "2026-12-01",
++    "client": "client-4"
++  },
++  {
++    "id": "project-5",
++    "createdAt": "2026-11-01T23:36:45.424Z",
++    "updatedAt": "2026-11-02T04:36:45.424Z",
++    "name": "Casa Marchetti menu site",
++    "description": "Menu website with reservations link",
++    "dueDate": "2026-10-10",
++    "client": "client-5"
++  }
++];
+diff --git a/web/app/entities/project/store.ts b/web/app/entities/project/store.ts
+new file mode 100644
+index 0000000..7b125ae
+--- /dev/null
++++ b/web/app/entities/project/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { projectSeed } from './seed';
++
++import type { Project } from './types';
++
++type ProjectState = { records: Project[] };
++
++/** Every Project, saved in the browser so a reload keeps what the user changed. */
++export const useProjectStore = createPersistentStore<ProjectState>(
++  () => ({ records: projectSeed }),
++  'weave:20261104-0428-freelancer-workspace:project',
++);
+diff --git a/web/app/entities/project/types.ts b/web/app/entities/project/types.ts
+new file mode 100644
+index 0000000..290e96e
+--- /dev/null
++++ b/web/app/entities/project/types.ts
+@@ -0,0 +1,12 @@
++export type Project = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  name: string;
++  description: string;
++  dueDate?: string;
++  client: string;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type ProjectInput = Omit<Project, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/sessionType/index.ts b/web/app/entities/sessionType/index.ts
+new file mode 100644
+index 0000000..5aa6966
+--- /dev/null
++++ b/web/app/entities/sessionType/index.ts
+@@ -0,0 +1,2 @@
++export type { SessionType, SessionTypeInput } from './types';
++export { listSessionTypes, useListSessionTypes, getSessionType, useGetSessionType, createSessionType, updateSessionType } from './operations';
+diff --git a/web/app/entities/sessionType/operations.ts b/web/app/entities/sessionType/operations.ts
+new file mode 100644
+index 0000000..18b3636
+--- /dev/null
++++ b/web/app/entities/sessionType/operations.ts
+@@ -0,0 +1,40 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useSessionTypeStore } from './store';
++
++import type { SessionType, SessionTypeInput } from './types';
++
++export async function listSessionTypes(): Promise<SessionType[]> {
++  await mockCall('listSessionTypes');
++  return useSessionTypeStore.getState().records;
++}
++
++export function useListSessionTypes(): Read<SessionType[]> {
++  return useRead('listSessionTypes', useSessionTypeStore('records'));
++}
++
++export async function getSessionType(id: string): Promise<SessionType | undefined> {
++  await mockCall('getSessionType');
++  return useSessionTypeStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetSessionType(id: string): Read<SessionType | undefined> {
++  return useRead('getSessionType', useSessionTypeStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function createSessionType(input: SessionTypeInput): Promise<SessionType> {
++  await mockCall('createSessionType');
++  const now = new Date().toISOString();
++  const record: SessionType = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useSessionTypeStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function updateSessionType(id: string, changes: Partial<SessionTypeInput>): Promise<SessionType> {
++  await mockCall('updateSessionType');
++  const current = useSessionTypeStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('SessionType not found');
++  const record: SessionType = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useSessionTypeStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
+diff --git a/web/app/entities/sessionType/seed.ts b/web/app/entities/sessionType/seed.ts
+new file mode 100644
+index 0000000..221d5c2
+--- /dev/null
++++ b/web/app/entities/sessionType/seed.ts
+@@ -0,0 +1,40 @@
++import type { SessionType } from './types';
++
++export const sessionTypeSeed: SessionType[] = [
++  {
++    "id": "sessionType-1",
++    "createdAt": "2026-10-26T23:36:45.424Z",
++    "updatedAt": "2026-10-27T00:36:45.424Z",
++    "name": "Discovery call",
++    "durationInMinutes": 30,
++    "displayedPrice": 0,
++    "maximumPeople": 1
++  },
++  {
++    "id": "sessionType-2",
++    "createdAt": "2026-10-28T23:36:45.424Z",
++    "updatedAt": "2026-10-29T01:36:45.424Z",
++    "name": "Design review",
++    "durationInMinutes": 60,
++    "displayedPrice": 75,
++    "maximumPeople": 1
++  },
++  {
++    "id": "sessionType-3",
++    "createdAt": "2026-10-30T23:36:45.424Z",
++    "updatedAt": "2026-10-31T02:36:45.424Z",
++    "name": "Figma workshop",
++    "durationInMinutes": 90,
++    "displayedPrice": 150,
++    "maximumPeople": 4
++  },
++  {
++    "id": "sessionType-4",
++    "createdAt": "2026-11-01T23:36:45.424Z",
++    "updatedAt": "2026-11-02T03:36:45.424Z",
++    "name": "Portfolio audit",
++    "durationInMinutes": 45,
++    "displayedPrice": 50,
++    "maximumPeople": 2
++  }
++];
+diff --git a/web/app/entities/sessionType/store.ts b/web/app/entities/sessionType/store.ts
+new file mode 100644
+index 0000000..caeccc4
+--- /dev/null
++++ b/web/app/entities/sessionType/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { sessionTypeSeed } from './seed';
++
++import type { SessionType } from './types';
++
++type SessionTypeState = { records: SessionType[] };
++
++/** Every SessionType, saved in the browser so a reload keeps what the user changed. */
++export const useSessionTypeStore = createPersistentStore<SessionTypeState>(
++  () => ({ records: sessionTypeSeed }),
++  'weave:20261104-0428-freelancer-workspace:sessionType',
++);
+diff --git a/web/app/entities/sessionType/types.ts b/web/app/entities/sessionType/types.ts
+new file mode 100644
+index 0000000..8291799
+--- /dev/null
++++ b/web/app/entities/sessionType/types.ts
+@@ -0,0 +1,12 @@
++export type SessionType = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  name: string;
++  durationInMinutes: number;
++  displayedPrice: number;
++  maximumPeople: number;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type SessionTypeInput = Omit<SessionType, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/slot/index.ts b/web/app/entities/slot/index.ts
+new file mode 100644
+index 0000000..5ce5e5f
+--- /dev/null
++++ b/web/app/entities/slot/index.ts
+@@ -0,0 +1,2 @@
++export type { Slot, SlotInput } from './types';
++export { listSlots, useListSlots, getSlot, useGetSlot, deleteSlot } from './operations';
+diff --git a/web/app/entities/slot/operations.ts b/web/app/entities/slot/operations.ts
+new file mode 100644
+index 0000000..4288b77
+--- /dev/null
++++ b/web/app/entities/slot/operations.ts
+@@ -0,0 +1,28 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useSlotStore } from './store';
++
++import type { Slot } from './types';
++
++export async function listSlots(): Promise<Slot[]> {
++  await mockCall('listSlots');
++  return useSlotStore.getState().records;
++}
++
++export function useListSlots(): Read<Slot[]> {
++  return useRead('listSlots', useSlotStore('records'));
++}
++
++export async function getSlot(id: string): Promise<Slot | undefined> {
++  await mockCall('getSlot');
++  return useSlotStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetSlot(id: string): Read<Slot | undefined> {
++  return useRead('getSlot', useSlotStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function deleteSlot(id: string): Promise<void> {
++  await mockCall('deleteSlot');
++  useSlotStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/slot/seed.ts b/web/app/entities/slot/seed.ts
+new file mode 100644
+index 0000000..8e8525b
+--- /dev/null
++++ b/web/app/entities/slot/seed.ts
+@@ -0,0 +1,46 @@
++import type { Slot } from './types';
++
++export const slotSeed: Slot[] = [
++  {
++    "id": "slot-1",
++    "createdAt": "2026-10-22T23:36:45.424Z",
++    "updatedAt": "2026-10-23T00:36:45.424Z",
++    "sessionType": "sessionType-1",
++    "startAt": "2026-11-05T10:00:00.000Z"
++  },
++  {
++    "id": "slot-2",
++    "createdAt": "2026-10-24T23:36:45.424Z",
++    "updatedAt": "2026-10-25T01:36:45.424Z",
++    "sessionType": "sessionType-1",
++    "startAt": "2026-11-06T11:00:00.000Z"
++  },
++  {
++    "id": "slot-3",
++    "createdAt": "2026-10-26T23:36:45.424Z",
++    "updatedAt": "2026-10-27T02:36:45.424Z",
++    "sessionType": "sessionType-2",
++    "startAt": "2026-11-10T14:00:00.000Z"
++  },
++  {
++    "id": "slot-4",
++    "createdAt": "2026-10-28T23:36:45.424Z",
++    "updatedAt": "2026-10-29T03:36:45.424Z",
++    "sessionType": "sessionType-2",
++    "startAt": "2026-11-12T10:30:00.000Z"
++  },
++  {
++    "id": "slot-5",
++    "createdAt": "2026-10-30T23:36:45.424Z",
++    "updatedAt": "2026-10-31T04:36:45.424Z",
++    "sessionType": "sessionType-3",
++    "startAt": "2026-11-14T11:00:00.000Z"
++  },
++  {
++    "id": "slot-6",
++    "createdAt": "2026-11-01T23:36:45.424Z",
++    "updatedAt": "2026-11-02T05:36:45.424Z",
++    "sessionType": "sessionType-4",
++    "startAt": "2026-11-11T13:00:00.000Z"
++  }
++];
+diff --git a/web/app/entities/slot/store.ts b/web/app/entities/slot/store.ts
+new file mode 100644
+index 0000000..589ab09
+--- /dev/null
++++ b/web/app/entities/slot/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { slotSeed } from './seed';
++
++import type { Slot } from './types';
++
++type SlotState = { records: Slot[] };
++
++/** Every Slot, saved in the browser so a reload keeps what the user changed. */
++export const useSlotStore = createPersistentStore<SlotState>(
++  () => ({ records: slotSeed }),
++  'weave:20261104-0428-freelancer-workspace:slot',
++);
+diff --git a/web/app/entities/slot/types.ts b/web/app/entities/slot/types.ts
+new file mode 100644
+index 0000000..a939bf3
+--- /dev/null
++++ b/web/app/entities/slot/types.ts
+@@ -0,0 +1,10 @@
++export type Slot = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  sessionType: string;
++  startAt: string;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type SlotInput = Omit<Slot, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/task/index.ts b/web/app/entities/task/index.ts
+new file mode 100644
+index 0000000..fb6832e
+--- /dev/null
++++ b/web/app/entities/task/index.ts
+@@ -0,0 +1,2 @@
++export type { Task, TaskInput } from './types';
++export { listTasks, useListTasks, getTask, useGetTask, createTask, updateTask, completeTask, deleteTask } from './operations';
+diff --git a/web/app/entities/task/operations.ts b/web/app/entities/task/operations.ts
+new file mode 100644
+index 0000000..4a9206f
+--- /dev/null
++++ b/web/app/entities/task/operations.ts
+@@ -0,0 +1,54 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useTaskStore } from './store';
++
++import type { Task, TaskInput } from './types';
++
++export async function listTasks(): Promise<Task[]> {
++  await mockCall('listTasks');
++  return useTaskStore.getState().records;
++}
++
++export function useListTasks(): Read<Task[]> {
++  return useRead('listTasks', useTaskStore('records'));
++}
++
++export async function getTask(id: string): Promise<Task | undefined> {
++  await mockCall('getTask');
++  return useTaskStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetTask(id: string): Read<Task | undefined> {
++  return useRead('getTask', useTaskStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function createTask(input: TaskInput): Promise<Task> {
++  await mockCall('createTask');
++  const now = new Date().toISOString();
++  const record: Task = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useTaskStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function updateTask(id: string, changes: Partial<TaskInput>): Promise<Task> {
++  await mockCall('updateTask');
++  const current = useTaskStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Task not found');
++  const record: Task = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useTaskStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function completeTask(id: string, changes: Partial<TaskInput>): Promise<Task> {
++  await mockCall('completeTask');
++  const current = useTaskStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Task not found');
++  const record: Task = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useTaskStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function deleteTask(id: string): Promise<void> {
++  await mockCall('deleteTask');
++  useTaskStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/task/seed.ts b/web/app/entities/task/seed.ts
+new file mode 100644
+index 0000000..ab97302
+--- /dev/null
++++ b/web/app/entities/task/seed.ts
+@@ -0,0 +1,64 @@
++import type { Task } from './types';
++
++export const taskSeed: Task[] = [
++  {
++    "id": "task-1",
++    "createdAt": "2026-10-22T23:36:45.424Z",
++    "updatedAt": "2026-10-23T00:36:45.424Z",
++    "title": "Draft hero section",
++    "status": "to_do",
++    "priority": "high",
++    "dueDate": "2026-11-08",
++    "project": "project-1"
++  },
++  {
++    "id": "task-2",
++    "createdAt": "2026-10-24T23:36:45.424Z",
++    "updatedAt": "2026-10-25T01:36:45.424Z",
++    "title": "Collect Acme product photos",
++    "status": "in_progress",
++    "priority": "medium",
++    "dueDate": "2026-11-06",
++    "project": "project-1"
++  },
++  {
++    "id": "task-3",
++    "createdAt": "2026-10-26T23:36:45.424Z",
++    "updatedAt": "2026-10-27T02:36:45.424Z",
++    "title": "Map current booking steps",
++    "status": "done",
++    "priority": "high",
++    "dueDate": "2026-10-28",
++    "project": "project-2"
++  },
++  {
++    "id": "task-4",
++    "createdAt": "2026-10-28T23:36:45.424Z",
++    "updatedAt": "2026-10-29T03:36:45.424Z",
++    "title": "Moodboard calm layouts",
++    "status": "done",
++    "priority": "low",
++    "dueDate": "2026-10-30",
++    "project": "project-3"
++  },
++  {
++    "id": "task-5",
++    "createdAt": "2026-10-30T23:36:45.424Z",
++    "updatedAt": "2026-10-31T04:36:45.424Z",
++    "title": "Draft intake questions",
++    "status": "to_do",
++    "priority": "medium",
++    "dueDate": "2026-11-18",
++    "project": "project-4"
++  },
++  {
++    "id": "task-6",
++    "createdAt": "2026-11-01T23:36:45.424Z",
++    "updatedAt": "2026-11-02T05:36:45.424Z",
++    "title": "Export handoff files",
++    "status": "done",
++    "priority": "low",
++    "dueDate": "2026-10-12",
++    "project": "project-5"
++  }
++];
+diff --git a/web/app/entities/task/store.ts b/web/app/entities/task/store.ts
+new file mode 100644
+index 0000000..a96eb40
+--- /dev/null
++++ b/web/app/entities/task/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { taskSeed } from './seed';
++
++import type { Task } from './types';
++
++type TaskState = { records: Task[] };
++
++/** Every Task, saved in the browser so a reload keeps what the user changed. */
++export const useTaskStore = createPersistentStore<TaskState>(
++  () => ({ records: taskSeed }),
++  'weave:20261104-0428-freelancer-workspace:task',
++);
+diff --git a/web/app/entities/task/types.ts b/web/app/entities/task/types.ts
+new file mode 100644
+index 0000000..99aa232
+--- /dev/null
++++ b/web/app/entities/task/types.ts
+@@ -0,0 +1,15 @@
++import type { TaskPriority, TaskStatus } from '../enums';
++
++export type Task = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  title: string;
++  status: TaskStatus;
++  priority: TaskPriority;
++  dueDate?: string;
++  project: string;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type TaskInput = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;

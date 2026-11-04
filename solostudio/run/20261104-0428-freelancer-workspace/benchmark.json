@@ -1,0 +1,680 @@
+{
+  "runId": "20261104-0428-freelancer-workspace",
+  "createdAt": "2026-11-04T08:31:19.644Z",
+  "server": "next dev",
+  "generation": {
+    "backend": "meta",
+    "agent": "Muse Code",
+    "models": [
+      {
+        "model": "muse-spark-1.3",
+        "calls": 317
+      },
+      {
+        "model": "muse-wonder-1.0",
+        "calls": 3
+      }
+    ],
+    "timeMs": {
+      "total": 5991554,
+      "planning": 2193470,
+      "code": 3666552,
+      "stages": [
+        {
+          "stage": "flows-scope",
+          "ms": 144815
+        },
+        {
+          "stage": "flows-catalog",
+          "ms": 514145
+        },
+        {
+          "stage": "flows-expand",
+          "ms": 201951
+        },
+        {
+          "stage": "design-theme",
+          "ms": 213549
+        },
+        {
+          "stage": "design-architect",
+          "ms": 700280
+        },
+        {
+          "stage": "contract",
+          "ms": 418659
+        },
+        {
+          "stage": "code-scaffold",
+          "ms": 72098
+        },
+        {
+          "stage": "code-contract",
+          "ms": 59401
+        },
+        {
+          "stage": "code-frames",
+          "ms": 309650
+        },
+        {
+          "stage": "code-pages",
+          "ms": 3356499
+        }
+      ]
+    },
+    "calls": 320,
+    "tokensIn": 53915979,
+    "tokensCached": 49204704,
+    "tokensOut": 779895,
+    "costUsd": 6.6227235,
+    "subscription": {
+      "weekFrom": 28,
+      "weekTo": 33
+    },
+    "rounds": 31,
+    "known": 12,
+    "review": [
+      {
+        "reviewer": "code",
+        "part": "code",
+        "caught": 6,
+        "fixed": 3,
+        "unchecked": 2,
+        "open": 1,
+        "threads": 1
+      },
+      {
+        "reviewer": "adherence",
+        "part": "code",
+        "caught": 9,
+        "fixed": 6,
+        "unchecked": 3,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "ux",
+        "part": "code",
+        "caught": 10,
+        "fixed": 9,
+        "unchecked": 1,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "behavior",
+        "part": "code",
+        "caught": 1,
+        "fixed": 0,
+        "unchecked": 1,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "peer",
+        "part": "planning",
+        "caught": 19,
+        "fixed": 19,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "output",
+        "part": "planning",
+        "caught": 7,
+        "fixed": 3,
+        "unchecked": 4,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "checks",
+        "part": "planning",
+        "caught": 1,
+        "fixed": 1,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      }
+    ],
+    "threads": {
+      "issues": 53,
+      "threads": 1
+    }
+  },
+  "code": {
+    "files": 139,
+    "lines": 8380,
+    "tsc": {
+      "errors": 0
+    },
+    "eslint": {
+      "errors": 0,
+      "warnings": 0,
+      "byRule": {}
+    },
+    "validate": {
+      "errors": 0,
+      "warnings": 0,
+      "byRule": {}
+    },
+    "clones": {
+      "percentage": 5.777616279069767,
+      "count": 34,
+      "maxLines": 31
+    },
+    "longFiles": 3,
+    "linesByOrigin": {
+      "template": 1778,
+      "code": 1124,
+      "model": 5478
+    }
+  },
+  "routes": [
+    {
+      "route": "/",
+      "screen": "S01",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 22,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 37,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 1
+        }
+      },
+      "keyboard": {
+        "interactive": 5,
+        "reachable": 5,
+        "focusVisible": 5,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/home",
+      "screen": "S04",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 26,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 74,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/clients",
+      "screen": "S05",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 30,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 91,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 25,
+        "reachable": 24,
+        "focusVisible": 23,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 11,
+        "enterOk": 11,
+        "spaceOk": 11,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/clients/client-1",
+      "screen": "S06",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 70,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 17,
+        "reachable": 17,
+        "focusVisible": 17,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 7,
+        "enterOk": 7,
+        "spaceOk": 7,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/projects",
+      "screen": "S07",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 78,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 20,
+        "reachable": 20,
+        "focusVisible": 19,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/projects/project-1",
+      "screen": "S08",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 33,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 81,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 24,
+        "reachable": 22,
+        "focusVisible": 21,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 12,
+        "enterOk": 12,
+        "spaceOk": 12,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/availability",
+      "screen": "S09",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 28,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/session-types",
+      "screen": "S10",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 26,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 63,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 13,
+        "reachable": 13,
+        "focusVisible": 13,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 6,
+        "enterOk": 6,
+        "spaceOk": 6,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/sessions",
+      "screen": "S11",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 86,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 19,
+        "reachable": 19,
+        "focusVisible": 19,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/sessions/slot-1",
+      "screen": "S12",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 45,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 12,
+        "reachable": 12,
+        "focusVisible": 12,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/bookings/booking-1",
+      "screen": "S13",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 32,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/book",
+      "screen": "S14",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 23,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 28,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 5,
+        "reachable": 4,
+        "focusVisible": 4,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/my-booking/booking-1",
+      "screen": "S15",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 23,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 28,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 5,
+        "reachable": 5,
+        "focusVisible": 5,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/account",
+      "screen": "S16",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 21,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    }
+  ]
+}

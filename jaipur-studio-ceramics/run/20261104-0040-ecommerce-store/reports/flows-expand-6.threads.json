@@ -1,0 +1,22 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The step opens one order from the list but has no notFound alternative. Fix: Add a \"notFound\" alternative from F16.S03 for the opened order being gone, saying the order is gone and showing the order list.",
+      "at": "F16.S03"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Added notFound alternative F16.A03 from F16.S03 saying the order is gone and showing the order list.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link default uses `plain` look app-wide, which hides every link. Fix: Change the Link default look from `plain` to the default underlined look (`none`) so links stay visible app-wide.",
+      "at": "defaults.Link.look"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Changed defaults.Link.look from plain to the default underlined look so links stay visible app-wide.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

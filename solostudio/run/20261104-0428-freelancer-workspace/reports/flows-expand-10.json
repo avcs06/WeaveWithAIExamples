@@ -1,0 +1,19 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Step F33.S02 shows open times for the next two weeks but has no list effect. Fix: Add a list effect for Slot (and for SessionType if the choice is shown) to F33.S02 and add an empty alternative for no open slots, or change the websiteResponse so it does not show open times.",
+          "at": "F33.S02"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

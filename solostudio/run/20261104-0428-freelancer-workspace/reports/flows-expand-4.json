@@ -1,0 +1,25 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The step omits the catalog-required grouping of tasks by status. Fix: The websiteResponse must say the website shows the project's name, description, due date and client together with its tasks grouped by status, with overdue tasks standing out.",
+          "at": "F17.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The step omits the catalog-required links from each row to its project and client. Fix: The websiteResponse must say the website shows all projects with their name, client name, due date and open task count and that each row links to its project and client.",
+          "at": "F16.S01"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

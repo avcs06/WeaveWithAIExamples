@@ -1,0 +1,574 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/account/page.tsx uses Button without its recipe read. Call get_recipe Button, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/account/page.tsx uses Form without its recipe read. Call get_recipe Form, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/account/page.tsx uses Input without its recipe read. Call get_recipe Input, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/account/page.tsx uses Section without its recipe read. Call get_recipe Section, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/account/page.tsx uses Toast without its recipe read. Call get_recipe Toast, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/account/page.tsx uses Typography without its recipe read. Call get_recipe Typography, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Button without its recipe read. Call get_recipe Button, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Card without its recipe read. Call get_recipe Card, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Checkbox without its recipe read. Call get_recipe Checkbox, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Dialog without its recipe read. Call get_recipe Dialog, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Dropdown without its recipe read. Call get_recipe Dropdown, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Input without its recipe read. Call get_recipe Input, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Link without its recipe read. Call get_recipe Link, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Numeral without its recipe read. Call get_recipe Numeral, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Select without its recipe read. Call get_recipe Select, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Textarea without its recipe read. Call get_recipe Textarea, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx uses Toast without its recipe read. Call get_recipe Toast, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Button without its recipe read. Call get_recipe Button, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Dropdown without its recipe read. Call get_recipe Dropdown, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Input without its recipe read. Call get_recipe Input, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Table without its recipe read. Call get_recipe Table, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Toast without its recipe read. Call get_recipe Toast, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Tooltip without its recipe read. Call get_recipe Tooltip, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(app)/dashboards/page.tsx uses Typography without its recipe read. Call get_recipe Typography, then build it as the case that fits.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Button without its recipe read. Call get_recipe Button, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Card without its recipe read. Call get_recipe Card, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Checkbox without its recipe read. Call get_recipe Checkbox, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Link without its recipe read. Call get_recipe Link, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Numeral without its recipe read. Call get_recipe Numeral, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Section without its recipe read. Call get_recipe Section, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/(routes)/(marketing)/page.tsx uses Typography without its recipe read. Call get_recipe Typography, then build it as the case that fits.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx uses Button without its recipe read. Call get_recipe Button, then build it as the case that fits.",
+          "at": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx uses Dialog without its recipe read. Call get_recipe Dialog, then build it as the case that fits.",
+          "at": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx"
+        },
+        {
+          "rule": "CODE-014",
+          "severity": "mandatory",
+          "message": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx uses Toast without its recipe read. Call get_recipe Toast, then build it as the case that fits.",
+          "at": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx"
+        },
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx is 318 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "CODE-003",
+          "severity": "mandatory",
+          "message": "lint failed:\n> nx run web:lint\n\n> eslint .\r\n\r\n\u001b[0m\u001b[0m\n\u001b[0m\u001b[4mweb/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx\u001b[24m\u001b[0m\n\u001b[0m  \u001b[2m4:10\u001b[22m  \u001b[33mwarning\u001b[39m  'NextLink' is defined but never used  \u001b[2m@typescript-eslint/no-unused-vars\u001b[22m\u001b[0m\n\u001b[0m\u001b[0m\n\u001b[0m\u001b[4mweb/app/(routes)/(app)/dashboards/page.tsx\u001b[24m\u001b[0m\n\u001b[0m   \u001b[2m16:10\u001b[22m  \u001b[33mwarning\u001b[39m  'Table' is defined but never used                                                                                     \u001b[2m@typescript-eslint/no-unused-vars\u001b[22m\u001b[0m\n\u001b[0m   \u001b[2m20:17\u001b[22m  \u001b[33mwarning\u001b[39m  'Copy' is defined but never used                                                                                      \u001b[2m@typescript-eslint/no-unused-vars\u001b[22m\u001b[0m\n\u001b[0m   \u001b[2m20:49\u001b[22m  \u001b[33mwarning\u001b[39m  'Trash2' is defined but never used                                                                                    \u001b[2m@typescript-eslint/no-unused-vars\u001b[22m\u001b[0m\n\u001b[0m  \u001b[2m155:76\u001b[22m  \u001b[31merror\u001b[39m    Use `disabledWithReason` so the user sees why, or write a comment right above `disabled` saying why it has no reason  \u001b[2mdisabled-reasons/with-reason-or-comment\u001b[22m\u001b[0m\n\u001b[0m\u001b[0m\n\u001b[0m\u001b[4mweb/app/(routes)/(marketing)/page.tsx\u001b[24m\u001b[0m\n\u001b[0m   \u001b[2m6:10\u001b[22m  \u001b[33mwarning\u001b[39m  'Card' is defined but never used  \u001b[2m@typescript-eslint/no-unused-vars\u001b[22m\u001b[0m\n\u001b[0m  \u001b[2m58:56\u001b[22m  \u001b[33mwarning\u001b[39m  Unexpected empty arrow function   \u001b[2m@typescript-eslint/no-empty-function\u001b[22m\u001b[0m\n\u001b[0m\u001b[0m\n\u001b[0m\u001b[4mweb/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx\u001b[24m\u001b[0m\n\u001b[0m  \u001b[2m58:13\u001b[22m  \u001b[31merror\u001b[39m  Use `loadingWithReason` so the user sees why, or write a comment right above `loading` saying why it has no reason  \u001b[2mdisabled-reasons/with-reason-or-comment\u001b[22m\u001b[0m\n\u001b[0m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m✖ 8 problems (2 errors, 6 warnings)\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m\u001b[22m\u001b[39m\u001b[0m\nWarning: command \"eslint .\" exited with non-zero status code\n\n\n NX   Running target lint for project web failed\n\nFailed tasks:\n\n- web:lint\n\nHint: run the command with --verbose for more details."
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports entity store directly and mutates it to duplicate widgets instead of using entity operations Fix: Remove import of useWidgetStore from @app/entities/widget/store and duplicate widgets only through entity layer functions (e.g. createWidget/duplicate operation); never import or write to store inner files from a screen or block",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports entity store inner file and writes records with setState/crypto.randomUUID instead of entity operations Fix: Remove import from @app/entities/widget/store and replace direct useWidgetStore.setState and crypto.randomUUID duplication with entity create/duplicate functions; screens/blocks must only use hooks and async functions exported from @app/entities/<entity>",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Uses mockCall('updatePassword') instead of entity layer auth operation to change password Fix: Replace mockCall with the auth entity's update/change-password function/hook and handle its success/error as the flow describes; do not call mock or fetch directly from component",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Single page component loads records, holds all form/dialog state for every widget type, and lays out entire screen Fix: Split into single-purpose components (e.g. separate widget cards, dialogs, and edit controls in components/ beside route or in blocks) so page composes them instead of containing all logic",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Import order violates shared->entities->components->blocks->screens (blocks imported before entities/components) Fix: Reorder imports to entities first, then components, then blocks; e.g. import from @app/entities/dashboard before @app/components/* and @app/blocks/*",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Import order violates layer order and contains dead imports/logic (components before entities) Fix: Reorder to entities before components and remove unused direct store/mock usage; keep only entity hooks/functions",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Contains unused import NextLink and dead code paths Fix: Remove unused imports (NextLink) and any unused props/branches; ensure every import and branch is used",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "In-place rename adds a labeled Input (\"Dashboard name\") with error prop; A15 requires in-place edit has no label and no help text, with only icon buttons beside the value. Fix: Render the inline edit as an unlabeled field (no label/help) with save/cancel IconButtons beside the value, showing validation inline without a label.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "In-place edits for dashboard name, widget title, counter label and checklist item use labeled Inputs; A15 forbids label/help text for in-place edits. Fix: Remove labels/help from all in-place edits (dashboard name, widget title, counter label, checklist item) and keep only the value with save/cancel icon buttons.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Note/counter/checklist validations show toast instead of marking the field with the design's messages (Max 5000, Max 40, Text is required and max 120) and keeping typed value without saving. Fix: Mark the specific field as invalid with the exact messages from S05 alternatives, keep what was typed, and do not save.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Widgets list is rendered as a div of Card components, not a Table or CardList; A13 requires every list of records be a Table or CardList. Fix: Render widgets with CardList (layout grid/column as appropriate) so the list uses the required component.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative 'This dashboard is no longer available.' when a dashboard was deleted in the meantime is not built, and empty-state does not hide the frame's Create dashboard action. Fix: Add the deleted-dashboard alternative (message + show home list) and hide the frame Create action while the list is empty as S04 requires.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative 'This widget is gone.' when a widget was deleted in the meantime is not built. Fix: Detect missing widget and show 'This widget is gone.' while rendering the editor without it.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Password validation and incorrect-password/failure messages are shown as form-level error, not as field-marked errors with the exact wording, and success/failure handling does not match S06 alternatives. Fix: Mark the fields as invalid with 'Current password is required and new password must be 8 to 128 characters' / 'Current password is incorrect.' / 'Could not update password. Try again.' and clear passwords for security as specified.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Checklist and link lists use array index as React key while items can be added/removed. Fix: Use a stable id from the record for each item's key (e.g. item id) and never use index where items can be added, removed or reordered.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Save/change actions can be triggered twice while running and do not wait/disable. Fix: Make every create/update/delete handler async, await its operation, disable its button while pending, and ignore a second press until it settles, showing success/error.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Duplicate/create/rename/delete actions run without a pending guard so a second press runs again. Fix: Track pending per action, disable the triggering control with loading/disabledWithReason while awaiting, and handle success/error once.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Reordering does two separate repositionWidget writes; if the second fails the order is left inconsistent. Fix: Perform the reorder as a single atomic operation or rollback on failure and tell the user what did not happen so records stay consistent.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link href from widget records is rendered without restricting to http/https/app URLs. Fix: Validate/filter href before rendering and only render Link when it starts with http://, https:// or an app route; otherwise render plain text.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Saving/Saved indicator uses setTimeout without cleanup so it can set state after unmount/navigation. Fix: Store timer ids in a ref/effect and clear them in the effect cleanup, and guard against showing a stale load after the user moved to another dashboard.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Password save does not disable while awaiting and does not prevent double submit. Fix: Await the update, disable Save while pending, and react to success/error once per press.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Widgets render in a single narrow column (flex-col-gap-4) and ignore FD06 size, leaving empty space on 1280px and not showing small/medium/large footprint. Fix: Render widgets in a grid (e.g. 12-col grid or CardList layout=\"grid\") and map size to column span so small/medium/large have different visual footprints and fill the width.",
+          "at": "S05 at /dashboards/[dashboardId] in web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Editing header shows four filled Buttons (Add widget, Duplicate, Delete, Done) with equal weight; view has no single primary action. Fix: Keep one primary (Done or Add widget) and make the others secondary/ghost or move Duplicate/Delete to a menu; Delete stays variant=\"danger\" as the only danger primary.",
+          "at": "S05 at /dashboards/[dashboardId] in web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx PageHeader actions"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Saving/Saved indicator sits in its own row below PageHeader, not beside the dashboard name it describes. Fix: Place the Saving/Saved text inline with the title in PageHeader (or immediately beside it) so the status sits beside what it describes per U12.",
+          "at": "S05 at /dashboards/[dashboardId] in web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx Saving status"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "In editing mode the name is not editable until user clicks an extra \"Edit dashboard name\" button, adding a step and a dangling button row. Fix: When editing is on, show the dashboard name directly as an editable field with current value and save/cancel icon buttons, without the intermediate button.",
+          "at": "S05 at /dashboards/[dashboardId] in web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx dashboard name edit"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Inline rename renders Input with visible label \"Dashboard name\" inside the table cell, adding noise and breaking in-place edit (field should have no label). Fix: Render the in-place field without a label (aria-label only) with save/cancel icon buttons side-by-side in the same cell.",
+          "at": "S04 at /dashboards in web/app/(routes)/(app)/dashboards/page.tsx name column inline edit"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboards: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboards: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboards/dashboard-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboards/dashboard-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboards/dashboard-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/account: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/account: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative 'This dashboard is no longer available.' when a dashboard was deleted in the meantime is not built, and empty-state does not hide the frame's Create dashboard action. Fix: Add the deleted-dashboard alternative (message + show home list) and hide the frame Create action while the list is empty as S04 requires.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative 'This widget is gone.' when a widget was deleted in the meantime is not built. Fix: Detect missing widget and show 'This widget is gone.' while rendering the editor without it.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports useWidgetStore from @app/entities/widget/store and mutates records directly via setState, bypassing entity layer. Fix: Remove store import and clean up widgets only through entity operations (e.g., deleteWidget per widget or add a deleteWidgetsByDashboard operation in the widget entity that uses createPersistentStore).",
+          "at": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Single page component loads records, holds ~15 useState/useRef, implements dashboard rename, duplicate, add/remove widget, title edit, reposition, size, link add/edit and all dialogs and layout. Fix: Split into single-responsibility components/blocks (e.g., DashboardHeader, WidgetGrid, AddWidgetDialog, RemoveWidgetDialog, LinkDialog, widget type components) and compose them in page.tsx.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports violate one-way order: @app/components/PageHeader imported before @app/entities/auth (and same pattern in dashboards/page.tsx and dashboards/[dashboardId]/page.tsx where blocks/components precede entities). Fix: Reorder imports to shared -> entities -> components -> blocks -> routes in each file.",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Duplicate creates the copy dashboard then creates its widgets one by one with no rollback; if a createWidget fails the copy remains with partial widgets. Fix: Make the multi-record duplicate atomic: if any widget create fails delete the partially created copy (and its widgets) and show what failed, or create dashboard+widgets in one operation.",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Duplicate and create flows create one record then update another (createWidget + updateDashboard lastEditedAt, duplicate loop) without atomicity; failure leaves partial state. Fix: Wrap the multi-step change so either all steps succeed or the user is told what did not happen and partial records are removed/rolled back.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "handleSaveDash and handleWTitle have no pending guard, so a second press while the save runs fires the operation again. Fix: Guard every save/update action with a saving flag, return early if pending, and show loadingWithReason/disabled while it runs.",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboards: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboards: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboards/dashboard-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboards/dashboard-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboards/dashboard-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/account: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/account: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative 'This dashboard is no longer available.' when a dashboard was deleted in the meantime is not built, and empty-state does not hide the frame's Create dashboard action. Fix: Add the deleted-dashboard alternative (message + show home list) and hide the frame Create action while the list is empty as S04 requires. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative 'This widget is gone.' when a widget was deleted in the meantime is not built. Fix: Detect missing widget and show 'This widget is gone.' while rendering the editor without it. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports useWidgetStore from @app/entities/widget/store and mutates records directly via setState, bypassing entity layer. Fix: Remove store import and clean up widgets only through entity operations (e.g., deleteWidget per widget or add a deleteWidgetsByDashboard operation in the widget entity that uses createPersistentStore). (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Single page component loads records, holds ~15 useState/useRef, implements dashboard rename, duplicate, add/remove widget, title edit, reposition, size, link add/edit and all dialogs and layout. Fix: Split into single-responsibility components/blocks (e.g., DashboardHeader, WidgetGrid, AddWidgetDialog, RemoveWidgetDialog, LinkDialog, widget type components) and compose them in page.tsx. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Imports violate one-way order: @app/components/PageHeader imported before @app/entities/auth (and same pattern in dashboards/page.tsx and dashboards/[dashboardId]/page.tsx where blocks/components precede entities). Fix: Reorder imports to shared -> entities -> components -> blocks -> routes in each file. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Duplicate creates the copy dashboard then creates its widgets one by one with no rollback; if a createWidget fails the copy remains with partial widgets. Fix: Make the multi-record duplicate atomic: if any widget create fails delete the partially created copy (and its widgets) and show what failed, or create dashboard+widgets in one operation. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboards/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Duplicate and create flows create one record then update another (createWidget + updateDashboard lastEditedAt, duplicate loop) without atomicity; failure leaves partial state. Fix: Wrap the multi-step change so either all steps succeed or the user is told what did not happen and partial records are removed/rolled back. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "handleSaveDash and handleWTitle have no pending guard, so a second press while the save runs fires the operation again. Fix: Guard every save/update action with a saving flag, return early if pending, and show loadingWithReason/disabled while it runs. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx"
+        }
+      ]
+    }
+  ]
+}

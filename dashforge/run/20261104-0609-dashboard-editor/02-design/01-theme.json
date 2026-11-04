@@ -1,0 +1,410 @@
+{
+  "meta": {
+    "artifact": "design-theme",
+    "version": 1,
+    "hash": "b6930843f4da7e1baf4f653950d256a4108380a0dd770bfb2a79e6b612d813ca",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "657ac613ddf2280da3a4796cf32dabe3a5f541d519da6148e7da35b0ab1648a1"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "232afe2a836cd5e78f4c879bf4a49906132cf240a7cbef60669c61716e3e4e8e"
+      }
+    },
+    "stage": "design-theme",
+    "model": "meta-models/muse-spark-open-1026",
+    "rounds": 3,
+    "createdAt": "2026-11-04T00:45:56.346Z"
+  },
+  "data": {
+    "brief": {
+      "audience": "Individuals building personal dashboards for themselves",
+      "personality": [
+        "futuristic",
+        "luminous",
+        "precise",
+        "bold"
+      ],
+      "voice": "concise, cool, second person",
+      "density": "comfortable",
+      "signature": "a faint neon grid glowing behind every page, and sharp-edged widgets with cyan mono numerals and a soft glow focus ring",
+      "feel": [
+        "neon console"
+      ],
+      "colorScheme": "dark",
+      "seedHue": 195,
+      "seedChroma": "vivid",
+      "frameHue": 266,
+      "frameChroma": "muted",
+      "baseHue": 246,
+      "baseChroma": "muted",
+      "statusHues": {
+        "success": 164,
+        "warning": 84,
+        "error": 29,
+        "info": 246
+      },
+      "fonts": {
+        "ui": [
+          {
+            "family": "Geist",
+            "reason": "Crisp Swiss-style sans with technical clarity for console UI text"
+          },
+          {
+            "family": "Inter",
+            "reason": "Neutral fallback for dense dashboard controls"
+          },
+          {
+            "family": "IBM Plex Sans",
+            "reason": "Engineered neo-grotesque for data-heavy panels"
+          }
+        ],
+        "display": [
+          {
+            "family": "Orbitron",
+            "reason": "Squared sci-fi display for glowing console headings and theatrical impact"
+          },
+          {
+            "family": "Space Grotesk",
+            "reason": "Quirky grotesque fallback with futuristic feel"
+          },
+          {
+            "family": "Rajdhani",
+            "reason": "Condensed technical sans for compact dashboard titles"
+          }
+        ],
+        "mono": [
+          {
+            "family": "Space Mono",
+            "reason": "Retro-futurist geometric mono for neon numbers and counters"
+          },
+          {
+            "family": "JetBrains Mono",
+            "reason": "Clear code mono fallback for figures and IDs"
+          },
+          {
+            "family": "IBM Plex Mono",
+            "reason": "Engineered mono for consistent tabular numerals"
+          }
+        ]
+      },
+      "radius": "sharp",
+      "focusRing": "glow",
+      "entities": [
+        {
+          "noun": "Dashboard",
+          "colored": false,
+          "hue": 0
+        },
+        {
+          "noun": "Widget",
+          "colored": false,
+          "hue": 0
+        }
+      ],
+      "imagery": "icons",
+      "references": []
+    },
+    "theme": {
+      "modes": [
+        "dark"
+      ],
+      "colors": {
+        "dark": {
+          "theme": {
+            "bg": "#002828",
+            "fg": "#B2FFFE",
+            "fgMuted": "#00B8B9",
+            "border": "#00A7A7",
+            "hoverBg": "#003333",
+            "accentBg": "#00A7A7",
+            "accentFg": "#021313",
+            "accentBorder": "#007F7F",
+            "accentHoverBg": "#00B8B9",
+            "focus": "#00A7A7",
+            "accentFocus": "#021313",
+            "shadow": "#021313"
+          },
+          "base": {
+            "bg": "#19232B",
+            "fg": "#E1F1FF",
+            "fgMuted": "#83A6C5",
+            "border": "#7496B5",
+            "hoverBg": "#202D38",
+            "accentBg": "#E1F1FF",
+            "accentFg": "#0C1013",
+            "accentBorder": "#ABC8E2",
+            "accentHoverBg": "#ABC8E2",
+            "focus": "#7496B5",
+            "accentFocus": "#0C1013",
+            "shadow": "#0C1013"
+          },
+          "page": {
+            "pageBg": "#10171D",
+            "pageFg": "#E1F1FF",
+            "pageFgMuted": "#83A6C5",
+            "frameBg": "#1D222C",
+            "divider": "#42586C",
+            "backdrop": "#0C1013",
+            "skeleton": "#56728B",
+            "pageBackground": "radial-gradient(ellipse 900px 600px at 15% 10%, oklch(0.32 0.12 195 / 0.20) 0%, transparent 60%), radial-gradient(ellipse 700px 500px at 85% 90%, oklch(0.30 0.10 266 / 0.16) 0%, transparent 60%), repeating-linear-gradient(to right, oklch(0.30 0.03 246 / 0.35) 0 1px, transparent 1px 40px), repeating-linear-gradient(to bottom, oklch(0.30 0.03 246 / 0.35) 0 1px, transparent 1px 40px), oklch(0.20 0.02 246)"
+          },
+          "entity": {},
+          "status": {
+            "success": {
+              "bg": "#00291B",
+              "fg": "#C1FFE1",
+              "fgMuted": "#00BE88",
+              "border": "#00AC7B",
+              "hoverBg": "#003523",
+              "accentBg": "#00AC7B",
+              "accentFg": "#05130C",
+              "accentBorder": "#00835C",
+              "accentHoverBg": "#00BE88",
+              "focus": "#00AC7B",
+              "accentFocus": "#05130C",
+              "shadow": "#05130C"
+            },
+            "warning": {
+              "bg": "#2D1F00",
+              "fg": "#FFECC8",
+              "fgMuted": "#CC9800",
+              "border": "#B98A00",
+              "hoverBg": "#392800",
+              "accentBg": "#B98A00",
+              "accentFg": "#150E03",
+              "accentBorder": "#8D6800",
+              "accentHoverBg": "#CC9800",
+              "focus": "#B98A00",
+              "accentFocus": "#150E03",
+              "shadow": "#150E03"
+            },
+            "error": {
+              "bg": "#391510",
+              "fg": "#FFE9E5",
+              "fgMuted": "#F97161",
+              "border": "#E86152",
+              "hoverBg": "#4A1914",
+              "accentBg": "#E86152",
+              "accentFg": "#190B09",
+              "accentBorder": "#B3463A",
+              "accentHoverBg": "#F97161",
+              "focus": "#E86152",
+              "accentFocus": "#190B09",
+              "shadow": "#190B09"
+            },
+            "info": {
+              "bg": "#03233C",
+              "fg": "#E1F1FF",
+              "fgMuted": "#35A8FF",
+              "border": "#0098F2",
+              "hoverBg": "#002D4E",
+              "accentBg": "#0098F2",
+              "accentFg": "#06101A",
+              "accentBorder": "#0073BA",
+              "accentHoverBg": "#35A8FF",
+              "focus": "#0098F2",
+              "accentFocus": "#06101A",
+              "shadow": "#06101A"
+            }
+          }
+        }
+      },
+      "fonts": {
+        "ui": "Geist",
+        "display": "Orbitron",
+        "mono": "Space Mono"
+      },
+      "radius": {
+        "surface": "4px",
+        "control": "4px"
+      },
+      "focusRing": "glow",
+      "logo": {
+        "family": "Orbitron",
+        "weight": "700",
+        "case": "as written",
+        "letterSpacing": "0.06em",
+        "colors": {
+          "dark": "#00A7A7"
+        }
+      },
+      "layouts": {
+        "app": {
+          "docksFirst": "sidebars",
+          "header": {
+            "needed": true,
+            "start": "",
+            "center": "",
+            "end": "Create button",
+            "separation": "divider",
+            "overlay": false,
+            "sticky": false
+          },
+          "sidebar": {
+            "needed": true,
+            "side": "left",
+            "top": "logo",
+            "items": "navigation",
+            "bottom": "account",
+            "widthPx": 260,
+            "separation": "divider"
+          },
+          "footer": {
+            "needed": false,
+            "start": "",
+            "center": "",
+            "end": "",
+            "padding": "4",
+            "gap": "4",
+            "separation": "none"
+          },
+          "main": {
+            "container": "fluid",
+            "maxWidthPx": 0,
+            "padding": "6",
+            "align": "start",
+            "separation": "none"
+          },
+          "logo": "sidebar",
+          "account": "sidebar"
+        },
+        "marketing": {
+          "docksFirst": "header",
+          "header": {
+            "needed": true,
+            "start": "logo",
+            "center": "navigation",
+            "end": "account",
+            "separation": "divider",
+            "overlay": false,
+            "sticky": true
+          },
+          "sidebar": {
+            "needed": false,
+            "side": "left",
+            "top": "",
+            "items": "",
+            "bottom": "",
+            "widthPx": 0,
+            "separation": "none"
+          },
+          "footer": {
+            "needed": true,
+            "content": "Product links, Resources, Legal and small print",
+            "padding": "8",
+            "gap": "6",
+            "separation": "divider"
+          },
+          "main": {
+            "container": "fixed",
+            "maxWidthPx": 1200,
+            "padding": "9",
+            "align": "center",
+            "separation": "none"
+          },
+          "logo": "header",
+          "account": "header"
+        }
+      },
+      "defaults": {
+        "Textarea": {
+          "look": "outline"
+        },
+        "Tag": {
+          "variant": "base",
+          "size": "sm",
+          "look": "bordered"
+        },
+        "Tabs": {
+          "variant": "default"
+        },
+        "Switch": {
+          "variant": "default",
+          "size": "sm"
+        },
+        "MultiSelect": {
+          "look": "outline"
+        },
+        "Select": {
+          "look": "outline"
+        },
+        "Radio": {
+          "variant": "default",
+          "size": "sm"
+        },
+        "PopoverButton": {
+          "look": "ghost"
+        },
+        "Link": {
+          "variant": "default",
+          "look": "plain"
+        },
+        "Input": {
+          "look": "outline"
+        },
+        "DateInput": {
+          "look": "outline"
+        },
+        "NumberInput": {
+          "look": "outline"
+        },
+        "PasswordInput": {
+          "look": "outline"
+        },
+        "QuantitySelector": {
+          "look": "outline"
+        },
+        "SearchInput": {
+          "look": "outline"
+        },
+        "FormControl": {
+          "variant": "default",
+          "size": "sm",
+          "look": "outline"
+        },
+        "Dialog": {
+          "size": "md"
+        },
+        "Chip": {
+          "variant": "default",
+          "size": "sm",
+          "look": "outline"
+        },
+        "ChipGroup": {
+          "look": "collapsed"
+        },
+        "Checkbox": {
+          "variant": "default",
+          "size": "sm"
+        },
+        "Card": {
+          "variant": "default",
+          "look": "outline elevated"
+        },
+        "Button": {
+          "variant": "default",
+          "size": "md",
+          "look": "ghost"
+        },
+        "IconButton": {
+          "look": "ghost"
+        },
+        "Avatar": {
+          "size": "md"
+        },
+        "Accordion": {
+          "look": "bordered"
+        },
+        "Collapsible": {
+          "look": "bordered"
+        },
+        "Toast": {
+          "status": "info"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "CONTRACT-007",
+          "severity": "mandatory",
+          "message": "lookupOrder is a get with 2 inputs (FD17, FD11). A get takes no inputs, or the one field the user types to find its record. Keep that field and move the others to the operation that saves or lists.",
+          "at": "lookupOrder"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S05 lets the buyer enter a DiscountCode and shows the resulting discount but reads only Piece records. Fix: Add getDiscountCodeByCode to the reads for S05 so it reads listPieces and the DiscountCode applied at checkout.",
+          "at": "S05"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "CONTRACT-011",
+          "severity": "mandatory",
+          "message": "F07.S02 reads Order, but no get operation on Order serves it.",
+          "at": "F07.S02"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,988 @@
+{
+  "meta": {
+    "artifact": "flows-catalog",
+    "version": 1,
+    "hash": "34af4dba3d6ef91c7d1de88ad3f34309dd43b041b1b6bf9061d36c7504d9e4b0",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "2b437bd8b8f83589ca47480abbb934a4e66baf15245230fcd850b9735f15a9b2"
+      }
+    },
+    "stage": "flows-catalog",
+    "model": "muse-spark-1.3",
+    "rounds": 2,
+    "createdAt": "2026-11-03T19:18:52.196Z"
+  },
+  "data": {
+    "flows": [
+      {
+        "id": "F01",
+        "name": "Visit the shop landing page",
+        "role": "buyer",
+        "kind": "landing",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public web address without being signed in",
+        "goal": "Understand this is the studio's own shop and start browsing in-stock pieces.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "The visitor knows how to browse and order; nothing is stored and a refresh shows the same page.",
+        "description": "The visitor arrives on the public shop page, reads what the Jaipur studio sells and that ordering needs no account or messaging, sees featured in-stock Pieces with photos (FD04), price (FD03) and honest availability, and chooses to browse the full shop or open a piece. No fields are asked."
+      },
+      {
+        "id": "F02",
+        "name": "Browse pieces",
+        "role": "buyer",
+        "kind": "browse",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the landing page or shop listing",
+        "goal": "Find an available mug, bowl, planter or vase in the catalog.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "The buyer has found pieces that are actually available; a refresh shows the same listing with current stock.",
+        "description": "The buyer opens the shop listing from the landing page, sees all Pieces with photos (FD04), price (FD03), category (FD05) and how many are left or sold out, narrows the list with search (FD18) and category (FD05), and chooses a piece to view. No fields are saved."
+      },
+      {
+        "id": "F03",
+        "name": "View a piece and choose options",
+        "role": "buyer",
+        "kind": "view",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the shop listing",
+        "goal": "See a piece's details and choose a glaze, size and quantity that is in stock.",
+        "preconditions": [
+          "Not signed in.",
+          "At least one Piece exists."
+        ],
+        "outcome": "The buyer has seen the piece and a valid in-stock variant choice; nothing is saved yet and a refresh shows the same piece with current stock.",
+        "description": "The buyer opens one Piece from the listing, sees its photos (FD04), title (FD01), description (FD02), price (FD03) and per-variant availability, then picks a glaze (FD06), a size (FD07) and a quantity (FD09) no greater than the stock left (FD08); a sold-out variant is shown as sold out and cannot be picked for ordering."
+      },
+      {
+        "id": "F04",
+        "name": "Add piece to cart",
+        "role": "buyer",
+        "kind": "act",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On a Piece page with a glaze, size and quantity chosen",
+        "goal": "Put a chosen in-stock variant in the cart.",
+        "preconditions": [
+          "Not signed in.",
+          "Chosen variant has stock left."
+        ],
+        "outcome": "The cart holds the chosen variant and quantity; after a refresh the cart is still there.",
+        "description": "The buyer, having chosen a glaze (FD06), size (FD07) and quantity (FD09) within stock (FD08) on a Piece page, chooses to add it to the cart; the website keeps the cart in the browser and shows the cart count and total update, and the buyer continues browsing or goes to review the cart."
+      },
+      {
+        "id": "F05",
+        "name": "Review cart and update quantities",
+        "role": "buyer",
+        "kind": "edit",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On any shop page with items in the cart",
+        "goal": "Review the cart and correct quantities before ordering.",
+        "preconditions": [
+          "Not signed in.",
+          "Cart has at least one item."
+        ],
+        "outcome": "The cart reflects the wanted quantities; after a refresh the same cart is shown.",
+        "description": "The buyer opens the cart, sees each line with piece, glaze (FD06), size (FD07), price (FD03) and quantity (FD09) with the total updating, changes a quantity (FD09) within stock (FD08) or removes a line, and proceeds to checkout when ready."
+      },
+      {
+        "id": "F06",
+        "name": "Place an order as guest",
+        "role": "buyer",
+        "kind": "create",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the cart review",
+        "goal": "Place an order as a guest without paying online.",
+        "preconditions": [
+          "Not signed in.",
+          "Cart has at least one in-stock item."
+        ],
+        "outcome": "An Order is created with stock reduced; after a refresh the confirmation with reference and totals is still retrievable.",
+        "description": "The buyer starts checkout from the cart, enters name (FD10), phone number (FD11), fulfilment choice (FD12) and, for courier, delivery address (FD13), city (FD14) and PIN code (FD15), optionally types a discount code (FD16) which is checked and rejected with a message when invalid, expired or deactivated while still allowing the order without it, sees subtotal with discount plus courier shipping of Rs 99 or free above Rs 1500 discounted subtotal and free pickup, and submits the Order; the website immediately reduces stock (FD08), creates the Order with reference, and shows the confirmation with UPI-later note."
+      },
+      {
+        "id": "F07",
+        "name": "Look up an order",
+        "role": "buyer",
+        "kind": "view",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the shop pages with an order reference",
+        "goal": "Find a placed order again with reference and phone number.",
+        "preconditions": [
+          "Not signed in.",
+          "An Order was placed."
+        ],
+        "outcome": "The buyer has seen the order details; a refresh shows the same order.",
+        "description": "The buyer opens order lookup, enters the order reference (FD17) and phone number (FD11) from checkout, and sees the confirmation again: pieces with glaze (FD06), size (FD07) and quantity (FD09), totals with discount and shipping, fulfilment choice (FD12) with pickup instructions or delivery address, and the note that the owner will collect by UPI later."
+      },
+      {
+        "id": "F08",
+        "name": "Owner sign up",
+        "role": "shopOwner",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signUp",
+        "signedOut": true,
+        "start": "On the owner sign-in page while not signed in",
+        "goal": "Create the shop-owner account.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "The owner account exists and the owner is signed in; after a refresh they stay signed in.",
+        "description": "The owner chooses to sign up from the owner entry, fills in FM02 with email (FD23) and password (FD24) and submits it to create the single shop-owner account and reach the home dashboard."
+      },
+      {
+        "id": "F09",
+        "name": "Owner sign in",
+        "role": "shopOwner",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signIn",
+        "signedOut": true,
+        "start": "On the owner sign-in page while not signed in",
+        "goal": "Sign in to manage the shop.",
+        "preconditions": [
+          "Not signed in.",
+          "Owner account exists."
+        ],
+        "outcome": "The owner is signed in; after a refresh they are still signed in on the dashboard.",
+        "description": "The owner chooses to sign in, fills in FM02 with email (FD23) and password (FD24) and submits it to reach the home dashboard with new orders and low-stock warnings."
+      },
+      {
+        "id": "F10",
+        "name": "Owner sign out",
+        "role": "shopOwner",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signOut",
+        "signedOut": false,
+        "start": "On any owner page while signed in",
+        "goal": "End the owner session.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The owner is signed out; after a refresh they stay signed out.",
+        "description": "The signed-in owner chooses to sign out; the website ends the session and shows the public shop again."
+      },
+      {
+        "id": "F11",
+        "name": "Owner home dashboard",
+        "role": "shopOwner",
+        "kind": "home",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "After signing in",
+        "goal": "See new orders and pieces running low at a glance.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The owner has seen what needs packing and what needs making; a refresh shows current orders and stock.",
+        "description": "The owner lands on the home dashboard after signing in and sees new Orders clearly identifiable, today's counts and totals, and Pieces whose variants are nearly gone with low-stock warning at 3 or fewer left (FD08) and sold out at 0, with paths to open an order, edit stock, or plan the next batch."
+      },
+      {
+        "id": "F12",
+        "name": "Browse pieces with stock",
+        "role": "shopOwner",
+        "kind": "browse",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner dashboard",
+        "goal": "Find pieces and spot glazes and variants that are nearly gone.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The owner has found the wanted pieces and stock states; a refresh shows the same current list.",
+        "description": "The owner opens the piece list, sees each Piece with title (FD01), price (FD03), photos (FD04) and per-variant stock (FD08) with low-stock and sold-out marks, narrows with search (FD18) and availability filter (FD26), and chooses a piece to edit or restock."
+      },
+      {
+        "id": "F13",
+        "name": "Add a piece",
+        "role": "shopOwner",
+        "kind": "create",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner piece list",
+        "goal": "Add a new ceramic piece with variants and stock.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The new Piece is saved and visible to buyers when in stock; after a refresh it is still there.",
+        "description": "The owner chooses to add a piece and fills in FM01 with title (FD01), description (FD02), price (FD03), photos (FD04), category (FD05) and each glaze-and-size variant's glaze (FD06), size (FD07) and stock quantity (FD08), then saves it so buyers can order the in-stock variants."
+      },
+      {
+        "id": "F14",
+        "name": "Edit a piece and its stock",
+        "role": "shopOwner",
+        "kind": "edit",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner piece list",
+        "goal": "Change a piece's details, variants or stock.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "At least one Piece exists."
+        ],
+        "outcome": "The Piece changes are saved; after a refresh the updated piece and stock remain.",
+        "description": "The owner opens a Piece from the list, edits it in FM01 changing title (FD01), description (FD02), price (FD03), photos (FD04), category (FD05) or variant glaze (FD06), size (FD07) and stock quantity (FD08) to add a new batch or correct details, and saves the changes for buyers to see."
+      },
+      {
+        "id": "F15",
+        "name": "Remove a piece",
+        "role": "shopOwner",
+        "kind": "delete",
+        "noun": "Piece",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner piece list",
+        "goal": "Remove a piece that will no longer be sold.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "At least one Piece exists."
+        ],
+        "outcome": "The Piece is gone from the shop and stays gone after a refresh; past Orders are unchanged.",
+        "description": "The owner chooses to remove a Piece from the piece list, confirms the removal, and the piece no longer appears for buyers while past Orders keep their snapshot of it."
+      },
+      {
+        "id": "F16",
+        "name": "Browse orders by status",
+        "role": "shopOwner",
+        "kind": "browse",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner dashboard",
+        "goal": "Find orders by status, newest first.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The owner has found the wanted orders; a refresh shows the same current list.",
+        "description": "The owner opens the order list, sees Orders newest first with new orders clearly identifiable, narrows by order status filter (FD25), and chooses an order to open for packing or payment."
+      },
+      {
+        "id": "F17",
+        "name": "View an order",
+        "role": "shopOwner",
+        "kind": "view",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner order list",
+        "goal": "See an order's buyer, items, totals and where to send it.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "At least one Order exists."
+        ],
+        "outcome": "The owner has seen the full order; a refresh shows the same current order.",
+        "description": "The owner opens one Order from the list and sees buyer name (FD10), phone number (FD11), items with glaze (FD06), size (FD07) and quantity (FD09), discount code (FD16) and totals with shipping, fulfilment choice (FD12) with delivery address (FD13), city (FD14) and PIN code (FD15) or pickup, plus payment and fulfilment states."
+      },
+      {
+        "id": "F18",
+        "name": "Mark order as paid",
+        "role": "shopOwner",
+        "kind": "act",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On an Order page",
+        "goal": "Record that UPI payment was collected for an order.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "Order is Unpaid."
+        ],
+        "outcome": "The Order is Paid and stays Paid after a refresh.",
+        "description": "The owner opens an Unpaid Order and marks it Paid after collecting by UPI outside the app; the website shows the Order as Paid while fulfilment state stays unchanged."
+      },
+      {
+        "id": "F19",
+        "name": "Advance order fulfilment",
+        "role": "shopOwner",
+        "kind": "act",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On an Order page",
+        "goal": "Pack, ship or hand over orders.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "Order is New or Packed."
+        ],
+        "outcome": "The Order's fulfilment state is advanced; after a refresh the new state remains.",
+        "description": "The owner opens a New or Packed Order and moves it from New to Packed and then to Shipped for courier fulfilment choice (FD12) or Picked Up for studio pickup; the website shows the new fulfilment state."
+      },
+      {
+        "id": "F20",
+        "name": "Create a discount code",
+        "role": "shopOwner",
+        "kind": "create",
+        "noun": "DiscountCode",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner discount list",
+        "goal": "Create a discount code with an amount and end date.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The DiscountCode is active and usable; after a refresh it is still listed.",
+        "description": "The owner chooses to create a promotion code and enters code (FD19), discount type (FD20), discount value (FD21) and expiry date (FD22), then saves it so buyers can use it at checkout for a weekend offer."
+      },
+      {
+        "id": "F21",
+        "name": "Browse discount codes",
+        "role": "shopOwner",
+        "kind": "browse",
+        "noun": "DiscountCode",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner dashboard",
+        "goal": "Review promotion codes and their state.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "The owner has seen all codes and states; a refresh shows the same current list.",
+        "description": "The owner opens the discount list and sees each DiscountCode with code (FD19), discount type (FD20), discount value (FD21), expiry date (FD22) and active or deactivated state, newest and expiring offers identifiable."
+      },
+      {
+        "id": "F22",
+        "name": "Deactivate a discount code",
+        "role": "shopOwner",
+        "kind": "act",
+        "noun": "DiscountCode",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the owner discount list",
+        "goal": "Stop a promotion code from being used.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "At least one active DiscountCode exists."
+        ],
+        "outcome": "The code is deactivated and stays deactivated after a refresh.",
+        "description": "The owner opens an active DiscountCode from the list and deactivates it so it is rejected at checkout with a message; deactivated codes stay listed for records and are never deleted."
+      },
+      {
+        "id": "F23",
+        "name": "Manage owner account",
+        "role": "shopOwner",
+        "kind": "account",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On any owner page while signed in",
+        "goal": "Manage the owner's own sign-in details.",
+        "preconditions": [
+          "Signed in as shop owner."
+        ],
+        "outcome": "Account changes are saved; after a refresh they remain and sign-in uses them.",
+        "description": "The owner opens their account, sees email (FD23), changes password with password (FD24), and saves the changes to keep the shop protected."
+      },
+      {
+        "id": "F24",
+        "name": "Cancel an order and restore stock",
+        "role": "shopOwner",
+        "kind": "act",
+        "noun": "Order",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On an Order page",
+        "goal": "Cancel a New or Packed order and return its stock to sale.",
+        "preconditions": [
+          "Signed in as shop owner.",
+          "Order is New or Packed."
+        ],
+        "outcome": "The Order is Cancelled with stock restored; after a refresh it stays Cancelled and the stock remains restored.",
+        "description": "The owner opens a New or Packed Order that cannot be fulfilled and cancels it; the website marks the Order Cancelled and restores the stock quantity (FD08) of each ordered variant so the pieces become orderable again."
+      }
+    ],
+    "fields": [
+      {
+        "id": "FD01",
+        "noun": "Piece",
+        "label": "Title",
+        "meaning": "How the piece is named in the shop",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"Speckled Chai Mug\""
+      },
+      {
+        "id": "FD02",
+        "noun": "Piece",
+        "label": "Description",
+        "meaning": "What the piece is, how it is made and how it looks",
+        "type": "longText",
+        "required": false,
+        "min": null,
+        "max": 2000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"Wheel-thrown stoneware mug with speckled glaze, 300ml.\""
+      },
+      {
+        "id": "FD03",
+        "noun": "Piece",
+        "label": "Price",
+        "meaning": "How much one unit of the piece costs in rupees",
+        "type": "money",
+        "required": true,
+        "min": 1,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"650\""
+      },
+      {
+        "id": "FD04",
+        "noun": "Piece",
+        "label": "Photos",
+        "meaning": "Pictures of the piece so buyers can see glaze and form",
+        "type": "url",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"https://shop.example/photos/mug-sage-1.jpg\""
+      },
+      {
+        "id": "FD05",
+        "noun": "Piece",
+        "label": "Category",
+        "meaning": "Which kind of ceramics the piece is",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Mug",
+          "Bowl",
+          "Planter",
+          "Vase"
+        ],
+        "optionsFrom": "",
+        "example": "\"Mug\""
+      },
+      {
+        "id": "FD06",
+        "noun": "Piece",
+        "label": "Glaze",
+        "meaning": "The glaze colour option of this variant",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 80,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"Sage Green\""
+      },
+      {
+        "id": "FD07",
+        "noun": "Piece",
+        "label": "Size",
+        "meaning": "The size option of this variant",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Small",
+          "Medium",
+          "Large"
+        ],
+        "optionsFrom": "",
+        "example": "\"Medium\""
+      },
+      {
+        "id": "FD08",
+        "noun": "Piece",
+        "label": "Stock quantity",
+        "meaning": "How many units are left for this glaze-and-size variant; 0 means sold out",
+        "type": "integer",
+        "required": true,
+        "min": 0,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"12\""
+      },
+      {
+        "id": "FD09",
+        "noun": "Order",
+        "label": "Quantity",
+        "meaning": "How many units of the chosen variant the buyer wants, no more than stock left",
+        "type": "integer",
+        "required": true,
+        "min": 1,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"2\""
+      },
+      {
+        "id": "FD10",
+        "noun": "Order",
+        "label": "Name",
+        "meaning": "Who placed the order and who collects or receives it",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"Meera Sharma\""
+      },
+      {
+        "id": "FD11",
+        "noun": "Order",
+        "label": "Phone number",
+        "meaning": "How the owner contacts the buyer and how the buyer looks up the order",
+        "type": "phone",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"9829012345\""
+      },
+      {
+        "id": "FD12",
+        "noun": "Order",
+        "label": "Fulfilment choice",
+        "meaning": "Whether the buyer picks up at the Jaipur studio or gets a courier",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Studio pickup",
+          "Courier delivery"
+        ],
+        "optionsFrom": "",
+        "example": "\"Courier delivery\""
+      },
+      {
+        "id": "FD13",
+        "noun": "Order",
+        "label": "Delivery address",
+        "meaning": "Street address for courier delivery, required only for courier",
+        "type": "longText",
+        "required": false,
+        "min": null,
+        "max": 500,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"14 Rose Lane, Malviya Nagar\""
+      },
+      {
+        "id": "FD14",
+        "noun": "Order",
+        "label": "City",
+        "meaning": "City for courier delivery, required only for courier",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"Jaipur\""
+      },
+      {
+        "id": "FD15",
+        "noun": "Order",
+        "label": "PIN code",
+        "meaning": "Postal code for courier delivery, required only for courier",
+        "type": "text",
+        "required": false,
+        "min": 6,
+        "max": 6,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"302017\""
+      },
+      {
+        "id": "FD16",
+        "noun": "Order",
+        "label": "Discount code",
+        "meaning": "Promotional code typed at checkout for one discount per order",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 30,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"WEEKEND10\""
+      },
+      {
+        "id": "FD17",
+        "noun": "Order",
+        "label": "Order reference",
+        "meaning": "Reference shown at confirmation used with phone number to find the order again",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 20,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"JSC-4821\""
+      },
+      {
+        "id": "FD18",
+        "noun": "",
+        "label": "Search pieces",
+        "meaning": "Words to find pieces by name or glaze",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 100,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"mug\""
+      },
+      {
+        "id": "FD19",
+        "noun": "DiscountCode",
+        "label": "Code",
+        "meaning": "The text buyers type at checkout to get the promotion",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 30,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"WEEKEND10\""
+      },
+      {
+        "id": "FD20",
+        "noun": "DiscountCode",
+        "label": "Discount type",
+        "meaning": "Whether the code takes a percent or a fixed rupee amount off the subtotal",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Percentage",
+          "Fixed amount"
+        ],
+        "optionsFrom": "",
+        "example": "\"Percentage\""
+      },
+      {
+        "id": "FD21",
+        "noun": "DiscountCode",
+        "label": "Discount value",
+        "meaning": "How much the code takes off: percent when type is Percentage, rupees when Fixed amount",
+        "type": "decimal",
+        "required": true,
+        "min": 1,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"10\""
+      },
+      {
+        "id": "FD22",
+        "noun": "DiscountCode",
+        "label": "Expiry date",
+        "meaning": "Last date the code can be used",
+        "type": "date",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"2026-12-31\""
+      },
+      {
+        "id": "FD23",
+        "noun": "",
+        "label": "Email",
+        "meaning": "How the shop owner signs in",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"owner@jaipurceramics.in\""
+      },
+      {
+        "id": "FD24",
+        "noun": "",
+        "label": "Password",
+        "meaning": "Secret that protects the owner account",
+        "type": "password",
+        "required": true,
+        "min": 8,
+        "max": 128,
+        "options": [],
+        "optionsFrom": "",
+        "example": "\"correct-horse-battery\""
+      },
+      {
+        "id": "FD25",
+        "noun": "",
+        "label": "Order status filter",
+        "meaning": "Which fulfilment states to show in the order list",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "New",
+          "Packed",
+          "Shipped",
+          "Picked Up",
+          "Cancelled"
+        ],
+        "optionsFrom": "",
+        "example": "\"New\""
+      },
+      {
+        "id": "FD26",
+        "noun": "",
+        "label": "Availability filter",
+        "meaning": "Which stock states to show in the piece list",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "In stock",
+          "Low stock",
+          "Sold out"
+        ],
+        "optionsFrom": "",
+        "example": "\"Low stock\""
+      }
+    ],
+    "forms": [
+      {
+        "id": "FM01",
+        "name": "Piece form",
+        "fields": [
+          "FD01",
+          "FD02",
+          "FD03",
+          "FD04",
+          "FD05",
+          "FD06",
+          "FD07",
+          "FD08"
+        ]
+      },
+      {
+        "id": "FM02",
+        "name": "Owner auth form",
+        "fields": [
+          "FD23",
+          "FD24"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "id": "A10",
+        "text": "The cart is kept in the buyer's browser and is cleared after the Order is placed. Stock is checked again at checkout, so a variant that sold out while in the cart cannot be ordered.",
+        "kind": "behavior",
+        "affects": []
+      },
+      {
+        "id": "A11",
+        "text": "Deleting a Piece does not delete past Orders that contain it. Orders keep a snapshot of piece name, glaze, size, quantity and price for the owner's records.",
+        "kind": "data",
+        "affects": []
+      },
+      {
+        "id": "A12",
+        "text": "There is a single shop-owner account. Buyers never sign in and owners never place Orders.",
+        "kind": "permission",
+        "affects": []
+      }
+    ],
+    "questions": [],
+    "skipped": [
+      {
+        "role": "buyer",
+        "noun": "",
+        "kind": "auth",
+        "reason": "Buyers never sign in; they order as guests and look up orders with reference and phone (A05)."
+      },
+      {
+        "role": "buyer",
+        "noun": "",
+        "kind": "home",
+        "reason": "Buyers have no signed-in home; landing F01 and browse F02 are the entry."
+      },
+      {
+        "role": "buyer",
+        "noun": "Order",
+        "kind": "browse",
+        "reason": "No buyer accounts or order history in MVP; must-have shopper order list is met by single-order lookup in F07 instead."
+      },
+      {
+        "role": "buyer",
+        "noun": "DiscountCode",
+        "kind": "browse",
+        "reason": "Buyers do not browse codes; one code is entered at checkout in F06."
+      },
+      {
+        "role": "buyer",
+        "noun": "DiscountCode",
+        "kind": "view",
+        "reason": "Buyers only type the code at checkout; code details are never shown to buyers."
+      },
+      {
+        "role": "buyer",
+        "noun": "Piece",
+        "kind": "create",
+        "reason": "Only the shop owner manages Pieces in F13."
+      },
+      {
+        "role": "buyer",
+        "noun": "DiscountCode",
+        "kind": "create",
+        "reason": "Only the shop owner creates codes in F20."
+      },
+      {
+        "role": "buyer",
+        "noun": "Piece",
+        "kind": "edit",
+        "reason": "Buyers do not edit catalog pieces; cart quantities are edited in F05."
+      },
+      {
+        "role": "buyer",
+        "noun": "DiscountCode",
+        "kind": "edit",
+        "reason": "Only the owner manages codes; buyers only enter them in F06."
+      },
+      {
+        "role": "buyer",
+        "noun": "Piece",
+        "kind": "delete",
+        "reason": "Buyers do not delete pieces; removing a cart line happens in F05."
+      },
+      {
+        "role": "buyer",
+        "noun": "Order",
+        "kind": "delete",
+        "reason": "Buyers do not delete orders; cancellation before shipping is done by the owner in F24 which restores stock."
+      },
+      {
+        "role": "buyer",
+        "noun": "DiscountCode",
+        "kind": "delete",
+        "reason": "Buyers never delete codes."
+      },
+      {
+        "role": "buyer",
+        "noun": "Order",
+        "kind": "act",
+        "reason": "Buyers take no action on placed Orders; must-have shopper cancel before shipping is not offered to guests and cancellation is done by the owner in F24."
+      },
+      {
+        "role": "buyer",
+        "noun": "DiscountCode",
+        "kind": "act",
+        "reason": "Must-have apply-discount-code is part of checkout F06 with FD16, not a separate action."
+      },
+      {
+        "role": "buyer",
+        "noun": "",
+        "kind": "account",
+        "reason": "No buyer accounts in MVP; guest checkout only."
+      },
+      {
+        "role": "buyer",
+        "noun": "",
+        "kind": "settings",
+        "reason": "Buyers have no preferences to set."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "",
+        "kind": "landing",
+        "reason": "Landing invites buyers; the owner starts at sign-in and home F11."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "Piece",
+        "kind": "view",
+        "reason": "Owner reviews piece details in browse F12 and edits in F14; no separate view needed."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "DiscountCode",
+        "kind": "view",
+        "reason": "Code details are shown in the browse list F21; no separate view needed."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "Order",
+        "kind": "create",
+        "reason": "Orders are created only by buyers in F06."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "Order",
+        "kind": "edit",
+        "reason": "Order contents are never edited; payment and fulfilment change in F18 and F19."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "DiscountCode",
+        "kind": "edit",
+        "reason": "Codes are not edited after creation; they are deactivated in F22."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "Order",
+        "kind": "delete",
+        "reason": "Orders are cancelled in F24, never deleted, to keep records."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "DiscountCode",
+        "kind": "delete",
+        "reason": "Codes are deactivated in F22, never deleted, to keep order records honest."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "Piece",
+        "kind": "act",
+        "reason": "No piece action beyond add/edit/remove; stock changes happen in F14."
+      },
+      {
+        "role": "shopOwner",
+        "noun": "",
+        "kind": "settings",
+        "reason": "Must-have shipping and pickup settings are fixed for MVP: Rs 99 courier, free above Rs 1500 discounted subtotal, free pickup (A04, A09); no editable settings."
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "THEME-013",
+          "severity": "mandatory",
+          "message": "The marketing footer content names \"small print\", which the scope and the flows do not have. Name only what a flow gives the user, or leave it out.",
+          "at": "marketing.footer.content"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link default uses `plain` look app-wide, which hides every link. Fix: Remove the `plain` look so links use the default visible look everywhere (no `look: plain` app-wide).",
+          "at": "defaults.Link.look"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The Link default uses the plain look, which hides every link app-wide. Fix: Remove the plain look from the Link default and use the default underlined link look so links are visible app-wide.",
+          "at": "defaults.Link.look"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Step F33.S02 shows open times for the next two weeks but has no list effect. Fix: Add a list effect for Slot (and for SessionType if the choice is shown) to F33.S02 and add an empty alternative for no open slots, or change the websiteResponse so it does not show open times.",
+      "at": "F33.S02"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Changed F33.S02 websiteResponse so it no longer shows open times, so no Slot list effect or empty alternative is needed.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

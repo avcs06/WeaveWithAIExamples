@@ -1,0 +1,62 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "CONTRACT-007",
+      "severity": "mandatory",
+      "message": "lookupOrder is a get with 2 inputs (FD17, FD11). A get takes no inputs, or the one field the user types to find its record. Keep that field and move the others to the operation that saves or lists.",
+      "at": "lookupOrder"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Changed lookupOrder from get to list so both order reference and phone number remain as filter inputs.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S05 lets the buyer enter a DiscountCode and shows the resulting discount but reads only Piece records. Fix: Add getDiscountCodeByCode to the reads for S05 so it reads listPieces and the DiscountCode applied at checkout.",
+      "at": "S05"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Added getDiscountCodeByCode to S05 reads so the discount code applied at checkout is loaded.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "CONTRACT-011",
+      "severity": "mandatory",
+      "message": "F07.S02 reads Order, but no get operation on Order serves it.",
+      "at": "F07.S02"
+    },
+    "by": "checks",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Added F07.S02 to getOrder so the Order read is served by a get; lookupOrder list still covers reference and phone filters.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  }
+]

@@ -1,0 +1,680 @@
+[
+  {
+    "route": "/",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/01-S01.png",
+    "title": null,
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 2,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 5,
+        "reachable": 5,
+        "focusVisible": 5,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/home",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/02-S04.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 2,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/clients",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "#_r_1f_ > span:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/03-S05.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 5,
+      "small24": 6,
+      "keyboard": {
+        "interactive": 12,
+        "reachable": 12,
+        "focusVisible": 12,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/clients/client-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/04-S06.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 1,
+      "small24": 4,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/projects",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/05-S07.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 10,
+      "small24": 11,
+      "keyboard": {
+        "interactive": 17,
+        "reachable": 17,
+        "focusVisible": 17,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/projects/project-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "#_r_1u_ > span:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "#_r_28_ > span:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/06-S08.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 1,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/availability",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/07-S09.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 1,
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/session-types",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "#_r_k_ > span:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/08-S10.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 1,
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/sessions",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/09-S11.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 11,
+      "small24": 12,
+      "keyboard": {
+        "interactive": 18,
+        "reachable": 18,
+        "focusVisible": 18,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/sessions/slot-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/10-S12.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 2,
+      "small24": 4,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/bookings/booking-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/11-S13.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 2,
+      "small24": 4,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/book",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/12-S14.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 4,
+        "reachable": 4,
+        "focusVisible": 4,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/my-booking/booking-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/13-S15.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 4,
+        "reachable": 4,
+        "focusVisible": 4,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/account",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0428-freelancer-workspace/shots/pages-fix-2/14-S16.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(41, 24, 17)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 1,
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  }
+]

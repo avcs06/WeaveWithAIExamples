@@ -1,0 +1,37 @@
+{"at":"2026-11-03T23:37:14.759Z","tool":"read_file","path":".weave/01-scaffold/guidelines.md"}
+{"at":"2026-11-03T23:37:18.569Z","tool":"bash","command":"ls -R .weave/01-scaffold .weave/02-contract .weave/03-frames 2>&1; echo ---; cat UX.md 2>&1 | head -n 200"}
+{"at":"2026-11-03T23:37:22.854Z","tool":"read_file","path":".weave/03-frames/frames.md"}
+{"at":"2026-11-03T23:37:22.883Z","tool":"read_file","path":".weave/01-scaffold/issues.json"}
+{"at":"2026-11-03T23:37:22.913Z","tool":"read_file","path":".weave/01-scaffold/routes.json"}
+{"at":"2026-11-03T23:37:22.944Z","tool":"read_file","path":".weave/03-frames/guidelines.md"}
+{"at":"2026-11-03T23:37:22.973Z","tool":"read_file","path":".weave/01-scaffold/recipes.md"}
+{"at":"2026-11-03T23:37:28.444Z","tool":"bash","command":"ls web/app/components/ 2>&1; echo ===; cat web/app/\\(routes\\)/\\(marketing\\)/layout.tsx 2>&1; echo ===; cat \"web/app/(routes)/(app)/layout.tsx\" 2>&1; echo ===; cat web/app/\\(routes\\)/layout.tsx 2>&1"}
+{"at":"2026-11-03T23:37:31.895Z","tool":"bash","command":"for d in web/app/components/MarketingHeader web/app/components/MarketingHeaderLeftSlot web/app/components/MarketingHeaderRightSlot web/app/components/MarketingFooter web/app/components/AppSidebar web/app/components/AppSidebarHeader web/app/components/AppSidebarFooter web/app/components/PageLogo web/app/components/UserMenu; do echo \"===== $d =====\"; ls \"$d\"/ 2>&1; for f in \"$d\"/*; do echo \"--- $f\"; cat \"$f\" 2>&1; done; done"}
+{"at":"2026-11-03T23:37:35.118Z","tool":"read_file","path":".weave/02-contract/entities.md"}
+{"at":"2026-11-03T23:37:35.147Z","tool":"read_file","path":".weave/02-contract/signed-in.json"}
+{"at":"2026-11-03T23:37:35.176Z","tool":"read_file","path":".weave/02-contract/guidelines.md"}
+{"at":"2026-11-03T23:37:54.015Z","tool":"read_file","path":".weave/01-scaffold/theme.json"}
+{"at":"2026-11-03T23:37:54.064Z","tool":"bash","command":"cat web/app/components/PageLayout/*.tsx web/app/components/PageLayout/*.ts 2>&1 | head -n 300; echo ===; cat web/app/components/NextLink/*.tsx 2>&1 | head -n 80; echo ===; ls web/app/entities/auth/ 2>&1; cat web/app/entities/auth/*.ts* 2>&1 | head -n 150"}
+{"at":"2026-11-03T23:38:18.064Z","tool":"mcp__weave_design_system__get_recipe","name":"SidebarMenu"}
+{"at":"2026-11-03T23:38:18.116Z","tool":"mcp__weave_design_system__get_recipe","name":"Button"}
+{"at":"2026-11-03T23:38:18.167Z","tool":"mcp__weave_design_system__get_recipe","name":"Dropdown"}
+{"at":"2026-11-03T23:38:18.219Z","tool":"mcp__weave_design_system__get_recipe","name":"Link"}
+{"at":"2026-11-03T23:38:18.268Z","tool":"mcp__weave_design_system__get_recipe","name":"Typography"}
+{"at":"2026-11-03T23:38:21.636Z","tool":"bash","command":"cat web/app/components/NextLink/NextLink.tsx 2>&1; echo ===; cat web/app/components/MarketingHeaderLeftSlot/MarketingHeaderLeftSlot.tsx web/app/components/AppSidebarHeader/AppSidebarHeader.tsx 2>&1"}
+{"at":"2026-11-03T23:38:35.953Z","tool":"write_file","path":"web/app/components/MarketingHeader/MarketingHeader.tsx"}
+{"at":"2026-11-03T23:38:46.067Z","tool":"write_file","path":"web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx"}
+{"at":"2026-11-03T23:38:53.706Z","tool":"write_file","path":"web/app/components/MarketingFooter/MarketingFooter.tsx"}
+{"at":"2026-11-03T23:39:04.178Z","tool":"write_file","path":"web/app/components/AppSidebar/AppSidebar.tsx"}
+{"at":"2026-11-03T23:39:11.101Z","tool":"write_file","path":"web/app/components/AppSidebarFooter/AppSidebarFooter.tsx"}
+{"at":"2026-11-03T23:39:18.009Z","tool":"read_file","path":"web/app/components/PageLogo/PageLogo.tsx"}
+{"at":"2026-11-03T23:39:21.038Z","tool":"edit_file","path":"web/app/components/PageLogo/PageLogo.types.ts"}
+{"at":"2026-11-03T23:39:27.947Z","tool":"edit_file","path":"web/app/components/PageLogo/PageLogo.tsx"}
+{"at":"2026-11-03T23:39:34.448Z","tool":"edit_file","path":"web/app/components/AppSidebarHeader/AppSidebarHeader.tsx"}
+{"at":"2026-11-03T23:39:48.098Z","tool":"mcp__weave_design_system__validate"}
+{"at":"2026-11-03T23:39:48.151Z","tool":"mcp__weave_design_system__validate"}
+{"at":"2026-11-03T23:39:48.202Z","tool":"mcp__weave_design_system__validate"}
+{"at":"2026-11-03T23:39:48.260Z","tool":"mcp__weave_design_system__validate"}
+{"at":"2026-11-03T23:39:48.310Z","tool":"mcp__weave_design_system__validate"}
+{"at":"2026-11-03T23:39:52.784Z","tool":"bash","command":"pnpm typecheck 2>&1 | tail -n 20"}
+{"at":"2026-11-03T23:40:06.339Z","tool":"bash","command":"pnpm nx lint web 2>&1 | tail -n 20"}
+{"at":"2026-11-03T23:40:33.499Z","tool":"bash","command":"pnpm nx build web 2>&1 | tail -n 30"}

@@ -1,0 +1,871 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx is 312 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx"
+        },
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(app)/dashboard/page.tsx is 320 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(app)/dashboard/page.tsx"
+        },
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(marketing)/checkout/page.tsx is 425 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(marketing)/checkout/page.tsx"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/shop: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/shop/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/shop/piece-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/cart: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/checkout: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/orders/demo: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/order-lookup: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces: text is 13px; body text is at least 14px",
+          "at": "#_r_13_ > span:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-011",
+          "severity": "mandatory",
+          "message": "/dashboard/pieces: padding 8px with a gap of 10px; a container's padding is at least its gap",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-010",
+          "severity": "mandatory",
+          "message": "/dashboard/pieces/piece-1: gap 10px inside body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2), whose gap is 8px; a group's gap is at most its parent's",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-011",
+          "severity": "mandatory",
+          "message": "/dashboard/pieces/piece-1: padding 8px with a gap of 10px; a container's padding is at least its gap",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/orders: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-012",
+          "severity": "mandatory",
+          "message": "/dashboard/orders/order-1: wrap the number \"2\" in Numeral from @packages/ui/Numeral: a number the user reads and compares is set in the mono font",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > table:nth-of-type(1) > tbody:nth-of-type(1) > tr:nth-of-type(1) > td:nth-of-type(3) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-012",
+          "severity": "mandatory",
+          "message": "/dashboard/orders/order-1: wrap the number \"650\" in Numeral from @packages/ui/Numeral: a number the user reads and compares is set in the mono font",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > table:nth-of-type(1) > tbody:nth-of-type(1) > tr:nth-of-type(1) > td:nth-of-type(4) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-011",
+          "severity": "mandatory",
+          "message": "/dashboard/discount-codes: padding 8px with a gap of 10px; a container's padding is at least its gap",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/account: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/account: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The loading and failed-load markup every screen shows is repeated in each screen instead of written once. Fix: Write the loading and failed-load markup once as one component or function in components or blocks and use it on every screen instead of repeating the Paragraph plus Try again block in each file.",
+          "at": "web/app/(routes)/(marketing)/shop/page.tsx and 11 other page.tsx screens"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "OrderDate and stockTag are exported but never used. Fix: Remove the unused OrderDate and stockTag exports or use them where stock and dates are shown.",
+          "at": "web/app/blocks/orders/OrderItems.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "isSoldOut is exported but never used. Fix: Remove the unused isSoldOut export or use it where sold-out is decided.",
+          "at": "web/app/blocks/pieces/variants.ts"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "changePassword writes the plaintext password to persistent browser storage. Fix: Do not persist the password in the persistent store or any browser storage and never show it back; keep only the session and handle the password change without storing the secret.",
+          "at": "web/app/entities/auth/index.ts"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Records are read through async functions instead of through the operation hooks. Fix: Read records only through the entity layer hooks such as useLookupOrder and useListOrders instead of calling the lookupOrder and listOrders functions directly.",
+          "at": "web/app/(routes)/(marketing)/order-lookup/page.tsx and web/app/(routes)/(marketing)/checkout/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S03 step 1 requires photos, title, description, price and category but the page never shows the category. Fix: Show the piece category (FD05) by its label beside the title, description and price.",
+          "at": "web/app/(routes)/(marketing)/shop/[pieceId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S01 hero media builds piece preview by hand with Card without photo, category or link instead of a CardList of piece cards. Fix: Render the hero media preview from PieceCards/CardList with photo, title link, price, category and stock/sold-out for up to 3 in-stock pieces.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Glaze-and-size variants show the raw size key small/medium/large instead of its Small/Medium/Large label. Fix: Map every displayed size key through SizeOptions labels so it reads Small, Medium or Large in S03, S04, S06, S10, S11 and S13.",
+          "at": "web/app/(routes)/(marketing)/shop/[pieceId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S20 password edit adds a second labeled field with help text and a Done button under the record instead of an in-place edit. Fix: Edit the password in place with no label and no help text and icon edit/save/cancel buttons beside the value, or in a dialog.",
+          "at": "web/app/(routes)/(app)/dashboard/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "No screen uses Truncate for one-line text such as titles, cells, breadcrumbs or status lines. Fix: Wrap every text meant for one line in Truncate so it cuts with ellipsis and tooltip instead of wrapping or overflowing.",
+          "at": "web/app/blocks/pieces/PieceCards.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "changePassword writes the plaintext password into persistent browser storage. Fix: Do not persist the password: remove `passwords` from the persistent store and keep nothing secret in browser storage, logs, URLs, or UI.",
+          "at": "web/app/entities/auth/index.ts"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Checkout decrements each piece's stock then creates the order with no atomicity, leaving partial stock loss when a later step fails. Fix: Make stock decrements and order creation atomic in one entity operation with rollback, or restore any decremented stock and tell the user exactly what was and was not saved.",
+          "at": "web/app/(routes)/(marketing)/checkout/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Cancel restores stock piece-by-piece then cancels with no guard or atomicity, so failure or a second press can double-restore stock while reporting unchanged. Fix: Make stock restore plus cancellation a single atomic operation with a running guard so a second press does nothing, and report exactly what failed without claiming the order is unchanged after partial restores.",
+          "at": "web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Percentage discounts stay fractional so separately rounded shown discount and total can differ by ₹1. Fix: Round the discount to whole rupees once (e.g. Math.round) before computing shipping and total so the shown total equals shown subtotal minus shown discount plus shown shipping.",
+          "at": "web/app/blocks/orders/money.ts"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Mark paid, advance, cancel, deactivate and remove run without a running guard so a second press re-runs the operation. Fix: Disable each mutating button while its operation runs so a second press while it runs does nothing, as done for form submits.",
+          "at": "web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(app)/dashboard/page.tsx is 315 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(app)/dashboard/page.tsx"
+        },
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(marketing)/checkout/page.tsx is 442 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(marketing)/checkout/page.tsx"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/shop: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/shop/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/shop/piece-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/cart: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/checkout: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/orders/demo: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/order-lookup: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces: text is 13px; body text is at least 14px",
+          "at": "#_r_13_ > span:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/orders: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/account: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/account: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S01 hero preview filters to in-stock pieces only, so the sold-out featured piece from step 4 can never appear. Fix: Show the first three pieces including sold-out pieces in the hero preview so the Sage Green sold-out card appears with its sold-out state.",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S06 shows the fulfilment status raw key for every status except New instead of its readable label. Fix: Render the fulfilment status by its label (New, Packed, Shipped, Picked Up, Cancelled) instead of the stored key.",
+          "at": "web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S20 alternative for a visitor not signed in is not built and the page renders an empty email while the session loads. Fix: When there is no signed-in owner show a Sign in link to /sign-in, and show nothing while the saved session is still being read.",
+          "at": "web/app/(routes)/(app)/dashboard/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Cancelling restores stock by matching piece title and silently skips missing or renamed pieces, leaving stock inconsistent. Fix: Restore cancelled stock by the ordered piece's id (persisted on the order) and, when a variant or piece cannot be restored, leave the order unchanged or tell the user what was not restored instead of silently skipping it.",
+          "at": "web/app/entities/order/operations.ts"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx is 309 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx"
+        },
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(app)/dashboard/page.tsx is 315 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(app)/dashboard/page.tsx"
+        },
+        {
+          "rule": "CODE-012",
+          "severity": "warning",
+          "message": "web/app/(routes)/(marketing)/checkout/page.tsx is 443 lines. Split it into files of at most 300 lines, each with one job.",
+          "at": "web/app/(routes)/(marketing)/checkout/page.tsx"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/shop: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/shop/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/shop/piece-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/cart: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/checkout: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/orders/demo: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/order-lookup: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces: text is 13px; body text is at least 14px",
+          "at": "#_r_13_ > span:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/new: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(2) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/pieces/piece-1/edit: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/orders: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/orders/order-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/new: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/discount-codes/discountCode-1: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/dashboard/account: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/dashboard/account: no skip link first in the tab order"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S01 hero preview filters to in-stock pieces only, so the sold-out featured piece from step 4 can never appear. Fix: Show the first three pieces including sold-out pieces in the hero preview so the Sage Green sold-out card appears with its sold-out state. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(marketing)/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S06 shows the fulfilment status raw key for every status except New instead of its readable label. Fix: Render the fulfilment status by its label (New, Packed, Shipped, Picked Up, Cancelled) instead of the stored key. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S20 alternative for a visitor not signed in is not built and the page renders an empty email while the session loads. Fix: When there is no signed-in owner show a Sign in link to /sign-in, and show nothing while the saved session is still being read. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/(routes)/(app)/dashboard/account/page.tsx"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Cancelling restores stock by matching piece title and silently skips missing or renamed pieces, leaving stock inconsistent. Fix: Restore cancelled stock by the ordered piece's id (persisted on the order) and, when a variant or piece cannot be restored, leave the order unchanged or tell the user what was not restored instead of silently skipping it. (addressed in the final fix, not re-reviewed)",
+          "at": "web/app/entities/order/operations.ts"
+        }
+      ]
+    }
+  ]
+}

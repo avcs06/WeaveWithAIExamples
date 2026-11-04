@@ -1,0 +1,85 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "THEME-013",
+          "severity": "mandatory",
+          "message": "The app header start names \"Saving status\", which the scope and the flows do not have. Name only what a flow gives the user, or leave it out.",
+          "at": "app.header.start"
+        },
+        {
+          "rule": "THEME-001",
+          "severity": "mandatory",
+          "message": "page dark: pageFgMuted on the background's #004346 is 4.35:1; text needs 4.5:1.",
+          "at": "page.dark.pageFgMuted"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link defaults to `plain` app-wide, which hides every link and violates the no-plain-links rule Fix: Change Link defaults to the visible default: variant default with no `look` override (remove `look: \"plain\"`) so links are underlined/colored and identifiable",
+          "at": "defaults.Link"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Header holds screen-specific content that is not shown on every app page: dashboard title, Saving status and dashboard actions belong to the Dashboard editor/view screen, not the frame. Fix: Remove record details and editor-only state from the frame. Keep header slots to logo, navigation, account and global Create button only; move dashboard title, Saving/Saved indicator and rename/duplicate/delete actions into the Dashboard screens.",
+          "at": "layouts.app.header"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link defaults to look plain app-wide, which hides every link. Fix: Change Link look from plain to none (default underline) so links are visible; do not use plain as the app-wide default.",
+          "at": "defaults.Link"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "THEME-015",
+          "severity": "mandatory",
+          "message": "page dark: pageFgMuted #ABC8E2 is 1.51:1 from pageFg #E1F1FF; muted text needs 2:1 from pageFg so it reads as secondary. Pick a step for pageFgMuted further from pageFg's, such as 10 when pageFg is 12, and keep 4.5:1 on pageBg, frameBg and every color of the background.",
+          "at": "page.dark.pageFgMuted"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link default is `plain` app-wide, which hides every link and violates the component defaults rule. Fix: Change Link default to not use `plain` (use the default underlined look, e.g. omit `look` or set it to `none`/default) so links remain recognizable.",
+          "at": "defaults.Link.look"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link defaults to `plain` which hides every link app-wide. Fix: Remove the plain look from Link defaults and use the default none look (e.g., omit `look` or set to none) so links are visibly distinct.",
+          "at": "defaults.Link.look"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "THEME-001",
+          "severity": "mandatory",
+          "message": "page dark: pageFgMuted on the background's #004346 is 4.35:1; text needs 4.5:1.",
+          "at": "page.dark.pageFgMuted"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link default is `plain` app-wide, which hides every link and violates the component defaults rule. Fix: Change Link default to not use `plain` (use the default underlined look, e.g. omit `look` or set it to `none`/default) so links remain recognizable. (addressed in the final fix, not re-reviewed)",
+          "at": "defaults.Link.look"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link defaults to `plain` which hides every link app-wide. Fix: Remove the plain look from Link defaults and use the default none look (e.g., omit `look` or set to none) so links are visibly distinct. (addressed in the final fix, not re-reviewed)",
+          "at": "defaults.Link.look"
+        }
+      ]
+    }
+  ]
+}

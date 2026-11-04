@@ -1,0 +1,162 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Home dashboard list can grow to 50 dashboards (Q02) but has no search or filters, violating P08 which requires a browse list that can grow to have search/filters. Fix: Add search by dashboard name (FD03) to F05 home flow, or add a separate browse flow with search, or add a justified assumption that search is deferred and list pagination limits growth.",
+      "at": "flows/F05"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Added Search field FD14 and updated F05 description to include filtering dashboards by name, satisfying browse search requirement for growing list.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Skipped entries for (user, Dashboard, act) and (user, Widget, act) reuse pairs that already have act flows (F09 and F13-F19); a pair must have flows or a skip, not both. Fix: Remove the two skipped act entries; document out-of-scope publish/share/export/undo/template acts in assumptions/outOfScope instead, keeping only pairs with no flow in skipped.",
+      "at": "skipped"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Removed the two skipped act entries that duplicated pairs already covered by F09 and F13-F19; added assumption A21 to document out-of-scope publish/share/export/undo/template acts.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "F12 and F17 both claim to edit Counter label (FD08), creating two flows for the same goal and violating P13/P14 one goal per flow. Fix: Keep Counter label editing in only one flow: remove FD08 from F12 description (leave it in F17) or vice versa, so each field/goal is owned by a single flow.",
+      "at": "flows/F12"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Removed Counter label (FD08) from F12 description so only F17 owns editing Counter label, eliminating duplicate goal.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Assumption A17 says no search/filter in MVP but F05 implements Search (FD14) and describes filtering dashboards by name. Fix: Make them consistent: either remove Search FD14 from F05 and keep A17, or update A17 to state home list includes search by name (FD14) to satisfy the editor must-have browse/search expectation and P08.",
+      "at": "A17 vs F05"
+    },
+    "by": "review-peer",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T04",
+        "status": "closed",
+        "reason": "Updated A17 to state home list includes search by dashboard name (FD14) to satisfy P08 and editor must-have, making it consistent with F05.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Home flow adds search/filter by name (FD14) that scope inScope does not include and that new assumption A17 says MVP has no search/filter. Fix: Remove Search (FD14) from F05 description and fields, or add search to inScope and update A17 to allow filtering; keep catalog consistent.",
+      "at": "F05"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T05",
+        "status": "closed",
+        "reason": "Kept Search FD14 in F05 and updated A17 to explicitly allow filtering; search is justified as required by P08 for growing lists and editor browse must-have, so catalog is now internally consistent.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Checklist checked state is a boolean but defined as singleChoice with options checked/unchecked instead of boolean type. Fix: Change FD10 type to boolean (or keep singleChoice but justify) and ensure example and options match the type.",
+      "at": "FD10"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T06",
+        "status": "closed",
+        "reason": "Changed FD10 type from singleChoice to boolean, cleared options and set example to false.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Form FM06 Checklist item form is defined but no flow description references it by id. Fix: Reference FM06 in F18 description where checklist item text is entered, or remove the unused form.",
+      "at": "FM06"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T07",
+        "status": "closed",
+        "reason": "Added reference to FM06 in F18 description for adding checklist items.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Flow name promises title and settings but description only edits title and explicitly defers all type-specific settings to F17-F19. Fix: Rename F12 to title-only or expand its description to edit the type-specific settings it claims to cover with correct field ids.",
+      "at": "F12"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T08",
+        "status": "closed",
+        "reason": "Renamed F12 to Configure widget title and narrowed its goal/outcome/description to title-only (FD04), deferring type-specific settings to F17-F19.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Browse projects lists projects that can grow but has no search or filters. Fix: Give F16 search or filters for the growing projects list (e.g. search by name/client) with fields, or add an assumption that justifies why none is needed.",
+          "at": "F16"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Designer account skip uses 'no screen in MVP' which is 'Not needed for the MVP' and holds no valid reason. Fix: Add an account flow for the designer to see and change their email/password, or replace the skip with a reason grounded in the idea or scope ruling it out.",
+          "at": "skipped[designer/account]"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Availability is used to generate Slots but is never created by a flow and no assumption says where it comes from. Fix: Add an assumption that weekly Availability is pre-created at sign-up (empty or default) and managed only in F25, or add a create flow for it.",
+          "at": "skipped[designer/create/Availability]"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "All Availability fields are required, so empty availability cannot be saved, contradicting A11 and the rule that without hours no slots are offered. Fix: Make Days (FD19), From time (FD20) and To time (FD21) required false so the designer can keep weekly Availability empty with no days/hours and offer no slots per A11.",
+          "at": "FD19, FD20, FD21"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "All Availability fields are required, so empty availability cannot be saved, contradicting A11 and the rule that without hours no slots are offered. Fix: Make Days (FD19), From time (FD20) and To time (FD21) required false so the designer can keep weekly Availability empty with no days/hours and offer no slots per A11. (addressed in the final fix, not re-reviewed)",
+          "at": "FD19, FD20, FD21"
+        }
+      ]
+    }
+  ]
+}

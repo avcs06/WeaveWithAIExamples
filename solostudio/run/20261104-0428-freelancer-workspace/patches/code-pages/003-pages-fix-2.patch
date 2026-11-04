@@ -1,0 +1,187 @@
+From dde20fddec01873ef29bfd21b8e423d051f4e2c9 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 06:07:29 +0530
+Subject: [PATCH] code-pages: pages-fix-2
+
+---
+ .../[clientId]/components/EditNoteDialog.tsx  |  2 +-
+ .../[projectId]/components/EditTaskDialog.tsx |  2 +-
+ .../[projectId]/components}/TaskStatusTag.tsx |  0
+ .../(app)/projects/[projectId]/page.tsx       |  6 ++---
+ .../components/EditSessionTypeDialog.tsx      |  2 +-
+ .../my-booking/[bookingId]/page.tsx           |  4 +++-
+ web/app/components/TaskStatusTag/index.ts     |  1 -
+ web/app/entities/auth/index.ts                | 22 +++++++++++--------
+ 8 files changed, 22 insertions(+), 17 deletions(-)
+ rename web/app/{components/TaskStatusTag => (routes)/(app)/projects/[projectId]/components}/TaskStatusTag.tsx (100%)
+ delete mode 100644 web/app/components/TaskStatusTag/index.ts
+
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
+index 4a7f9f4..2038b9a 100644
+--- a/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
++++ b/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
+@@ -35,7 +35,7 @@ export function EditNoteDialog({
+   });
+   const [saving, setSaving] = useState(false);
+ 
+-  if (!current.data) {
++  if (!current.data && !current.loading) {
+     return (
+       <Dialog
+         title="Edit note"
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
+index c4606e5..0c426d5 100644
+--- a/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
+@@ -36,7 +36,7 @@ export function EditTaskDialog({
+   });
+   const [saving, setSaving] = useState(false);
+ 
+-  if (!current.data) {
++  if (!current.data && !current.loading) {
+     return (
+       <Dialog
+         title={`Edit ${task.title}`}
+diff --git a/web/app/components/TaskStatusTag/TaskStatusTag.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx
+similarity index 100%
+rename from web/app/components/TaskStatusTag/TaskStatusTag.tsx
+rename to web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/page.tsx b/web/app/(routes)/(app)/projects/[projectId]/page.tsx
+index f1d0f6d..802a71c 100644
+--- a/web/app/(routes)/(app)/projects/[projectId]/page.tsx
++++ b/web/app/(routes)/(app)/projects/[projectId]/page.tsx
+@@ -5,7 +5,6 @@ import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+-import { TaskPriorityTag, TaskStatusTag } from '@app/components/TaskStatusTag';
+ import { useListClients } from '@app/entities/client';
+ import { deleteProject, useGetProject } from '@app/entities/project';
+ import { completeTask, deleteTask, useListTasks, type Task } from '@app/entities/task';
+@@ -26,6 +25,7 @@ import React, { useState } from 'react';
+ import { AddTaskDialog } from './components/AddTaskDialog';
+ import { EditProjectDialog } from './components/EditProjectDialog';
+ import { EditTaskDialog } from './components/EditTaskDialog';
++import { TaskPriorityTag, TaskStatusTag } from './components/TaskStatusTag';
+ 
+ const statusOrder = ['to_do', 'in_progress', 'done'];
+ 
+@@ -299,13 +299,13 @@ export default function ProjectPage() {
+           <div className="flex-col-gap-3">
+             <div role="search" className="flex-row-gap-3 flex-wrap items-end">
+               <SearchInput label="Search tasks" placeholder="Task title" value={search} onChange={setSearch} />
+-              <Select aria-label="Task status filter" allowSearch={false} value={status} onChange={(next) => next && setStatus(next)}>
++              <Select label="Status" allowSearch={false} value={status} onChange={(next) => next && setStatus(next)}>
+                 <SelectOption value="all" label="All" />
+                 <SelectOption value="to_do" label="To do" />
+                 <SelectOption value="in_progress" label="In progress" />
+                 <SelectOption value="done" label="Done" />
+               </Select>
+-              <Select aria-label="Task priority filter" allowSearch={false} value={priority} onChange={(next) => next && setPriority(next)}>
++              <Select label="Priority" allowSearch={false} value={priority} onChange={(next) => next && setPriority(next)}>
+                 <SelectOption value="all" label="All" />
+                 <SelectOption value="low" label="Low" />
+                 <SelectOption value="medium" label="Medium" />
+diff --git a/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx b/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
+index 0d9589a..7c626b1 100644
+--- a/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
++++ b/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
+@@ -36,7 +36,7 @@ export function EditSessionTypeDialog({
+   });
+   const [saving, setSaving] = useState(false);
+ 
+-  if (!current.data) {
++  if (!current.data && !current.loading) {
+     return (
+       <Dialog
+         title={`Edit ${sessionType.name}`}
+diff --git a/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx b/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
+index d786a09..c953870 100644
+--- a/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
++++ b/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
+@@ -57,7 +57,9 @@ export default function MyBookingPage() {
+   }
+ 
+   const record = booking.data;
+-  const title = formatSlotTitle(sessionType.data?.name ?? 'Session', slot.data?.startAt ?? '');
++  const title = slot.data?.startAt
++    ? formatSlotTitle(sessionType.data?.name ?? 'Session', slot.data.startAt)
++    : 'Your booking';
+ 
+   const confirmCancel = async () => {
+     const result = await openConfirmationDialog({
+diff --git a/web/app/components/TaskStatusTag/index.ts b/web/app/components/TaskStatusTag/index.ts
+deleted file mode 100644
+index 4d4a4e1..0000000
+--- a/web/app/components/TaskStatusTag/index.ts
++++ /dev/null
+@@ -1 +0,0 @@
+-export { TaskPriorityTag, TaskStatusTag } from './TaskStatusTag';
+diff --git a/web/app/entities/auth/index.ts b/web/app/entities/auth/index.ts
+index b1acfef..999ff42 100644
+--- a/web/app/entities/auth/index.ts
++++ b/web/app/entities/auth/index.ts
+@@ -11,7 +11,8 @@ export type User = { email: string; role?: string };
+ export type Role = { id: string; name: string };
+ 
+ // `roles` keeps each email's role from sign up, so signing in again restores it.
+-type AuthState = { user: User | null; roles: Record<string, string> };
++// `knownEmails` keeps every email this browser has signed up, so changing to one of them conflicts.
++type AuthState = { user: User | null; roles: Record<string, string>; knownEmails: string[] };
+ 
+ // The scaffold writes the run's key over this, so no two apps on one origin share a session.
+ const AUTH_KEY = "weave:20261104-0428-freelancer-workspace:auth";
+@@ -23,24 +24,27 @@ export const ROLES: Role[] = [{"id":"designer","name":"Designer"}];
+ export const HOME_ROUTE = "/home";
+ 
+ const useAuthStore = createPersistentStore<AuthState>(
+-  () => ({ user: null, roles: {} }),
++  () => ({ user: null, roles: {}, knownEmails: [] }),
+   AUTH_KEY,
+ );
+ 
++/** Adds an email to the store's known emails, once. */
++function rememberEmail(email: string): string[] {
++  const knownEmails = useAuthStore.getState().knownEmails ?? [];
++  return knownEmails.includes(email) ? knownEmails : [...knownEmails, email];
++}
++
+ export async function signUp(email: string, role?: string): Promise<User> {
+   await mockCall('signUp');
+   const user = role ? { email, role } : { email };
+   useAuthStore.setState((state) => ({
+     user,
+     roles: role ? { ...state.roles, [email]: role } : state.roles,
++    knownEmails: rememberEmail(email),
+   }));
+-  knownEmails.add(email);
+   return user;
+ }
+ 
+-/** Emails this browser has signed up, so changing to one of them conflicts. */
+-const knownEmails = new Set<string>();
+-
+ export type AccountUpdate = { email: string; password: string };
+ 
+ /**
+@@ -52,14 +56,14 @@ export async function updateAccount(input: AccountUpdate): Promise<User> {
+   await mockCall('updateAccount');
+   const current = useAuthStore.getState().user;
+   if (!current) throw new Error('Not signed in');
+-  if (input.email !== current.email && knownEmails.has(input.email)) {
++  const knownEmails = useAuthStore.getState().knownEmails ?? [];
++  if (input.email !== current.email && knownEmails.includes(input.email)) {
+     const taken = new Error('That email is already in use') as Error & { code: string };
+     taken.code = 'email-taken';
+     throw taken;
+   }
+-  if (current.email) knownEmails.add(current.email);
+   const user = { ...current, email: input.email };
+-  useAuthStore.setState({ user });
++  useAuthStore.setState({ user, knownEmails: rememberEmail(current.email) });
+   return user;
+ }
+ 
+-- 
+2.34.1
+

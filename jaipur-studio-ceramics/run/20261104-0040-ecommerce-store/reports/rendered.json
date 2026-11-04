@@ -1,0 +1,832 @@
+[
+  {
+    "route": "/",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": null,
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 2,
+      "small24": 11,
+      "keyboard": {
+        "interactive": 14,
+        "reachable": 14,
+        "focusVisible": 14,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/shop",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 13,
+      "keyboard": {
+        "interactive": 14,
+        "reachable": 14,
+        "focusVisible": 14,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/shop/piece-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 9,
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/cart",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 8,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/checkout",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 8,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/orders/demo",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 8,
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/order-lookup",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 8,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 6,
+      "small24": 7,
+      "keyboard": {
+        "interactive": 12,
+        "reachable": 12,
+        "focusVisible": 12,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/pieces",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "#_r_13_ > span:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 5,
+      "small24": 6,
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/pieces/new",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 2,
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/pieces/piece-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 2,
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/pieces/piece-1/edit",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(2) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 8,
+        "reachable": 8,
+        "focusVisible": 8,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/orders",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 5,
+      "small24": 6,
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/orders/order-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 2,
+      "keyboard": {
+        "interactive": 6,
+        "reachable": 6,
+        "focusVisible": 6,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/discount-codes",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 5,
+      "small24": 6,
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/discount-codes/new",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 2,
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/discount-codes/discountCode-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 2,
+      "keyboard": {
+        "interactive": 6,
+        "reachable": 6,
+        "focusVisible": 6,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboard/account",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Fraunces, \"Fraunces Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(40, 25, 15)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 0,
+      "small24": 1,
+      "keyboard": {
+        "interactive": 5,
+        "reachable": 5,
+        "focusVisible": 5,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  }
+]

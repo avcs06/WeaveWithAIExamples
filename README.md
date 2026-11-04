@@ -26,6 +26,10 @@ Three apps that [Weave](https://github.com/avcs06/WeaveWithAI) generated, each f
 
 Accessibility and keyboard numbers are from the app's dev server (`next dev`), not a production build. The cost of the two Meta Model API apps covers the model calls; their coding sessions ran on the Muse Code subscription. Muse Wonder 1.0 wrote their scope. DashForge's time is scope to contract plus frames to pages.
 
+## Run data
+
+Each app folder has a `run/` folder with the full record of the run that made it: the brief, the flows, design and contract, every review thread, every model call outside the coding sessions, the coding session logs, a screenshot of each coding round, and the benchmark. Each `run/README.md` lists what is where.
+
 ## Home pages
 
 ### Jaipur Studio Ceramics

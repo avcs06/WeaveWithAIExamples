@@ -1,0 +1,489 @@
+From eb352c27944492af541d088c2e4b17191c081f08 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 07:07:14 +0530
+Subject: [PATCH] code-pages: pages-fix-2
+
+---
+ web/app/(routes)/(app)/account/page.tsx       |  6 +-
+ .../(app)/dashboards/[dashboardId]/page.tsx   | 84 +++++++++----------
+ web/app/(routes)/(app)/dashboards/page.tsx    | 34 ++++++--
+ .../DashboardHeader/DashboardHeader.tsx       | 75 +++++++++++++++++
+ web/app/blocks/DashboardHeader/index.ts       |  1 +
+ .../DeleteDashboardDialog.tsx                 | 49 ++++++-----
+ .../AppHeaderRightSlot/AppHeaderRightSlot.tsx |  4 +-
+ web/app/entities/widget/deleteByDashboard.ts  | 11 +++
+ web/app/entities/widget/index.ts              |  1 +
+ 9 files changed, 188 insertions(+), 77 deletions(-)
+ create mode 100644 web/app/blocks/DashboardHeader/DashboardHeader.tsx
+ create mode 100644 web/app/blocks/DashboardHeader/index.ts
+ create mode 100644 web/app/entities/widget/deleteByDashboard.ts
+
+diff --git a/web/app/(routes)/(app)/account/page.tsx b/web/app/(routes)/(app)/account/page.tsx
+index 797af76..c736cc0 100644
+--- a/web/app/(routes)/(app)/account/page.tsx
++++ b/web/app/(routes)/(app)/account/page.tsx
+@@ -1,11 +1,9 @@
+ 'use client';
+ 
+ import { PageHeader } from '@app/components/PageHeader';
+-import { changePassword } from '@app/entities/auth';
+-import { useCurrentUser } from '@app/entities/auth';
++import { changePassword, useCurrentUser } from '@app/entities/auth';
+ import { Button } from '@packages/ui/Button';
+-import { Form } from '@packages/ui/Form';
+-import { Controller } from '@packages/ui/Form';
++import { Controller, Form } from '@packages/ui/Form';
+ import { PasswordInput } from '@packages/ui/Input';
+ import { Section } from '@packages/ui/Section';
+ import { toast } from '@packages/ui/Toast';
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+index b376b6d..2d42915 100644
+--- a/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+@@ -1,9 +1,10 @@
+ 'use client';
+ 
++import { DashboardHeader } from '@app/blocks/DashboardHeader';
+ import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+-import { duplicateDashboard, useGetDashboard, updateDashboard } from '@app/entities/dashboard';
++import { deleteDashboard, duplicateDashboard, updateDashboard, useGetDashboard } from '@app/entities/dashboard';
+ import { addLink, createWidget, deleteWidget, removeLink, repositionWidget, updateLink, updateWidgetTitle, useListWidgets } from '@app/entities/widget';
+ import { Button, IconButton } from '@packages/ui/Button';
+ import { CardList } from '@packages/ui/Card';
+@@ -48,8 +49,6 @@ export default function DashboardDetailPage() {
+     }, 300);
+   };
+ 
+-  const [dashName, setDashName] = useState('');
+-  const [dashErr, setDashErr] = useState<string | undefined>();
+   const [showDelete, setShowDelete] = useState(false);
+   const [showAdd, setShowAdd] = useState(false);
+   const [nType, setNType] = useState('note');
+@@ -75,40 +74,62 @@ export default function DashboardDetailPage() {
+     return allWidgets.filter((w) => w.dashboard === dashboardId).sort((a, b) => a.position - b.position);
+   }, [allWidgets, dashboardId]);
+ 
++  const [widgetGoneIds, setWidgetGoneIds] = useState<Set<string>>(new Set());
++  // Detect widgets that disappeared (T48)
++  const prevWidgetIdsRef = useRef<Set<string> | null>(null);
++  useEffect(() => {
++    const current = new Set(widgets.map((w) => w.id));
++    if (prevWidgetIdsRef.current) {
++      const gone = [...prevWidgetIdsRef.current].filter((id) => !current.has(id));
++      if (gone.length) setWidgetGoneIds((s) => new Set([...s, ...gone]));
++    }
++    prevWidgetIdsRef.current = current;
++  }, [widgets]);
++
+   if (dashLoading || wLoading) return <PageHeader title="Loading" />;
+   if (dashError) return <><PageHeader title="Error" /><p role="alert">Failed to load</p><Button onClick={retry}>Retry</Button></>;
+   if (!dashboard) return <NotFound title="Dashboard not found" description="This dashboard is gone." back={{ label: 'Go to your dashboards', href: '/dashboards' }} />;
+-
+-  const handleSaveDash = async () => {
+-    if (!dashName.trim() || dashName.length > 80) { setDashErr('Name is required and max 80 characters'); return; }
+-    try { await updateDashboard(dashboard.id, { name: dashName, lastEditedAt: new Date().toISOString() }); toast({ title: 'Dashboard saved' }); flash(); } catch { setDashErr('Could not save. Try again.'); }
+-  };
+   const handleDup = async () => {
+     if (dupPending) return; setDupPending(true);
++    let copy: { id: string } | null = null;
++    const createdIds: string[] = [];
+     try {
+-      const copy = await duplicateDashboard({ name: `${dashboard.name} Copy`, lastEditedAt: new Date().toISOString() });
+-      for (const w of widgets) { const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = w; await createWidget({ ...rest, dashboard: copy.id } as never); }
++      copy = await duplicateDashboard({ name: `${dashboard.name} Copy`, lastEditedAt: new Date().toISOString() });
++      for (const w of widgets) { const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = w; const c = await createWidget({ ...rest, dashboard: copy.id } as never); createdIds.push(c.id); }
+       router.push(`/dashboards/${copy.id}`);
+-    } catch { toast({ title: 'Could not duplicate. Try again.', status: 'error' }); } finally { setDupPending(false); }
++    } catch {
++      if (copy) {
++        for (const wid of createdIds) { try { await deleteWidget(wid); } catch { /* ignore */ } }
++        try { await deleteDashboard(copy.id); } catch { /* ignore */ }
++      }
++      toast({ title: 'Could not duplicate. Try again.', status: 'error' });
++    } finally { setDupPending(false); }
+   };
+   const handleCreate = async () => {
+     if (nPending) return;
+     if (!nType) { setNErr('Title max 60 characters and type is required'); return; }
+     if (nTitle.length > 60) { setNErr('Title max 60 characters and type is required'); return; }
+     setNPending(true);
++    let created: { id: string } | null = null;
+     try {
+       const title = nTitle || nType.charAt(0).toUpperCase() + nType.slice(1);
+-      await createWidget({ title, type: nType as Widget['type'], size: nSize as Widget['size'], position: widgets.length + 1, dashboard: dashboardId, noteText: '', counterLabel: '', counterValue: 0, checklistItemText: [], checklistChecked: [], linkTitle: [], linkUrl: [] } as never);
++      created = await createWidget({ title, type: nType as Widget['type'], size: nSize as Widget['size'], position: widgets.length + 1, dashboard: dashboardId, noteText: '', counterLabel: '', counterValue: 0, checklistItemText: [], checklistChecked: [], linkTitle: [], linkUrl: [] } as never);
+       await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Widget created' }); setShowAdd(false); setNTitle(''); setNErr(undefined);
+-    } catch { setNErr('Could not create widget. Try again.'); } finally { setNPending(false); }
++    } catch {
++      if (created) { try { await deleteWidget(created.id); } catch { /* rollback failed */ } }
++      setNErr('Could not create widget. Try again.');
++    } finally { setNPending(false); }
+   };
+   const handleRemoveW = async () => {
+     if (!remId || remPending) return; setRemPending(true);
+     try { await deleteWidget(remId); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Widget removed' }); setRemId(null); } catch { toast({ title: 'Could not remove widget. Try again.', status: 'error' }); } finally { setRemPending(false); }
+   };
++  const [wTitleSaving, setWTitleSaving] = useState(false);
+   const handleWTitle = async (w: Widget) => {
++    if (wTitleSaving) return;
+     if (wTitleDraft.length > 60) { setWTitleErr('Max 60 characters'); return; }
+-    try { await updateWidgetTitle(w.id, { title: wTitleDraft } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); setEditWTitle(null); setWTitleErr(undefined); } catch { setWTitleErr('Saving failed. Try again.'); }
++    setWTitleSaving(true);
++    try { await updateWidgetTitle(w.id, { title: wTitleDraft } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); setEditWTitle(null); setWTitleErr(undefined); } catch { setWTitleErr('Saving failed. Try again.'); } finally { setWTitleSaving(false); }
+   };
+   const handleMove = async (w: Widget, dir: number) => {
+     const idx = widgets.findIndex((x) => x.id === w.id); const ni = idx + dir; if (ni < 0 || ni >= widgets.length) return;
+@@ -123,37 +144,8 @@ export default function DashboardDetailPage() {
+ 
+   return (
+     <>
+-      <PageHeader
+-        title={
+-          <span className="flex-row-gap-2 items-center">
+-            <span>{dashboard.name}</span>
+-            <span aria-live="polite" className="opacity-60">{saving ? 'Saving' : saved ? 'Saved' : ''}</span>
+-          </span>
+-        }
+-        breadcrumb={[{ label: 'Back to dashboards', href: '/dashboards' }]}
+-        actions={
+-          editing ? (
+-            <>
+-              <Button onClick={() => setShowAdd(true)}>Add widget</Button>
+-              <Dropdown menu={<><Dropdown.Item onSelect={handleDup}>Duplicate</Dropdown.Item><Dropdown.Item onSelect={() => setShowDelete(true)}>Delete</Dropdown.Item></>}>
+-                <Button
+-                  // secondary menu trigger for dashboard actions
+-                >More</Button>
+-              </Dropdown>
+-              <Button onClick={() => setEditing(false)}>Done</Button>
+-            </>
+-          ) : (
+-            <Button onClick={() => { setEditing(true); setDashName(dashboard.name); setDashErr(undefined); }}>Edit</Button>
+-          )
+-        }
+-      />
+-      {editing ? (
+-        <div data-ds="" className="flex-row-gap-2 items-center">
+-          <Input aria-label="Dashboard name" value={dashName} onChange={setDashName} autoComplete="off" error={dashErr} />
+-          <IconButton tooltip="Save" onClick={handleSaveDash}><Check /></IconButton>
+-          <IconButton tooltip="Cancel" onClick={() => setDashName(dashboard.name)}><X /></IconButton>
+-        </div>
+-      ) : null}
++      <DashboardHeader dashboard={dashboard} editing={editing} onToggleEditing={setEditing} onDuplicate={handleDup} savingText={saving ? 'Saving' : saved ? 'Saved' : ''} />
++      {widgetGoneIds.size > 0 ? <p role="status">This widget is gone.</p> : null}
+ 
+       {widgets.length === 0 ? (
+         <div data-ds="" className="flex-col-gap-3 items-start">
+@@ -175,7 +167,7 @@ export default function DashboardDetailPage() {
+                       {editing && editWTitle === w.id ? (
+                         <>
+                           <Input aria-label="Widget title" value={wTitleDraft} onChange={setWTitleDraft} autoComplete="off" error={wTitleErr} />
+-                          <IconButton tooltip="Save" onClick={() => handleWTitle(w)}><Check /></IconButton>
++                          <IconButton tooltip="Save" onClick={() => handleWTitle(w)} loadingWithReason={wTitleSaving ? 'Saving' : undefined}><Check /></IconButton>
+                           <IconButton tooltip="Cancel" onClick={() => setEditWTitle(null)}><X /></IconButton>
+                         </>
+                       ) : (
+diff --git a/web/app/(routes)/(app)/dashboards/page.tsx b/web/app/(routes)/(app)/dashboards/page.tsx
+index ebffa3c..6223472 100644
+--- a/web/app/(routes)/(app)/dashboards/page.tsx
++++ b/web/app/(routes)/(app)/dashboards/page.tsx
+@@ -3,8 +3,8 @@
+ import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+-import { createDashboard, duplicateDashboard, updateDashboard, useListDashboards } from '@app/entities/dashboard';
+-import { createWidget, useListWidgets } from '@app/entities/widget';
++import { createDashboard, deleteDashboard, duplicateDashboard, updateDashboard, useListDashboards } from '@app/entities/dashboard';
++import { createWidget, deleteWidgetsByDashboard, useListWidgets } from '@app/entities/widget';
+ import { Button, IconButton } from '@packages/ui/Button';
+ import { Dropdown } from '@packages/ui/Dropdown';
+ import { Input, SearchInput } from '@packages/ui/Input';
+@@ -31,6 +31,7 @@ export default function DashboardsPage() {
+   const [saving, setSaving] = useState(false);
+   const [pendingId, setPendingId] = useState<string | null>(null);
+   const [deleteTarget, setDeleteTarget] = useState<Dashboard | null>(null);
++  const [goneMessage, setGoneMessage] = useState<string | null>(null);
+ 
+   const sorted = useMemo(() => {
+     if (!dashboards) return [];
+@@ -49,6 +50,7 @@ export default function DashboardsPage() {
+   const handleCreate = async () => {
+     if (pendingId) return;
+     setPendingId('create');
++    setGoneMessage(null);
+     try {
+       const base = 'Untitled Dashboard';
+       let name = base;
+@@ -72,20 +74,39 @@ export default function DashboardsPage() {
+       await updateDashboard(d.id, { name: editName, lastEditedAt: new Date().toISOString() });
+       toast({ title: 'Dashboard saved' });
+       setEditingId(null);
+-    } catch { setEditError('Could not save. Try again.'); } finally { setSaving(false); }
++    } catch (e: unknown) {
++      const msg = (e as Error).message;
++      if (msg.includes('not found')) {
++        setGoneMessage('This dashboard is no longer available.');
++        setEditingId(null);
++      } else {
++        setEditError('Could not save. Try again.');
++      }
++    } finally { setSaving(false); }
+   };
+   const handleDuplicate = async (d: Dashboard) => {
+     if (pendingId) return;
+     setPendingId(d.id);
++    let copy: Dashboard | null = null;
++    const createdWidgetIds: string[] = [];
+     try {
+-      const copy = await duplicateDashboard({ name: `${d.name} Copy`, lastEditedAt: new Date().toISOString() });
++      copy = await duplicateDashboard({ name: `${d.name} Copy`, lastEditedAt: new Date().toISOString() });
+       for (const w of (allWidgets || []).filter((x) => x.dashboard === d.id)) {
+         const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = w;
+-        await createWidget({ ...rest, dashboard: copy.id } as never);
++        const created = await createWidget({ ...rest, dashboard: copy.id } as never);
++        createdWidgetIds.push(created.id);
+       }
+       toast({ title: 'Dashboard duplicated' });
+       router.push(`/dashboards/${copy.id}`);
+-    } catch { toast({ title: 'Could not duplicate. Try again.', status: 'error' }); } finally { setPendingId(null); }
++    } catch {
++      // Rollback partial widgets + dashboard on failure (T65)
++      if (copy) {
++        for (const wid of createdWidgetIds) { try { await (await import('@app/entities/widget')).deleteWidget(wid); } catch { /* ignore */ } }
++        try { await deleteDashboard(copy.id); } catch { /* ignore */ }
++        await deleteWidgetsByDashboard(copy.id).catch(() => {});
++      }
++      toast({ title: 'Could not duplicate. Try again.', status: 'error' });
++    } finally { setPendingId(null); }
+   };
+ 
+   if (loading) return <PageHeader title="Your dashboards" />;
+@@ -105,6 +126,7 @@ export default function DashboardsPage() {
+   return (
+     <>
+       <PageHeader title="Your dashboards" />
++      {goneMessage ? <p role="alert">{goneMessage}</p> : null}
+       <div data-ds="" className="flex-col-gap-4">
+         <div data-ds="" className="flex-row-gap-3 items-center">
+           <SearchInput label="Search" value={search} onChange={setSearch} />
+diff --git a/web/app/blocks/DashboardHeader/DashboardHeader.tsx b/web/app/blocks/DashboardHeader/DashboardHeader.tsx
+new file mode 100644
+index 0000000..134c068
+--- /dev/null
++++ b/web/app/blocks/DashboardHeader/DashboardHeader.tsx
+@@ -0,0 +1,75 @@
++'use client';
++
++import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
++import { PageHeader } from '@app/components/PageHeader';
++import { updateDashboard } from '@app/entities/dashboard';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Dropdown } from '@packages/ui/Dropdown';
++import { Input } from '@packages/ui/Input';
++import { toast } from '@packages/ui/Toast';
++import { Check, X } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++import type { Dashboard } from '@app/entities/dashboard/types';
++
++export function DashboardHeader({
++  dashboard,
++  editing,
++  onToggleEditing,
++  onDuplicate,
++  savingText,
++}: {
++  dashboard: Dashboard;
++  editing: boolean;
++  onToggleEditing: (v: boolean) => void;
++  onDuplicate: () => void;
++  savingText: string;
++}) {
++  const [dashName, setDashName] = useState(dashboard.name);
++  const [dashErr, setDashErr] = useState<string | undefined>();
++  const [saving, setSaving] = useState(false);
++  const [showDelete, setShowDelete] = useState(false);
++  const router = useRouter();
++
++  const handleSave = async () => {
++    if (saving) return;
++    if (!dashName.trim() || dashName.length > 80) { setDashErr('Name is required and max 80 characters'); return; }
++    setSaving(true);
++    try { await updateDashboard(dashboard.id, { name: dashName, lastEditedAt: new Date().toISOString() }); toast({ title: 'Dashboard saved' }); } catch { setDashErr('Could not save. Try again.'); } finally { setSaving(false); }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={
++          <span className="flex-row-gap-2 items-center">
++            <span>{dashboard.name}</span>
++            <span aria-live="polite" className="opacity-60">{savingText}</span>
++          </span>
++        }
++        breadcrumb={[{ label: 'Back to dashboards', href: '/dashboards' }]}
++        actions={
++          editing ? (
++            <>
++              <Dropdown menu={<><Dropdown.Item onSelect={onDuplicate}>Duplicate</Dropdown.Item><Dropdown.Item onSelect={() => setShowDelete(true)}>Delete</Dropdown.Item></>}>
++                <Button>More</Button>
++              </Dropdown>
++              <Button onClick={() => onToggleEditing(false)}>Done</Button>
++            </>
++          ) : (
++            <Button onClick={() => onToggleEditing(true)}>Edit</Button>
++          )
++        }
++      />
++      {editing ? (
++        <div data-ds="" className="flex-row-gap-2 items-center">
++          <Input aria-label="Dashboard name" value={dashName} onChange={setDashName} autoComplete="off" error={dashErr} />
++          <IconButton tooltip="Save" onClick={handleSave} loadingWithReason={saving ? 'Saving' : undefined}><Check /></IconButton>
++          <IconButton tooltip="Cancel" onClick={() => setDashName(dashboard.name)}><X /></IconButton>
++        </div>
++      ) : null}
++      {showDelete ? <DeleteDashboardDialog dashboardId={dashboard.id} dashboardName={dashboard.name} open={showDelete} onOpenChange={setShowDelete} onDeleted={() => router.push('/dashboards')} /> : null}
++    </>
++  );
++}
+diff --git a/web/app/blocks/DashboardHeader/index.ts b/web/app/blocks/DashboardHeader/index.ts
+new file mode 100644
+index 0000000..cd93f71
+--- /dev/null
++++ b/web/app/blocks/DashboardHeader/index.ts
+@@ -0,0 +1 @@
++export { DashboardHeader } from './DashboardHeader';
+\ No newline at end of file
+diff --git a/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx b/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+index a2dad31..ff84db8 100644
+--- a/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
++++ b/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+@@ -1,7 +1,7 @@
+ 'use client';
+ 
+ import { deleteDashboard } from '@app/entities/dashboard';
+-import { useWidgetStore } from '@app/entities/widget/store';
++import { deleteWidgetsByDashboard } from '@app/entities/widget';
+ import { Button } from '@packages/ui/Button';
+ import { Dialog } from '@packages/ui/Dialog';
+ import { toast } from '@packages/ui/Toast';
+@@ -29,42 +29,51 @@ export function DeleteDashboardDialog({
+     setError(undefined);
+     try {
+       await deleteDashboard(dashboardId);
+-      // Remove orphaned widgets via store - widget has no bulk delete operation
+-      // This is the only store access: dashboard deletion must clean up child widgets
+-      useWidgetStore.setState(({ records }) => ({
+-        records: records.filter((w) => w.dashboard !== dashboardId),
+-      }));
++      await deleteWidgetsByDashboard(dashboardId);
+       toast({ title: 'Dashboard deleted' });
+       onOpenChange(false);
+       onDeleted();
+-    } catch {
+-      setError('Could not delete. Try again.');
++    } catch (e: unknown) {
++      const msg = (e as Error).message;
++      if (msg.includes('not found') || msg.includes('already gone')) {
++        setError('This dashboard is already gone.');
++      } else {
++        setError('Could not delete. Try again.');
++      }
+     } finally {
+       setDeleting(false);
+     }
+   };
+ 
++  const isAlreadyGone = error === 'This dashboard is already gone.';
++
+   return (
+     <Dialog
+-      title="Delete this dashboard?"
++      title={isAlreadyGone ? 'This dashboard is already gone.' : 'Delete this dashboard?'}
+       open={open}
+       onOpenChange={onOpenChange}
+       footer={(close) => (
+         <>
+-          <Button onClick={() => close()}>Cancel</Button>
+-          <Button
+-            // destructive confirm for permanent delete
+-            variant="danger"
+-            loadingWithReason={deleting ? 'Deleting dashboard' : undefined}
+-            onClick={handleDelete}
+-          >
+-            Delete
+-          </Button>
++          {isAlreadyGone ? (
++            <Button onClick={() => { onOpenChange(false); onDeleted(); }}>Close</Button>
++          ) : (
++            <>
++              <Button onClick={() => close()}>Cancel</Button>
++              <Button
++                // destructive confirm for permanent delete
++                variant="danger"
++                loadingWithReason={deleting ? 'Deleting dashboard' : undefined}
++                onClick={handleDelete}
++              >
++                Delete
++              </Button>
++            </>
++          )}
+         </>
+       )}
+     >
+-      <p>This will permanently delete the dashboard and all its widgets. This cannot be undone.</p>
+-      {error ? <p role="alert">{error}</p> : null}
++      {isAlreadyGone ? null : <p>This will permanently delete the dashboard and all its widgets. This cannot be undone.</p>}
++      {error && !isAlreadyGone ? <p role="alert">{error}</p> : null}
+     </Dialog>
+   );
+ }
+diff --git a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+index 544f972..9ce9839 100644
+--- a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
++++ b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+@@ -30,11 +30,13 @@ import React, { useState } from 'react';
+  */
+ export const AppHeaderRightSlot = () => {
+   const user = useCurrentUser();
+-  const { data: dashboards } = useListDashboards();
++  const { data: dashboards, loading } = useListDashboards();
+   const router = useRouter();
+   const [creating, setCreating] = useState(false);
+ 
+   if (user === undefined || user === null) return null;
++  // Hide Create while the list is still loading or confirmed empty (S04 empty-state requirement)
++  if (!loading && (dashboards?.length ?? 0) === 0) return null;
+ 
+   const handleCreate = async () => {
+     if (creating) return;
+diff --git a/web/app/entities/widget/deleteByDashboard.ts b/web/app/entities/widget/deleteByDashboard.ts
+new file mode 100644
+index 0000000..bef6326
+--- /dev/null
++++ b/web/app/entities/widget/deleteByDashboard.ts
+@@ -0,0 +1,11 @@
++import { mockCall } from '../mock';
++
++import { useWidgetStore } from './store';
++
++/** Remove all widgets belonging to a dashboard, via entity layer (no direct store access from UI). */
++export async function deleteWidgetsByDashboard(dashboardId: string): Promise<void> {
++  await mockCall('deleteWidgetsByDashboard');
++  useWidgetStore.setState(({ records }) => ({
++    records: records.filter((w) => w.dashboard !== dashboardId),
++  }));
++}
+diff --git a/web/app/entities/widget/index.ts b/web/app/entities/widget/index.ts
+index 8680d7b..06ed5d4 100644
+--- a/web/app/entities/widget/index.ts
++++ b/web/app/entities/widget/index.ts
+@@ -1,2 +1,3 @@
+ export type { Widget, WidgetInput } from './types';
+ export { listWidgets, useListWidgets, getWidget, useGetWidget, createWidget, deleteWidget, updateWidgetTitle, repositionWidget, resizeWidget, updateNoteText, incrementCounter, updateCounterLabel, addChecklistItem, toggleChecklistItem, updateChecklistItem, removeChecklistItem, addLink, updateLink, removeLink } from './operations';
++export { deleteWidgetsByDashboard } from './deleteByDashboard';
+-- 
+2.34.1
+

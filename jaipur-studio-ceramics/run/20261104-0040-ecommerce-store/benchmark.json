@@ -1,0 +1,824 @@
+{
+  "runId": "20261104-0040-ecommerce-store",
+  "createdAt": "2026-11-04T08:29:48.555Z",
+  "server": "next dev",
+  "generation": {
+    "backend": "meta",
+    "agent": "Muse Code",
+    "models": [
+      {
+        "model": "muse-spark-1.3",
+        "calls": 330
+      },
+      {
+        "model": "muse-wonder-1.0",
+        "calls": 3
+      }
+    ],
+    "timeMs": {
+      "total": 8376348,
+      "planning": 1802106,
+      "code": 6385179,
+      "stages": [
+        {
+          "stage": "flows-scope",
+          "ms": 51393
+        },
+        {
+          "stage": "flows-catalog",
+          "ms": 459489
+        },
+        {
+          "stage": "flows-expand",
+          "ms": 226933
+        },
+        {
+          "stage": "design-theme",
+          "ms": 202118
+        },
+        {
+          "stage": "design-architect",
+          "ms": 368499
+        },
+        {
+          "stage": "contract",
+          "ms": 488058
+        },
+        {
+          "stage": "code-scaffold",
+          "ms": 137660
+        },
+        {
+          "stage": "code-contract",
+          "ms": 51365
+        },
+        {
+          "stage": "code-frames",
+          "ms": 736359
+        },
+        {
+          "stage": "code-pages",
+          "ms": 5648771
+        }
+      ]
+    },
+    "calls": 333,
+    "tokensIn": 59981300,
+    "tokensCached": 57076059,
+    "tokensOut": 634936,
+    "costUsd": 4.389077500000001,
+    "subscription": {
+      "weekFrom": 24,
+      "weekTo": 28
+    },
+    "rounds": 23,
+    "known": 4,
+    "review": [
+      {
+        "reviewer": "checks",
+        "part": "code",
+        "caught": 6,
+        "fixed": 6,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "code",
+        "part": "code",
+        "caught": 5,
+        "fixed": 5,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "adherence",
+        "part": "code",
+        "caught": 8,
+        "fixed": 5,
+        "unchecked": 3,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "behavior",
+        "part": "code",
+        "caught": 6,
+        "fixed": 5,
+        "unchecked": 1,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "checks",
+        "part": "planning",
+        "caught": 3,
+        "fixed": 3,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "peer",
+        "part": "planning",
+        "caught": 6,
+        "fixed": 6,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "output",
+        "part": "planning",
+        "caught": 3,
+        "fixed": 3,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      }
+    ],
+    "threads": {
+      "issues": 37,
+      "threads": 0
+    }
+  },
+  "code": {
+    "files": 110,
+    "lines": 7606,
+    "tsc": {
+      "errors": 0
+    },
+    "eslint": {
+      "errors": 0,
+      "warnings": 0,
+      "byRule": {}
+    },
+    "validate": {
+      "errors": 0,
+      "warnings": 0,
+      "byRule": {}
+    },
+    "clones": {
+      "percentage": 2.1231139003872346,
+      "count": 11,
+      "maxLines": 25
+    },
+    "longFiles": 3,
+    "linesByOrigin": {
+      "template": 1778,
+      "code": 594,
+      "model": 5234
+    }
+  },
+  "routes": [
+    {
+      "route": "/",
+      "screen": "S01",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 24,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 59,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 1
+        }
+      },
+      "keyboard": {
+        "interactive": 14,
+        "reachable": 14,
+        "focusVisible": 14,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/shop",
+      "screen": "S02",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 65,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 1
+        }
+      },
+      "keyboard": {
+        "interactive": 16,
+        "reachable": 16,
+        "focusVisible": 15,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/shop/piece-1",
+      "screen": "S03",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 28,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 50,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 15,
+        "reachable": 15,
+        "focusVisible": 14,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/cart",
+      "screen": "S04",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 21,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 25,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/checkout",
+      "screen": "S05",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 21,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 26,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/orders/demo",
+      "screen": "S06",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 21,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 26,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/order-lookup",
+      "screen": "S07",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 27,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 32,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 13,
+        "reachable": 13,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard",
+      "screen": "S10",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 26,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 94,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 13,
+        "reachable": 13,
+        "focusVisible": 13,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/pieces",
+      "screen": "S11",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 30,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 89,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 14,
+        "reachable": 14,
+        "focusVisible": 13,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/pieces/new",
+      "screen": "S12",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 50,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 19,
+        "reachable": 19,
+        "focusVisible": 11,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 4,
+        "enterOk": 4,
+        "spaceOk": 4,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/pieces/piece-1",
+      "screen": "S13",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 28,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/pieces/piece-1/edit",
+      "screen": "S14",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 64,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 28,
+        "reachable": 28,
+        "focusVisible": 16,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 8,
+        "enterOk": 8,
+        "spaceOk": 8,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/orders",
+      "screen": "S15",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 26,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 87,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 12,
+        "reachable": 12,
+        "focusVisible": 12,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/orders/order-1",
+      "screen": "S16",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 53,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 3,
+        "enterOk": 3,
+        "spaceOk": 3,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/discount-codes",
+      "screen": "S17",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 85,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 12,
+        "reachable": 12,
+        "focusVisible": 12,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 1,
+        "enterOk": 1,
+        "spaceOk": 1,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/discount-codes/new",
+      "screen": "S18",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 33,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 13,
+        "reachable": 12,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/discount-codes/discountCode-1",
+      "screen": "S19",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 26,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 31,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 8,
+        "reachable": 8,
+        "focusVisible": 8,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboard/account",
+      "screen": "S20",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 25,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 21,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 7,
+        "reachable": 7,
+        "focusVisible": 7,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 2,
+        "enterOk": 2,
+        "spaceOk": 2,
+        "skipLink": false
+      }
+    }
+  ]
+}

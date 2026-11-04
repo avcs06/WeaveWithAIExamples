@@ -1,0 +1,130 @@
+{
+  "id": "20261104-0040-ecommerce-store",
+  "idea": "fixtures/ideas/ecommerce-store.md",
+  "createdAt": "2026-11-03T19:10:21.305Z",
+  "stages": {
+    "flows-scope": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:11:12.701Z",
+      "rounds": 1,
+      "known": 0,
+      "version": 1,
+      "hash": "2b437bd8b8f83589ca47480abbb934a4e66baf15245230fcd850b9735f15a9b2"
+    },
+    "flows-catalog": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:18:52.196Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "34af4dba3d6ef91c7d1de88ad3f34309dd43b041b1b6bf9061d36c7504d9e4b0"
+    },
+    "flows-expand": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:22:39.130Z",
+      "version": 1,
+      "hash": "9b90e9293d3b694a0fe41197afcf78bbc17f423df8f8d577e9a173c67dfb9a46",
+      "rounds": 8,
+      "known": 0,
+      "batches": 7
+    },
+    "flows-expand-1": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:20:03.992Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-2": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:20:58.044Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-3": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:21:10.054Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-4": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:20:40.852Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-5": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:20:36.388Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-6": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:22:39.122Z",
+      "rounds": 2,
+      "known": 0
+    },
+    "flows-expand-7": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:20:32.406Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-assemble": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:22:39.126Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "design-theme": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:26:06.849Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "6c84da9d177d7d77ab2bdb32c93f4cebb8c0e1752772d40939b627072049221a"
+    },
+    "design-architect": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:32:15.352Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "85415052960ee7bf316e6468a481bb03aca9fde3921ddc0e4545a01981d33907"
+    },
+    "contract": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:40:23.415Z",
+      "rounds": 3,
+      "known": 0,
+      "version": 1,
+      "hash": "2e130bdef97d0d97e0a5c89d4f855b84fed967471d53c9a86caee0a5d400e160"
+    },
+    "code-scaffold": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:42:41.076Z"
+    },
+    "code-contract": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:43:32.445Z",
+      "rounds": 1,
+      "known": 0,
+      "version": 1,
+      "hash": "21596a2819e60359eef60f5c111fdf8d1f081724e51a1e3dc9904c02e10cc66b"
+    },
+    "code-frames": {
+      "status": "done",
+      "updatedAt": "2026-11-03T19:55:48.858Z",
+      "rounds": 1,
+      "known": 0,
+      "batches": 1
+    },
+    "code-pages": {
+      "status": "done",
+      "updatedAt": "2026-11-03T21:29:57.691Z",
+      "rounds": 3,
+      "known": 4,
+      "batches": 1
+    }
+  }
+}

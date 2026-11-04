@@ -1,0 +1,43 @@
+From 765350f9e91360068bbafc9f9bbb5297be2b4905 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 06:30:32 +0530
+Subject: [PATCH] code-frames: frames-fix-1
+
+---
+ .../components/AppHeaderRightSlot/AppHeaderRightSlot.tsx    | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+index 29a52f4..544f972 100644
+--- a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
++++ b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+@@ -1,8 +1,7 @@
+ 'use client';
+ 
+ import { useCurrentUser } from '@app/entities/auth';
+-import { createDashboard } from '@app/entities/dashboard';
+-import { useDashboardStore } from '@app/entities/dashboard/store';
++import { createDashboard, useListDashboards } from '@app/entities/dashboard';
+ import { Button } from '@packages/ui/Button';
+ import { Plus } from 'lucide-react';
+ import { useRouter } from 'next/navigation';
+@@ -31,6 +30,7 @@ import React, { useState } from 'react';
+  */
+ export const AppHeaderRightSlot = () => {
+   const user = useCurrentUser();
++  const { data: dashboards } = useListDashboards();
+   const router = useRouter();
+   const [creating, setCreating] = useState(false);
+ 
+@@ -40,7 +40,7 @@ export const AppHeaderRightSlot = () => {
+     if (creating) return;
+     setCreating(true);
+     try {
+-      const records = useDashboardStore.getState().records;
++      const records = dashboards ?? [];
+       const base = 'Untitled Dashboard';
+       let name = base;
+       let n = 2;
+-- 
+2.34.1
+

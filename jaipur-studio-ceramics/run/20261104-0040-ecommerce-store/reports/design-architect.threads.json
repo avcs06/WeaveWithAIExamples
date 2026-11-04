@@ -1,0 +1,62 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Owner sign-up step F08.S01 has no place and /sign-up cannot be reached from the frame or sign-in. Fix: Add a way to reach sign-up, such as a footer or sign-in choice \"Create studio owner account\" which goes to /sign-up, and give S08 a matching \"Create account\" choice to /sign-up, covering F08.S01.",
+      "at": "FR01"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Added footer way to /sign-up in FR01 and added \"Create account\" choice to /sign-up covering F08.S01 in S08, and fixed FR01 sign-in step to cover only F09.S01.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The account editing alternative repeats the Edit action while already editing. Fix: Remove \"Can choose Edit\" from the \"when editing\" alternative so viewing shows Edit once and editing shows only the password field and Done.",
+      "at": "S20"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Removed the repeated Edit action from the editing alternative so viewing shows Edit once and editing shows only email, password field and Done.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The newest-first discount list shows expiry date but not the record date. Fix: Show each discount code's creation date in its table row in addition to expiry date, since the list is sorted newest first.",
+      "at": "S17"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Added creation date to each discount code table row alongside expiry date since the list is sorted newest first.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

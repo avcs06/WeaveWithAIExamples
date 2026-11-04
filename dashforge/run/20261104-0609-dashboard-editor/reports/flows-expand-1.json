@@ -1,0 +1,175 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "FLOW-006",
+          "severity": "mandatory",
+          "message": "Field FD01 appears twice at F02.S02 (once through form FM01); a step asks for each field once.",
+          "at": "F02.S02"
+        },
+        {
+          "rule": "FLOW-006",
+          "severity": "mandatory",
+          "message": "Field FD02 appears twice at F02.S02 (once through form FM01); a step asks for each field once.",
+          "at": "F02.S02"
+        },
+        {
+          "rule": "FLOW-006",
+          "severity": "mandatory",
+          "message": "Field FD01 appears twice at F03.S02 (once through form FM01); a step asks for each field once.",
+          "at": "F03.S02"
+        },
+        {
+          "rule": "FLOW-006",
+          "severity": "mandatory",
+          "message": "Field FD02 appears twice at F03.S02 (once through form FM01); a step asks for each field once.",
+          "at": "F03.S02"
+        },
+        {
+          "rule": "FLOW-006",
+          "severity": "mandatory",
+          "message": "Field FD13 appears twice at F20.S02 (once through form FM04); a step asks for each field once.",
+          "at": "F20.S02"
+        },
+        {
+          "rule": "FLOW-006",
+          "severity": "mandatory",
+          "message": "Field FD02 appears twice at F20.S02 (once through form FM04); a step asks for each field once.",
+          "at": "F20.S02"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "F05 makes search (F05.S02) and open-dashboard (F05.S03) mandatory steps to achieve 'See my dashboards', but seeing the list does not require filtering or navigating away; open belongs to F06. Fix: Keep only the list step (F05.S01) as the main path for the home goal; make filtering an optional interaction inside the flow (or an alternative) and remove the mandatory open step so the outcome 'User sees the list...' matches the last step and P03 is met.",
+          "at": "F05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Empty alternative for home shows a message and 'invites' to create but provides no user action to create the first dashboard, leaving a dead end. Fix: Add a user step in F05.A01 where the user chooses to create a dashboard and the website creates it/opens the editor, or explicitly show the Create action as the next action with resumesAt to that step.",
+          "at": "F05.A01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Conflict alternative says website 'offers to sign in instead' but contains only a system message and resumes at sign-up, giving no way to actually sign in. Fix: Add a second user step 'The visitor chooses to sign in / The website shows the sign-in form' as in the example F01.A03, or change the alternative to navigate to F03, so the offered next action exists and P10 is met.",
+          "at": "F02.A02"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "No-results search alternative says website 'offers to clear the search' but provides no user action to clear it. Fix: Add a user step where the user clears the search and the website restores the full list, or state that typing again filters, with a concrete next action.",
+          "at": "F05.A02"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "F05.S02 (search) and F05.S03 (open dashboard) are sequential mandatory steps, so a user who only wants to see the home list cannot finish without filtering and opening; steps do not reach the header outcome which is just seeing the list. Fix: Keep F05.S01 as the mandatory list step that shows name, lastEditedAt relative time with hover timestamp, search field FD14 and create action. Make filtering and opening optional branches (alternatives) from S01 that resume at S01 or end separately, so the flow can complete after S01 and still cover empty, no-results and notFound.",
+          "at": "F05"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Home list is described as having a Search field (FD14) but no step references FD14, so the field is never asked for and will be flagged as unused. Fix: Add FD14 to F05.S01 fields and reference FD14 in F05.A02.S01 where the user types to filter dashboards by name; keep filtering as type-as-you-go with no submit.",
+          "at": "F05.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Empty-state alternative F05.A01.S02 creates a new Dashboard inside an alternative, but alternatives must not change records and creation belongs to F07. Fix: Keep F05.A01 as an empty-state message that invites creating the first dashboard and offers the Create action that starts F07; remove the create effect and navigation from the alternative.",
+          "at": "F05.A01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "notFound alternative branches from the list step F05.S01 instead of from the open-dashboard action, so it cannot trigger when opening a dashboard that was deleted. Fix: Branch notFound from F05.A04.S01 (the step that opens a dashboard) with condition 'The dashboard was deleted in the meantime' and response that says it is gone and shows the home list again.",
+          "at": "F05.A05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative for choosing sign-in instead branches from F01.S02 which is already the choose-to-sign-up step, instead of from viewing the landing page where the choice is made. Fix: Branch F01.A01 from F01.S01 so the visitor viewing the landing page can choose either sign-up (F01.S02) or sign-in (alternative) as two options from the same step.",
+          "at": "F01.A01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Step shows and uses Search field FD14 but fields is empty; filtering step F05.A02.S01 also omits FD14. Fix: Add FD14 to F05.S01 fields/form or keep list display without input, and add fields: [\"FD14\"] to F05.A02.S01 where user types to filter, so fields match words.",
+          "at": "F05.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "notFound alternative branches from list step F05.S01 instead of the step that opens a single Dashboard. Fix: Move notFound to branch from F05.A04.S01 (the open-dashboard step) with condition dashboard was deleted in the meantime and website says it is gone and shows home list again.",
+          "at": "F05.A05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Home flow creates a Dashboard in an alternative, doing F07's job and changing records inside an alternative which must have no effects. Fix: Keep F05 empty alternative to only show empty-state message and invite to create; remove creation/open-editor from F05 and let F07 Create a new dashboard handle creation. Alternative should resume at F05.S01 or end without creating.",
+          "at": "F05.A01.S02"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "FLOW-016",
+          "severity": "mandatory",
+          "message": "F05.A05 branches from \"F05.A04.S01\", which is not a step of F05; use one of its step ids.",
+          "at": "F05.A05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Home list is described as having a Search field (FD14) but no step references FD14, so the field is never asked for and will be flagged as unused. Fix: Add FD14 to F05.S01 fields and reference FD14 in F05.A02.S01 where the user types to filter dashboards by name; keep filtering as type-as-you-go with no submit. (addressed in the final fix, not re-reviewed)",
+          "at": "F05.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Empty-state alternative F05.A01.S02 creates a new Dashboard inside an alternative, but alternatives must not change records and creation belongs to F07. Fix: Keep F05.A01 as an empty-state message that invites creating the first dashboard and offers the Create action that starts F07; remove the create effect and navigation from the alternative. (addressed in the final fix, not re-reviewed)",
+          "at": "F05.A01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "notFound alternative branches from the list step F05.S01 instead of from the open-dashboard action, so it cannot trigger when opening a dashboard that was deleted. Fix: Branch notFound from F05.A04.S01 (the step that opens a dashboard) with condition 'The dashboard was deleted in the meantime' and response that says it is gone and shows the home list again. (addressed in the final fix, not re-reviewed)",
+          "at": "F05.A05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Alternative for choosing sign-in instead branches from F01.S02 which is already the choose-to-sign-up step, instead of from viewing the landing page where the choice is made. Fix: Branch F01.A01 from F01.S01 so the visitor viewing the landing page can choose either sign-up (F01.S02) or sign-in (alternative) as two options from the same step. (addressed in the final fix, not re-reviewed)",
+          "at": "F01.A01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Step shows and uses Search field FD14 but fields is empty; filtering step F05.A02.S01 also omits FD14. Fix: Add FD14 to F05.S01 fields/form or keep list display without input, and add fields: [\"FD14\"] to F05.A02.S01 where user types to filter, so fields match words. (addressed in the final fix, not re-reviewed)",
+          "at": "F05.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "notFound alternative branches from list step F05.S01 instead of the step that opens a single Dashboard. Fix: Move notFound to branch from F05.A04.S01 (the open-dashboard step) with condition dashboard was deleted in the meantime and website says it is gone and shows home list again. (addressed in the final fix, not re-reviewed)",
+          "at": "F05.A05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Home flow creates a Dashboard in an alternative, doing F07's job and changing records inside an alternative which must have no effects. Fix: Keep F05 empty alternative to only show empty-state message and invite to create; remove creation/open-editor from F05 and let F07 Create a new dashboard handle creation. Alternative should resume at F05.S01 or end without creating. (addressed in the final fix, not re-reviewed)",
+          "at": "F05.A01.S02"
+        }
+      ]
+    }
+  ]
+}

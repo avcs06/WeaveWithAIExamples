@@ -1,0 +1,305 @@
+From a759ccb8f9c5cb3fdd299a6d12aef74ec493aa57 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 02:58:57 +0530
+Subject: [PATCH] code-pages: pages-fix-2
+
+---
+ .../(routes)/(app)/dashboard/account/page.tsx | 21 +++++++-
+ .../(app)/dashboard/orders/[orderId]/page.tsx | 18 ++++++-
+ .../(routes)/(marketing)/checkout/page.tsx    |  1 +
+ .../orders/[orderReference]/page.tsx          |  5 +-
+ web/app/(routes)/(marketing)/page.tsx         |  8 ++--
+ web/app/entities/order/index.ts               |  2 +-
+ web/app/entities/order/operations.ts          | 48 ++++++++++++++-----
+ web/app/entities/order/seed.ts                |  5 ++
+ web/app/entities/order/types.ts               |  1 +
+ 9 files changed, 86 insertions(+), 23 deletions(-)
+
+diff --git a/web/app/(routes)/(app)/dashboard/account/page.tsx b/web/app/(routes)/(app)/dashboard/account/page.tsx
+index 41875b8..4ccc027 100644
+--- a/web/app/(routes)/(app)/dashboard/account/page.tsx
++++ b/web/app/(routes)/(app)/dashboard/account/page.tsx
+@@ -1,8 +1,9 @@
+ 'use client';
+ 
++import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { changePassword, useCurrentUser } from '@app/entities/auth';
+-import { IconButton } from '@packages/ui/Button';
++import { Button, IconButton } from '@packages/ui/Button';
+ import { Controller } from '@packages/ui/Form';
+ import { PasswordInput } from '@packages/ui/Input';
+ import { toast } from '@packages/ui/Toast';
+@@ -40,6 +41,22 @@ export default function AccountPage() {
+     setEditing(false);
+   };
+ 
++  if (user === undefined) return null;
++
++  if (user === null) {
++    return (
++      <>
++        <PageHeader
++          title="Account"
++          description="Your own sign-in details."
++        />
++        <Button as={NextLink} href="/sign-in">
++          Sign in
++        </Button>
++      </>
++    );
++  }
++
+   const save = async ({ password }: PasswordValues) => {
+     if (password.length < 8) {
+       reset({ password: '' });
+@@ -69,7 +86,7 @@ export default function AccountPage() {
+       <DescriptionList>
+         <div>
+           <DescriptionTerm>Email</DescriptionTerm>
+-          <DescriptionDetails>{user?.email ?? ''}</DescriptionDetails>
++          <DescriptionDetails>{user.email}</DescriptionDetails>
+         </div>
+         <div>
+           <DescriptionTerm>Password</DescriptionTerm>
+diff --git a/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx b/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx
+index 271d5c4..2582f2a 100644
+--- a/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx
++++ b/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx
+@@ -5,6 +5,7 @@ import {
+   OrderItems,
+   OrderTotals,
+ } from '@app/blocks/orders';
++import { sizeLabel } from '@app/blocks/pieces';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { PageState } from '@app/components/PageState';
+@@ -142,8 +143,21 @@ export default function OrderDetailPage() {
+     if (result !== DialogResult.confirm) return;
+     setBusy('cancel');
+     try {
+-      await cancelOrderWithRestore(record.id);
+-      toast({ title: 'Order cancelled', status: 'success' });
++      const { unrestored } = await cancelOrderWithRestore(record.id);
++      if (unrestored.length === 0) {
++        toast({ title: 'Order cancelled', status: 'success' });
++      } else {
++        toast({
++          title: 'Order cancelled',
++          description: `Stock for ${unrestored
++            .map(
++              (line) =>
++                `${line.title} (${line.glaze}, ${sizeLabel(line.size)})`,
++            )
++            .join('; ')} could not be restored because the piece or variant is gone.`,
++          status: 'warning',
++        });
++      }
+     } catch (error) {
+       toast({
+         title: 'Cancelling the order failed',
+diff --git a/web/app/(routes)/(marketing)/checkout/page.tsx b/web/app/(routes)/(marketing)/checkout/page.tsx
+index e8d2c72..53a5e34 100644
+--- a/web/app/(routes)/(marketing)/checkout/page.tsx
++++ b/web/app/(routes)/(marketing)/checkout/page.tsx
+@@ -139,6 +139,7 @@ export default function CheckoutPage() {
+             : {}),
+           ...(usableCode ? { discountCode: usableCode.code } : {}),
+           orderReference: nextOrderReference(references),
++          itemPieceId: lines.map((line) => line.pieceId),
+           quantity: lines.map((line) => line.quantity),
+           itemTitle: lines.map((line) => line.title),
+           itemGlaze: lines.map((line) => line.glaze),
+diff --git a/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx b/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx
+index 8e495d6..320b11f 100644
+--- a/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx
++++ b/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx
+@@ -9,6 +9,7 @@ import { NextLink } from '@app/components/NextLink';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { PageState } from '@app/components/PageState';
++import { FulfilmentStatusOptions } from '@app/entities/enums';
+ import { useGetOrder, useLookupOrder } from '@app/entities/order';
+ import { Button } from '@packages/ui/Button';
+ import { Tag } from '@packages/ui/Tag';
+@@ -97,7 +98,9 @@ export default function OrderConfirmationPage() {
+           // The fulfilment state sits beside what it describes.
+           variant={order.fulfilmentStatus === 'cancelled' ? 'error' : 'info'}
+         >
+-          {order.fulfilmentStatus === 'new' ? 'New' : order.fulfilmentStatus}
++          {FulfilmentStatusOptions.find(
++            (option) => option.key === order.fulfilmentStatus,
++          )?.label ?? order.fulfilmentStatus}
+         </Tag>
+       </div>
+       <FulfilmentDetails
+diff --git a/web/app/(routes)/(marketing)/page.tsx b/web/app/(routes)/(marketing)/page.tsx
+index 16694dc..d17d0e7 100644
+--- a/web/app/(routes)/(marketing)/page.tsx
++++ b/web/app/(routes)/(marketing)/page.tsx
+@@ -1,6 +1,6 @@
+ 'use client';
+ 
+-import { PieceCards, pieceStockTotal } from '@app/blocks/pieces';
++import { PieceCards } from '@app/blocks/pieces';
+ import { Hero } from '@app/components/Hero';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageState } from '@app/components/PageState';
+@@ -42,10 +42,8 @@ const reasons = [
+ /** The studio's own shop: the headline, why to buy here, and featured pieces. */
+ export default function HomePage() {
+   const pieces = useListPieces();
+-  const inStock = (pieces.data ?? []).filter(
+-    (piece) => pieceStockTotal(piece) > 0,
+-  );
+-  const featured = inStock.slice(0, 3);
++  const all = pieces.data ?? [];
++  const featured = all.slice(0, 3);
+ 
+   return (
+     <>
+diff --git a/web/app/entities/order/index.ts b/web/app/entities/order/index.ts
+index e2e9b21..9edaa8b 100644
+--- a/web/app/entities/order/index.ts
++++ b/web/app/entities/order/index.ts
+@@ -1,3 +1,3 @@
+ export type { Order, OrderInput } from './types';
+ export { listOrders, useListOrders, getOrder, useGetOrder, lookupOrder, useLookupOrder, createOrder, createOrderWithStock, markOrderPaid, advanceOrderFulfilment, cancelOrder, cancelOrderWithRestore } from './operations';
+-export type { StockDecrement } from './operations';
++export type { StockDecrement, UnrestoredLine } from './operations';
+diff --git a/web/app/entities/order/operations.ts b/web/app/entities/order/operations.ts
+index 95b7d91..8e7d77d 100644
+--- a/web/app/entities/order/operations.ts
++++ b/web/app/entities/order/operations.ts
+@@ -129,12 +129,23 @@ export async function createOrderWithStock(
+   }
+ }
+ 
++/** An ordered line whose stock could not be restored on cancel. */
++export type UnrestoredLine = {
++  title: string;
++  glaze: string;
++  size: string;
++};
++
+ /**
+  * Cancel a New or Packed order and restore each variant's stock as one
+- * change: when cancelling fails the stock goes back, so the order is either
+- * cancelled with its stock restored or left exactly as it was.
++ * change, matched by the ordered piece's id. Lines whose piece or variant
++ * is gone are restored for nothing and reported back instead of silently
++ * skipped; when cancelling itself fails the stock goes back, so the order
++ * is either cancelled or left exactly as it was.
+  */
+-export async function cancelOrderWithRestore(id: string): Promise<Order> {
++export async function cancelOrderWithRestore(
++  id: string,
++): Promise<{ order: Order; unrestored: UnrestoredLine[] }> {
+   await mockCall('cancelOrder');
+   const current = useOrderStore.getState().records.find(
+     (record) => record.id === id,
+@@ -151,15 +162,28 @@ export async function cancelOrderWithRestore(id: string): Promise<Order> {
+     ...record,
+     stockQuantity: [...record.stockQuantity],
+   }));
++  const unrestored: UnrestoredLine[] = [];
+   current.itemTitle.forEach((title, index) => {
+-    const record = next.find((entry) => entry.title === title);
+-    if (!record) return;
+-    const at = variantIndex(
+-      record,
+-      current.itemGlaze[index],
+-      current.itemSize[index],
+-    );
+-    if (at >= 0) record.stockQuantity[at] += current.quantity[index];
++    const pieceId = current.itemPieceId?.[index];
++    const record = pieceId
++      ? next.find((entry) => entry.id === pieceId)
++      : undefined;
++    const at = record
++      ? variantIndex(
++          record,
++          current.itemGlaze[index],
++          current.itemSize[index],
++        )
++      : -1;
++    if (!record || at < 0) {
++      unrestored.push({
++        title,
++        glaze: current.itemGlaze[index],
++        size: current.itemSize[index],
++      });
++      return;
++    }
++    record.stockQuantity[at] += current.quantity[index];
+   });
+   usePieceStore.setState({ records: next });
+   try {
+@@ -171,7 +195,7 @@ export async function cancelOrderWithRestore(id: string): Promise<Order> {
+     useOrderStore.setState(({ records }) => ({
+       records: records.map((r) => (r.id === id ? record : r)),
+     }));
+-    return record;
++    return { order: record, unrestored };
+   } catch (error) {
+     usePieceStore.setState({ records: snapshot });
+     throw error;
+diff --git a/web/app/entities/order/seed.ts b/web/app/entities/order/seed.ts
+index eb815e5..1d59714 100644
+--- a/web/app/entities/order/seed.ts
++++ b/web/app/entities/order/seed.ts
+@@ -13,6 +13,7 @@ export const orderSeed: Order[] = [
+     "pinCode": "302017",
+     "discountCode": "WEEKEND10",
+     "orderReference": "JSC-4821",
++    "itemPieceId": ["piece-1"],
+     "quantity": [
+       2
+     ],
+@@ -43,6 +44,7 @@ export const orderSeed: Order[] = [
+     "phoneNumber": "9414056789",
+     "fulfilmentChoice": "studio_pickup",
+     "orderReference": "JSC-4825",
++    "itemPieceId": ["piece-4"],
+     "quantity": [
+       1
+     ],
+@@ -77,6 +79,7 @@ export const orderSeed: Order[] = [
+     "pinCode": "400050",
+     "discountCode": "DIWALI200",
+     "orderReference": "JSC-4830",
++    "itemPieceId": ["piece-2", "piece-1"],
+     "quantity": [
+       1,
+       2
+@@ -116,6 +119,7 @@ export const orderSeed: Order[] = [
+     "pinCode": "110024",
+     "discountCode": "FIRSTBUY15",
+     "orderReference": "JSC-4834",
++    "itemPieceId": ["piece-3"],
+     "quantity": [
+       3
+     ],
+@@ -146,6 +150,7 @@ export const orderSeed: Order[] = [
+     "phoneNumber": "9799398765",
+     "fulfilmentChoice": "studio_pickup",
+     "orderReference": "JSC-4840",
++    "itemPieceId": ["piece-5"],
+     "quantity": [
+       1
+     ],
+diff --git a/web/app/entities/order/types.ts b/web/app/entities/order/types.ts
+index 238c8fb..ec710b1 100644
+--- a/web/app/entities/order/types.ts
++++ b/web/app/entities/order/types.ts
+@@ -12,6 +12,7 @@ export type Order = {
+   pinCode?: string;
+   discountCode?: string;
+   orderReference: string;
++  itemPieceId: string[];
+   quantity: number[];
+   itemTitle: string[];
+   itemGlaze: string[];
+-- 
+2.34.1
+

@@ -1,0 +1,1191 @@
+{
+  "meta": {
+    "artifact": "design-architect",
+    "version": 1,
+    "hash": "498b9bed64655dff54c0b3c81db60ae1fc4386848b40e3ed5e28bcd22c19737f",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "88cf76dc9c1473a8b4b5043714057cb7248d5dd679ff39ba0e0146110fc0adb6"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "5b123f11d1a5d8c4c341f1b6ee85ecc0e3afd0e0349a58f9f37fa88effd8ae7d"
+      },
+      "design-theme": {
+        "version": 1,
+        "hash": "e573f40f8d142de3847627e5459687b7297220afbf702767c5732352b93b1e31"
+      }
+    },
+    "stage": "design-architect",
+    "model": "muse-spark-1.3",
+    "rounds": 2,
+    "createdAt": "2026-11-03T23:27:55.594Z"
+  },
+  "data": {
+    "frames": [
+      {
+        "id": "FR01",
+        "name": "Public site frame",
+        "purpose": "Surrounds the landing page, sign-in, sign-up and public booking pages for visitors and booking guests.",
+        "flows": [],
+        "steps": [
+          "Sees the logo, which leads to /.",
+          "Can open Book a session, which goes to /book.",
+          "Can choose \"Sign in\", which goes to /sign-in.",
+          "Sees site links in the footer, including Book a session, which goes to /book."
+        ],
+        "alternatives": [
+          {
+            "when": "the designer is signed in",
+            "steps": [
+              "Sees the logo, which leads to /.",
+              "Can open Book a session, which goes to /book.",
+              "Can choose \"Open workspace\", which goes to /home."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "FR02",
+        "name": "App frame",
+        "purpose": "Surrounds the designer's private workspace screens so she can move between home, clients, projects, sessions, availability, session types and account settings.",
+        "flows": [
+          "F04"
+        ],
+        "steps": [
+          "Sees the logo, which leads to /home.",
+          "Can open Home, Clients, Projects, Sessions, Availability and Session types from the navigation, in that order.",
+          "Can open the account menu, which shows their name and sign-in email, lets them open Account settings at /account, and lets them sign out, which goes to /."
+        ],
+        "alternatives": [
+          {
+            "when": "the designer is signed out",
+            "steps": [
+              "Sees no app frame and is shown the public landing page at /."
+            ]
+          }
+        ]
+      }
+    ],
+    "screens": [
+      {
+        "id": "S01",
+        "route": "/",
+        "title": "SoloStudio",
+        "purpose": "Explain SoloStudio to a solo freelance designer and let her sign up, sign in or reach the public booking page.",
+        "roles": [
+          "designer",
+          "bookingGuest"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F01"
+        ],
+        "steps": [
+          "Reads the headline \"Clients, projects and bookings, all in one calm place\".",
+          "Reads the line under it: \"SoloStudio is a single workspace for a solo freelance designer to manage clients, projects and bookings, without scattering them across email, notes and spreadsheets.\"",
+          "Can choose \"Create your workspace\", the main action, which goes to /sign-up.",
+          "Sees a preview of the home dashboard with a session called \"Discovery call\" today, a follow-up for Maya Sharma due this week and a task called \"Draft hero section\" marked overdue.",
+          "Reads \"Follow-ups first\" and the line \"Your client list puts overdue follow-ups first, so you always know who to contact next.\"",
+          "Reads \"Projects with clear next steps\" and the line \"Each project shows its tasks and how many are still open, with overdue tasks standing out.\"",
+          "Reads \"Bookings without the back and forth\" and the line \"Visitors pick a session type and an open time, and you see who booked in your sessions.\"",
+          "Reads \"Private to you\" and the line \"Your clients, notes, projects and bookings live in one private workspace only you can open.\""
+        ],
+        "alternatives": []
+      },
+      {
+        "id": "S02",
+        "route": "/sign-up",
+        "title": "Create your workspace",
+        "purpose": "Create the designer's account and private workspace.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F02"
+        ],
+        "steps": [
+          "Signs up with their email using the sign-up form FM01, which creates the private workspace with the three pre-created session types and empty weekly availability and goes to /home."
+        ],
+        "alternatives": [
+          {
+            "when": "the email already has an account",
+            "steps": [
+              "Reads \"This email already has an account. Sign in instead.\"",
+              "Can choose \"Sign in\", which goes to /sign-in."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S03",
+        "route": "/sign-in",
+        "title": "Sign in",
+        "purpose": "Sign the designer in to her private workspace.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F03"
+        ],
+        "steps": [
+          "Signs in with their email using the sign-in form FM02, which goes to /home."
+        ],
+        "alternatives": [
+          {
+            "when": "no account matches",
+            "steps": [
+              "Reads \"No account matches this email and password. Try again or sign up instead.\"",
+              "Can try again with a corrected email and password, which stays on /sign-in.",
+              "Can choose \"Sign up\", which goes to /sign-up."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S04",
+        "route": "/home",
+        "title": "Home",
+        "purpose": "Show the designer what needs attention today and let her open the relevant client, session or project.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F05"
+        ],
+        "steps": [
+          "Sees the count of today's sessions, the count of follow-ups due this week and the count of overdue tasks, each with its label.",
+          "Sees today's sessions, each showing the session type, time and booker names, and each opening the session at /sessions/[slotId].",
+          "Sees follow-ups due this week with overdue first, each showing the client's name and follow-up date, and each opening the client at /clients/[clientId].",
+          "Sees overdue tasks, each showing the task title, project name and due date, and each opening the project at /projects/[projectId]."
+        ],
+        "alternatives": [
+          {
+            "when": "there are no sessions today, no follow-ups due this week and no overdue tasks",
+            "steps": [
+              "Reads \"Everything is clear today. No sessions, follow-ups or overdue tasks need you.\"",
+              "Can open Clients, which goes to /clients.",
+              "Can open Projects, which goes to /projects.",
+              "Can open Sessions, which goes to /sessions.",
+              "Can open Availability, which goes to /availability.",
+              "Can open Session types, which goes to /session-types."
+            ]
+          },
+          {
+            "when": "there are no sessions today",
+            "steps": [
+              "Sees the count of today's sessions, the count of follow-ups due this week and the count of overdue tasks, each with its label.",
+              "Reads \"No sessions today.\" in the today's sessions list.",
+              "Sees follow-ups due this week with overdue first, each showing the client's name and follow-up date, and each opening the client at /clients/[clientId].",
+              "Sees overdue tasks, each showing the task title, project name and due date, and each opening the project at /projects/[projectId]."
+            ]
+          },
+          {
+            "when": "there are no follow-ups due this week",
+            "steps": [
+              "Sees the count of today's sessions, the count of follow-ups due this week and the count of overdue tasks, each with its label.",
+              "Sees today's sessions, each showing the session type, time and booker names, and each opening the session at /sessions/[slotId].",
+              "Reads \"No follow-ups due this week.\" in the follow-ups list.",
+              "Sees overdue tasks, each showing the task title, project name and due date, and each opening the project at /projects/[projectId]."
+            ]
+          },
+          {
+            "when": "there are no overdue tasks",
+            "steps": [
+              "Sees the count of today's sessions, the count of follow-ups due this week and the count of overdue tasks, each with its label.",
+              "Sees today's sessions, each showing the session type, time and booker names, and each opening the session at /sessions/[slotId].",
+              "Sees follow-ups due this week with overdue first, each showing the client's name and follow-up date, and each opening the client at /clients/[clientId].",
+              "Reads \"No overdue tasks.\" in the overdue tasks list."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S05",
+        "route": "/clients",
+        "title": "Clients",
+        "purpose": "Find clients, see who needs a follow-up first, and act on a follow-up with one click.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F06",
+          "F14",
+          "F15"
+        ],
+        "steps": [
+          "Sees each client in a table row showing the client's name, company, status and follow-up due state with its follow-up date, sorted with overdue follow-ups first and then follow-ups due soonest, with the follow-up date shown because the list is sorted by it.",
+          "Can open a client by its name or its row, which goes to /clients/[clientId].",
+          "Can use the mark follow-up done icon action on a client with a follow-up, which clears the follow-up date, shows a confirmation toast and shows the client no longer due for a follow-up.",
+          "Can use the push follow-up a week icon action on a client with a follow-up, which adds 7 days to the follow-up date, shows a confirmation toast and shows the new due date in sorted order.",
+          "Can choose \"Add a client\", which opens D01.",
+          "Fills in Search clients (FD30) to find clients by name or company.",
+          "Chooses Client status filter (FD31) to show only clients with the chosen status."
+        ],
+        "alternatives": [
+          {
+            "when": "no clients exist yet",
+            "steps": [
+              "Reads \"No clients yet. Add the first one to start your list.\"",
+              "Can choose \"Add a client\", which opens D01."
+            ]
+          },
+          {
+            "when": "no clients match the search or filter",
+            "steps": [
+              "Reads \"Nothing matches your search or filter.\"",
+              "Can clear the search or filter, which shows the client list again."
+            ]
+          },
+          {
+            "when": "the note is no longer there",
+            "steps": [
+              "Reads that the note is gone and shows the client list as it is."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S06",
+        "route": "/clients/[clientId]",
+        "title": "The client's name",
+        "purpose": "See one client's details, notes, projects and bookings in one place.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F07"
+        ],
+        "steps": [
+          "Sees the client's name, email, company, profile and status.",
+          "Can choose \"Edit\", which opens D02.",
+          "Can choose \"Delete\", which opens D05.",
+          "Can choose \"Add a note\", which opens D03.",
+          "Sees each note in a card showing its note text, note date and follow-up date when one is set.",
+          "Can use the edit icon action on a note, which opens D04.",
+          "Can use the delete icon action on a note, which opens D06.",
+          "Can choose \"Add a project\", which opens D07 with this client chosen.",
+          "Sees each project in a card showing the project's name, due date and open task count, and can open a project, which goes to /projects/[projectId].",
+          "Sees each booking in a table row showing the session type, slot time and booker name and email, and can open a booking, which goes to /bookings/[bookingId]."
+        ],
+        "alternatives": [
+          {
+            "when": "the client has no notes, projects or bookings yet",
+            "steps": [
+              "Sees the client's name, email, company, profile and status.",
+              "Reads \"No notes yet.\" and can choose \"Add a note\", which opens D03.",
+              "Reads \"No projects yet.\" and can choose \"Add a project\", which opens D07 with this client chosen.",
+              "Reads \"No bookings yet.\" in the bookings list."
+            ]
+          },
+          {
+            "when": "the client was deleted in the meantime",
+            "steps": [
+              "Reads \"This client is gone.\"",
+              "Can open Clients, which goes to /clients."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S07",
+        "route": "/projects",
+        "title": "Projects",
+        "purpose": "See every project and how much work is still open.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F16"
+        ],
+        "steps": [
+          "Sees each project in a table row showing the project's name, client name, due date and open task count.",
+          "Can open a project by its name or its row, which goes to /projects/[projectId].",
+          "Can open a project's client by the client name, which goes to /clients/[clientId].",
+          "Can choose \"Add a project\", which opens D07.",
+          "Fills in Search projects (FD35) to find projects by project name or client name."
+        ],
+        "alternatives": [
+          {
+            "when": "there are no projects yet",
+            "steps": [
+              "Reads \"No projects yet. Add the first project to track your work.\"",
+              "Can choose \"Add a project\", which opens D07."
+            ]
+          },
+          {
+            "when": "no project matches the search",
+            "steps": [
+              "Reads \"Nothing matches your search.\"",
+              "Can clear the search, which shows all projects again.",
+              "Can choose \"Add a project\", which opens D07."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S08",
+        "route": "/projects/[projectId]",
+        "title": "The project's name",
+        "purpose": "See a project's tasks, narrow them down, and tick work done.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F17",
+          "F24"
+        ],
+        "steps": [
+          "Sees the project's name, description, due date and client name, and can open the client, which goes to /clients/[clientId].",
+          "Can choose \"Edit\", which opens D08.",
+          "Can choose \"Delete\", which opens D09.",
+          "Sees tasks grouped by status, each task in a table row showing its title, status, priority and due date, with overdue tasks marked \"Overdue\" when the due date is before today and the task is not Done.",
+          "Can tick an open task done, which marks it Done, updates the open task counts, no longer shows it as overdue and shows a confirmation toast.",
+          "Can use the edit icon action on a task, which opens D11.",
+          "Can use the delete icon action on a task, which opens D12.",
+          "Can choose \"Add a task\", which opens D10.",
+          "Fills in Search tasks (FD32) to find tasks by title.",
+          "Chooses Task status filter (FD33) and Task priority filter (FD34) to show only matching tasks."
+        ],
+        "alternatives": [
+          {
+            "when": "the project has no tasks yet",
+            "steps": [
+              "Sees the project's name, description, due date and client.",
+              "Reads \"No tasks yet. Add the first task to plan this project.\"",
+              "Can choose \"Add a task\", which opens D10."
+            ]
+          },
+          {
+            "when": "no task matches the search or filters",
+            "steps": [
+              "Reads \"Nothing matches your search or filters.\"",
+              "Can clear the search and filters, which shows the project's tasks again."
+            ]
+          },
+          {
+            "when": "the project was deleted in the meantime",
+            "steps": [
+              "Reads \"This project is gone.\"",
+              "Can open Projects, which goes to /projects."
+            ]
+          },
+          {
+            "when": "the task was deleted",
+            "steps": [
+              "Reads that the task is gone and shows the project's remaining tasks."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S09",
+        "route": "/availability",
+        "title": "Availability",
+        "purpose": "See and set the weekly days and hours that can be booked.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F25"
+        ],
+        "steps": [
+          "Sees the saved Days (FD19), From time (FD20) and To time (FD21), or reads \"No days set yet. No slots are offered until hours are set.\"",
+          "Reads that changing availability affects slots offered afterwards and does not move or cancel bookings already made.",
+          "Can choose \"Edit\", which shows the editing controls."
+        ],
+        "alternatives": [
+          {
+            "when": "editing",
+            "steps": [
+              "Fills in Days (FD19), From time (FD20) and To time (FD21).",
+              "Reads the message that marks what is missing or wrong and keeps the entered days and times when a day is selected but a time is missing or To time is not after From time (F25.A01).",
+              "Can choose \"Done\", which saves the weekly availability, shows a confirmation toast and shows the saved days and hours, with future open slots using the new hours and existing bookings unchanged.",
+              "Can choose \"Cancel\", which shows the availability as it was and changes nothing."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S10",
+        "route": "/session-types",
+        "title": "Session types",
+        "purpose": "See the kinds of sessions visitors can book and keep them up to date.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F26"
+        ],
+        "steps": [
+          "Sees each session type in a table row showing its name, duration in minutes, displayed price and maximum people.",
+          "Reads that displayed prices are shown for information only and nobody pays in the app.",
+          "Can use the edit icon action on a session type, which opens D14.",
+          "Can choose \"Add a session type\", which opens D13."
+        ],
+        "alternatives": [
+          {
+            "when": "there are no session types yet",
+            "steps": [
+              "Reads \"No session types yet. Add one so visitors can book.\"",
+              "Can choose \"Add a session type\", which opens D13."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S11",
+        "route": "/sessions",
+        "title": "Sessions",
+        "purpose": "See upcoming sessions and who booked them, with past sessions kept separate.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F29"
+        ],
+        "steps": [
+          "Sees each upcoming slot in a table row showing its session type, date and time, how many bookings it holds and whether it is full, including full slots.",
+          "Can open a slot by its session type name or its row, which goes to /sessions/[slotId].",
+          "Can open a booking from a slot's booker names, which goes to /bookings/[bookingId].",
+          "Sees past sessions separately, each in a table row showing the session type, time and booker names, and can open a past slot, which goes to /sessions/[slotId]."
+        ],
+        "alternatives": [
+          {
+            "when": "there are no upcoming slots",
+            "steps": [
+              "Reads \"No upcoming sessions yet. New sessions appear here when guests book open times.\"",
+              "Can open Availability, which goes to /availability.",
+              "Can open Session types, which goes to /session-types.",
+              "Sees past sessions separately, each showing the session type, time and booker names."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S12",
+        "route": "/sessions/[slotId]",
+        "title": "The slot's session type name and time, as in \"Discovery call, 5 Nov at 10:00\"",
+        "purpose": "See who booked a time slot and for what.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F30"
+        ],
+        "steps": [
+          "Sees the slot's session type, date and time and how many of its maximum people are booked.",
+          "Sees each booking in a table row showing the booker's name, email and linked client name when one exists.",
+          "Can open a booking by its booker name or its row, which goes to /bookings/[bookingId].",
+          "Can open a linked client, which goes to /clients/[clientId].",
+          "Can choose \"Cancel slot\", which opens D15."
+        ],
+        "alternatives": [
+          {
+            "when": "the slot has no bookings yet",
+            "steps": [
+              "Sees the slot's session type, date and time.",
+              "Reads \"No bookings yet. This time stays open for booking until the slot is cancelled.\"",
+              "Can choose \"Cancel slot\", which opens D15."
+            ]
+          },
+          {
+            "when": "the slot no longer exists",
+            "steps": [
+              "Reads \"This session is gone.\"",
+              "Can open Sessions, which goes to /sessions."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S13",
+        "route": "/bookings/[bookingId]",
+        "title": "The booker's name, as in \"Ravi Patel's booking\"",
+        "purpose": "See who booked, for what and when, as the designer.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F32"
+        ],
+        "steps": [
+          "Sees the booking's name, email, session type and slot date and time.",
+          "Sees the linked client's name when one exists, and reads that there is no linked client when the client was deleted.",
+          "Can open the linked client, which goes to /clients/[clientId].",
+          "Can open the slot, which goes to /sessions/[slotId]."
+        ],
+        "alternatives": [
+          {
+            "when": "the booking was cancelled in the meantime",
+            "steps": [
+              "Reads \"This booking is gone.\"",
+              "Can open Sessions, which goes to /sessions."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S14",
+        "route": "/book",
+        "title": "Book a session",
+        "purpose": "Let a visitor pick a session type, find an open time and book with name and email, then see the confirmation and cancellation link.",
+        "roles": [
+          "bookingGuest"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F33",
+          "F34",
+          "F35"
+        ],
+        "steps": [
+          "Reads what booking is for and that no account is needed and nobody pays in the app, with displayed prices shown for information only.",
+          "Sees each session type in a card showing its name, duration and displayed price, and picks a session type (FD28) to start.",
+          "Sees the chosen session type's duration and displayed price and its open slots for the next two weeks in a list, excluding full slots and times blocked by overlapping bookings, each slot showing its date and time.",
+          "Picks an open slot (FD29), which shows the chosen session type and slot time with the booking details form FM09.",
+          "Fills in Name (FD26) and Email (FD27).",
+          "Can choose \"Confirm booking\", which creates the booking, links it to the client with the same email or creates a new Lead client when the email is new, and shows the confirmation for this screen.",
+          "Can choose \"Choose another time\", which shows the open slots for the chosen session type again and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "no session types are offered right now",
+            "steps": [
+              "Reads \"No sessions are currently offered. Please check back later.\""
+            ]
+          },
+          {
+            "when": "there are no open slots for the chosen session type in the next two weeks",
+            "steps": [
+              "Reads \"There are no open times for this session type in the next two weeks.\"",
+              "Can pick another session type (FD28), which shows its open slots."
+            ]
+          },
+          {
+            "when": "the chosen slot became full or blocked by an overlapping booking",
+            "steps": [
+              "Reads \"That time is no longer open.\"",
+              "Sees the updated list of open slots for the chosen session type and can pick another open slot (FD29)."
+            ]
+          },
+          {
+            "when": "the name is empty or the email is not an address in the booking details form",
+            "steps": [
+              "Reads the message that marks what is wrong and keeps what was typed when the name is empty or the email is not an address (F35.A02).",
+              "Can correct the marked field and confirm the booking again."
+            ]
+          },
+          {
+            "when": "the booking is confirmed",
+            "steps": [
+              "Reads \"You're booked.\" with the session type and slot time.",
+              "Sees the private cancellation link for this booking and reads to keep it, as no email is sent.",
+              "Can open the cancellation link, which goes to /my-booking/[bookingId].",
+              "Can choose \"Book another session\", which shows the session types again."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S15",
+        "route": "/my-booking/[bookingId]",
+        "title": "The booking's session type name and time, as in \"Discovery call, 5 Nov at 10:00\"",
+        "purpose": "Let a guest check a booking from its private link and cancel only that booking.",
+        "roles": [
+          "bookingGuest"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F36",
+          "F37"
+        ],
+        "steps": [
+          "Sees the booking's session type, slot date and time and status, with the name and email it was booked with.",
+          "Can choose \"Cancel booking\", which opens D16."
+        ],
+        "alternatives": [
+          {
+            "when": "the link is unknown or the booking no longer exists",
+            "steps": [
+              "Reads \"This link is not recognised.\"",
+              "Can open the public booking page, which goes to /book."
+            ]
+          },
+          {
+            "when": "the booking is already cancelled",
+            "steps": [
+              "Sees the booking as cancelled with its former session type and time.",
+              "Can choose \"Book another time\", which goes to /book."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S16",
+        "route": "/account",
+        "title": "Account settings",
+        "purpose": "See and change the sign-in email and password.",
+        "roles": [
+          "designer"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F38"
+        ],
+        "steps": [
+          "Sees the current sign-in email.",
+          "Can choose \"Edit\", which shows the editing controls."
+        ],
+        "alternatives": [
+          {
+            "when": "editing",
+            "steps": [
+              "Sees the current sign-in email.",
+              "Fills in Email (FD01) and Password (FD02).",
+              "Reads the message that marks the field that is wrong and keeps what was typed when the email is not an address or the password is shorter than 8 characters (F38.A01).",
+              "Reads that the email is already in use and keeps the current sign-in email unchanged when the new email already has another account (F38.A03).",
+              "Can choose \"Done\", which saves the account changes, shows a confirmation toast and shows the updated sign-in email while staying signed in.",
+              "Can choose \"Cancel\", which shows the account as it was and changes nothing."
+            ]
+          }
+        ]
+      }
+    ],
+    "dialogs": [
+      {
+        "id": "D01",
+        "title": "Add a client",
+        "purpose": "Add a new client with status set to Lead by default.",
+        "openedFrom": [
+          "S05"
+        ],
+        "flows": [
+          "F08"
+        ],
+        "steps": [
+          "Sees the client form FM03 with Status (FD07) already set to Lead.",
+          "Fills in Name (FD03) and Email (FD04).",
+          "Can fill in Company (FD05) and Profile (FD06), covering what they do, how we met and what they pay.",
+          "Can change Status (FD07) to Lead, Active or Past.",
+          "Can choose \"Save\", which saves the client, shows a confirmation toast, closes the dialog and goes to /clients/[clientId].",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the name is empty, the email is not an address, or the status is missing",
+            "steps": [
+              "Reads the message that marks what is wrong and keeps what was typed (F08.A01).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F08.A02)."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D02",
+        "title": "The client's name, as in \"Edit Maya Sharma\"",
+        "purpose": "Change a client's details or status.",
+        "openedFrom": [
+          "S06"
+        ],
+        "flows": [
+          "F09"
+        ],
+        "steps": [
+          "Sees the client form FM03 filled with the current Name (FD03), Email (FD04), Company (FD05), Profile (FD06) and Status (FD07).",
+          "Can change Name (FD03), Email (FD04), Company (FD05), Profile (FD06) and Status (FD07).",
+          "Can choose \"Save\", which updates the client, shows a confirmation toast and closes the dialog, showing the updated client.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the name is empty, the email is not an address, or the status is missing",
+            "steps": [
+              "Reads the message that marks what is wrong and keeps what was typed (F09.A02).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F09.A03)."
+            ]
+          },
+          {
+            "when": "the client was deleted in the meantime",
+            "steps": [
+              "Reads that the client is gone.",
+              "Can choose \"Cancel\", which closes the dialog and goes to /clients."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D03",
+        "title": "Add a note",
+        "purpose": "Jot a dated note after a call and optionally set a follow-up date.",
+        "openedFrom": [
+          "S06"
+        ],
+        "flows": [
+          "F11"
+        ],
+        "steps": [
+          "Sees the note form FM04 with Note date (FD09) set to today.",
+          "Fills in Note text (FD08).",
+          "Can change Note date (FD09) and can set Follow-up date (FD10).",
+          "Can choose \"Save\", which saves the note under the client, shows a confirmation toast and closes the dialog, showing the note with its follow-up date.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the note text is empty or a date cannot be understood",
+            "steps": [
+              "Reads the message that marks the field that needs fixing and keeps what was typed (F11.A01).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F11.A02)."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D04",
+        "title": "Edit note",
+        "purpose": "Correct or update a note and its follow-up date.",
+        "openedFrom": [
+          "S06"
+        ],
+        "flows": [
+          "F12"
+        ],
+        "steps": [
+          "Sees the note form FM04 filled with the current Note text (FD08), Note date (FD09) and Follow-up date (FD10).",
+          "Can change Note text (FD08), Note date (FD09) and Follow-up date (FD10).",
+          "Can choose \"Save\", which updates the note, shows a confirmation toast and closes the dialog, showing the note with its new follow-up date.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the note text is empty or a date cannot be understood",
+            "steps": [
+              "Reads the message that marks the field that needs fixing and keeps what was typed (F12.A01).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F12.A02)."
+            ]
+          },
+          {
+            "when": "the note is no longer there",
+            "steps": [
+              "Reads that the note is gone.",
+              "Can choose \"Cancel\", which closes the dialog and shows the client's remaining notes."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D05",
+        "title": "The client's name, as in \"Delete Maya Sharma?\"",
+        "purpose": "Confirm deleting a client and everything under them.",
+        "openedFrom": [
+          "S06"
+        ],
+        "flows": [
+          "F10"
+        ],
+        "steps": [
+          "Reads that deleting the client deletes its notes, projects and tasks, and that its bookings will stay visible without a client link.",
+          "Can choose \"Delete\", which deletes the client, its notes, projects and tasks, shows a confirmation toast and goes to /clients.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the client was deleted in the meantime",
+            "steps": [
+              "Reads that the client is already gone.",
+              "Can choose \"Cancel\", which closes the dialog and goes to /clients."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D06",
+        "title": "Delete this note?",
+        "purpose": "Confirm deleting a note.",
+        "openedFrom": [
+          "S06"
+        ],
+        "flows": [
+          "F13"
+        ],
+        "steps": [
+          "Reads the note text and its note date so the designer can check which note will be deleted.",
+          "Can choose \"Delete\", which deletes the note, shows a confirmation toast and closes the dialog, showing the client's remaining notes.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the note is already gone",
+            "steps": [
+              "Reads that the note is gone.",
+              "Can choose \"Cancel\", which closes the dialog and shows the client's remaining notes."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D07",
+        "title": "Add a project",
+        "purpose": "Start a new project for a client.",
+        "openedFrom": [
+          "S07",
+          "S06"
+        ],
+        "flows": [
+          "F18"
+        ],
+        "steps": [
+          "Sees the empty project form FM05.",
+          "Fills in Name (FD11) and Description (FD12).",
+          "Chooses Client (FD14) from the designer's clients.",
+          "Can set Due date (FD13).",
+          "Can choose \"Save\", which saves the project under the chosen client, shows a confirmation toast, closes the dialog and goes to /projects.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the name or description is empty, the due date is not a date, or no client is chosen",
+            "steps": [
+              "Reads the message that marks what is missing or wrong and keeps what was typed (F18.A01).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F18.A02)."
+            ]
+          },
+          {
+            "when": "no client exists yet",
+            "steps": [
+              "Reads \"No clients yet. Add a client before starting a project.\"",
+              "Can choose \"Cancel\", which closes the dialog and changes nothing."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D08",
+        "title": "The project's name, as in \"Edit Acme homepage\"",
+        "purpose": "Change a project's details or move it to another client.",
+        "openedFrom": [
+          "S08"
+        ],
+        "flows": [
+          "F19"
+        ],
+        "steps": [
+          "Sees the project form FM05 filled with the current Name (FD11), Description (FD12), Due date (FD13) and Client (FD14).",
+          "Can change Name (FD11), Description (FD12), Due date (FD13) and Client (FD14).",
+          "Can choose \"Save\", which saves the changes, shows a confirmation toast and closes the dialog, showing the updated project.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the name or description is empty, the due date is not a date, or no client is chosen",
+            "steps": [
+              "Reads the message that marks what is missing or wrong and keeps what was typed (F19.A02).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F19.A03)."
+            ]
+          },
+          {
+            "when": "the project was deleted in the meantime",
+            "steps": [
+              "Reads that the project is gone.",
+              "Can choose \"Cancel\", which closes the dialog and goes to /projects."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D09",
+        "title": "The project's name, as in \"Delete Acme homepage?\"",
+        "purpose": "Confirm deleting a project and its tasks.",
+        "openedFrom": [
+          "S08"
+        ],
+        "flows": [
+          "F20"
+        ],
+        "steps": [
+          "Reads that deleting the project deletes its tasks.",
+          "Can choose \"Delete\", which deletes the project and its tasks, shows a confirmation toast and goes to /projects.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the project was already deleted",
+            "steps": [
+              "Reads that the project is already gone.",
+              "Can choose \"Cancel\", which closes the dialog and goes to /projects."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D10",
+        "title": "Add a task",
+        "purpose": "Add a task to a project.",
+        "openedFrom": [
+          "S08"
+        ],
+        "flows": [
+          "F21"
+        ],
+        "steps": [
+          "Sees the empty task form FM06 with Status (FD16) set to To do and Priority (FD17) set to Medium.",
+          "Fills in the task's Title (FD15).",
+          "Can change Status (FD16) and Priority (FD17) and can set Due date (FD18).",
+          "Can choose \"Save\", which saves the task, shows a confirmation toast and closes the dialog, showing the task in the project's task list and marking it overdue when its due date is before today and it is not Done.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the title is empty",
+            "steps": [
+              "Reads the message that marks the empty title and keeps what was typed (F21.A01).",
+              "Can correct the title and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F21.A02)."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D11",
+        "title": "The task's title, as in \"Edit Draft hero section\"",
+        "purpose": "Change a task's title, status, priority or due date.",
+        "openedFrom": [
+          "S08"
+        ],
+        "flows": [
+          "F22"
+        ],
+        "steps": [
+          "Sees the task form FM06 filled with the current Title (FD15), Status (FD16), Priority (FD17) and Due date (FD18).",
+          "Can change Title (FD15), Status (FD16), Priority (FD17) and Due date (FD18).",
+          "Can choose \"Save\", which updates the task, shows a confirmation toast and closes the dialog, showing the updated task list with updated open counts.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the title is empty",
+            "steps": [
+              "Reads the message that marks the empty title and keeps what was typed (F22.A02).",
+              "Can correct the title and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F22.A03)."
+            ]
+          },
+          {
+            "when": "the task was deleted in the meantime",
+            "steps": [
+              "Reads that the task is gone.",
+              "Can choose \"Cancel\", which closes the dialog and shows the project's remaining tasks."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D12",
+        "title": "The task's title, as in \"Delete Draft hero section?\"",
+        "purpose": "Confirm deleting a task.",
+        "openedFrom": [
+          "S08"
+        ],
+        "flows": [
+          "F23"
+        ],
+        "steps": [
+          "Reads the task title so the designer can check which task will be deleted.",
+          "Can choose \"Delete\", which deletes the task, shows a confirmation toast and closes the dialog, showing the project's remaining tasks with updated open counts.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the task was already gone",
+            "steps": [
+              "Reads that the task is gone.",
+              "Can choose \"Cancel\", which closes the dialog and shows the project's remaining tasks."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D13",
+        "title": "Add a session type",
+        "purpose": "Offer a new kind of bookable session.",
+        "openedFrom": [
+          "S10"
+        ],
+        "flows": [
+          "F27"
+        ],
+        "steps": [
+          "Sees the empty session type form FM08.",
+          "Fills in Name (FD22), Duration in minutes (FD23), Displayed price (FD24) and Maximum people (FD25).",
+          "Reads that the displayed price is shown for information only and nobody pays in the app.",
+          "Can choose \"Save\", which saves the session type, shows a confirmation toast and closes the dialog, showing it in the session type list.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the name is empty, the duration is not a whole number or is below 15 or above 480, the displayed price is not a number or is negative, or the maximum people is not a whole number or is below 1 or above 20",
+            "steps": [
+              "Reads the message that marks what is wrong and keeps what was typed (F27.A01).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F27.A02)."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D14",
+        "title": "The session type's name, as in \"Edit Discovery call\"",
+        "purpose": "Change a session type's length, displayed price or seats, without changing existing bookings.",
+        "openedFrom": [
+          "S10"
+        ],
+        "flows": [
+          "F28"
+        ],
+        "steps": [
+          "Sees the session type form FM08 filled with the current Name (FD22), Duration in minutes (FD23), Displayed price (FD24) and Maximum people (FD25).",
+          "Can change Name (FD22), Duration in minutes (FD23), Displayed price (FD24) and Maximum people (FD25).",
+          "Reads that existing bookings are unchanged.",
+          "Can choose \"Save\", which updates the session type, shows a confirmation toast and closes the dialog, showing it in the session type list.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the name is empty, the duration is not a whole number or is below 15 or above 480, the displayed price is not a number or is negative, or the maximum people is not a whole number or is below 1 or above 20",
+            "steps": [
+              "Reads the message that marks what is wrong and keeps what was typed (F28.A02).",
+              "Can correct the marked field and choose \"Save\" again."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads that saving failed and can choose \"Save\" to try again (F28.A03)."
+            ]
+          },
+          {
+            "when": "the session type is gone",
+            "steps": [
+              "Reads that the session type is gone.",
+              "Can choose \"Cancel\", which closes the dialog and shows the session type list."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D15",
+        "title": "Cancel this session?",
+        "purpose": "Confirm cancelling a slot and everyone booked on it.",
+        "openedFrom": [
+          "S12"
+        ],
+        "flows": [
+          "F31"
+        ],
+        "steps": [
+          "Reads the slot's session type and time and that cancelling the slot cancels every booking on it.",
+          "Can choose \"Cancel slot\", which cancels the slot and every booking on it, shows a confirmation toast and goes to /sessions.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the slot was already cancelled",
+            "steps": [
+              "Reads that the slot is gone.",
+              "Can choose \"Cancel\", which closes the dialog and goes to /sessions."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D16",
+        "title": "Cancel your booking?",
+        "purpose": "Confirm cancelling only the guest's own booking.",
+        "openedFrom": [
+          "S15"
+        ],
+        "flows": [
+          "F37"
+        ],
+        "steps": [
+          "Reads the booking's session type and time and that only this booking will be cancelled and the seat will be freed.",
+          "Can choose \"Cancel booking\", which cancels only this booking, frees the seat, shows a confirmation toast and closes the dialog, showing the booking as cancelled.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "cancelling the booking fails",
+            "steps": [
+              "Reads that cancelling failed and can choose \"Cancel booking\" to try again (F37.A05)."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

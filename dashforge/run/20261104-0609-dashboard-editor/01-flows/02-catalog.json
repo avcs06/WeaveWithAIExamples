@@ -1,0 +1,669 @@
+{
+  "meta": {
+    "artifact": "flows-catalog",
+    "version": 1,
+    "hash": "44115ca0e2a7d1ffde1aab9650f0dfa5412e924501ccddaec62bcbbbbe9b502a",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "657ac613ddf2280da3a4796cf32dabe3a5f541d519da6148e7da35b0ab1648a1"
+      }
+    },
+    "stage": "flows-catalog",
+    "model": "meta-models/muse-spark-open-1026",
+    "rounds": 3,
+    "createdAt": "2026-11-04T00:42:09.202Z"
+  },
+  "data": {
+    "flows": [
+      {
+        "id": "F01",
+        "name": "Visit landing page and get started",
+        "role": "user",
+        "kind": "landing",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public landing page (not signed in)",
+        "goal": "Understand what DashForge is for and start creating dashboards.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "Visitor has seen what DashForge does, the dark glowing console preview, and has a clear path to sign up or sign in.",
+        "description": "Visitor arrives on the public landing page that explains personal dashboards for notes, numbers, tasks and links, previews the dark screen-like glowing console with neon controls, edges, numbers, monospace figures and faint grid behind widgets. The page shows a clear Create / Get Started call to action. Visitor chooses to sign up or sign in and is taken to the appropriate auth form. No fields are collected on the landing page itself."
+      },
+      {
+        "id": "F02",
+        "name": "Sign up",
+        "role": "user",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signUp",
+        "signedOut": true,
+        "start": "On the landing page",
+        "goal": "Create a private account to own dashboards.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "Account created, user is signed in with persistent session and taken to their dashboard list (home); refresh keeps them signed in.",
+        "description": "Visitor chooses to sign up from the landing page, sees the sign-up form FM01, fills in Email (FD01) and Password (FD02) and submits. On success the website creates the account, establishes a persistent session, and shows the home dashboard list. Validation, conflict and failure alternatives are handled."
+      },
+      {
+        "id": "F03",
+        "name": "Sign in",
+        "role": "user",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signIn",
+        "signedOut": true,
+        "start": "On the landing page",
+        "goal": "Sign in to access private dashboards.",
+        "preconditions": [
+          "Not signed in.",
+          "Account already exists."
+        ],
+        "outcome": "User is signed in with persistent session and sees their dashboard list; refresh keeps them signed in.",
+        "description": "Visitor chooses to sign in, sees the sign-in form FM01, fills in Email (FD01) and Password (FD02) and submits. On success the website restores the session and shows the home dashboard list sorted by lastEditedAt descending."
+      },
+      {
+        "id": "F04",
+        "name": "Sign out",
+        "role": "user",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signOut",
+        "signedOut": false,
+        "start": "On any signed-in page (home or editor)",
+        "goal": "End the session securely.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Session ended, user is returned to the public landing page; dashboards are no longer accessible until sign in again.",
+        "description": "Signed-in user chooses to sign out from the account menu. The website clears the persistent session and shows the public landing page. No fields are required."
+      },
+      {
+        "id": "F05",
+        "name": "See my dashboards (home)",
+        "role": "user",
+        "kind": "home",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "After signing in or navigating to home",
+        "goal": "See all my dashboards last-edited first and open one or create a new one.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "User sees the list of their dashboards with name and last edited time, sorted most recent first; empty state invites creating first dashboard; refresh shows same list.",
+        "description": "User lands on home which lists all dashboards they own showing Dashboard name (FD03) and lastEditedAt as relative time with full timestamp on hover, sorted by lastEditedAt descending. The list includes a Search (FD14) field to filter dashboards by name as the user types. From here they can open any dashboard in the editor, create a new dashboard, or use dashboard row actions (rename, duplicate, delete). Empty state shows a message and a Create dashboard action when no dashboards exist; when search yields no matches the website shows no results and offers to clear the search."
+      },
+      {
+        "id": "F06",
+        "name": "Open dashboard in editor",
+        "role": "user",
+        "kind": "view",
+        "noun": "Dashboard",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the home dashboard list",
+        "goal": "Open a dashboard to view and work with its widgets.",
+        "preconditions": [
+          "Signed in.",
+          "At least one dashboard exists."
+        ],
+        "outcome": "Dashboard editor is open showing dashboard name, Saving/Saved status, and its ordered widgets in the glowing console grid; refresh restores same state.",
+        "description": "User selects a dashboard from the home list. The website opens the editor for that Dashboard, showing its name (FD03), auto-save indicator, and all its Widgets in relative order rendered in a responsive grid. User can then interact with widgets, configure them, or rename/duplicate/delete the dashboard. Handles notFound if dashboard was deleted."
+      },
+      {
+        "id": "F07",
+        "name": "Create a new dashboard",
+        "role": "user",
+        "kind": "create",
+        "noun": "Dashboard",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the home dashboard list or from the editor",
+        "goal": "Start a new empty dashboard and begin editing immediately.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "New Dashboard created with default name Untitled Dashboard (numbered if needed) and empty widget list, opened in editor; it appears at top of home list sorted by lastEditedAt; refresh keeps it.",
+        "description": "User chooses Create dashboard. The website creates a new Dashboard with default name (FD03) set to Untitled Dashboard plus number if needed, lastEditedAt set to now, no widgets, and immediately lands the user in the editor for that dashboard with Saving/Saved indicator visible. No fields are filled by user before creation; renaming is a separate edit flow."
+      },
+      {
+        "id": "F08",
+        "name": "Rename dashboard",
+        "role": "user",
+        "kind": "edit",
+        "noun": "Dashboard",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor or from the home list row action",
+        "goal": "Change the dashboard's name.",
+        "preconditions": [
+          "Signed in.",
+          "At least one dashboard exists and is open or listed."
+        ],
+        "outcome": "Dashboard name (FD03) updated, lastEditedAt refreshed, auto-saved with Saved status; new name appears in editor and home list and survives refresh.",
+        "description": "User chooses to rename the Dashboard, sees the dashboard name field (FD03) in place or in a rename form FM02, edits the name and confirms. The website validates required and max 80 chars, auto-saves with debounce and updates lastEditedAt. Invalid and failure alternatives keep typed value and offer retry."
+      },
+      {
+        "id": "F09",
+        "name": "Duplicate dashboard",
+        "role": "user",
+        "kind": "act",
+        "noun": "Dashboard",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the home dashboard list or in the dashboard editor",
+        "goal": "Make a copy of a dashboard with all widgets to start a new one from it.",
+        "preconditions": [
+          "Signed in.",
+          "At least one dashboard exists."
+        ],
+        "outcome": "New Dashboard created named '{original name} Copy' with all Widgets, their order, sizes, titles and content copied exactly, placed at top of list with fresh lastEditedAt; refresh keeps both.",
+        "description": "User chooses Duplicate on a Dashboard. The website creates a copy with name (FD03) set to '{original} Copy', copies all Widgets including Widget title (FD04), Widget size (FD06), Widget type (FD05), position order and all type-specific content, sets lastEditedAt to now, and shows it at top of home list and optionally opens it in editor."
+      },
+      {
+        "id": "F10",
+        "name": "Delete dashboard",
+        "role": "user",
+        "kind": "delete",
+        "noun": "Dashboard",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the home dashboard list or in the dashboard editor",
+        "goal": "Permanently remove a dashboard and its widgets.",
+        "preconditions": [
+          "Signed in.",
+          "At least one dashboard exists."
+        ],
+        "outcome": "Dashboard and all its Widgets permanently deleted, removed from home list; if deleted from editor user returns to home; refresh keeps it gone.",
+        "description": "User chooses Delete on a Dashboard. The website asks for confirmation. On confirm it permanently deletes the Dashboard and all its Widgets with no trash/undo, updates the home list, and navigates to home if needed. Cancel leaves everything unchanged. Handles notFound if already deleted."
+      },
+      {
+        "id": "F11",
+        "name": "Add a widget to dashboard",
+        "role": "user",
+        "kind": "create",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor",
+        "goal": "Add a new note, counter, checklist or link list block to the dashboard.",
+        "preconditions": [
+          "Signed in.",
+          "A dashboard is open in the editor."
+        ],
+        "outcome": "New Widget created with chosen type, default title (capitalized type), size medium, appended in order; auto-saved and lastEditedAt updated; refresh keeps it.",
+        "description": "User chooses Add widget, picks Widget type (FD05) from note/counter/checklist/linkList, optionally sets initial Widget title (FD04) and Widget size (FD06) defaulting to medium. On save the website creates the Widget with type-specific defaults (note text empty, counter 0 with empty label, checklist empty, link list empty), assigns next order position, auto-saves and shows it in the grid with Saving/Saved indicator."
+      },
+      {
+        "id": "F12",
+        "name": "Configure widget title",
+        "role": "user",
+        "kind": "edit",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on an existing widget",
+        "goal": "Change a widget's title.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one widget."
+        ],
+        "outcome": "Widget title (FD04) updated, auto-saved, lastEditedAt refreshed; change survives refresh.",
+        "description": "User opens widget configuration for a Widget and edits Widget title (FD04) optional max 60 chars defaulting to type name. User saves; website validates, auto-saves with debounce, updates lastEditedAt and shows Saved. Counter label/value and checklist/link list item management are handled in separate act flows F17, F18 and F19."
+      },
+      {
+        "id": "F13",
+        "name": "Reposition widget",
+        "role": "user",
+        "kind": "act",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on an existing widget",
+        "goal": "Change the widget's position relative to other widgets.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one widget."
+        ],
+        "outcome": "Widget order updated, new relative order rendered in grid, auto-saved and lastEditedAt refreshed; order survives refresh.",
+        "description": "User changes Widget position using up/down controls or drag handle to reorder. The website updates the widget's order index, re-renders the grid in new order, auto-saves the dashboard's widget order and updates lastEditedAt with Saving/Saved feedback. No fields are typed."
+      },
+      {
+        "id": "F14",
+        "name": "Resize widget",
+        "role": "user",
+        "kind": "act",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on an existing widget",
+        "goal": "Change the widget's visual footprint between small, medium and large.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one widget."
+        ],
+        "outcome": "Widget size (FD06) updated to small/medium/large, visual footprint changes, auto-saved and lastEditedAt refreshed; size survives refresh.",
+        "description": "User picks Widget size (FD06) as small, medium or large via size control. The website applies the size to the widget's visual footprint only, auto-saves and updates lastEditedAt with Saving/Saved indicator."
+      },
+      {
+        "id": "F15",
+        "name": "Remove widget",
+        "role": "user",
+        "kind": "delete",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on an existing widget",
+        "goal": "Permanently remove a widget and its contents from the dashboard.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one widget."
+        ],
+        "outcome": "Widget and its content permanently deleted, order of remaining widgets compacted, auto-saved and lastEditedAt refreshed; deletion survives refresh.",
+        "description": "User chooses Remove on a Widget, confirms when asked. The website permanently deletes the Widget and its type-specific content, reflows remaining widgets, auto-saves and updates lastEditedAt. Cancel leaves widget unchanged. Handles notFound if already deleted."
+      },
+      {
+        "id": "F16",
+        "name": "Edit note widget text",
+        "role": "user",
+        "kind": "act",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on a note widget",
+        "goal": "Type and edit plain text in a note widget.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one note widget."
+        ],
+        "outcome": "Note text (FD07) updated, auto-saved with debounce and lastEditedAt refreshed; text survives refresh.",
+        "description": "User types or edits Note text (FD07) plain text up to 5000 chars directly in the note widget. The website auto-saves on change with ~500ms debounce showing Saving/Saved and updates lastEditedAt. Validation for max length is shown inline."
+      },
+      {
+        "id": "F17",
+        "name": "Increase or decrease counter",
+        "role": "user",
+        "kind": "act",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on a counter widget",
+        "goal": "Adjust the counter value by 1 and optionally set its label.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one counter widget."
+        ],
+        "outcome": "Counter value changed by +/-1 per click (can go negative, starts at 0) and Counter label (FD08) optionally updated, auto-saved and lastEditedAt refreshed; value survives refresh.",
+        "description": "User taps increase or decrease controls on the counter widget to change its value by 1; can go negative with no min/max. User can also edit Counter label (FD08) max 40 chars via inline edit. Each change auto-saves with Saving/Saved feedback and updates lastEditedAt."
+      },
+      {
+        "id": "F18",
+        "name": "Manage checklist items",
+        "role": "user",
+        "kind": "act",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on a checklist widget",
+        "goal": "Add, tick/untick, edit and remove tasks in a checklist.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one checklist widget."
+        ],
+        "outcome": "Checklist items updated (added, checked state toggled, text edited, removed) in order, auto-saved and lastEditedAt refreshed; changes survive refresh.",
+        "description": "User manages items inside a checklist widget: adds a new item by filling Checklist item text (FD09) via form FM06 and submitting, ticks/unticks an item toggling Checklist item checked (FD10), edits item text inline (FD09), and removes an item. The website maintains ordered items, auto-saves each change with Saving/Saved indicator and updates lastEditedAt. Validation ensures text required and max 120 chars."
+      },
+      {
+        "id": "F19",
+        "name": "Manage link list items",
+        "role": "user",
+        "kind": "act",
+        "noun": "Widget",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "In the dashboard editor on a link list widget",
+        "goal": "Add, edit, remove and open links in a link list.",
+        "preconditions": [
+          "Signed in.",
+          "Dashboard open with at least one link list widget."
+        ],
+        "outcome": "Links updated (added, edited, removed) and can be opened in new tab; auto-saved and lastEditedAt refreshed; changes survive refresh.",
+        "description": "User manages links inside a link list widget: adds a link by filling Link title (FD11) and Link URL (FD12) via form FM03, edits existing link's title/URL, removes a link, and clicks a link to open its URL in a new tab. The website validates title required max 80 and URL required valid http/https, maintains order, auto-saves each change with Saving/Saved feedback and updates lastEditedAt."
+      },
+      {
+        "id": "F20",
+        "name": "Manage account",
+        "role": "user",
+        "kind": "account",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On any signed-in page via account menu",
+        "goal": "View my email and change my password.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "User sees their Email (FD01) and can update Password (FD02); changes persist and survive refresh; session remains valid.",
+        "description": "User opens account settings, sees their Email (FD01) read-only, and can change password by filling Current password (FD13) and New password (FD02) in form FM04 and submitting. The website validates new password length and updates credentials with success feedback. No dashboard data is affected."
+      }
+    ],
+    "fields": [
+      {
+        "id": "FD01",
+        "noun": "",
+        "label": "Email",
+        "meaning": "Account email used to sign in and own dashboards",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "alex@example.com"
+      },
+      {
+        "id": "FD02",
+        "noun": "",
+        "label": "Password",
+        "meaning": "Secret protecting the account; new password when changing",
+        "type": "password",
+        "required": true,
+        "min": 8,
+        "max": 128,
+        "options": [],
+        "optionsFrom": "",
+        "example": "correct-horse-battery"
+      },
+      {
+        "id": "FD03",
+        "noun": "Dashboard",
+        "label": "Name",
+        "meaning": "How the user refers to the dashboard; required and shown in list and editor",
+        "type": "text",
+        "required": true,
+        "min": 1,
+        "max": 80,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Morning Focus"
+      },
+      {
+        "id": "FD04",
+        "noun": "Widget",
+        "label": "Title",
+        "meaning": "Optional heading for the widget; defaults to capitalized type name",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 60,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Daily Notes"
+      },
+      {
+        "id": "FD05",
+        "noun": "Widget",
+        "label": "Type",
+        "meaning": "Kind of widget to add: note, counter, checklist or link list",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "note",
+          "counter",
+          "checklist",
+          "linkList"
+        ],
+        "optionsFrom": "",
+        "example": "note"
+      },
+      {
+        "id": "FD06",
+        "noun": "Widget",
+        "label": "Size",
+        "meaning": "Visual footprint of the widget",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "optionsFrom": "",
+        "example": "medium"
+      },
+      {
+        "id": "FD07",
+        "noun": "Widget",
+        "label": "Note text",
+        "meaning": "Plain text content of a note widget",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 5000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Remember to review PRs at 10am"
+      },
+      {
+        "id": "FD08",
+        "noun": "Widget",
+        "label": "Counter label",
+        "meaning": "Optional label describing what the counter counts",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 40,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Coffees"
+      },
+      {
+        "id": "FD09",
+        "noun": "Widget",
+        "label": "Checklist item text",
+        "meaning": "Text of a single checklist item",
+        "type": "text",
+        "required": true,
+        "min": 1,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Buy milk"
+      },
+      {
+        "id": "FD10",
+        "noun": "Widget",
+        "label": "Checked",
+        "meaning": "Whether the checklist item is ticked off",
+        "type": "boolean",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "false"
+      },
+      {
+        "id": "FD11",
+        "noun": "Widget",
+        "label": "Link title",
+        "meaning": "Display title for a link in a link list widget",
+        "type": "text",
+        "required": true,
+        "min": 1,
+        "max": 80,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Figma"
+      },
+      {
+        "id": "FD12",
+        "noun": "Widget",
+        "label": "Link URL",
+        "meaning": "Web address for the link; must be http or https",
+        "type": "url",
+        "required": true,
+        "min": null,
+        "max": 2048,
+        "options": [],
+        "optionsFrom": "",
+        "example": "https://figma.com"
+      },
+      {
+        "id": "FD13",
+        "noun": "",
+        "label": "Current password",
+        "meaning": "Existing password to verify identity before changing",
+        "type": "password",
+        "required": true,
+        "min": 8,
+        "max": 128,
+        "options": [],
+        "optionsFrom": "",
+        "example": "old-password-123"
+      },
+      {
+        "id": "FD14",
+        "noun": "",
+        "label": "Search",
+        "meaning": "Filter dashboards by name",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 80,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Morning"
+      }
+    ],
+    "forms": [
+      {
+        "id": "FM01",
+        "name": "Auth form",
+        "fields": [
+          "FD01",
+          "FD02"
+        ]
+      },
+      {
+        "id": "FM02",
+        "name": "Dashboard name form",
+        "fields": [
+          "FD03"
+        ]
+      },
+      {
+        "id": "FM03",
+        "name": "Link form",
+        "fields": [
+          "FD11",
+          "FD12"
+        ]
+      },
+      {
+        "id": "FM04",
+        "name": "Change password form",
+        "fields": [
+          "FD13",
+          "FD02"
+        ]
+      },
+      {
+        "id": "FM05",
+        "name": "Widget create form",
+        "fields": [
+          "FD05",
+          "FD04",
+          "FD06"
+        ]
+      },
+      {
+        "id": "FM06",
+        "name": "Checklist item form",
+        "fields": [
+          "FD09"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "id": "A17",
+        "text": "Home dashboard list doubles as browse and includes search by dashboard name (FD14) to satisfy the editor must-have browse/search expectation and P08 for lists that can grow to 50 dashboards; no additional filters or pagination beyond search in MVP",
+        "kind": "behavior",
+        "affects": [
+          "Home",
+          "Browse"
+        ]
+      },
+      {
+        "id": "A18",
+        "text": "Editor is the view for dashboards; there is no separate read-only view. Interacting with widget content happens directly in the editor with auto-save",
+        "kind": "behavior",
+        "affects": [
+          "View Dashboard",
+          "Editor"
+        ]
+      },
+      {
+        "id": "A19",
+        "text": "Widget create flow covers all four types via a type picker; type cannot be changed after creation, user must delete and re-add to change type",
+        "kind": "behavior",
+        "affects": [
+          "Widget type"
+        ]
+      },
+      {
+        "id": "A20",
+        "text": "Account page shows email read-only and allows password change; email change and account deletion are out of scope for MVP",
+        "kind": "scope",
+        "affects": [
+          "Account"
+        ]
+      },
+      {
+        "id": "A21",
+        "text": "Publish, share, export, undo/redo and template/marketplace features are out of scope for MVP per outOfScope; no flows are provided for these acts beyond duplicate (F09) and widget reposition/resize/content acts",
+        "kind": "scope",
+        "affects": [
+          "Dashboard act",
+          "Widget act"
+        ]
+      }
+    ],
+    "questions": [],
+    "skipped": [
+      {
+        "role": "user",
+        "noun": "Dashboard",
+        "kind": "browse",
+        "reason": "Covered by F05 home flow which is the dashboard list sorted by lastEditedAt with search by name (FD14); separate browse would duplicate home (must-have home satisfied by F05)"
+      },
+      {
+        "role": "user",
+        "noun": "Widget",
+        "kind": "browse",
+        "reason": "Widgets are not browsed globally; they are viewed and managed inside their Dashboard editor (F06, F11-F19)"
+      },
+      {
+        "role": "user",
+        "noun": "Widget",
+        "kind": "view",
+        "reason": "Widgets have no standalone detail page; they are viewed inline in the dashboard editor (F06)"
+      },
+      {
+        "role": "user",
+        "noun": "",
+        "kind": "settings",
+        "reason": "No user preferences or theme switcher in MVP per A16; visual style is fixed dark glowing console"
+      }
+    ]
+  }
+}

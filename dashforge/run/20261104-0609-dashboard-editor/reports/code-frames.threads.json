@@ -1,0 +1,49 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Imports and reads entity store directly (useDashboardStore from @app/entities/dashboard/store) instead of using entity layer hooks/functions. Fix: Remove import of useDashboardStore/store inner file. Read existing dashboards via the entity hook (e.g. useListDashboards) called unconditionally before any early return, and derive the unique 'Untitled Dashboard' name from its data.",
+      "at": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx"
+    },
+    "by": "review-code",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Removed direct store import; now calls useListDashboards unconditionally before early return and derives unique name from its data.",
+        "round": 2,
+        "by": "fix"
+      },
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Removed direct store import; now calls useListDashboards unconditionally before early return and derives unique name from its data.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Footer repeats the same destination \"/\" on 6 links (DashForge, Resources, Docs, Support, Privacy, Terms), duplicating the logo destination and creating noise Fix: Keep one link to \"/\" (the logo). Give every other footer link a distinct href or remove it if the destination does not exist; do not list multiple plain links that all go to \"/\".",
+      "at": "FR01 MarketingFooter at web/app/components/MarketingFooter/MarketingFooter.tsx"
+    },
+    "by": "review-ux",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Removed duplicate \"/\" footer links; now footer has distinct destinations /dashboards, /sign-in and mailto support.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  }
+]

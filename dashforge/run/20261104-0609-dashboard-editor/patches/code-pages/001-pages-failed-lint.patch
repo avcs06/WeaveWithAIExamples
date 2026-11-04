@@ -1,0 +1,914 @@
+From 824213d821ec7e2c7def087f76ce12dce9f9ca73 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 06:49:00 +0530
+Subject: [PATCH] code-pages: pages (failed: lint)
+
+---
+ web/app/(routes)/(app)/account/page.tsx       |  85 +++++
+ .../(app)/dashboards/[dashboardId]/page.tsx   | 317 ++++++++++++++++++
+ web/app/(routes)/(app)/dashboards/page.tsx    | 215 ++++++++++++
+ web/app/(routes)/(marketing)/page.css.ts      |  49 +++
+ web/app/(routes)/(marketing)/page.tsx         | 104 +++++-
+ .../DeleteDashboardDialog.tsx                 |  70 ++++
+ web/app/blocks/DeleteDashboardDialog/index.ts |   1 +
+ 7 files changed, 837 insertions(+), 4 deletions(-)
+ create mode 100644 web/app/(routes)/(app)/account/page.tsx
+ create mode 100644 web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+ create mode 100644 web/app/(routes)/(app)/dashboards/page.tsx
+ create mode 100644 web/app/(routes)/(marketing)/page.css.ts
+ create mode 100644 web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+ create mode 100644 web/app/blocks/DeleteDashboardDialog/index.ts
+
+diff --git a/web/app/(routes)/(app)/account/page.tsx b/web/app/(routes)/(app)/account/page.tsx
+new file mode 100644
+index 0000000..230f839
+--- /dev/null
++++ b/web/app/(routes)/(app)/account/page.tsx
+@@ -0,0 +1,85 @@
++'use client';
++
++import { PageHeader } from '@app/components/PageHeader';
++import { useCurrentUser } from '@app/entities/auth';
++import { mockCall } from '@app/entities/mock';
++import { Button } from '@packages/ui/Button';
++import { Form } from '@packages/ui/Form';
++import { Controller } from '@packages/ui/Form';
++import { PasswordInput } from '@packages/ui/Input';
++import { Section } from '@packages/ui/Section';
++import { toast } from '@packages/ui/Toast';
++import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++type FormValues = { currentPassword: string; newPassword: string };
++
++export default function AccountPage() {
++  const user = useCurrentUser();
++  const [formError, setFormError] = useState<string | undefined>();
++  const { control, handleSubmit, reset } = useForm<FormValues>({
++    defaultValues: { currentPassword: '', newPassword: '' },
++  });
++
++  const onSubmit = async (values: FormValues) => {
++    setFormError(undefined);
++    if (!values.currentPassword || values.newPassword.length < 8 || values.newPassword.length > 128) {
++      setFormError('Current password is required and new password must be 8 to 128 characters');
++      reset({ currentPassword: '', newPassword: '' });
++      return;
++    }
++    // Simulate verifying current password: any non-empty current passes except "wrong"
++    if (values.currentPassword === 'wrong') {
++      setFormError('Current password is incorrect.');
++      reset({ currentPassword: '', newPassword: '' });
++      return;
++    }
++    try {
++      await mockCall('updatePassword');
++      toast({ title: 'Password changed' });
++      reset({ currentPassword: '', newPassword: '' });
++    } catch {
++      setFormError('Could not update password. Try again.');
++      reset({ currentPassword: '', newPassword: '' });
++    }
++  };
++
++  return (
++    <>
++      <PageHeader title="Account" />
++      <Section title="Your account">
++        <DescriptionList>
++          <DescriptionTerm>Email</DescriptionTerm>
++          <DescriptionDetails>{user && typeof user === 'object' ? (user as { email: string }).email : ''}</DescriptionDetails>
++        </DescriptionList>
++      </Section>
++      <Section title="Change password">
++        <Form
++          error={formError}
++          onSubmit={handleSubmit(onSubmit)}
++          actions={
++            <>
++              <Button type="submit">Save</Button>
++            </>
++          }
++        >
++          <Controller
++            name="currentPassword"
++            control={control}
++            rules={{ required: 'Current password is required and new password must be 8 to 128 characters' }}
++          >
++            {({ field }) => <PasswordInput label="Current password" autoComplete="current-password" {...field} />}
++          </Controller>
++          <Controller
++            name="newPassword"
++            control={control}
++            rules={{ required: 'Current password is required and new password must be 8 to 128 characters' }}
++          >
++            {({ field }) => <PasswordInput label="New password" autoComplete="new-password" {...field} />}
++          </Controller>
++        </Form>
++      </Section>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+new file mode 100644
+index 0000000..88d156e
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+@@ -0,0 +1,317 @@
++'use client';
++
++import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { useGetDashboard, duplicateDashboard, updateDashboard } from '@app/entities/dashboard';
++import { useListWidgets, createWidget, deleteWidget, updateWidgetTitle, repositionWidget, resizeWidget, updateNoteText, incrementCounter, updateCounterLabel, addChecklistItem, toggleChecklistItem, updateChecklistItem, removeChecklistItem, addLink, updateLink, removeLink } from '@app/entities/widget';
++import { useWidgetStore } from '@app/entities/widget/store';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Card } from '@packages/ui/Card';
++import { Checkbox } from '@packages/ui/Checkbox';
++import { Dialog } from '@packages/ui/Dialog';
++import { Dropdown } from '@packages/ui/Dropdown';
++import { Input } from '@packages/ui/Input';
++import { Link } from '@packages/ui/Link';
++import { Numeral } from '@packages/ui/Numeral';
++import { Select, SelectOption } from '@packages/ui/Select';
++import { Textarea } from '@packages/ui/Textarea';
++import { toast } from '@packages/ui/Toast';
++import { Check, X, Pencil, Trash2, Plus, Minus, ChevronUp, ChevronDown, Settings } from 'lucide-react';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useMemo, useState } from 'react';
++
++import type { Widget } from '@app/entities/widget/types';
++
++export default function DashboardDetailPage() {
++  const params = useParams<{ dashboardId: string }>();
++  const dashboardId = params.dashboardId;
++  const { data: dashboard, loading: dashLoading, error: dashError, retry } = useGetDashboard(dashboardId);
++  const { data: allWidgets, loading: wLoading } = useListWidgets();
++  const router = useRouter();
++  const [editing, setEditing] = useState(false);
++  const [saving, setSaving] = useState(false);
++  const [saved, setSaved] = useState(false);
++  const [dashEdit, setDashEdit] = useState(false);
++  const [dashName, setDashName] = useState('');
++  const [dashErr, setDashErr] = useState<string | undefined>();
++  const [showDelete, setShowDelete] = useState(false);
++  const [showAdd, setShowAdd] = useState(false);
++  const [nType, setNType] = useState('note');
++  const [nTitle, setNTitle] = useState('');
++  const [nSize, setNSize] = useState('medium');
++  const [nErr, setNErr] = useState<string | undefined>();
++  const [remId, setRemId] = useState<string | null>(null);
++  const [editLinkW, setEditLinkW] = useState<Widget | null>(null);
++  const [editLinkIdx, setEditLinkIdx] = useState<number | null>(null);
++  const [lTitle, setLTitle] = useState('');
++  const [lUrl, setLUrl] = useState('');
++  const [lErr, setLErr] = useState<string | undefined>();
++  const [editWTitle, setEditWTitle] = useState<string | null>(null);
++  const [wTitleDraft, setWTitleDraft] = useState('');
++  const [wTitleErr, setWTitleErr] = useState<string | undefined>();
++  const [addCheck, setAddCheck] = useState<Record<string, string>>({});
++  const [editCheck, setEditCheck] = useState<{ wid: string; idx: number } | null>(null);
++  const [checkDraft, setCheckDraft] = useState('');
++  const [editClabel, setEditClabel] = useState<string | null>(null);
++  const [clabelDraft, setClabelDraft] = useState('');
++
++  const widgets = useMemo(() => {
++    if (!allWidgets) return [];
++    return allWidgets.filter((w) => w.dashboard === dashboardId).sort((a, b) => a.position - b.position);
++  }, [allWidgets, dashboardId]);
++
++  const flash = () => {
++    setSaving(true);
++    setTimeout(() => { setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 1500); }, 300);
++  };
++
++  if (dashLoading || wLoading) return <PageHeader title="Loading" />;
++  if (dashError) return <><PageHeader title="Error" /><p role="alert">Failed to load</p><Button onClick={retry}>Retry</Button></>;
++  if (!dashboard) return <NotFound title="Dashboard not found" description="This dashboard is gone." back={{ label: 'Go to your dashboards', href: '/dashboards' }} />;
++
++  const handleSaveDash = async () => {
++    if (!dashName.trim() || dashName.length > 80) { setDashErr('Name is required and max 80 characters'); return; }
++    try { await updateDashboard(dashboard.id, { name: dashName, lastEditedAt: new Date().toISOString() }); toast({ title: 'Dashboard saved' }); flash(); setDashEdit(false); } catch { setDashErr('Could not save. Try again.'); }
++  };
++  const handleDup = async () => {
++    try {
++      const copy = await duplicateDashboard({ name: `${dashboard.name} Copy`, lastEditedAt: new Date().toISOString() });
++      const now = new Date().toISOString();
++      for (const w of widgets) useWidgetStore.setState(({ records }) => ({ records: [...records, { ...w, id: crypto.randomUUID(), dashboard: copy.id, createdAt: now, updatedAt: now }] }));
++      router.push(`/dashboards/${copy.id}`);
++    } catch { toast({ title: 'Could not duplicate. Try again.', status: 'error' }); }
++  };
++  const handleCreate = async () => {
++    if (!nType) { setNErr('Title max 60 characters and type is required'); return; }
++    if (nTitle.length > 60) { setNErr('Title max 60 characters and type is required'); return; }
++    try {
++      const title = nTitle || nType.charAt(0).toUpperCase() + nType.slice(1);
++      await createWidget({ title, type: nType as Widget['type'], size: nSize as Widget['size'], position: widgets.length + 1, dashboard: dashboardId, noteText: '', counterLabel: '', counterValue: 0, checklistItemText: [], checklistChecked: [], linkTitle: [], linkUrl: [] } as never);
++      await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Widget created' }); setShowAdd(false); setNTitle(''); setNErr(undefined);
++    } catch { setNErr('Could not create widget. Try again.'); }
++  };
++  const handleRemoveW = async () => {
++    if (!remId) return;
++    try { await deleteWidget(remId); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Widget removed' }); setRemId(null); } catch { toast({ title: 'Could not remove widget. Try again.', status: 'error' }); }
++  };
++  const handleWTitle = async (w: Widget) => {
++    if (wTitleDraft.length > 60) { setWTitleErr('Max 60 characters'); return; }
++    try { await updateWidgetTitle(w.id, { title: wTitleDraft } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); setEditWTitle(null); setWTitleErr(undefined); } catch { setWTitleErr('Saving failed. Try again.'); }
++  };
++  const handleMove = async (w: Widget, dir: number) => {
++    const idx = widgets.findIndex((x) => x.id === w.id); const ni = idx + dir; if (ni < 0 || ni >= widgets.length) return;
++    const o = widgets[ni];
++    try { await repositionWidget(w.id, { position: o.position } as never); await repositionWidget(o.id, { position: w.position } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={dashEdit ? 'Edit dashboard' : dashboard.name}
++        breadcrumb={[{ label: 'Back to dashboards', href: '/dashboards' }]}
++        actions={
++          editing ? (
++            <>
++              <Button onClick={() => setShowAdd(true)}>Add widget</Button>
++              <Button onClick={handleDup}>Duplicate</Button>
++              <Button
++                // confirm destructive permanently deletes dashboard
++                variant="danger"
++                onClick={() => setShowDelete(true)}
++              >
++                Delete
++              </Button>
++              <Button onClick={() => setEditing(false)}>Done</Button>
++            </>
++          ) : (
++            <Button onClick={() => { setEditing(true); setDashName(dashboard.name); }}>Edit</Button>
++          )
++        }
++      />
++      <div data-ds="" className="flex-row-gap-2 items-center">
++        {saving ? <span>Saving</span> : saved ? <span>Saved</span> : null}
++      </div>
++      {editing ? (
++        <div data-ds="" className="flex-row-gap-2 items-center">
++          {!dashEdit ? (
++            <Button onClick={() => { setDashEdit(true); setDashName(dashboard.name); }}>Edit dashboard name</Button>
++          ) : (
++            <>
++              <Input label="Dashboard name" value={dashName} onChange={setDashName} autoComplete="off" error={dashErr} />
++              <IconButton tooltip="Save" onClick={handleSaveDash}><Check /></IconButton>
++              <IconButton tooltip="Cancel" onClick={() => setDashEdit(false)}><X /></IconButton>
++            </>
++          )}
++        </div>
++      ) : null}
++
++      {widgets.length === 0 ? (
++        <div data-ds="" className="flex-col-gap-3 items-start">
++          <p>No widgets yet. Add your first widget to start building.</p>
++          <Button onClick={() => setShowAdd(true)}>Add widget</Button>
++        </div>
++      ) : (
++        <div data-ds="" className="flex-col-gap-4">
++          {widgets.map((w) => (
++            <Card key={w.id}>
++              <div data-ds="" className="flex-row-gap-2 items-center">
++                {editing && editWTitle === w.id ? (
++                  <>
++                    <Input label="Widget title" value={wTitleDraft} onChange={setWTitleDraft} autoComplete="off" error={wTitleErr} />
++                    <IconButton tooltip="Save" onClick={() => handleWTitle(w)}><Check /></IconButton>
++                    <IconButton tooltip="Cancel" onClick={() => setEditWTitle(null)}><X /></IconButton>
++                  </>
++                ) : (
++                  <>
++                    <h3>{w.title || w.type.charAt(0).toUpperCase() + w.type.slice(1)}</h3>
++                    {editing ? <IconButton tooltip="Edit title" onClick={() => { setEditWTitle(w.id); setWTitleDraft(w.title || ''); }}><Pencil /></IconButton> : null}
++                  </>
++                )}
++                {editing ? (
++                  <>
++                    <IconButton tooltip={widgets.length === 1 ? 'Add another widget to reorder' : 'Move up'} disabledWithReason={widgets.length === 1 ? 'Add another widget to reorder' : undefined} onClick={() => handleMove(w, -1)}><ChevronUp /></IconButton>
++                    <IconButton tooltip={widgets.length === 1 ? 'Add another widget to reorder' : 'Move down'} disabledWithReason={widgets.length === 1 ? 'Add another widget to reorder' : undefined} onClick={() => handleMove(w, 1)}><ChevronDown /></IconButton>
++                    <Dropdown menu={<><Dropdown.Item onSelect={() => resizeWidget(w.id, { size: 'small' } as never).then(() => flash())}>Small</Dropdown.Item><Dropdown.Item onSelect={() => resizeWidget(w.id, { size: 'medium' } as never).then(() => flash())}>Medium</Dropdown.Item><Dropdown.Item onSelect={() => resizeWidget(w.id, { size: 'large' } as never).then(() => flash())}>Large</Dropdown.Item></>}>
++                      <IconButton tooltip="Size"><Settings /></IconButton>
++                    </Dropdown>
++                    <IconButton tooltip="Remove" onClick={() => setRemId(w.id)}><Trash2 /></IconButton>
++                  </>
++                ) : null}
++              </div>
++
++              {w.type === 'note' ? (
++                <Textarea label="Note" value={w.noteText || ''} onChange={async (v) => {
++                  if (v.length > 5000) { toast({ title: 'Max 5000 characters', status: 'error' }); return; }
++                  try { await updateNoteText(w.id, { noteText: v } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++                }} />
++              ) : null}
++              {w.type === 'counter' ? (
++                <div data-ds="" className="flex-col-gap-3">
++                  {editing && editClabel === w.id ? (
++                    <span className="flex-row-gap-2 items-center">
++                      <Input label="Counter label" value={clabelDraft} onChange={setClabelDraft} autoComplete="off" />
++                      <IconButton tooltip="Save" onClick={async () => {
++                        if (clabelDraft.length > 40) { toast({ title: 'Max 40 characters', status: 'error' }); return; }
++                        try { await updateCounterLabel(w.id, { counterLabel: clabelDraft } as never); flash(); setEditClabel(null); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++                      }}><Check /></IconButton>
++                      <IconButton tooltip="Cancel" onClick={() => setEditClabel(null)}><X /></IconButton>
++                    </span>
++                  ) : (
++                    <span className="flex-row-gap-2 items-center">
++                      <span>{w.counterLabel || 'Count'}</span>
++                      <IconButton tooltip="Edit label" onClick={() => { setEditClabel(w.id); setClabelDraft(w.counterLabel || ''); }}><Pencil /></IconButton>
++                    </span>
++                  )}
++                  <div data-ds="" className="flex-row-gap-3 items-center">
++                    <IconButton tooltip="Decrease" onClick={() => { incrementCounter(w.id, { counterValue: (w.counterValue ?? 0) - 1 } as never).then(() => updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() })).then(() => flash()).catch(() => toast({ title: 'Saving failed. Try again.', status: 'error' })); }}><Minus /></IconButton>
++                    <Numeral>{w.counterValue ?? 0}</Numeral>
++                    <IconButton tooltip="Increase" onClick={() => { incrementCounter(w.id, { counterValue: (w.counterValue ?? 0) + 1 } as never).then(() => updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() })).then(() => flash()).catch(() => toast({ title: 'Saving failed. Try again.', status: 'error' })); }}><Plus /></IconButton>
++                  </div>
++                </div>
++              ) : null}
++              {w.type === 'checklist' ? (
++                <div data-ds="" className="flex-col-gap-3">
++                  {(w.checklistItemText || []).map((t, idx) => (
++                    <div key={idx} data-ds="" className="flex-row-gap-2 items-center">
++                      <Checkbox checked={w.checklistChecked?.[idx] ?? false} onCheckedChange={(c) => { const n = [...(w.checklistChecked || [])]; (n as boolean[])[idx] = c; toggleChecklistItem(w.id, { checklistChecked: n } as never).then(() => flash()).catch(() => toast({ title: 'Saving failed. Try again.', status: 'error' })); }} value={t} aria-label={t} />
++                      <span>{t}</span>
++                      {editCheck?.wid === w.id && editCheck.idx === idx ? (
++                        <>
++                          <Input label="Item text" value={checkDraft} onChange={setCheckDraft} autoComplete="off" />
++                          <IconButton tooltip="Save" onClick={async () => {
++                            if (!checkDraft.trim() || checkDraft.length > 120) { toast({ title: 'Text is required and max 120 characters', status: 'error' }); return; }
++                            const nt = [...(w.checklistItemText || [])]; nt[idx] = checkDraft;
++                            try { await updateChecklistItem(w.id, { checklistItemText: nt } as never); flash(); setEditCheck(null); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++                          }}><Check /></IconButton>
++                          <IconButton tooltip="Cancel" onClick={() => setEditCheck(null)}><X /></IconButton>
++                        </>
++                      ) : (
++                        <>
++                          <IconButton tooltip="Edit" onClick={() => { setEditCheck({ wid: w.id, idx }); setCheckDraft(t); }}><Pencil /></IconButton>
++                          <IconButton tooltip="Remove" onClick={async () => {
++                            const nt = (w.checklistItemText || []).filter((_, i) => i !== idx);
++                            const nc = (w.checklistChecked || []).filter((_, i) => i !== idx);
++                            try { await removeChecklistItem(w.id, { checklistItemText: nt, checklistChecked: nc } as never); flash(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++                          }}><Trash2 /></IconButton>
++                        </>
++                      )}
++                    </div>
++                  ))}
++                  <span className="flex-row-gap-2 items-center">
++                    <Input label="New item" value={addCheck[w.id] || ''} onChange={(v) => setAddCheck((s) => ({ ...s, [w.id]: v }))} autoComplete="off" />
++                    <Button onClick={async () => {
++                      const v = (addCheck[w.id] || '').trim(); if (!v || v.length > 120) { toast({ title: 'Text is required and max 120 characters', status: 'error' }); return; }
++                      try { await addChecklistItem(w.id, { checklistItemText: [...(w.checklistItemText || []), v], checklistChecked: [...(w.checklistChecked || []), false] } as never); setAddCheck((s) => ({ ...s, [w.id]: '' })); flash(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++                    }}>Add</Button>
++                  </span>
++                </div>
++              ) : null}
++              {w.type === 'link_list' ? (
++                <div data-ds="" className="flex-col-gap-3">
++                  {(w.linkTitle || []).map((t, idx) => (
++                    <div key={idx} data-ds="" className="flex-row-gap-2 items-center">
++                      <Link href={w.linkUrl?.[idx] || '#'} target="_blank" rel="noreferrer">{t}</Link>
++                      <IconButton tooltip="Edit link" onClick={() => { setEditLinkW(w); setEditLinkIdx(idx); setLTitle(t); setLUrl(w.linkUrl?.[idx] || ''); setLErr(undefined); }}><Pencil /></IconButton>
++                      <IconButton tooltip="Remove link" onClick={async () => {
++                        const nt = (w.linkTitle || []).filter((_, i) => i !== idx);
++                        const nu = (w.linkUrl || []).filter((_, i) => i !== idx);
++                        try { await removeLink(w.id, { linkTitle: nt, linkUrl: nu } as never); flash(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++                      }}><Trash2 /></IconButton>
++                    </div>
++                  ))}
++                  <Button onClick={() => { setEditLinkW(w); setEditLinkIdx(null); setLTitle(''); setLUrl(''); setLErr(undefined); }}>Add link</Button>
++                </div>
++              ) : null}
++            </Card>
++          ))}
++        </div>
++      )}
++
++      {showDelete ? <DeleteDashboardDialog dashboardId={dashboard.id} dashboardName={dashboard.name} open={showDelete} onOpenChange={setShowDelete} onDeleted={() => router.push('/dashboards')} /> : null}
++
++      <Dialog title="Add widget" open={showAdd} onOpenChange={setShowAdd} footer={(close) => <><Button onClick={() => close()}>Cancel</Button><Button onClick={handleCreate}>Create</Button></>}>
++        <div data-ds="" className="flex-col-gap-3">
++          <Select label="Type" value={nType} onChange={setNType}>
++            <SelectOption value="note" label="Note" />
++            <SelectOption value="counter" label="Counter" />
++            <SelectOption value="checklist" label="Checklist" />
++            <SelectOption value="link_list" label="Link list" />
++          </Select>
++          <Input label="Title" value={nTitle} onChange={setNTitle} autoComplete="off" />
++          <Select label="Size" value={nSize} onChange={setNSize}>
++            <SelectOption value="small" label="Small" />
++            <SelectOption value="medium" label="Medium" />
++            <SelectOption value="large" label="Large" />
++          </Select>
++          {nErr ? <p role="alert">{nErr}</p> : null}
++        </div>
++      </Dialog>
++
++      <Dialog title="Remove this widget?" open={!!remId} onOpenChange={(o) => !o && setRemId(null)} footer={(close) => <><Button onClick={() => close()}>Cancel</Button><Button
++              // destructive confirm removes widget permanently
++              variant="danger"
++              onClick={handleRemoveW}
++            >Remove</Button></>}>
++        <p>This will permanently delete the widget and its contents. This cannot be undone.</p>
++      </Dialog>
++
++      <Dialog title={editLinkIdx !== null ? 'Edit link' : 'Add link'} open={!!editLinkW} onOpenChange={(o) => !o && setEditLinkW(null)} footer={(close) => <><Button onClick={() => close()}>Cancel</Button><Button onClick={async () => {
++        if (!lTitle.trim() || lTitle.length > 80 || !lUrl.trim() || !/^https?:\/\/.+/.test(lUrl)) { setLErr('Title is required max 80 and URL must be valid http/https'); return; }
++        if (!editLinkW) return;
++        try {
++          if (editLinkIdx !== null) { const nt = [...(editLinkW.linkTitle || [])]; const nu = [...(editLinkW.linkUrl || [])]; nt[editLinkIdx] = lTitle; nu[editLinkIdx] = lUrl; await updateLink(editLinkW.id, { linkTitle: nt, linkUrl: nu } as never); }
++          else { await addLink(editLinkW.id, { linkTitle: [...(editLinkW.linkTitle || []), lTitle], linkUrl: [...(editLinkW.linkUrl || []), lUrl] } as never); }
++          await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Link saved' }); setEditLinkW(null);
++        } catch { setLErr('Could not save link. Try again.'); }
++      }}>Save</Button></>}>
++        <div data-ds="" className="flex-col-gap-3">
++          <Input label="Link title" value={lTitle} onChange={setLTitle} autoComplete="off" />
++          <Input label="Link URL" value={lUrl} onChange={setLUrl} autoComplete="off" placeholder="https://" />
++          {lErr ? <p role="alert">{lErr}</p> : null}
++        </div>
++      </Dialog>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/page.tsx b/web/app/(routes)/(app)/dashboards/page.tsx
+new file mode 100644
+index 0000000..5359e3d
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/page.tsx
+@@ -0,0 +1,215 @@
++'use client';
++
++import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import {
++  createDashboard,
++  duplicateDashboard,
++  updateDashboard,
++  useListDashboards,
++} from '@app/entities/dashboard';
++import { useWidgetStore } from '@app/entities/widget/store';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Dropdown } from '@packages/ui/Dropdown';
++import { Input, SearchInput } from '@packages/ui/Input';
++import { Table, createTable } from '@packages/ui/Table';
++import { toast } from '@packages/ui/Toast';
++import { Tooltip } from '@packages/ui/Tooltip';
++import { Time } from '@packages/ui/Typography';
++import { Check, Copy, EllipsisVertical, Pencil, Trash2, X } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useMemo, useState } from 'react';
++
++import type { Dashboard } from '@app/entities/dashboard/types';
++
++const DashTable = createTable<Dashboard>();
++
++export default function DashboardsPage() {
++  const { data: dashboards, loading, error, retry } = useListDashboards();
++  const router = useRouter();
++  const [search, setSearch] = useState('');
++  const [editingId, setEditingId] = useState<string | null>(null);
++  const [editName, setEditName] = useState('');
++  const [editError, setEditError] = useState<string | undefined>();
++  const [saving, setSaving] = useState(false);
++  const [deleteTarget, setDeleteTarget] = useState<Dashboard | null>(null);
++
++  const sorted = useMemo(() => {
++    if (!dashboards) return [];
++    return [...dashboards].sort(
++      (a, b) => new Date(b.lastEditedAt).getTime() - new Date(a.lastEditedAt).getTime(),
++    );
++  }, [dashboards]);
++
++  const filtered = useMemo(() => {
++    if (!search.trim()) return sorted;
++    const q = search.toLowerCase();
++    return sorted.filter((d) => d.name.toLowerCase().includes(q));
++  }, [sorted, search]);
++
++  const isEmpty = !loading && !error && sorted.length === 0;
++  const noResults = !loading && !error && sorted.length > 0 && filtered.length === 0;
++
++  const handleCreate = async () => {
++    try {
++      const base = 'Untitled Dashboard';
++      let name = base;
++      let n = 2;
++      const names = new Set(sorted.map((r) => r.name));
++      while (names.has(name)) {
++        name = `${base} ${n}`;
++        n += 1;
++      }
++      const d = await createDashboard({ name, lastEditedAt: new Date().toISOString() });
++      router.push(`/dashboards/${d.id}`);
++    } catch {
++      toast({ title: 'Could not create dashboard. Try again.', status: 'error' });
++    }
++  };
++
++  const startEdit = (d: Dashboard) => {
++    setEditingId(d.id);
++    setEditName(d.name);
++    setEditError(undefined);
++  };
++  const cancelEdit = () => {
++    setEditingId(null);
++    setEditName('');
++    setEditError(undefined);
++  };
++  const saveEdit = async (d: Dashboard) => {
++    if (!editName.trim() || editName.length > 80) {
++      setEditError('Name is required and max 80 characters');
++      return;
++    }
++    setSaving(true);
++    try {
++      await updateDashboard(d.id, { name: editName, lastEditedAt: new Date().toISOString() });
++      toast({ title: 'Dashboard saved' });
++      setEditingId(null);
++    } catch {
++      setEditError('Could not save. Try again.');
++    } finally {
++      setSaving(false);
++    }
++  };
++  const handleDuplicate = async (d: Dashboard) => {
++    try {
++      const copy = await duplicateDashboard({ name: `${d.name} Copy`, lastEditedAt: new Date().toISOString() });
++      const widgets = useWidgetStore.getState().records.filter((w) => w.dashboard === d.id);
++      const now = new Date().toISOString();
++      for (const w of widgets) {
++        useWidgetStore.setState(({ records }) => ({
++          records: [...records, { ...w, id: crypto.randomUUID(), dashboard: copy.id, createdAt: now, updatedAt: now }],
++        }));
++      }
++      toast({ title: 'Dashboard duplicated' });
++      router.push(`/dashboards/${copy.id}`);
++    } catch {
++      toast({ title: 'Could not duplicate. Try again.', status: 'error' });
++    }
++  };
++
++  if (loading) return <PageHeader title="Your dashboards" />;
++  if (error)
++    return (
++      <>
++        <PageHeader title="Your dashboards" />
++        <p role="alert">Failed to load. </p>
++        <Button onClick={retry}>Retry</Button>
++      </>
++    );
++
++  if (isEmpty) {
++    return (
++      <>
++        <PageHeader title="Your dashboards" />
++        <div data-ds="" className="flex-col-gap-4 items-start">
++          <p>No dashboards yet. Create your first dashboard to start your console.</p>
++          <Button onClick={handleCreate}>Create dashboard</Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader title="Your dashboards" />
++      <div data-ds="" className="flex-col-gap-4">
++        <div data-ds="" className="flex-row-gap-3 items-center">
++          <SearchInput label="Search" value={search} onChange={setSearch} />
++        </div>
++        {noResults ? (
++          <div data-ds="" className="flex-col-gap-3 items-start">
++            <p>No results for your search. Try another name.</p>
++            <Button onClick={() => setSearch('')}>Clear search</Button>
++          </div>
++        ) : (
++          <DashTable data={filtered} rowKey={(d) => d.id} caption="Your dashboards" onRowClick={(d) => router.push(`/dashboards/${d.id}`)}>
++            <DashTable.Column id="name" rowHeader title="Name" dataKey="name" width={300}>
++              {(name: string, d: Dashboard) =>
++                editingId === d.id ? (
++                  <span className="flex-row-gap-2 items-center">
++                    <Input label="Dashboard name" value={editName} onChange={setEditName} autoComplete="off" error={editError} />
++                    <IconButton tooltip="Save" onClick={() => saveEdit(d)} disabled={saving}>
++                      <Check />
++                    </IconButton>
++                    <IconButton tooltip="Cancel" onClick={cancelEdit}>
++                      <X />
++                    </IconButton>
++                  </span>
++                ) : (
++                  <span className="flex-row-gap-2 items-center">
++                    <NextLink href={`/dashboards/${d.id}`}>{name}</NextLink>
++                    <IconButton
++                      tooltip="Rename"
++                      onClick={(e: React.MouseEvent) => {
++                        e.stopPropagation();
++                        startEdit(d);
++                      }}
++                    >
++                      <Pencil />
++                    </IconButton>
++                  </span>
++                )
++              }
++            </DashTable.Column>
++            <DashTable.Column id="lastEditedAt" title="Last edited" dataKey="lastEditedAt" width={200}>
++              {(val: string) => (
++                <Tooltip tooltip={new Date(val).toLocaleString()}>
++                  <Time value={val} />
++                </Tooltip>
++              )}
++            </DashTable.Column>
++            <DashTable.Column id="actions" title="" width={80}>
++              {(_: unknown, d: Dashboard) => (
++                <Dropdown
++                  menu={
++                    <>
++                      <Dropdown.Item onSelect={() => handleDuplicate(d)}>Duplicate</Dropdown.Item>
++                      <Dropdown.Item onSelect={() => setDeleteTarget(d)}>Delete</Dropdown.Item>
++                    </>
++                  }
++                >
++                  <IconButton tooltip="More actions">
++                    <EllipsisVertical />
++                  </IconButton>
++                </Dropdown>
++              )}
++            </DashTable.Column>
++          </DashTable>
++        )}
++      </div>
++      {deleteTarget ? (
++        <DeleteDashboardDialog
++          dashboardId={deleteTarget.id}
++          dashboardName={deleteTarget.name}
++          open={!!deleteTarget}
++          onOpenChange={(o) => !o && setDeleteTarget(null)}
++          onDeleted={() => setDeleteTarget(null)}
++        />
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/page.css.ts b/web/app/(routes)/(marketing)/page.css.ts
+new file mode 100644
+index 0000000..004ad64
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/page.css.ts
+@@ -0,0 +1,49 @@
++import { tokens } from '@packages/styles/tokens.css';
++import { style } from '@vanilla-extract/css';
++
++export const preview = style({
++  display: 'grid',
++  gridTemplateColumns: '1fr 1fr',
++  gap: tokens.spacing[3],
++  padding: tokens.spacing[4],
++  borderRadius: tokens.radius.surface,
++  border: `1px solid ${tokens.color.surface.divider}`,
++  background: tokens.color.surface.pageBg,
++});
++
++export const previewCard = style({
++  display: 'flex',
++  flexDirection: 'column',
++  gap: tokens.spacing[2],
++  padding: tokens.spacing[4],
++  borderRadius: tokens.radius.surface,
++  border: `1px solid ${tokens.color.surface.divider}`,
++  background: tokens.color.base.bg,
++});
++
++export const previewCounter = style({
++  display: 'flex',
++  flexDirection: 'column',
++  gap: tokens.spacing[2],
++  padding: tokens.spacing[4],
++  borderRadius: tokens.radius.surface,
++  border: `1px solid ${tokens.color.surface.divider}`,
++  background: tokens.color.base.bg,
++  alignItems: 'center',
++  justifyContent: 'center',
++});
++
++export const previewStrike = style({
++  textDecoration: 'line-through',
++  opacity: 0.6,
++});
++
++export const reasonsGrid = style({
++  display: 'grid',
++  gridTemplateColumns: 'repeat(2, 1fr)',
++  gap: tokens.spacing[6],
++});
++
++export const reasonTitle = style({
++  fontWeight: tokens.fontWeight.heading,
++});
+diff --git a/web/app/(routes)/(marketing)/page.tsx b/web/app/(routes)/(marketing)/page.tsx
+index 19adfed..f7277de 100644
+--- a/web/app/(routes)/(marketing)/page.tsx
++++ b/web/app/(routes)/(marketing)/page.tsx
+@@ -1,11 +1,107 @@
++'use client';
++
+ import { Hero } from '@app/components/Hero';
++import { NextLink } from '@app/components/NextLink';
++import { Button } from '@packages/ui/Button';
++import { Card } from '@packages/ui/Card';
++import { Checkbox } from '@packages/ui/Checkbox';
++import { Link } from '@packages/ui/Link';
++import { Numeral } from '@packages/ui/Numeral';
++import { Section } from '@packages/ui/Section';
++import { Caption, Paragraph } from '@packages/ui/Typography';
++import { FileText, Grid3X3, Lock, Zap } from 'lucide-react';
+ import React from 'react';
+ 
++
++import * as styles from './page.css';
++
++const reasons = [
++  {
++    icon: <FileText className="icon-size-body" aria-hidden />,
++    title: 'Capture everything',
++    description: 'Add notes, counters, checklists and links in one ordered grid.',
++  },
++  {
++    icon: <Zap className="icon-size-body" aria-hidden />,
++    title: 'Stay in flow',
++    description: 'Every change saves automatically with a clear Saving and Saved status.',
++  },
++  {
++    icon: <Grid3X3 className="icon-size-body" aria-hidden />,
++    title: 'Make it yours',
++    description: 'Rename, resize and reorder widgets to fit how you think.',
++  },
++  {
++    icon: <Lock className="icon-size-body" aria-hidden />,
++    title: 'Always private',
++    description: 'Your dashboards stay yours alone and survive every refresh.',
++  },
++];
++
++function DashboardPreview() {
++  return (
++    <div data-ds="" className={styles.preview}>
++      {/* Row 1: note + counter */}
++      <div data-ds="" className={styles.previewCard}>
++        <Caption>Launch plan</Caption>
++        <Paragraph>Outline for Q1 launch with goals and timeline.</Paragraph>
++      </div>
++      <div data-ds="" className={styles.previewCounter}>
++        <Caption>Tasks completed</Caption>
++        <Numeral>12</Numeral>
++      </div>
++      {/* Row 2: checklist + links */}
++      <div data-ds="" className={styles.previewCard}>
++        <Caption>To do</Caption>
++          <div data-ds="" className="flex-col-gap-2">
++            <div data-ds="" className="flex-row-gap-2 items-center">
++              <Checkbox checked onCheckedChange={() => {}} aria-label="Review the draft checked" />
++              <span className={styles.previewStrike}>Review the draft</span>
++            </div>
++            <div data-ds="" className="flex-row-gap-2 items-center">
++              <Checkbox value="ship" aria-label="Ship beta unchecked" />
++              <span>Ship beta</span>
++            </div>
++          </div>
++      </div>
++      <div data-ds="" className={styles.previewCard}>
++        <Caption>Links</Caption>
++        <div data-ds="" className="flex-col-gap-2">
++          <Link href="https://figma.com" target="_blank" rel="noreferrer">
++            Figma
++          </Link>
++        </div>
++      </div>
++    </div>
++  );
++}
++
+ export default function HomePage() {
+   return (
+-    <Hero
+-      title="Application starter"
+-      description="React, Tailwind, vanilla-extract, Zustand, and React Query are ready."
+-    />
++    <>
++      <Hero
++        title="Your personal console, finally in one place"
++        description="Your notes, numbers, tasks and links — together in a glowing dashboard that saves itself."
++        actions={
++          <Button as={NextLink} href="/sign-up">
++            Create your first dashboard
++          </Button>
++        }
++        media={<DashboardPreview />}
++      />
++      <Section title="Why DashForge">
++        <div data-ds="" className={styles.reasonsGrid}>
++          {reasons.map((reason) => (
++            <div key={reason.title} data-ds="" className="flex-col-gap-3">
++              <div data-ds="" className="flex-row-gap-2 items-center">
++                <span data-ds="">{reason.icon}</span>
++                <h3 className={styles.reasonTitle}>{reason.title}</h3>
++              </div>
++              <Paragraph color="muted">{reason.description}</Paragraph>
++            </div>
++          ))}
++        </div>
++      </Section>
++    </>
+   );
+ }
+diff --git a/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx b/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+new file mode 100644
+index 0000000..816935a
+--- /dev/null
++++ b/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+@@ -0,0 +1,70 @@
++'use client';
++
++import { deleteDashboard } from '@app/entities/dashboard';
++import { useWidgetStore } from '@app/entities/widget/store';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import React, { useState } from 'react';
++
++export function DeleteDashboardDialog({
++  dashboardId,
++  dashboardName,
++  open,
++  onOpenChange,
++  onDeleted,
++}: {
++  dashboardId: string;
++  dashboardName: string;
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++  onDeleted: () => void;
++}) {
++  const [deleting, setDeleting] = useState(false);
++  const [error, setError] = useState<string | undefined>();
++
++  const handleDelete = async () => {
++    setDeleting(true);
++    setError(undefined);
++    try {
++      await deleteDashboard(dashboardId);
++      // also remove widgets
++      useWidgetStore.setState(({ records }) => ({
++        records: records.filter((w) => w.dashboard !== dashboardId),
++      }));
++      toast({ title: 'Dashboard deleted' });
++      onOpenChange(false);
++      onDeleted();
++    } catch {
++      setError('Could not delete. Try again.');
++    } finally {
++      setDeleting(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Delete this dashboard?"
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={(close) => (
++        <>
++          <Button onClick={() => close()}>
++            Cancel
++          </Button>
++          <Button
++            // destructive confirm for permanent delete
++            variant="danger"
++            loading={deleting}
++            onClick={handleDelete}
++          >
++            Delete
++          </Button>
++        </>
++      )}
++    >
++      <p>This will permanently delete the dashboard and all its widgets. This cannot be undone.</p>
++      {error ? <p role="alert">{error}</p> : null}
++    </Dialog>
++  );
++}
+diff --git a/web/app/blocks/DeleteDashboardDialog/index.ts b/web/app/blocks/DeleteDashboardDialog/index.ts
+new file mode 100644
+index 0000000..3f79d5c
+--- /dev/null
++++ b/web/app/blocks/DeleteDashboardDialog/index.ts
+@@ -0,0 +1 @@
++export { DeleteDashboardDialog } from './DeleteDashboardDialog';
+\ No newline at end of file
+-- 
+2.34.1
+

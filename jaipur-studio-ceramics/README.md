@@ -1,5 +1,7 @@
 # Jaipur Studio Ceramics
 
+The full record of the run that made this app, from the brief to every review thread and model call, is in [run/](run).
+
 | | |
 |---|---|
 | Model | Muse Spark 1.3 (`muse-spark-1.3`) on the Meta Model API, with Muse Wonder 1.0 (`muse-wonder-1.0`) for the scope |

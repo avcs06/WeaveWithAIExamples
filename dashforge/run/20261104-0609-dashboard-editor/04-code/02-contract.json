@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "artifact": "code-contract",
+    "version": 1,
+    "hash": "52ffb3ddc4320fb761575ce9f8064347ae2592e0db2465d53a5b2ae8bfbd64fd",
+    "inputs": {
+      "contract": {
+        "version": 1,
+        "hash": "cd76aade8c1d42cda1f3c0552a81cab49728e90c78110781b7e7767e9c9fffbd"
+      },
+      "flows-scope": {
+        "version": 1,
+        "hash": "657ac613ddf2280da3a4796cf32dabe3a5f541d519da6148e7da35b0ab1648a1"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "232afe2a836cd5e78f4c879bf4a49906132cf240a7cbef60669c61716e3e4e8e"
+      }
+    },
+    "stage": "code-contract",
+    "model": "meta-models/muse-spark-open-1026",
+    "rounds": 1,
+    "createdAt": "2026-11-04T00:54:23.202Z"
+  },
+  "data": {
+    "Dashboard": [
+      {
+        "name": "Morning Focus",
+        "lastEditedAt": "2026-10-28T08:15:00.000Z"
+      },
+      {
+        "name": "Evening Wind Down",
+        "lastEditedAt": "2026-11-01T21:30:00.000Z"
+      },
+      {
+        "name": "Project Atlas Console",
+        "lastEditedAt": "2026-10-20T14:45:00.000Z"
+      },
+      {
+        "name": "Fitness & Habits Tracker",
+        "lastEditedAt": "2026-11-03T06:00:00.000Z"
+      },
+      {
+        "name": "Reading & Links Hub",
+        "lastEditedAt": "2026-11-12T14:00:00.000Z"
+      }
+    ],
+    "Widget": [
+      {
+        "title": "Daily Notes",
+        "type": "note",
+        "size": "medium",
+        "noteText": "Remember to review PRs at 10am",
+        "counterLabel": "",
+        "counterValue": 0,
+        "position": 1,
+        "dashboard": 1,
+        "checklistItemText": [],
+        "checklistChecked": [],
+        "linkTitle": [],
+        "linkUrl": []
+      },
+      {
+        "title": "Coffees",
+        "type": "counter",
+        "size": "small",
+        "noteText": "",
+        "counterLabel": "Coffees",
+        "counterValue": 4,
+        "position": 2,
+        "dashboard": 1,
+        "checklistItemText": [],
+        "checklistChecked": [],
+        "linkTitle": [],
+        "linkUrl": []
+      },
+      {
+        "title": "Weekly Groceries",
+        "type": "checklist",
+        "size": "large",
+        "noteText": "",
+        "counterLabel": "",
+        "counterValue": 0,
+        "position": 1,
+        "dashboard": 2,
+        "checklistItemText": [
+          "Buy milk",
+          "Buy eggs",
+          "Whole grain bread",
+          "Almond milk"
+        ],
+        "checklistChecked": [
+          true,
+          false,
+          false,
+          true
+        ],
+        "linkTitle": [],
+        "linkUrl": []
+      },
+      {
+        "title": "Design Resources",
+        "type": "link_list",
+        "size": "medium",
+        "noteText": "",
+        "counterLabel": "",
+        "counterValue": 0,
+        "position": 1,
+        "dashboard": 3,
+        "checklistItemText": [],
+        "checklistChecked": [],
+        "linkTitle": [
+          "Figma",
+          "Linear",
+          "Notion"
+        ],
+        "linkUrl": [
+          "https://figma.com",
+          "https://linear.app",
+          "https://notion.so"
+        ]
+      },
+      {
+        "title": "Push-ups",
+        "type": "counter",
+        "size": "large",
+        "noteText": "",
+        "counterLabel": "Push-ups",
+        "counterValue": 42,
+        "position": 1,
+        "dashboard": 4,
+        "checklistItemText": [],
+        "checklistChecked": [],
+        "linkTitle": [],
+        "linkUrl": []
+      },
+      {
+        "title": "Reading List",
+        "type": "link_list",
+        "size": "small",
+        "noteText": "",
+        "counterLabel": "",
+        "counterValue": 0,
+        "position": 1,
+        "dashboard": 5,
+        "checklistItemText": [],
+        "checklistChecked": [],
+        "linkTitle": [
+          "Goodreads",
+          "Medium Daily Reads"
+        ],
+        "linkUrl": [
+          "https://goodreads.com",
+          "https://medium.com"
+        ]
+      }
+    ]
+  }
+}

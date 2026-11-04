@@ -1,0 +1,342 @@
+{
+  "meta": {
+    "artifact": "code-contract",
+    "version": 1,
+    "hash": "21596a2819e60359eef60f5c111fdf8d1f081724e51a1e3dc9904c02e10cc66b",
+    "inputs": {
+      "contract": {
+        "version": 1,
+        "hash": "2e130bdef97d0d97e0a5c89d4f855b84fed967471d53c9a86caee0a5d400e160"
+      },
+      "flows-scope": {
+        "version": 1,
+        "hash": "2b437bd8b8f83589ca47480abbb934a4e66baf15245230fcd850b9735f15a9b2"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "9b90e9293d3b694a0fe41197afcf78bbc17f423df8f8d577e9a173c67dfb9a46"
+      }
+    },
+    "stage": "code-contract",
+    "model": "muse-spark-1.3",
+    "rounds": 1,
+    "createdAt": "2026-11-03T19:43:11.740Z"
+  },
+  "data": {
+    "Piece": [
+      {
+        "title": "Speckled Chai Mug",
+        "description": "Wheel-thrown stoneware mug with speckled glaze, 300ml. Perfect for cutting chai.",
+        "price": 650,
+        "photos": [
+          "https://picsum.photos/seed/speckled-chai-mug-1/800/600",
+          "https://picsum.photos/seed/speckled-chai-mug-2/800/600"
+        ],
+        "category": "mug",
+        "glaze": [
+          "Sage Green",
+          "Mustard Speckle"
+        ],
+        "size": [
+          "small",
+          "medium"
+        ],
+        "stockQuantity": [
+          14,
+          6
+        ]
+      },
+      {
+        "title": "Indigo Ramen Bowl",
+        "description": "Hand-thrown ramen bowl with deep indigo dip glaze, 700ml. Food-safe and chip resistant.",
+        "price": 850,
+        "photos": [
+          "https://picsum.photos/seed/indigo-ramen-bowl-1/800/600",
+          "https://picsum.photos/seed/indigo-ramen-bowl-2/800/600",
+          "https://picsum.photos/seed/indigo-ramen-bowl-3/800/600"
+        ],
+        "category": "bowl",
+        "glaze": [
+          "Indigo Blue",
+          "Oatmeal White"
+        ],
+        "size": [
+          "medium",
+          "large"
+        ],
+        "stockQuantity": [
+          8,
+          3
+        ]
+      },
+      {
+        "title": "Terracotta Tulsi Planter",
+        "description": "Unglazed terracotta planter with drainage hole and saucer, for tulsi and herbs.",
+        "price": 950,
+        "photos": [
+          "https://picsum.photos/seed/terracotta-tulsi-planter-1/800/600",
+          "https://picsum.photos/seed/terracotta-tulsi-planter-2/800/600"
+        ],
+        "category": "planter",
+        "glaze": [
+          "Terracotta Natural",
+          "Sage Green"
+        ],
+        "size": [
+          "medium",
+          "large"
+        ],
+        "stockQuantity": [
+          5,
+          2
+        ]
+      },
+      {
+        "title": "Amber Bud Vase",
+        "description": "Slender bud vase in warm amber glaze, ideal for single marigold stems.",
+        "price": 1200,
+        "photos": [
+          "https://picsum.photos/seed/amber-bud-vase-1/800/600",
+          "https://picsum.photos/seed/amber-bud-vase-2/800/600"
+        ],
+        "category": "vase",
+        "glaze": [
+          "Amber",
+          "Charcoal Black",
+          "Ivory Matte"
+        ],
+        "size": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "stockQuantity": [
+          9,
+          4,
+          1
+        ]
+      },
+      {
+        "title": "Jaipur Blue Serving Bowl",
+        "description": "Traditional Jaipur blue pottery serving bowl with turquoise jaal work, 1.2L.",
+        "price": 1450,
+        "photos": [
+          "https://picsum.photos/seed/jaipur-blue-serving-bowl-1/800/600",
+          "https://picsum.photos/seed/jaipur-blue-serving-bowl-2/800/600"
+        ],
+        "category": "bowl",
+        "glaze": [
+          "Jaipur Blue",
+          "Turquoise Jaal"
+        ],
+        "size": [
+          "medium",
+          "large"
+        ],
+        "stockQuantity": [
+          0,
+          7
+        ]
+      }
+    ],
+    "Order": [
+      {
+        "name": "Meera Sharma",
+        "phoneNumber": "9829012345",
+        "fulfilmentChoice": "courier_delivery",
+        "deliveryAddress": "14 Rose Lane, Malviya Nagar",
+        "city": "Jaipur",
+        "pinCode": "302017",
+        "discountCode": "WEEKEND10",
+        "orderReference": "JSC-4821",
+        "quantity": [
+          2
+        ],
+        "itemTitle": [
+          "Speckled Chai Mug"
+        ],
+        "itemGlaze": [
+          "Sage Green"
+        ],
+        "itemSize": [
+          "small"
+        ],
+        "itemPrice": [
+          650
+        ],
+        "subtotal": 1300,
+        "discountAmount": 130,
+        "shippingCost": 120,
+        "total": 1290,
+        "paymentStatus": "paid",
+        "fulfilmentStatus": "packed"
+      },
+      {
+        "name": "Arjun Mehta",
+        "phoneNumber": "9414056789",
+        "fulfilmentChoice": "studio_pickup",
+        "deliveryAddress": "",
+        "city": "",
+        "pinCode": "",
+        "discountCode": "",
+        "orderReference": "JSC-4825",
+        "quantity": [
+          1
+        ],
+        "itemTitle": [
+          "Amber Bud Vase"
+        ],
+        "itemGlaze": [
+          "Amber"
+        ],
+        "itemSize": [
+          "medium"
+        ],
+        "itemPrice": [
+          1200
+        ],
+        "subtotal": 1200,
+        "discountAmount": 0,
+        "shippingCost": 0,
+        "total": 1200,
+        "paymentStatus": "unpaid",
+        "fulfilmentStatus": "new"
+      },
+      {
+        "name": "Priya Nair",
+        "phoneNumber": "9982011223",
+        "fulfilmentChoice": "courier_delivery",
+        "deliveryAddress": "B-402 Sea Breeze, Bandra West",
+        "city": "Mumbai",
+        "pinCode": "400050",
+        "discountCode": "DIWALI200",
+        "orderReference": "JSC-4830",
+        "quantity": [
+          1,
+          2
+        ],
+        "itemTitle": [
+          "Indigo Ramen Bowl",
+          "Speckled Chai Mug"
+        ],
+        "itemGlaze": [
+          "Indigo Blue",
+          "Mustard Speckle"
+        ],
+        "itemSize": [
+          "medium",
+          "medium"
+        ],
+        "itemPrice": [
+          850,
+          650
+        ],
+        "subtotal": 2150,
+        "discountAmount": 200,
+        "shippingCost": 150,
+        "total": 2100,
+        "paymentStatus": "paid",
+        "fulfilmentStatus": "shipped"
+      },
+      {
+        "name": "Kabir Singh Rathore",
+        "phoneNumber": "9001894567",
+        "fulfilmentChoice": "courier_delivery",
+        "deliveryAddress": "C-56 Defence Colony",
+        "city": "New Delhi",
+        "pinCode": "110024",
+        "discountCode": "FIRSTBUY15",
+        "orderReference": "JSC-4834",
+        "quantity": [
+          3
+        ],
+        "itemTitle": [
+          "Terracotta Tulsi Planter"
+        ],
+        "itemGlaze": [
+          "Terracotta Natural"
+        ],
+        "itemSize": [
+          "large"
+        ],
+        "itemPrice": [
+          950
+        ],
+        "subtotal": 2850,
+        "discountAmount": 427.5,
+        "shippingCost": 180,
+        "total": 2602.5,
+        "paymentStatus": "paid",
+        "fulfilmentStatus": "new"
+      },
+      {
+        "name": "Ananya Iyer",
+        "phoneNumber": "9799398765",
+        "fulfilmentChoice": "studio_pickup",
+        "deliveryAddress": "",
+        "city": "",
+        "pinCode": "",
+        "discountCode": "",
+        "orderReference": "JSC-4840",
+        "quantity": [
+          1
+        ],
+        "itemTitle": [
+          "Jaipur Blue Serving Bowl"
+        ],
+        "itemGlaze": [
+          "Turquoise Jaal"
+        ],
+        "itemSize": [
+          "large"
+        ],
+        "itemPrice": [
+          1450
+        ],
+        "subtotal": 1450,
+        "discountAmount": 0,
+        "shippingCost": 0,
+        "total": 1450,
+        "paymentStatus": "unpaid",
+        "fulfilmentStatus": "cancelled"
+      }
+    ],
+    "DiscountCode": [
+      {
+        "code": "WEEKEND10",
+        "discountType": "percentage",
+        "discountValue": 10,
+        "expiryDate": "2026-11-15",
+        "status": "active"
+      },
+      {
+        "code": "DIWALI200",
+        "discountType": "fixed_amount",
+        "discountValue": 200,
+        "expiryDate": "2026-11-10",
+        "status": "active"
+      },
+      {
+        "code": "FIRSTBUY15",
+        "discountType": "percentage",
+        "discountValue": 15,
+        "expiryDate": "2027-01-15",
+        "status": "active"
+      },
+      {
+        "code": "STUDIOPICKUP50",
+        "discountType": "fixed_amount",
+        "discountValue": 50,
+        "expiryDate": "2026-10-20",
+        "status": "deactivated"
+      },
+      {
+        "code": "MONSOON20",
+        "discountType": "percentage",
+        "discountValue": 20,
+        "expiryDate": "2026-09-30",
+        "status": "deactivated"
+      }
+    ]
+  }
+}

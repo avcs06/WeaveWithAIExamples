@@ -1,0 +1,160 @@
+{
+  "id": "20261104-0428-freelancer-workspace",
+  "idea": "fixtures/ideas/freelancer-workspace.md",
+  "createdAt": "2026-11-03T22:58:20.785Z",
+  "stages": {
+    "flows-scope": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:00:45.602Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "88cf76dc9c1473a8b4b5043714057cb7248d5dd679ff39ba0e0146110fc0adb6"
+    },
+    "flows-catalog": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:09:19.753Z",
+      "rounds": 3,
+      "known": 1,
+      "version": 1,
+      "hash": "78fa7505b2b3f14ad6d63aa868e2b5a8971d6a823708bbdf30b271f38635e1a7"
+    },
+    "flows-expand": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:12:41.705Z",
+      "version": 1,
+      "hash": "5b123f11d1a5d8c4c341f1b6ee85ecc0e3afd0e0349a58f9f37fa88effd8ae7d",
+      "rounds": 14,
+      "known": 0,
+      "batches": 12
+    },
+    "flows-expand-1": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:50.851Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-2": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:11:16.345Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-3": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:42.268Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-4": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:12:41.696Z",
+      "rounds": 2,
+      "known": 0
+    },
+    "flows-expand-5": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:37.010Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-6": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:13.809Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-7": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:22.742Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-8": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:44.796Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-9": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:07.497Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-10": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:11:11.078Z",
+      "rounds": 2,
+      "known": 0
+    },
+    "flows-expand-11": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:10:16.844Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-12": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:11:16.538Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "flows-expand-assemble": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:12:41.702Z",
+      "rounds": 1,
+      "known": 0
+    },
+    "design-theme": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:16:15.311Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "e573f40f8d142de3847627e5459687b7297220afbf702767c5732352b93b1e31"
+    },
+    "design-architect": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:27:55.594Z",
+      "rounds": 2,
+      "known": 0,
+      "version": 1,
+      "hash": "498b9bed64655dff54c0b3c81db60ae1fc4386848b40e3ed5e28bcd22c19737f"
+    },
+    "contract": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:34:54.257Z",
+      "rounds": 3,
+      "known": 3,
+      "version": 1,
+      "hash": "c5c0257df549a2444d6f0af9fe337fbbf193180e95186535e63d1350d0149b67"
+    },
+    "code-scaffold": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:36:06.356Z"
+    },
+    "code-contract": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:37:05.759Z",
+      "rounds": 1,
+      "known": 0,
+      "version": 1,
+      "hash": "84395bc8979b2f60168519c30405c5468576d28af282b8bd891f6c8c100abe9d"
+    },
+    "code-frames": {
+      "status": "done",
+      "updatedAt": "2026-11-03T23:42:15.461Z",
+      "rounds": 1,
+      "known": 0,
+      "batches": 1
+    },
+    "code-pages": {
+      "status": "done",
+      "updatedAt": "2026-11-04T00:38:12.373Z",
+      "rounds": 3,
+      "known": 8,
+      "batches": 1
+    }
+  }
+}

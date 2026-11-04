@@ -1,0 +1,62 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "THEME-013",
+      "severity": "mandatory",
+      "message": "The marketing footer content names \"small print\", which the scope and the flows do not have. Name only what a flow gives the user, or leave it out.",
+      "at": "marketing.footer.content"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Removed 'small print' from marketing.footer.content so it names only studio pickup information and shop links.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link default uses `plain` look app-wide, which hides every link. Fix: Remove the `plain` look so links use the default visible look everywhere (no `look: plain` app-wide).",
+      "at": "defaults.Link.look"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Removed the plain look from the Link default so links use the default visible underlined look app-wide.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The Link default uses the plain look, which hides every link app-wide. Fix: Remove the plain look from the Link default and use the default underlined link look so links are visible app-wide.",
+      "at": "defaults.Link.look"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Removed the plain look from the Link default so links use the default visible underlined look app-wide, same fix as T02.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

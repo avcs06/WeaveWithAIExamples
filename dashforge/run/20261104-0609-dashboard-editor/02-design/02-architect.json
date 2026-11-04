@@ -1,0 +1,545 @@
+{
+  "meta": {
+    "artifact": "design-architect",
+    "version": 1,
+    "hash": "25ff14d233562a4a0012b57c49218d4c7c6fa61bd78881916ccb02b09bd068ba",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "657ac613ddf2280da3a4796cf32dabe3a5f541d519da6148e7da35b0ab1648a1"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "232afe2a836cd5e78f4c879bf4a49906132cf240a7cbef60669c61716e3e4e8e"
+      },
+      "design-theme": {
+        "version": 1,
+        "hash": "b6930843f4da7e1baf4f653950d256a4108380a0dd770bfb2a79e6b612d813ca"
+      }
+    },
+    "stage": "design-architect",
+    "model": "meta-models/muse-spark-open-1026",
+    "rounds": 2,
+    "createdAt": "2026-11-04T00:51:00.891Z"
+  },
+  "data": {
+    "frames": [
+      {
+        "id": "FR01",
+        "name": "Public site frame",
+        "purpose": "Surrounds the landing page and authentication pages for visitors who are not signed in, providing access to sign in and sign up.",
+        "flows": [
+          "F01",
+          "F03"
+        ],
+        "steps": [
+          "Sees the logo, which leads to /.",
+          "Can choose \"Sign in\", which goes to /sign-in."
+        ],
+        "alternatives": [
+          {
+            "when": "the user is signed in",
+            "steps": [
+              "Sees \"Go to dashboards\" which goes to /dashboards instead of \"Sign in\"."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "FR02",
+        "name": "App frame",
+        "purpose": "Surrounds the dashboards list, editor and account pages for signed-in users, providing navigation, creation and account controls.",
+        "flows": [
+          "F04",
+          "F07",
+          "F20"
+        ],
+        "steps": [
+          "Sees the logo, which leads to /dashboards.",
+          "Can open Dashboards and Account from the navigation, in that order.",
+          "Can choose \"Create dashboard\", the main action, which creates a new dashboard with default name \"Untitled Dashboard\" numbered if needed and goes to /dashboards/[dashboardId].",
+          "Can open the account menu, which shows their email and lets them sign out, which goes to /."
+        ],
+        "alternatives": [
+          {
+            "when": "the user is signed out",
+            "steps": [
+              "Sees a prompt to sign in, which goes to /sign-in, and the navigation is hidden."
+            ]
+          },
+          {
+            "when": "signing out fails",
+            "steps": [
+              "Reads \"Could not sign out. Try again.\" and stays signed in."
+            ]
+          }
+        ]
+      }
+    ],
+    "screens": [
+      {
+        "id": "S01",
+        "route": "/",
+        "title": "Your personal console, finally in one place",
+        "purpose": "Help visitors understand DashForge is a single private space for notes, numbers, tasks and links and give them a clear path to start.",
+        "roles": [
+          "user"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F01",
+          "F02"
+        ],
+        "steps": [
+          "Reads the headline \"Your personal console, finally in one place\" and the line under it \"Your notes, numbers, tasks and links — together in a glowing dashboard that saves itself.\"",
+          "Can choose \"Create your first dashboard\", the main action, which goes to /sign-up.",
+          "Sees a preview of a dashboard showing a note called \"Launch plan\", a counter showing 12, a checklist with \"Review the draft\" checked, and a link list with \"Figma\" linking to https://figma.com. The preview changes no records.",
+          "Reads \"Capture everything\" \"Add notes, counters, checklists and links in one ordered grid.\"",
+          "Reads \"Stay in flow\" \"Every change saves automatically with a clear Saving and Saved status.\"",
+          "Reads \"Make it yours\" \"Rename, resize and reorder widgets to fit how you think.\"",
+          "Reads \"Always private\" \"Your dashboards stay yours alone and survive every refresh.\""
+        ],
+        "alternatives": []
+      },
+      {
+        "id": "S02",
+        "route": "/sign-up",
+        "title": "Create your account",
+        "purpose": "Create a private account to own dashboards.",
+        "roles": [
+          "user"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F02"
+        ],
+        "steps": [
+          "Signs up with email (FD01) and password (FD02) via the auth form (FM01), which creates the account, signs them in with a persistent session and goes to /dashboards."
+        ],
+        "alternatives": [
+          {
+            "when": "the email is not a valid email address, or the password is shorter than 8 characters or longer than 128 characters",
+            "steps": [
+              "Sees the field marked as wrong, explains what is required and keeps what was typed."
+            ]
+          },
+          {
+            "when": "the email already has an account",
+            "steps": [
+              "Reads \"An account with that email already exists.\" and can choose \"Sign in\" which goes to /sign-in."
+            ]
+          },
+          {
+            "when": "creating the account fails",
+            "steps": [
+              "Reads \"Could not create account. Try again.\" and what was typed is kept except passwords are cleared."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S03",
+        "route": "/sign-in",
+        "title": "Sign in",
+        "purpose": "Sign in to access private dashboards.",
+        "roles": [
+          "user"
+        ],
+        "frame": "FR01",
+        "flows": [
+          "F03"
+        ],
+        "steps": [
+          "Signs in with email (FD01) and password (FD02) via the auth form (FM01), which verifies credentials, restores the persistent session and goes to /dashboards."
+        ],
+        "alternatives": [
+          {
+            "when": "the email is not a valid email address or the password is empty",
+            "steps": [
+              "Sees the field marked as wrong, explains what is required and keeps what was typed."
+            ]
+          },
+          {
+            "when": "the email and password do not match any account",
+            "steps": [
+              "Reads \"Email or password is incorrect.\" and keeps the email while clearing the password."
+            ]
+          },
+          {
+            "when": "signing in fails",
+            "steps": [
+              "Reads \"Could not sign in. Try again.\" and what was typed is kept."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S04",
+        "route": "/dashboards",
+        "title": "Your dashboards",
+        "purpose": "See all dashboards sorted by last edited, search by name, open, duplicate, rename or delete them, or create a new one.",
+        "roles": [
+          "user"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F05",
+          "F06",
+          "F07",
+          "F08",
+          "F09",
+          "F10"
+        ],
+        "steps": [
+          "Sees the title \"Your dashboards\".",
+          "Sees the search field labeled \"Search\" (FD14) to filter dashboards by name.",
+          "Sees the list of dashboards as table rows sorted by last edited most recent first, each row shows the dashboard name (FD03) as the link that opens the dashboard and when it was last edited as relative time with full timestamp on hover.",
+          "Can type in the search field (FD14) to filter the list to only dashboards whose name contains the typed text.",
+          "Can open a dashboard by choosing its name, which goes to /dashboards/[dashboardId].",
+          "Can open the row menu on a dashboard to choose \"Duplicate\", which creates a copy named \"{original name} Copy\" with all widgets, order, sizes, titles and content copied exactly and goes to /dashboards/[dashboardId] of the copy and shows a toast.",
+          "Can open the row menu on a dashboard to choose \"Delete\", which opens D01.",
+          "Can rename the dashboard name in place by choosing the edit icon, which turns the name into a field with save and cancel icon buttons, saving validates required and max 80 characters, shows Saving then Saved, updates lastEditedAt and shows a toast.",
+          "Sees a toast confirming every save."
+        ],
+        "alternatives": [
+          {
+            "when": "the user has no dashboards yet",
+            "steps": [
+              "Reads \"No dashboards yet. Create your first dashboard to start your console.\"",
+              "Can choose \"Create dashboard\" which creates a new dashboard with default name and goes to /dashboards/[dashboardId].",
+              "Sees that the \"Create dashboard\" action in the frame is hidden while the list is empty."
+            ]
+          },
+          {
+            "when": "no dashboard name matches the search text",
+            "steps": [
+              "Reads \"No results for your search. Try another name.\"",
+              "Can choose \"Clear search\" which restores the full list sorted by last edited most recent first."
+            ]
+          },
+          {
+            "when": "the dashboard was deleted in the meantime",
+            "steps": [
+              "Reads \"This dashboard is no longer available.\"",
+              "Sees the home list again."
+            ]
+          },
+          {
+            "when": "creating the dashboard fails",
+            "steps": [
+              "Reads \"Could not create dashboard. Try again.\" and stays where they were."
+            ]
+          },
+          {
+            "when": "the name is empty or longer than 80 characters",
+            "steps": [
+              "Sees the name field marked as invalid with \"Name is required and max 80 characters\" and what was typed is kept."
+            ]
+          },
+          {
+            "when": "saving the new name fails",
+            "steps": [
+              "Reads \"Could not save. Try again.\" and what was typed is kept."
+            ]
+          },
+          {
+            "when": "duplicating the dashboard fails",
+            "steps": [
+              "Reads \"Could not duplicate. Try again.\" and the original dashboard is unchanged."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S05",
+        "route": "/dashboards/[dashboardId]",
+        "title": "The dashboard's name, as in \"Morning Focus\"",
+        "purpose": "View and interact with widgets and configure dashboard and widgets, with every change auto-saved.",
+        "roles": [
+          "user"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F06",
+          "F08",
+          "F09",
+          "F10",
+          "F11",
+          "F12",
+          "F13",
+          "F14",
+          "F15",
+          "F16",
+          "F17",
+          "F18",
+          "F19"
+        ],
+        "steps": [
+          "Sees the dashboard's name (FD03) as the title and the Saving/Saved status indicator.",
+          "Sees the widgets in relative order, each widget shows its title (FD04) defaulting to capitalized type name and its size and type-specific content.",
+          "For a note widget, sees the plain text content (FD07) max 5000 characters in an editable text area.",
+          "For a counter widget, sees the counter value starting at 0 and can go negative with increase and decrease icon buttons and the optional label (FD08) max 40 characters.",
+          "For a checklist widget, sees the ordered list of items each with text (FD09) max 120 characters and checked state, with a field to add a new item (FM06) and controls to tick/untick, edit text inline and remove the item.",
+          "For a link list widget, sees the ordered list of links each with title (FD11) max 80 characters and URL (FD12) valid http/https, with controls to add, edit and remove links and each title opens in a new tab.",
+          "Can type and edit note text (FD07) which auto-saves with debounce, shows Saving then Saved, updates lastEditedAt and shows a toast.",
+          "Can choose increase or decrease on a counter widget, which changes the value by 1, shows the new number, shows Saving then Saved and updates lastEditedAt.",
+          "Can edit the counter label (FD08) inline, which saves the new label, shows Saving then Saved and updates lastEditedAt.",
+          "Can add a checklist item by filling item text (FD09) and submitting (FM06), which appends the item in order, shows Saving then Saved and updates lastEditedAt.",
+          "Can tick or untick a checklist item, which toggles checked state, shows Saving then Saved and updates lastEditedAt.",
+          "Can edit checklist item text inline (FD09) and confirm, which saves the updated text, shows Saving then Saved and updates lastEditedAt.",
+          "Can remove a checklist item, which removes it from the ordered list, shows Saving then Saved and updates lastEditedAt.",
+          "Can add a link via D04, edit a link via D04, remove a link, and open a link in a new tab.",
+          "Can choose \"Edit\", which shows the editing controls.",
+          "Can choose \"Back to dashboards\" which goes to /dashboards."
+        ],
+        "alternatives": [
+          {
+            "when": "editing",
+            "steps": [
+              "Sees the dashboard name field editable with current name ready to edit, with save and cancel icon buttons.",
+              "Can edit the dashboard name (FD03) and confirm, which validates required and max 80 characters, auto-saves with Saving then Saved, updates lastEditedAt and shows a toast.",
+              "Can choose \"Duplicate\" which creates a copy named \"{original name} Copy\" with all widgets, order, sizes, titles and content copied exactly, sets lastEditedAt to now and goes to /dashboards/[dashboardId] of the copy.",
+              "Can choose \"Delete\" which opens D01.",
+              "Can choose \"Add widget\" which opens D02.",
+              "For each widget, can edit its title (FD04) in place, which validates max 60 characters, saves, shows Saving then Saved and updates lastEditedAt.",
+              "Can move a widget to a new position using up/down icon buttons or drag handle, which updates order index, re-renders grid in new relative order, shows Saving then Saved and updates lastEditedAt.",
+              "Can open size control on a widget to choose small, medium or large (FD06), which applies new visual footprint, shows Saving then Saved and updates lastEditedAt.",
+              "Can choose \"Remove\" on a widget, which opens D03.",
+              "Can choose \"Done\", which shows the page as it is now."
+            ]
+          },
+          {
+            "when": "the dashboard has no widgets yet",
+            "steps": [
+              "Reads \"No widgets yet. Add your first widget to start building.\"",
+              "Can choose \"Add widget\" which opens D02."
+            ]
+          },
+          {
+            "when": "the dashboard was deleted in the meantime",
+            "steps": [
+              "Reads \"This dashboard is gone.\"",
+              "Can choose \"Go to your dashboards\" which goes to /dashboards."
+            ]
+          },
+          {
+            "when": "the widget was deleted in the meantime",
+            "steps": [
+              "Reads \"This widget is gone.\"",
+              "Sees the editor without it."
+            ]
+          },
+          {
+            "when": "there is only one widget",
+            "steps": [
+              "Sees reordering controls disabled with tooltip \"Add another widget to reorder\"."
+            ]
+          },
+          {
+            "when": "the dashboard name is empty or longer than 80 characters",
+            "steps": [
+              "Sees the name field marked as invalid with \"Name is required and max 80 characters\" and what was typed is kept."
+            ]
+          },
+          {
+            "when": "the widget title is longer than 60 characters",
+            "steps": [
+              "Sees the title field marked with \"Max 60 characters\" and what was typed is kept without saving."
+            ]
+          },
+          {
+            "when": "the note text is longer than 5000 characters",
+            "steps": [
+              "Sees the field marked with \"Max 5000 characters\" and what was typed is kept without saving."
+            ]
+          },
+          {
+            "when": "the counter label is longer than 40 characters",
+            "steps": [
+              "Sees the label field marked with \"Max 40 characters\" and what was typed is kept without saving."
+            ]
+          },
+          {
+            "when": "the checklist item text is empty or longer than 120 characters",
+            "steps": [
+              "Sees the item text field marked with \"Text is required and max 120 characters\" and what was typed is kept."
+            ]
+          },
+          {
+            "when": "saving fails",
+            "steps": [
+              "Reads \"Saving failed. Try again.\" and can try again, previous values are kept."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "S06",
+        "route": "/account",
+        "title": "Account",
+        "purpose": "View email and change password.",
+        "roles": [
+          "user"
+        ],
+        "frame": "FR02",
+        "flows": [
+          "F20"
+        ],
+        "steps": [
+          "Sees the title \"Account\".",
+          "Reads their email (FD01) read-only.",
+          "Sees the change password form (FM04) with Current password (FD13) and New password (FD02) fields.",
+          "Fills in current password and new password and chooses \"Save\", which verifies current password, updates password, keeps session valid and shows toast \"Password changed\".",
+          "Can go back to dashboards via the navigation, which goes to /dashboards."
+        ],
+        "alternatives": [
+          {
+            "when": "the current password is empty or the new password is shorter than 8 characters or longer than 128 characters",
+            "steps": [
+              "Sees the field marked as wrong with \"Current password is required and new password must be 8 to 128 characters\" and passwords are cleared for security."
+            ]
+          },
+          {
+            "when": "the current password is incorrect",
+            "steps": [
+              "Reads \"Current password is incorrect.\" and the form is cleared for retry."
+            ]
+          },
+          {
+            "when": "updating the password fails",
+            "steps": [
+              "Reads \"Could not update password. Try again.\" and the form is cleared."
+            ]
+          }
+        ]
+      }
+    ],
+    "dialogs": [
+      {
+        "id": "D01",
+        "title": "Delete dashboard?",
+        "purpose": "Confirm permanently deleting the dashboard and all its widgets.",
+        "openedFrom": [
+          "S04",
+          "S05"
+        ],
+        "flows": [
+          "F10"
+        ],
+        "steps": [
+          "Reads \"Delete this dashboard? This will permanently delete the dashboard and all its widgets. This cannot be undone.\"",
+          "Can choose \"Delete\", the danger action, which permanently deletes the dashboard and all its widgets, removes it from the home list, and if in the editor goes to /dashboards, and shows a toast.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the dashboard was already deleted",
+            "steps": [
+              "Reads \"This dashboard is already gone.\"",
+              "Can choose \"Close\" which goes to /dashboards."
+            ]
+          },
+          {
+            "when": "deleting fails after confirmation",
+            "steps": [
+              "Reads \"Could not delete. Try again.\" and can try again."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D02",
+        "title": "Add widget",
+        "purpose": "Create a new widget with chosen type, title and size.",
+        "openedFrom": [
+          "S05"
+        ],
+        "flows": [
+          "F11"
+        ],
+        "steps": [
+          "Chooses Type (FD05) from note, counter, checklist or linkList, required.",
+          "Fills in Title (FD04) optional max 60 characters, which defaults to capitalized type name if left empty.",
+          "Chooses Size (FD06) from small, medium or large, defaults to medium.",
+          "Can choose \"Create\", which creates the widget with type-specific defaults (note text empty, counter 0 with empty label, checklist empty, link list empty), assigns next order position, shows it in the grid, shows Saving then Saved, updates lastEditedAt, closes the dialog and shows a toast.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the title is longer than 60 characters or no type is selected",
+            "steps": [
+              "Sees the field marked as wrong with \"Title max 60 characters and type is required\" and what was typed is kept."
+            ]
+          },
+          {
+            "when": "creating the widget fails",
+            "steps": [
+              "Reads \"Could not create widget. Try again.\" and what was typed is kept."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D03",
+        "title": "Remove widget?",
+        "purpose": "Confirm permanently deleting the widget and its contents.",
+        "openedFrom": [
+          "S05"
+        ],
+        "flows": [
+          "F15"
+        ],
+        "steps": [
+          "Reads \"Remove this widget? This will permanently delete the widget and its contents. This cannot be undone.\"",
+          "Can choose \"Remove\", the danger action, which permanently deletes the widget and its content, compacts order of remaining widgets, shows Saving then Saved, updates lastEditedAt, closes the dialog and shows a toast.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the widget was already deleted",
+            "steps": [
+              "Reads \"This widget is already gone.\" and closes the dialog showing the editor without it."
+            ]
+          },
+          {
+            "when": "deleting fails",
+            "steps": [
+              "Reads \"Could not remove widget. Try again.\" and can try again."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "D04",
+        "title": "Link details",
+        "purpose": "Add or edit a link's title and URL.",
+        "openedFrom": [
+          "S05"
+        ],
+        "flows": [
+          "F19"
+        ],
+        "steps": [
+          "Fills in Link title (FD11) required max 80 characters.",
+          "Fills in Link URL (FD12) required valid http:// or https:// URL.",
+          "Can choose \"Save\", which appends or updates the link in the ordered list, shows Saving then Saved, updates lastEditedAt, closes the dialog and shows a toast.",
+          "Can choose \"Cancel\", which closes the dialog and changes nothing."
+        ],
+        "alternatives": [
+          {
+            "when": "the title is empty or longer than 80 characters or the URL is empty or not a valid http:// or https:// URL",
+            "steps": [
+              "Sees the field marked as wrong with \"Title is required max 80 and URL must be valid http/https\" and what was typed is kept."
+            ]
+          },
+          {
+            "when": "saving the link fails",
+            "steps": [
+              "Reads \"Could not save link. Try again.\" and what was typed is kept."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,4690 @@
+code-pages: cdfcd0a..a759ccb
+
+ web/app/(routes)/(app)/dashboard/account/page.tsx  | 153 +++++++
+ .../discount-codes/[discountCodeId]/page.tsx       | 176 ++++++++
+ .../(app)/dashboard/discount-codes/new/page.tsx    | 176 ++++++++
+ .../(app)/dashboard/discount-codes/page.tsx        | 168 ++++++++
+ .../(app)/dashboard/orders/[orderId]/page.tsx      | 308 ++++++++++++++
+ web/app/(routes)/(app)/dashboard/orders/page.tsx   | 216 ++++++++++
+ web/app/(routes)/(app)/dashboard/page.tsx          | 314 +++++++++++++++
+ .../(app)/dashboard/pieces/[pieceId]/edit/page.tsx |  96 +++++
+ .../(app)/dashboard/pieces/[pieceId]/page.tsx      | 179 +++++++++
+ .../(routes)/(app)/dashboard/pieces/new/page.tsx   |  54 +++
+ web/app/(routes)/(app)/dashboard/pieces/page.tsx   | 235 +++++++++++
+ web/app/(routes)/(marketing)/cart/page.tsx         | 250 ++++++++++++
+ web/app/(routes)/(marketing)/checkout/page.tsx     | 442 +++++++++++++++++++++
+ web/app/(routes)/(marketing)/order-lookup/page.tsx | 122 ++++++
+ .../(marketing)/orders/[orderReference]/page.tsx   | 127 ++++++
+ web/app/(routes)/(marketing)/page.tsx              | 105 ++++-
+ .../(routes)/(marketing)/shop/[pieceId]/page.tsx   | 257 ++++++++++++
+ web/app/(routes)/(marketing)/shop/page.tsx         | 116 ++++++
+ web/app/blocks/PieceForm/PieceForm.tsx             | 297 ++++++++++++++
+ web/app/blocks/PieceForm/index.ts                  |   2 +
+ web/app/blocks/orders/FulfilmentDetails.tsx        |  52 +++
+ web/app/blocks/orders/OrderItems.tsx               |  66 +++
+ web/app/blocks/orders/OrderTotals.tsx              |  51 +++
+ web/app/blocks/orders/index.ts                     |  14 +
+ web/app/blocks/orders/money.ts                     |  69 ++++
+ web/app/blocks/pieces/PieceCards.tsx               |  69 ++++
+ web/app/blocks/pieces/index.ts                     |   9 +
+ web/app/blocks/pieces/variants.ts                  |  50 +++
+ web/app/components/PageState/PageState.tsx         |  46 +++
+ web/app/components/PageState/index.ts              |   1 +
+ web/app/entities/auth/index.ts                     |  11 +
+ web/app/entities/order/index.ts                    |   3 +-
+ web/app/entities/order/operations.ts               | 136 +++++++
+ web/app/entities/order/seed.ts                     |   5 +
+ web/app/entities/order/types.ts                    |   1 +
+ web/app/entities/piece/index.ts                    |   1 +
+ 36 files changed, 4372 insertions(+), 5 deletions(-)
+
+diff --git a/web/app/(routes)/(app)/dashboard/account/page.tsx b/web/app/(routes)/(app)/dashboard/account/page.tsx
+new file mode 100644
+index 0000000..4ccc027
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/account/page.tsx
+@@ -0,0 +1,153 @@
++'use client';
++
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { changePassword, useCurrentUser } from '@app/entities/auth';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Controller } from '@packages/ui/Form';
++import { PasswordInput } from '@packages/ui/Input';
++import { toast } from '@packages/ui/Toast';
++import {
++  DescriptionDetails,
++  DescriptionList,
++  DescriptionTerm,
++  Paragraph,
++} from '@packages/ui/Typography';
++import { Check, Pencil, X } from 'lucide-react';
++import React, { useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++type PasswordValues = { password: string };
++
++/** The owner's own sign-in details, with the password changed in place. */
++export default function AccountPage() {
++  const user = useCurrentUser();
++  const [editing, setEditing] = useState(false);
++  const {
++    control,
++    handleSubmit,
++    setError,
++    reset,
++    formState: { errors, isSubmitting },
++  } = useForm<PasswordValues>({ defaultValues: { password: '' } });
++
++  const startEdit = () => {
++    reset({ password: '' });
++    setEditing(true);
++  };
++
++  const cancelEdit = () => {
++    reset({ password: '' });
++    setEditing(false);
++  };
++
++  if (user === undefined) return null;
++
++  if (user === null) {
++    return (
++      <>
++        <PageHeader
++          title="Account"
++          description="Your own sign-in details."
++        />
++        <Button as={NextLink} href="/sign-in">
++          Sign in
++        </Button>
++      </>
++    );
++  }
++
++  const save = async ({ password }: PasswordValues) => {
++    if (password.length < 8) {
++      reset({ password: '' });
++      setError('password', {
++        message: 'Enter a password of at least 8 characters.',
++      });
++      return;
++    }
++    try {
++      await changePassword(password);
++      toast({ title: 'Password saved', status: 'success' });
++      setEditing(false);
++      reset({ password: '' });
++    } catch {
++      setError('root', {
++        message: 'Saving failed. The account is unchanged. Try again.',
++      });
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Account"
++        description="Your own sign-in details."
++      />
++      <DescriptionList>
++        <div>
++          <DescriptionTerm>Email</DescriptionTerm>
++          <DescriptionDetails>{user.email}</DescriptionDetails>
++        </div>
++        <div>
++          <DescriptionTerm>Password</DescriptionTerm>
++          <DescriptionDetails>
++            {editing ? (
++              <span className="flex-row-gap-2 items-center">
++                <Controller
++                  name="password"
++                  control={control}
++                  rules={{
++                    required: 'Enter a new password of at least 8 characters',
++                  }}
++                >
++                  {({ field }) => (
++                    <PasswordInput
++                      aria-label="New password"
++                      autoComplete="new-password"
++                      {...field}
++                    />
++                  )}
++                </Controller>
++                <IconButton
++                  tooltip="Save password"
++                  aria-label="Save password"
++                  loadingWithReason={isSubmitting ? 'Saving the password' : undefined}
++                  onClick={handleSubmit(save)}
++                >
++                  <Check />
++                </IconButton>
++                <IconButton
++                  // Cancel sits beside save, quiet like other row actions.
++                  look="ghost"
++                  tooltip="Cancel password change"
++                  aria-label="Cancel password change"
++                  onClick={cancelEdit}
++                >
++                  <X />
++                </IconButton>
++              </span>
++            ) : (
++              <span className="flex-row-gap-2 items-center">
++                <span aria-hidden="true">••••••••</span>
++                <IconButton
++                  // Edit sits beside its value, quiet like other row actions.
++                  look="ghost"
++                  tooltip="Edit password"
++                  aria-label="Edit password"
++                  onClick={startEdit}
++                >
++                  <Pencil />
++                </IconButton>
++              </span>
++            )}
++          </DescriptionDetails>
++        </div>
++      </DescriptionList>
++      {errors.root?.message ? (
++        <Paragraph color="error" role="alert">
++          {errors.root.message}
++        </Paragraph>
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/discount-codes/[discountCodeId]/page.tsx b/web/app/(routes)/(app)/dashboard/discount-codes/[discountCodeId]/page.tsx
+new file mode 100644
+index 0000000..7ca956c
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/discount-codes/[discountCodeId]/page.tsx
+@@ -0,0 +1,176 @@
++'use client';
++
++import { rupees } from '@app/blocks/orders';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import {
++  deactivateDiscountCode,
++  useGetDiscountCode,
++} from '@app/entities/discountCode';
++import { DiscountTypeOptions } from '@app/entities/enums';
++import { Button } from '@packages/ui/Button';
++import {
++  DialogResult,
++  openConfirmationDialog,
++} from '@packages/ui/Dialog';
++import { Numeral } from '@packages/ui/Numeral';
++import { Tag } from '@packages/ui/Tag';
++import { toast } from '@packages/ui/Toast';
++import {
++  DescriptionDetails,
++  DescriptionList,
++  DescriptionTerm,
++  Paragraph,
++  Time,
++} from '@packages/ui/Typography';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++/** One discount code: its value, expiry and state, then stop it if active. */
++export default function DiscountCodeDetailPage() {
++  const { discountCodeId } = useParams<{ discountCodeId: string }>();
++  const router = useRouter();
++  const code = useGetDiscountCode(discountCodeId);
++  const [deactivating, setDeactivating] = useState(false);
++
++  if (code.loading || code.error) {
++    return (
++      <PageState
++        loading={code.loading}
++        loadingText="Loading the discount code."
++        errorText={
++          code.error ? 'The discount code could not be loaded.' : undefined
++        }
++        onRetry={code.retry}
++      />
++    );
++  }
++
++  const record = code.data;
++  if (!record) {
++    return (
++      <NotFound
++        title="Discount code not found"
++        description="This code is gone."
++        back={{ label: 'Back to discount codes', href: '/dashboard/discount-codes' }}
++      />
++    );
++  }
++
++  const deactivate = async () => {
++    if (deactivating) return;
++    const result = await openConfirmationDialog({
++      title: 'Deactivate this code?',
++      content: `Buyers will no longer be able to use ${record.code} at checkout.`,
++      // Deactivating stops the promotion, so the confirm reads as danger.
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            // Keeping the code is the quiet way out of the confirm.
++            variant="base"
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            // Deactivating is the confirm's filled danger button.
++            variant="danger"
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Deactivate
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setDeactivating(true);
++    try {
++      await deactivateDiscountCode(record.id, { status: 'deactivated' });
++      toast({ title: 'Discount code deactivated', status: 'success' });
++      router.push('/dashboard/discount-codes');
++    } catch {
++      toast({
++        title: 'Deactivating the code failed',
++        description: 'Try again.',
++        status: 'error',
++      });
++    } finally {
++      setDeactivating(false);
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={record.code}
++        breadcrumb={[
++          { label: 'Discount codes', href: '/dashboard/discount-codes' },
++        ]}
++        actions={
++          record.status === 'active' ? (
++            <Button
++              // Deactivating stops the promotion, so it reads as danger.
++              variant="danger"
++              loadingWithReason={deactivating ? 'Deactivating the code' : undefined}
++              onClick={deactivate}
++            >
++              Deactivate code
++            </Button>
++          ) : undefined
++        }
++      />
++      <DescriptionList>
++        <div>
++          <DescriptionTerm>Code</DescriptionTerm>
++          <DescriptionDetails>{record.code}</DescriptionDetails>
++        </div>
++        <div>
++          <DescriptionTerm>Discount type</DescriptionTerm>
++          <DescriptionDetails>
++            {DiscountTypeOptions.find(
++              (option) => option.key === record.discountType,
++            )?.label ?? record.discountType}
++          </DescriptionDetails>
++        </div>
++        <div>
++          <DescriptionTerm>Discount value</DescriptionTerm>
++          <DescriptionDetails>
++            <Numeral>
++              {record.discountType === 'percentage'
++                ? `${record.discountValue}%`
++                : rupees.format(record.discountValue)}
++            </Numeral>
++          </DescriptionDetails>
++        </div>
++        <div>
++          <DescriptionTerm>Expiry date</DescriptionTerm>
++          <DescriptionDetails>
++            <Time value={record.expiryDate} />
++          </DescriptionDetails>
++        </div>
++        <div>
++          <DescriptionTerm>State</DescriptionTerm>
++          <DescriptionDetails>
++            {record.status === 'active' ? (
++              <Tag
++                // An active code takes money off, so it reads as success.
++                variant="success"
++              >
++                Active
++              </Tag>
++            ) : (
++              <Tag>Deactivated</Tag>
++            )}
++          </DescriptionDetails>
++        </div>
++      </DescriptionList>
++      {record.status === 'deactivated' ? (
++        <Paragraph color="muted">
++          This code is deactivated and will be rejected at checkout.
++        </Paragraph>
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/discount-codes/new/page.tsx b/web/app/(routes)/(app)/dashboard/discount-codes/new/page.tsx
+new file mode 100644
+index 0000000..7028792
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/discount-codes/new/page.tsx
+@@ -0,0 +1,176 @@
++'use client';
++
++import { todayKey } from '@app/blocks/orders';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import {
++  createDiscountCode,
++  useListDiscountCodes,
++} from '@app/entities/discountCode';
++import { Button } from '@packages/ui/Button';
++import { Controller, Form } from '@packages/ui/Form';
++import { DateInput, Input, NumberInput } from '@packages/ui/Input';
++import { Radio, RadioGroup } from '@packages/ui/Radio';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import { useRouter } from 'next/navigation';
++import React from 'react';
++import { useForm } from 'react-hook-form';
++
++type CodeValues = {
++  code: string;
++  discountType: string;
++  discountValue: number | null;
++  expiryDate: string;
++};
++
++/** Create a discount code with a type, value and expiry date. */
++export default function NewDiscountCodePage() {
++  const router = useRouter();
++  const existing = useListDiscountCodes();
++  const {
++    control,
++    handleSubmit,
++    getValues,
++    setError,
++    formState: { errors, isSubmitting },
++  } = useForm<CodeValues>({
++    defaultValues: { code: '', discountType: '', discountValue: null, expiryDate: '' },
++  });
++
++  const submit = async (values: CodeValues) => {
++    const taken = (existing.data ?? []).some(
++      (code) => code.code.toUpperCase() === values.code.trim().toUpperCase(),
++    );
++    if (taken) {
++      setError('code', {
++        message: 'That code already exists. Change it and try again.',
++      });
++      return;
++    }
++    try {
++      await createDiscountCode({
++        code: values.code.trim().toUpperCase(),
++        discountType: values.discountType as 'percentage' | 'fixed_amount',
++        discountValue: values.discountValue ?? 1,
++        expiryDate: values.expiryDate,
++        status: 'active',
++      });
++      toast({ title: 'Discount code saved', status: 'success' });
++      router.push('/dashboard/discount-codes');
++    } catch {
++      setError('root', {
++        message: 'The code could not be saved. Try again.',
++      });
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Create a discount code"
++        description="A new promotion buyers can use once per order at checkout."
++        breadcrumb={[
++          { label: 'Discount codes', href: '/dashboard/discount-codes' },
++        ]}
++      />
++      <Form
++        onSubmit={handleSubmit(submit)}
++        error={errors.root?.message}
++        actions={
++          <>
++            <Button
++              // Leaving without saving is the quiet way out beside saving.
++              variant="base"
++              as={NextLink}
++              href="/dashboard/discount-codes"
++            >
++              Cancel
++            </Button>
++            <Button
++              type="submit"
++              loadingWithReason={isSubmitting ? 'Saving the code' : undefined}
++            >
++              Save discount code
++            </Button>
++          </>
++        }
++      >
++        <Controller
++          name="code"
++          control={control}
++          rules={{ required: 'Enter the code' }}
++        >
++          {({ field }) => (
++            <Input
++              label="Code"
++              autoComplete="off"
++              placeholder="WEEKEND10"
++              {...field}
++            />
++          )}
++        </Controller>
++        <Controller
++          name="discountType"
++          control={control}
++          rules={{ required: 'Choose percentage or a fixed amount' }}
++        >
++          {({ field }) => (
++            <RadioGroup
++              label="Discount type"
++              {...field}
++              className="flex-col-gap-2"
++            >
++              <Radio value="percentage">Percentage</Radio>
++              <Radio value="fixed_amount">Fixed amount</Radio>
++            </RadioGroup>
++          )}
++        </Controller>
++        <Controller
++          name="discountValue"
++          control={control}
++          rules={{
++            required: 'Enter the discount value',
++            min: { value: 1, message: 'The value must be at least 1' },
++            validate: (value) =>
++              getValues('discountType') !== 'percentage' ||
++              value === null ||
++              value <= 100 ||
++              'A percentage cannot be greater than 100',
++          }}
++        >
++          {({ field }) => (
++            <NumberInput
++              label="Discount value"
++              autoComplete="off"
++              allowDecimal={false}
++              min={0}
++              {...field}
++            />
++          )}
++        </Controller>
++        <Controller
++          name="expiryDate"
++          control={control}
++          rules={{
++            required: 'Enter the expiry date',
++            validate: (date) =>
++              date === '' ||
++              date >= todayKey() ||
++              'The expiry date must be in the future',
++          }}
++        >
++          {({ field }) => (
++            <DateInput label="Expiry date" autoComplete="off" {...field} />
++          )}
++        </Controller>
++      </Form>
++      {existing.error ? (
++        <Paragraph color="error" role="alert">
++          Existing codes could not be loaded, so a duplicate code would only be
++          caught when saving.
++        </Paragraph>
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/discount-codes/page.tsx b/web/app/(routes)/(app)/dashboard/discount-codes/page.tsx
+new file mode 100644
+index 0000000..46c4943
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/discount-codes/page.tsx
+@@ -0,0 +1,168 @@
++'use client';
++
++import { rupees } from '@app/blocks/orders';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { useListDiscountCodes } from '@app/entities/discountCode';
++import {
++  DiscountTypeOptions,
++} from '@app/entities/enums';
++import { Button } from '@packages/ui/Button';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
++import { Time, Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++type CodeRow = {
++  id: string;
++  code: string;
++  discountType: 'percentage' | 'fixed_amount';
++  discountValue: number;
++  expiryDate: string;
++  createdAt: string;
++  status: 'active' | 'deactivated';
++};
++
++const CodesTable = createTable<CodeRow>();
++
++const typeLabel = (type: CodeRow['discountType']) =>
++  DiscountTypeOptions.find((option) => option.key === type)?.label ?? type;
++
++/** Discount codes: every promotion and whether it can still be used. */
++export default function DiscountCodesPage() {
++  const codes = useListDiscountCodes();
++
++  const all = [...(codes.data ?? [])].sort((a, b) =>
++    b.createdAt.localeCompare(a.createdAt),
++  );
++
++  return (
++    <>
++      <PageHeader
++        title="Discount codes"
++        description="Every promotion, newest first, with its value and state."
++        actions={
++          all.length > 0 ? (
++            <Button as={NextLink} href="/dashboard/discount-codes/new">
++              Create a discount code
++            </Button>
++          ) : undefined
++        }
++      />
++      <PageState
++        loading={codes.loading}
++        loadingText="Loading the discount codes."
++        errorText={
++          codes.error ? 'The discount codes could not be loaded.' : undefined
++        }
++        onRetry={codes.retry}
++      />
++      {!codes.loading && !codes.error && all.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">
++            No discount codes yet. Create one for a promotion, such as a
++            weekend Instagram offer.
++          </Paragraph>
++          <Button as={NextLink} href="/dashboard/discount-codes/new">
++            Create a discount code
++          </Button>
++        </div>
++      ) : !codes.loading && !codes.error ? (
++        <CodesTable
++          caption="Discount codes"
++          data={all.map((code) => ({
++            id: code.id,
++            code: code.code,
++            discountType: code.discountType,
++            discountValue: code.discountValue,
++            expiryDate: code.expiryDate,
++            createdAt: code.createdAt,
++            status: code.status,
++          }))}
++          rowKey={(code) => code.id}
++          onRowClick={(_, click) =>
++            click.currentTarget.querySelector('a')?.click()
++          }
++        >
++          <CodesTable.Column
++            id="code"
++            rowHeader
++            title="Code"
++            dataKey="code"
++            width={200}
++          >
++            {(code, row) => (
++              <NextLink
++                href={`/dashboard/discount-codes/${row.id}`}
++                className="inline-block max-w-full"
++              >
++                <Truncate>{code}</Truncate>
++              </NextLink>
++            )}
++          </CodesTable.Column>
++          <CodesTable.Column
++            id="discountType"
++            title="Type"
++            dataKey="discountType"
++            width={140}
++          >
++            {(type: CodeRow['discountType']) => typeLabel(type)}
++          </CodesTable.Column>
++          <CodesTable.Column
++            id="discountValue"
++            title="Value"
++            dataKey="discountValue"
++            width={120}
++            align="right"
++          >
++            {(value, row) => (
++              <Numeral>
++                {row.discountType === 'percentage'
++                  ? `${value}%`
++                  : rupees.format(value)}
++              </Numeral>
++            )}
++          </CodesTable.Column>
++          <CodesTable.Column
++            id="expiryDate"
++            title="Expiry date"
++            dataKey="expiryDate"
++            width={140}
++          >
++            {(date) => <Time value={date} />}
++          </CodesTable.Column>
++          <CodesTable.Column
++            id="createdAt"
++            title="Created"
++            dataKey="createdAt"
++            width={140}
++          >
++            {(date) => <Time value={date} />}
++          </CodesTable.Column>
++          <CodesTable.Column
++            id="status"
++            title="State"
++            dataKey="status"
++            width={130}
++          >
++            {(status: CodeRow['status']) =>
++              status === 'active' ? (
++                <Tag
++                  // An active code takes money off, so it reads as success.
++                  variant="success"
++                >
++                  Active
++                </Tag>
++              ) : (
++                <Tag>Deactivated</Tag>
++              )
++            }
++          </CodesTable.Column>
++        </CodesTable>
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx b/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx
+new file mode 100644
+index 0000000..2582f2a
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/orders/[orderId]/page.tsx
+@@ -0,0 +1,308 @@
++'use client';
++
++import {
++  FulfilmentDetails,
++  OrderItems,
++  OrderTotals,
++} from '@app/blocks/orders';
++import { sizeLabel } from '@app/blocks/pieces';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import {
++  advanceOrderFulfilment,
++  cancelOrderWithRestore,
++  markOrderPaid,
++  useGetOrder,
++} from '@app/entities/order';
++import { Button } from '@packages/ui/Button';
++import {
++  DialogResult,
++  openConfirmationDialog,
++} from '@packages/ui/Dialog';
++import { Tag } from '@packages/ui/Tag';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import { useParams } from 'next/navigation';
++import React, { useState } from 'react';
++
++/** One order: its buyer, items, totals and destination, then act on it. */
++export default function OrderDetailPage() {
++  const { orderId } = useParams<{ orderId: string }>();
++  const order = useGetOrder(orderId);
++  const [busy, setBusy] = useState<string | null>(null);
++
++  if (order.loading || order.error) {
++    return (
++      <PageState
++        loading={order.loading}
++        loadingText="Loading the order."
++        errorText={order.error ? 'The order could not be loaded.' : undefined}
++        onRetry={order.retry}
++      />
++    );
++  }
++
++  const record = order.data;
++  if (!record) {
++    return (
++      <NotFound
++        title="Order not found"
++        description="This order is gone."
++        back={{ label: 'Back to orders', href: '/dashboard/orders' }}
++      />
++    );
++  }
++
++  const markPaid = async () => {
++    if (busy) return;
++    if (record.paymentStatus === 'paid') {
++      toast({ title: 'The order is already paid.', status: 'info' });
++      return;
++    }
++    setBusy('paid');
++    try {
++      await markOrderPaid(record.id, { paymentStatus: 'paid' });
++      toast({ title: 'Marked as paid', status: 'success' });
++    } catch {
++      toast({
++        title: 'The order could not be marked as paid',
++        description: 'Try again.',
++        status: 'error',
++      });
++    } finally {
++      setBusy(null);
++    }
++  };
++
++  const advance = async (to: 'packed' | 'shipped' | 'picked_up') => {
++    if (busy) return;
++    if (record.fulfilmentStatus !== 'new' && record.fulfilmentStatus !== 'packed') {
++      toast({
++        title: 'Only New or Packed orders can be moved.',
++        status: 'info',
++      });
++      return;
++    }
++    setBusy(to);
++    try {
++      await advanceOrderFulfilment(record.id, { fulfilmentStatus: to });
++      toast({
++        title:
++          to === 'packed'
++            ? 'Marked as packed'
++            : to === 'shipped'
++              ? 'Marked as shipped'
++              : 'Marked as picked up',
++        status: 'success',
++      });
++    } catch {
++      toast({
++        title: 'The order could not be moved',
++        description: 'Try again.',
++        status: 'error',
++      });
++    } finally {
++      setBusy(null);
++    }
++  };
++
++  const cancel = async () => {
++    if (busy) return;
++    if (record.fulfilmentStatus !== 'new' && record.fulfilmentStatus !== 'packed') {
++      toast({
++        title: 'Only New or Packed orders can be cancelled.',
++        status: 'info',
++      });
++      return;
++    }
++    const result = await openConfirmationDialog({
++      title: 'Cancel this order?',
++      content: `Cancelling ${record.orderReference} restores the stock of each ordered variant so the pieces become orderable again.`,
++      // Cancelling cannot be undone, so the confirm reads as danger.
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            // Keeping the order is the quiet way out of the confirm.
++            variant="base"
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Keep order
++          </Button>
++          <Button
++            // Cancelling is the confirm's filled danger button.
++            variant="danger"
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Cancel order
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setBusy('cancel');
++    try {
++      const { unrestored } = await cancelOrderWithRestore(record.id);
++      if (unrestored.length === 0) {
++        toast({ title: 'Order cancelled', status: 'success' });
++      } else {
++        toast({
++          title: 'Order cancelled',
++          description: `Stock for ${unrestored
++            .map(
++              (line) =>
++                `${line.title} (${line.glaze}, ${sizeLabel(line.size)})`,
++            )
++            .join('; ')} could not be restored because the piece or variant is gone.`,
++          status: 'warning',
++        });
++      }
++    } catch (error) {
++      toast({
++        title: 'Cancelling the order failed',
++        description:
++          error instanceof Error
++            ? `${error.message} The order is unchanged. Try again.`
++            : 'The order is unchanged. Try again.',
++        status: 'error',
++      });
++    } finally {
++      setBusy(null);
++    }
++  };
++
++  const canCancel =
++    record.fulfilmentStatus === 'new' || record.fulfilmentStatus === 'packed';
++
++  return (
++    <>
++      <PageHeader
++        title={`Order ${record.orderReference}`}
++        breadcrumb={[{ label: 'Orders', href: '/dashboard/orders' }]}
++        actions={
++          <>
++            {record.paymentStatus === 'unpaid' ? (
++              <Button
++                onClick={markPaid}
++                loadingWithReason={busy === 'paid' ? 'Marking as paid' : undefined}
++              >
++                Mark as paid
++              </Button>
++            ) : null}
++            {record.fulfilmentStatus === 'new' ? (
++              <Button
++                // Moving the order on is secondary to recording payment.
++                variant="base"
++                loadingWithReason={busy === 'packed' ? 'Marking as packed' : undefined}
++                onClick={() => advance('packed')}
++              >
++                Mark as packed
++              </Button>
++            ) : null}
++            {record.fulfilmentStatus === 'packed' &&
++            record.fulfilmentChoice === 'courier_delivery' ? (
++              <Button
++                // Moving the order on is secondary to recording payment.
++                variant="base"
++                loadingWithReason={busy === 'shipped' ? 'Marking as shipped' : undefined}
++                onClick={() => advance('shipped')}
++              >
++                Mark as shipped
++              </Button>
++            ) : null}
++            {record.fulfilmentStatus === 'packed' &&
++            record.fulfilmentChoice === 'studio_pickup' ? (
++              <Button
++                // Moving the order on is secondary to recording payment.
++                variant="base"
++                loadingWithReason={busy === 'picked_up' ? 'Marking as picked up' : undefined}
++                onClick={() => advance('picked_up')}
++              >
++                Mark as picked up
++              </Button>
++            ) : null}
++            {canCancel ? (
++              <Button
++                // Cancelling ends the order, so it reads as danger.
++                variant="danger"
++                loadingWithReason={busy === 'cancel' ? 'Cancelling the order' : undefined}
++                onClick={cancel}
++              >
++                Cancel order
++              </Button>
++            ) : null}
++          </>
++        }
++      />
++      <div className="flex-row-gap-2 items-center">
++        <Paragraph>
++          {record.name} · {record.phoneNumber}
++        </Paragraph>
++        {record.paymentStatus === 'paid' ? (
++          <Tag
++            // Paid money is good news, so it reads as success.
++            variant="success"
++          >
++            Paid
++          </Tag>
++        ) : (
++          <Tag
++            // Unpaid money still needs collecting.
++            variant="warning"
++          >
++            Unpaid
++          </Tag>
++        )}
++        {record.fulfilmentStatus === 'new' ? (
++          <Tag
++            // New orders must stand out from the rest.
++            variant="info"
++          >
++            New
++          </Tag>
++        ) : record.fulfilmentStatus === 'cancelled' ? (
++          <Tag
++            // A cancelled order is over, so it reads as an error.
++            variant="error"
++          >
++            Cancelled
++          </Tag>
++        ) : (
++          <Tag>
++            {record.fulfilmentStatus === 'picked_up'
++              ? 'Picked Up'
++              : record.fulfilmentStatus === 'packed'
++                ? 'Packed'
++                : 'Shipped'}
++          </Tag>
++        )}
++      </div>
++      <OrderItems
++        items={record.itemTitle.map((title, index) => ({
++          key: `${title}|${record.itemGlaze[index]}|${record.itemSize[index]}`,
++          title,
++          glaze: record.itemGlaze[index],
++          size: record.itemSize[index],
++          quantity: record.quantity[index],
++          price: record.itemPrice[index],
++        }))}
++      />
++      {record.discountCode ? (
++        <Paragraph>Discount code: {record.discountCode}</Paragraph>
++      ) : null}
++      <OrderTotals
++        subtotal={record.subtotal}
++        discountAmount={record.discountAmount ?? 0}
++        shippingCost={record.shippingCost}
++        total={record.total}
++      />
++      <FulfilmentDetails
++        choice={record.fulfilmentChoice}
++        deliveryAddress={record.deliveryAddress}
++        city={record.city}
++        pinCode={record.pinCode}
++      />
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/orders/page.tsx b/web/app/(routes)/(app)/dashboard/orders/page.tsx
+new file mode 100644
+index 0000000..009c945
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/orders/page.tsx
+@@ -0,0 +1,216 @@
++'use client';
++
++import { rupees } from '@app/blocks/orders';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { FulfilmentStatusOptions } from '@app/entities/enums';
++import { useListOrders } from '@app/entities/order';
++import { Button } from '@packages/ui/Button';
++import { Chip, ChipGroup } from '@packages/ui/Chip';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
++import { Time, Paragraph } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++
++import type { FulfilmentStatus } from '@app/entities/enums';
++
++type OrderRow = {
++  id: string;
++  orderReference: string;
++  name: string;
++  createdAt: string;
++  total: number;
++  paymentStatus: 'unpaid' | 'paid';
++  fulfilmentStatus: FulfilmentStatus;
++};
++
++const OrdersTable = createTable<OrderRow>();
++
++const fulfilmentTag = (status: FulfilmentStatus) => {
++  switch (status) {
++    case 'new':
++      return (
++        <Tag
++          // New orders must stand out from the rest.
++          variant="info"
++        >
++          New
++        </Tag>
++      );
++    case 'packed':
++      return (
++        <Tag
++          // Packed is on its way, so it reads as a warning to act.
++          variant="warning"
++        >
++          Packed
++        </Tag>
++      );
++    case 'cancelled':
++      return (
++        <Tag
++          // A cancelled order is over, so it reads as an error.
++          variant="error"
++        >
++          Cancelled
++        </Tag>
++      );
++    default:
++      return <Tag>{status === 'picked_up' ? 'Picked Up' : 'Shipped'}</Tag>;
++  }
++};
++
++/** Orders: filter by fulfilment status, newest first. */
++export default function OrdersPage() {
++  const orders = useListOrders();
++  const [status, setStatus] = useState('all');
++
++  const all = [...(orders.data ?? [])].sort((a, b) =>
++    b.createdAt.localeCompare(a.createdAt),
++  );
++  const matching =
++    status === 'all'
++      ? all
++      : all.filter((order) => order.fulfilmentStatus === status);
++
++  return (
++    <>
++      <PageHeader
++        title="Orders"
++        description="Every order, newest first, with payment and fulfilment state."
++      />
++      <PageState
++        loading={orders.loading}
++        loadingText="Loading the orders."
++        errorText={orders.error ? 'The orders could not be loaded.' : undefined}
++        onRetry={orders.retry}
++      />
++      {!orders.loading && !orders.error && all.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">
++            No orders yet. New orders will appear here once buyers order from
++            the shop.
++          </Paragraph>
++          <Button as={NextLink} href="/dashboard/pieces">
++            View pieces
++          </Button>
++        </div>
++      ) : !orders.loading && !orders.error ? (
++        <>
++          <ChipGroup
++            label="Order status"
++            value={status}
++            onChange={(next) => next && setStatus(next)}
++            className="flex-row-gap-2 flex-wrap"
++          >
++            <Chip value="all">All</Chip>
++            {FulfilmentStatusOptions.map((option) => (
++              <Chip key={option.key} value={option.key}>
++                {option.label}
++              </Chip>
++            ))}
++          </ChipGroup>
++          {matching.length === 0 ? (
++            <Paragraph role="status">
++              No orders have this status.
++            </Paragraph>
++          ) : (
++            <OrdersTable
++              caption="Orders"
++              data={matching.map((order) => ({
++                id: order.id,
++                orderReference: order.orderReference,
++                name: order.name,
++                createdAt: order.createdAt,
++                total: order.total,
++                paymentStatus: order.paymentStatus,
++                fulfilmentStatus: order.fulfilmentStatus,
++              }))}
++              rowKey={(order) => order.id}
++              onRowClick={(_, click) =>
++                click.currentTarget.querySelector('a')?.click()
++              }
++            >
++              <OrdersTable.Column
++                id="orderReference"
++                rowHeader
++                title="Order"
++                dataKey="orderReference"
++                width={140}
++              >
++                {(reference, order) => (
++                  <NextLink
++                    href={`/dashboard/orders/${order.id}`}
++                    className="inline-block max-w-full"
++                  >
++                    <Truncate>{reference}</Truncate>
++                  </NextLink>
++                )}
++              </OrdersTable.Column>
++              <OrdersTable.Column
++                id="name"
++                title="Buyer"
++                dataKey="name"
++                width={200}
++              >
++                {(name) => <Truncate>{name}</Truncate>}
++              </OrdersTable.Column>
++              <OrdersTable.Column
++                id="createdAt"
++                title="Date"
++                dataKey="createdAt"
++                width={140}
++              >
++                {(date) => <Time value={date} />}
++              </OrdersTable.Column>
++              <OrdersTable.Column
++                id="total"
++                title="Total"
++                dataKey="total"
++                width={130}
++                align="right"
++              >
++                {(total) => <Numeral>{rupees.format(total)}</Numeral>}
++              </OrdersTable.Column>
++              <OrdersTable.Column
++                id="paymentStatus"
++                title="Payment"
++                dataKey="paymentStatus"
++                width={120}
++              >
++                {(payment: OrderRow['paymentStatus']) =>
++                  payment === 'paid' ? (
++                    <Tag
++                      // Paid money is good news, so it reads as success.
++                      variant="success"
++                    >
++                      Paid
++                    </Tag>
++                  ) : (
++                    <Tag
++                      // Unpaid money still needs collecting.
++                      variant="warning"
++                    >
++                      Unpaid
++                    </Tag>
++                  )
++                }
++              </OrdersTable.Column>
++              <OrdersTable.Column
++                id="fulfilmentStatus"
++                title="Fulfilment"
++                dataKey="fulfilmentStatus"
++                width={140}
++              >
++                {(fulfilment: FulfilmentStatus) => fulfilmentTag(fulfilment)}
++              </OrdersTable.Column>
++            </OrdersTable>
++          )}
++      </>
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/page.tsx b/web/app/(routes)/(app)/dashboard/page.tsx
+new file mode 100644
+index 0000000..90f99a3
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/page.tsx
+@@ -0,0 +1,314 @@
++'use client';
++
++import { rupees } from '@app/blocks/orders';
++import { pieceVariants, sizeLabel } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { useListOrders } from '@app/entities/order';
++import { useListPieces } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import { CardList } from '@packages/ui/Card';
++import { Numeral } from '@packages/ui/Numeral';
++import { Section } from '@packages/ui/Section';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++type NewOrderRow = {
++  id: string;
++  orderReference: string;
++  name: string;
++  total: number;
++  fulfilmentChoice: 'studio_pickup' | 'courier_delivery';
++};
++
++type AttentionRow = {
++  key: string;
++  pieceId: string;
++  title: string;
++  glaze: string;
++  size: string;
++  stock: number;
++};
++
++const NewOrdersTable = createTable<NewOrderRow>();
++const AttentionTable = createTable<AttentionRow>();
++
++const fulfilmentLabel = (choice: NewOrderRow['fulfilmentChoice']) =>
++  choice === 'studio_pickup' ? 'Studio pickup' : 'Courier delivery';
++
++/** Home: new orders and pieces running low, at a glance. */
++export default function DashboardHomePage() {
++  const orders = useListOrders();
++  const pieces = useListPieces();
++
++  const loading = orders.loading || pieces.loading;
++  const failed = Boolean(orders.error ?? pieces.error);
++
++  if (loading || failed) {
++    return (
++      <>
++        <PageHeader title="Home" />
++        <PageState
++          loading={loading}
++          loadingText="Loading the dashboard."
++          errorText={failed ? 'The dashboard could not be loaded.' : undefined}
++          onRetry={() => {
++            orders.retry();
++            pieces.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  const allOrders = [...(orders.data ?? [])].sort((a, b) =>
++    b.createdAt.localeCompare(a.createdAt),
++  );
++  const newOrders = allOrders.filter(
++    (order) => order.fulfilmentStatus === 'new',
++  );
++  const allPieces = pieces.data ?? [];
++  const lowVariants: AttentionRow[] = [];
++  for (const piece of allPieces) {
++    for (const variant of pieceVariants(piece)) {
++      if (variant.stock <= 3) {
++        lowVariants.push({
++          key: `${piece.id}|${variant.glaze}|${variant.size}`,
++          pieceId: piece.id,
++          title: piece.title,
++          glaze: variant.glaze,
++          size: variant.size,
++          stock: variant.stock,
++        });
++      }
++    }
++  }
++  const soldOutCount = lowVariants.filter(
++    (row) => row.stock <= 0,
++  ).length;
++
++  if (allOrders.length === 0 && allPieces.length === 0) {
++    return (
++      <>
++        <PageHeader title="Home" />
++        <Paragraph>No orders yet.</Paragraph>
++        <Paragraph>No pieces yet.</Paragraph>
++        <div className="flex-row-gap-2 flex-wrap items-center">
++          <Button as={NextLink} href="/dashboard/pieces/new">
++            Add a piece
++          </Button>
++          <Button
++            // Opening orders is the quiet way out beside adding the first piece.
++            variant="base"
++            as={NextLink}
++            href="/dashboard/orders"
++          >
++            Open orders
++          </Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader title="Home" />
++      <CardList
++        aria-label="Shop at a glance"
++        items={[
++          { id: 'new', label: 'New orders', value: newOrders.length },
++          { id: 'low', label: 'Low stock variants', value: lowVariants.length },
++          { id: 'out', label: 'Sold out variants', value: soldOutCount },
++        ]}
++        layout="grid"
++        // Three figures take one row of three, so none sits alone.
++        columns={3}
++        renderItem={(stat) => (
++          <>
++            <span>{stat.label}</span>
++            <span className="text-heading">
++              <Numeral>{stat.value}</Numeral>
++            </span>
++          </>
++        )}
++      />
++      <Section
++        title="New orders"
++        headerAction={
++          <Button
++            // Seeing every order is the section's own action.
++            variant="base"
++            as={NextLink}
++            href="/dashboard/orders"
++          >
++            View all orders
++          </Button>
++        }
++      >
++        {newOrders.length === 0 ? (
++          <Paragraph role="status">
++            No new orders. New orders will appear here.
++          </Paragraph>
++        ) : (
++          <NewOrdersTable
++            caption="New orders"
++            data={newOrders.map((order) => ({
++              id: order.id,
++              orderReference: order.orderReference,
++              name: order.name,
++              total: order.total,
++              fulfilmentChoice: order.fulfilmentChoice,
++            }))}
++            rowKey={(order) => order.id}
++            onRowClick={(_, click) =>
++              click.currentTarget.querySelector('a')?.click()
++            }
++          >
++            <NewOrdersTable.Column
++              id="orderReference"
++              rowHeader
++              title="Order"
++              dataKey="orderReference"
++              width={140}
++            >
++              {(reference, order) => (
++                <NextLink
++                  href={`/dashboard/orders/${order.id}`}
++                  className="inline-block max-w-full"
++                >
++                  <Truncate>{reference}</Truncate>
++                </NextLink>
++              )}
++            </NewOrdersTable.Column>
++            <NewOrdersTable.Column
++              id="name"
++              title="Buyer"
++              dataKey="name"
++              width={200}
++            >
++              {(name) => <Truncate>{name}</Truncate>}
++            </NewOrdersTable.Column>
++            <NewOrdersTable.Column
++              id="total"
++              title="Total"
++              dataKey="total"
++              width={130}
++              align="right"
++            >
++              {(total) => <Numeral>{rupees.format(total)}</Numeral>}
++            </NewOrdersTable.Column>
++            <NewOrdersTable.Column
++              id="fulfilmentChoice"
++              title="Fulfilment"
++              dataKey="fulfilmentChoice"
++              width={170}
++            >
++              {(choice: NewOrderRow['fulfilmentChoice']) =>
++                fulfilmentLabel(choice)
++              }
++            </NewOrdersTable.Column>
++            <NewOrdersTable.Column
++              id="status"
++              title="Status"
++              dataKey="id"
++              width={110}
++            >
++              {() => (
++                <Tag
++                  // New orders must stand out from the rest.
++                  variant="info"
++                >
++                  New
++                </Tag>
++              )}
++            </NewOrdersTable.Column>
++          </NewOrdersTable>
++        )}
++      </Section>
++      <Section title="Pieces needing attention">
++        {lowVariants.length === 0 ? (
++          <Paragraph role="status">
++            Every variant is well stocked.
++          </Paragraph>
++        ) : (
++          <AttentionTable
++            caption="Pieces needing attention"
++            data={lowVariants}
++            rowKey={(row) => row.key}
++            onRowClick={(_, click) =>
++              click.currentTarget.querySelector('a')?.click()
++            }
++          >
++            <AttentionTable.Column
++              id="title"
++              rowHeader
++              title="Piece"
++              dataKey="title"
++              width={240}
++            >
++              {(title, row) => (
++                <NextLink
++                  href={`/dashboard/pieces/${row.pieceId}`}
++                  className="inline-block max-w-full"
++                >
++                  <Truncate>{title}</Truncate>
++                </NextLink>
++              )}
++            </AttentionTable.Column>
++            <AttentionTable.Column
++              id="glaze"
++              title="Glaze"
++              dataKey="glaze"
++              width={170}
++            />
++            <AttentionTable.Column
++              id="size"
++              title="Size"
++              dataKey="size"
++              width={110}
++            >
++              {(size) => sizeLabel(size)}
++            </AttentionTable.Column>
++            <AttentionTable.Column
++              id="stock"
++              title="Left"
++              dataKey="stock"
++              width={90}
++              align="right"
++            >
++              {(stock) => <Numeral>{stock}</Numeral>}
++            </AttentionTable.Column>
++            <AttentionTable.Column
++              id="state"
++              title="State"
++              dataKey="stock"
++              width={130}
++            >
++              {(stock) =>
++                stock <= 0 ? (
++                  <Tag
++                    // Sold out decides the next batch, so it reads as an error.
++                    variant="error"
++                  >
++                    Sold out
++                  </Tag>
++                ) : (
++                  <Tag
++                    // Three or fewer left is the owner's restock signal.
++                    variant="warning"
++                  >
++                    Low stock
++                  </Tag>
++                )
++              }
++            </AttentionTable.Column>
++          </AttentionTable>
++        )}
++      </Section>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/pieces/[pieceId]/edit/page.tsx b/web/app/(routes)/(app)/dashboard/pieces/[pieceId]/edit/page.tsx
+new file mode 100644
+index 0000000..cf37ed3
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/pieces/[pieceId]/edit/page.tsx
+@@ -0,0 +1,96 @@
++'use client';
++
++import {
++  PieceForm,
++  type PieceFormValues,
++} from '@app/blocks/PieceForm';
++import { pieceVariants } from '@app/blocks/pieces';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { updatePiece, useGetPiece } from '@app/entities/piece';
++import { toast } from '@packages/ui/Toast';
++import { useParams, useRouter } from 'next/navigation';
++import React from 'react';
++
++/** Edit a piece's details, variants or stock quantities. */
++export default function EditPiecePage() {
++  const { pieceId } = useParams<{ pieceId: string }>();
++  const router = useRouter();
++  const piece = useGetPiece(pieceId);
++
++  if (piece.loading || piece.error) {
++    return (
++      <PageState
++        loading={piece.loading}
++        loadingText="Loading the piece."
++        errorText={piece.error ? 'The piece could not be loaded.' : undefined}
++        onRetry={piece.retry}
++      />
++    );
++  }
++
++  const record = piece.data;
++  if (!record) {
++    return (
++      <NotFound
++        title="Piece not found"
++        description="This piece is gone."
++        back={{ label: 'Back to pieces', href: '/dashboard/pieces' }}
++      />
++    );
++  }
++
++  const defaults: PieceFormValues = {
++    title: record.title,
++    description: record.description ?? '',
++    price: record.price,
++    photos: record.photos.map((url) => ({ url })),
++    category: record.category,
++    variants: pieceVariants(record).map((variant) => ({
++      glaze: variant.glaze,
++      size: variant.size,
++      stockQuantity: variant.stock,
++    })),
++  };
++
++  const save = async (values: PieceFormValues) => {
++    await updatePiece(record.id, {
++      title: values.title.trim(),
++      description: values.description.trim() || undefined,
++      price: values.price ?? record.price,
++      photos: values.photos.map((photo) => photo.url.trim()),
++      category: values.category as 'mug' | 'bowl' | 'planter' | 'vase',
++      glaze: values.variants.map((variant) => variant.glaze.trim()),
++      size: values.variants.map(
++        (variant) => variant.size as 'small' | 'medium' | 'large',
++      ),
++      stockQuantity: values.variants.map(
++        (variant) => variant.stockQuantity ?? 0,
++      ),
++    });
++    toast({ title: 'Piece saved', status: 'success' });
++    router.push(`/dashboard/pieces/${record.id}`);
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={`Edit ${record.title}`}
++        breadcrumb={[
++          { label: 'Pieces', href: '/dashboard/pieces' },
++          { label: record.title, href: `/dashboard/pieces/${record.id}` },
++        ]}
++      />
++      <PieceForm
++        key={record.id}
++        defaultValues={defaults}
++        submitLabel="Save piece"
++        savingLabel="Saving the piece"
++        cancelHref={`/dashboard/pieces/${record.id}`}
++        failureMessage="The changes could not be saved. Try again."
++        onSubmit={save}
++      />
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/pieces/[pieceId]/page.tsx b/web/app/(routes)/(app)/dashboard/pieces/[pieceId]/page.tsx
+new file mode 100644
+index 0000000..7be282d
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/pieces/[pieceId]/page.tsx
+@@ -0,0 +1,179 @@
++'use client';
++
++import { rupees } from '@app/blocks/orders';
++import { pieceStockTotal, pieceVariants, sizeLabel } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { PieceCategoryOptions } from '@app/entities/enums';
++import { deletePiece, useGetPiece } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import {
++  DialogResult,
++  openConfirmationDialog,
++} from '@packages/ui/Dialog';
++import { Image } from '@packages/ui/Image';
++import { Numeral } from '@packages/ui/Numeral';
++import { Tag } from '@packages/ui/Tag';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++/** One piece: its details, variants and stock, then edit or remove it. */
++export default function PieceDetailPage() {
++  const { pieceId } = useParams<{ pieceId: string }>();
++  const router = useRouter();
++  const piece = useGetPiece(pieceId);
++  const [removing, setRemoving] = useState(false);
++
++  if (piece.loading || piece.error) {
++    return (
++      <PageState
++        loading={piece.loading}
++        loadingText="Loading the piece."
++        errorText={piece.error ? 'The piece could not be loaded.' : undefined}
++        onRetry={piece.retry}
++      />
++    );
++  }
++
++  const record = piece.data;
++  if (!record) {
++    return (
++      <NotFound
++        title="Piece not found"
++        description="This piece is gone."
++        back={{ label: 'Back to pieces', href: '/dashboard/pieces' }}
++      />
++    );
++  }
++
++  const category =
++    PieceCategoryOptions.find((option) => option.key === record.category)
++      ?.label ?? record.category;
++
++  const remove = async () => {
++    if (removing) return;
++    const result = await openConfirmationDialog({
++      title: 'Remove this piece?',
++      content:
++        'Removing the piece removes it from the shop, while past orders keep their snapshot of it.',
++      // Removing cannot be undone, so the confirm reads as danger.
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            // Keeping the piece is the quiet way out of the confirm.
++            variant="base"
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            // Deleting is the confirm's filled danger button.
++            variant="danger"
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Delete
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setRemoving(true);
++    try {
++      await deletePiece(record.id);
++      toast({ title: 'Piece removed', status: 'success' });
++      router.push('/dashboard/pieces');
++    } catch {
++      toast({
++        title: 'The piece could not be removed',
++        description: 'Try again.',
++        status: 'error',
++      });
++    } finally {
++      setRemoving(false);
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={record.title}
++        description={`${category} · ${pieceStockTotal(record)} left in total.`}
++        breadcrumb={[{ label: 'Pieces', href: '/dashboard/pieces' }]}
++        actions={
++          <>
++            <Button as={NextLink} href={`/dashboard/pieces/${record.id}/edit`}>
++              Edit piece
++            </Button>
++            <Button
++              // Removing ends the piece's sale, so it reads as danger.
++              variant="danger"
++              loadingWithReason={removing ? 'Removing the piece' : undefined}
++              onClick={remove}
++            >
++              Remove piece
++            </Button>
++          </>
++        }
++      />
++      <div className="grid gap-6 grid-cols-2 items-start">
++        <div className="flex-col-gap-4">
++          {record.photos.map((photo, index) => (
++            <Image
++              key={photo}
++              src={photo}
++              alt={
++                index === 0
++                  ? `Photo of ${record.title}`
++                  : `Another photo of ${record.title}`
++              }
++              width={600}
++              height={450}
++              fit="cover"
++            />
++          ))}
++        </div>
++        <div className="flex-col-gap-4">
++          {record.description ? (
++            <Paragraph>{record.description}</Paragraph>
++          ) : null}
++          <p className="text-heading">
++            <Numeral>{rupees.format(record.price)}</Numeral>
++          </p>
++          <div className="flex-col-gap-2">
++            {pieceVariants(record).map((variant) => (
++              <div
++                key={variant.index}
++                className="flex-row-gap-2 items-center"
++              >
++                <Paragraph>
++                  {variant.glaze} · {sizeLabel(variant.size)} ·{' '}
++                  <Numeral>{variant.stock}</Numeral> left
++                </Paragraph>
++                {variant.stock <= 0 ? (
++                  <Tag
++                    // Sold out decides the next batch, so it reads as an error.
++                    variant="error"
++                  >
++                    Sold out
++                  </Tag>
++                ) : variant.stock <= 3 ? (
++                  <Tag
++                    // Three or fewer left is the owner's restock signal.
++                    variant="warning"
++                  >
++                    Low stock
++                  </Tag>
++                ) : null}
++              </div>
++            ))}
++          </div>
++        </div>
++      </div>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/pieces/new/page.tsx b/web/app/(routes)/(app)/dashboard/pieces/new/page.tsx
+new file mode 100644
+index 0000000..61cf6a2
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/pieces/new/page.tsx
+@@ -0,0 +1,54 @@
++'use client';
++
++import {
++  PieceForm,
++  emptyPieceForm,
++  type PieceFormValues,
++} from '@app/blocks/PieceForm';
++import { PageHeader } from '@app/components/PageHeader';
++import { createPiece } from '@app/entities/piece';
++import { toast } from '@packages/ui/Toast';
++import { useRouter } from 'next/navigation';
++import React from 'react';
++
++/** Add a new ceramic piece with photos, variants and stock. */
++export default function NewPiecePage() {
++  const router = useRouter();
++
++  const save = async (values: PieceFormValues) => {
++    await createPiece({
++      title: values.title.trim(),
++      description: values.description.trim() || undefined,
++      price: values.price ?? 1,
++      photos: values.photos.map((photo) => photo.url.trim()),
++      category: values.category as 'mug' | 'bowl' | 'planter' | 'vase',
++      glaze: values.variants.map((variant) => variant.glaze.trim()),
++      size: values.variants.map(
++        (variant) => variant.size as 'small' | 'medium' | 'large',
++      ),
++      stockQuantity: values.variants.map(
++        (variant) => variant.stockQuantity ?? 0,
++      ),
++    });
++    toast({ title: 'Piece saved', status: 'success' });
++    router.push('/dashboard/pieces');
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Add a piece"
++        description="A new piece for the shop, with its photos, variants and stock."
++        breadcrumb={[{ label: 'Pieces', href: '/dashboard/pieces' }]}
++      />
++      <PieceForm
++        defaultValues={emptyPieceForm}
++        submitLabel="Save piece"
++        savingLabel="Saving the piece"
++        cancelHref="/dashboard/pieces"
++        failureMessage="The piece could not be saved. Try again."
++        onSubmit={save}
++      />
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboard/pieces/page.tsx b/web/app/(routes)/(app)/dashboard/pieces/page.tsx
+new file mode 100644
+index 0000000..26fd6ed
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboard/pieces/page.tsx
+@@ -0,0 +1,235 @@
++'use client';
++
++import { rupees } from '@app/blocks/orders';
++import { pieceStockTotal, pieceVariants, sizeLabel } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { PieceCategoryOptions } from '@app/entities/enums';
++import { useListPieces, type Piece } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import { Chip, ChipGroup } from '@packages/ui/Chip';
++import { Image } from '@packages/ui/Image';
++import { SearchInput } from '@packages/ui/Input';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
++import { Caption, Paragraph } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++
++const PiecesTable = createTable<Piece>();
++
++type Availability = 'all' | 'in' | 'low' | 'soldout';
++
++const availabilityOf = (piece: Piece): Availability => {
++  if (pieceStockTotal(piece) <= 0) return 'soldout';
++  if (pieceVariants(piece).some((variant) => variant.stock <= 3)) return 'low';
++  return 'in';
++};
++
++const categoryLabel = (category: Piece['category']) =>
++  PieceCategoryOptions.find((option) => option.key === category)?.label ??
++  category;
++
++/** Pieces: search, filter by availability, and spot what is nearly gone. */
++export default function PiecesPage() {
++  const pieces = useListPieces();
++  const [search, setSearch] = useState('');
++  const [availability, setAvailability] = useState('all');
++
++  const all = pieces.data ?? [];
++  const query = search.trim().toLowerCase();
++  const matching = all.filter(
++    (piece) =>
++      (availability === 'all' || availabilityOf(piece) === availability) &&
++      (query === '' ||
++        [piece.title, piece.description ?? ''].some((text) =>
++          text.toLowerCase().includes(query),
++        )),
++  );
++
++  if (pieces.loading || pieces.error) {
++    return (
++      <>
++        <PageHeader
++          title="Pieces"
++          description="Every piece in the shop, with each glaze and size and what is left."
++        />
++        <PageState
++          loading={pieces.loading}
++          loadingText="Loading the pieces."
++          errorText={
++            pieces.error ? 'The pieces could not be loaded.' : undefined
++          }
++          onRetry={pieces.retry}
++        />
++      </>
++    );
++  }
++
++  if (all.length === 0) {
++    return (
++      <>
++        <PageHeader
++          title="Pieces"
++          description="Every piece in the shop, with each glaze and size and what is left."
++        />
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">
++            No pieces yet. Add the first piece to start your shop.
++          </Paragraph>
++          <Button as={NextLink} href="/dashboard/pieces/new">
++            Add a piece
++          </Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title="Pieces"
++        description="Every piece in the shop, with each glaze and size and what is left."
++        actions={
++          <Button as={NextLink} href="/dashboard/pieces/new">
++            Add a piece
++          </Button>
++        }
++      />
++      <div className="flex-row-gap-4 flex-wrap items-end" role="search">
++        <SearchInput
++          label="Search pieces"
++          placeholder="Search pieces"
++          value={search}
++          onChange={setSearch}
++        />
++        <ChipGroup
++          label="Availability"
++          value={availability}
++          onChange={(next) => next && setAvailability(next)}
++          className="flex-row-gap-2 flex-wrap"
++        >
++          <Chip value="all">All</Chip>
++          <Chip value="in">In stock</Chip>
++          <Chip value="low">Low stock</Chip>
++          <Chip value="soldout">Sold out</Chip>
++        </ChipGroup>
++      </div>
++      {matching.length === 0 ? (
++            <div className="flex-col-gap-3 items-start">
++              <Paragraph role="status">
++                Nothing matches your search or filter.
++              </Paragraph>
++              <Button
++                // Clearing the search is secondary to browsing what is here.
++                variant="base"
++                onClick={() => {
++                  setSearch('');
++                  setAvailability('all');
++                }}
++              >
++                Clear search and filter
++              </Button>
++            </div>
++          ) : (
++            <PiecesTable
++              caption="Pieces"
++              data={matching}
++              rowKey={(piece) => piece.id}
++              onRowClick={(_, click) =>
++                click.currentTarget.querySelector('a')?.click()
++              }
++            >
++              <PiecesTable.Column
++                id="photo"
++                title={<span className="sr-only">Photo</span>}
++                dataKey="id"
++                width={96}
++              >
++                {(id, piece) => (
++                  <Image
++                    src={piece.photos[0]}
++                    alt=""
++                    width={72}
++                    height={72}
++                    fit="cover"
++                  />
++                )}
++              </PiecesTable.Column>
++              <PiecesTable.Column
++                id="title"
++                rowHeader
++                title="Piece"
++                dataKey="title"
++                width={240}
++              >
++                {(title, piece) => (
++                  <NextLink
++                    href={`/dashboard/pieces/${piece.id}`}
++                    className="inline-block max-w-full"
++                  >
++                    <Truncate>{title}</Truncate>
++                  </NextLink>
++                )}
++              </PiecesTable.Column>
++              <PiecesTable.Column
++                id="category"
++                title="Category"
++                dataKey="category"
++                width={120}
++              >
++                {(category: Piece['category']) => categoryLabel(category)}
++              </PiecesTable.Column>
++              <PiecesTable.Column
++                id="price"
++                title="Price"
++                dataKey="price"
++                width={120}
++                align="right"
++              >
++                {(price) => <Numeral>{rupees.format(price)}</Numeral>}
++              </PiecesTable.Column>
++              <PiecesTable.Column
++                id="variants"
++                title="Variants"
++                dataKey="id"
++                width={320}
++              >
++                {(_, piece) => (
++                  <div className="flex-col-gap-1">
++                    {pieceVariants(piece).map((variant) => (
++                      <Caption key={variant.index}>
++                        {variant.glaze} · {sizeLabel(variant.size)} · {variant.stock} left
++                        {variant.stock <= 0 ? (
++                          <>
++                            {' '}
++                            <Tag
++                              // Sold out decides the next batch, so it reads as an error.
++                              variant="error"
++                            >
++                              Sold out
++                            </Tag>
++                          </>
++                        ) : variant.stock <= 3 ? (
++                          <>
++                            {' '}
++                            <Tag
++                              // Three or fewer left is the owner's restock signal.
++                              variant="warning"
++                            >
++                              Low stock
++                            </Tag>
++                          </>
++                        ) : null}
++                      </Caption>
++                    ))}
++                  </div>
++                )}
++              </PiecesTable.Column>
++            </PiecesTable>
++          )}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/cart/page.tsx b/web/app/(routes)/(marketing)/cart/page.tsx
+new file mode 100644
+index 0000000..2e18ded
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/cart/page.tsx
+@@ -0,0 +1,250 @@
++'use client';
++
++import { useCartStore, type CartLine } from '@app/blocks/Cart';
++import { rupees } from '@app/blocks/orders';
++import { findVariant, sizeLabel } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { useListPieces, type Piece } from '@app/entities/piece';
++import { Button, IconButton } from '@packages/ui/Button';
++import { QuantitySelector } from '@packages/ui/Input';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { Caption, Paragraph } from '@packages/ui/Typography';
++import { Trash2 } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++const lineKey = (line: CartLine) =>
++  `${line.pieceId}|${line.glaze}|${line.size}`;
++
++const CartTable = createTable<CartLine>();
++
++const stockOf = (
++  pieces: Piece[],
++  line: CartLine,
++): { piece: boolean; stock: number } => {
++  const piece = pieces.find((entry) => entry.id === line.pieceId);
++  if (!piece) return { piece: false, stock: 0 };
++  return {
++    piece: true,
++    stock: findVariant(piece, line.glaze, line.size)?.stock ?? 0,
++  };
++};
++
++/** One cart line's quantity: typed freely, saved only when it fits the stock. */
++const LineQuantity = ({
++  line,
++  stock,
++}: {
++  line: CartLine;
++  stock: number;
++}) => {
++  const setQuantity = useCartStore((state) => state.setQuantity);
++  const total = useCartStore((state) =>
++    state.lines.reduce((sum, entry) => sum + entry.price * entry.quantity, 0),
++  );
++  const [draft, setDraft] = useState<number | null>(line.quantity);
++
++  const error =
++    draft === null || draft < 1
++      ? 'Enter a quantity of at least 1.'
++      : draft > stock
++        ? `Only ${stock} left for ${line.glaze} in ${sizeLabel(line.size)}.`
++        : undefined;
++
++  return (
++    <QuantitySelector
++      aria-label={`Quantity of ${line.title}, ${line.glaze}, ${sizeLabel(line.size)}`}
++      autoComplete="off"
++      value={draft}
++      onChange={(next) => {
++        setDraft(next);
++        if (next !== null && next >= 1 && next <= stock) {
++          setQuantity(line.pieceId, line.glaze, line.size, next);
++          toast({
++            title: 'Cart updated',
++            description: `The cart total is ${rupees.format(
++              total - line.price * line.quantity + line.price * next,
++            )}.`,
++            status: 'success',
++          });
++        }
++      }}
++      min={1}
++      max={Math.max(stock, 1)}
++      maxReason={`Only ${stock} in stock`}
++      error={error}
++    />
++  );
++};
++
++/** The buyer's cart: quantities within stock, remove, then checkout. */
++export default function CartPage() {
++  const router = useRouter();
++  const pieces = useListPieces();
++  const lines = useCartStore((state) => state.lines);
++  const removeLine = useCartStore((state) => state.removeLine);
++  const [blocked, setBlocked] = useState('');
++
++  const total = lines.reduce(
++    (sum, line) => sum + line.price * line.quantity,
++    0,
++  );
++  const count = lines.reduce((sum, line) => sum + line.quantity, 0);
++
++  const proceed = () => {
++    const records = pieces.data ?? [];
++    const problems = lines.filter(
++      (line) => stockOf(records, line).stock < line.quantity,
++    );
++    if (problems.length > 0) {
++      setBlocked(
++        `No longer available in the wanted quantity: ${problems
++          .map((line) => `${line.title}, ${line.glaze} in ${sizeLabel(line.size)}`)
++          .join('; ')}. Adjust the cart before checkout.`,
++      );
++      return;
++    }
++    setBlocked('');
++    router.push('/checkout');
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Your cart"
++        description={
++          lines.length > 0
++            ? `${count} ${count === 1 ? 'item' : 'items'} in your cart.`
++            : undefined
++        }
++      />
++      <PageState
++        loading={pieces.loading}
++        loadingText="Loading your cart."
++        errorText={pieces.error ? 'The stock could not be loaded.' : undefined}
++        onRetry={pieces.retry}
++      />
++      {!pieces.loading && !pieces.error && lines.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">Your cart is empty.</Paragraph>
++          <Button as={NextLink} href="/shop">
++            Browse pieces
++          </Button>
++        </div>
++      ) : !pieces.loading && !pieces.error ? (
++        <>
++          {blocked ? (
++            <Paragraph color="error" role="alert">
++              {blocked}
++            </Paragraph>
++          ) : null}
++          <CartTable
++            caption="Cart lines"
++            data={lines}
++            rowKey={lineKey}
++          >
++            <CartTable.Column
++              id="title"
++              rowHeader
++              title="Piece"
++              dataKey="title"
++              width={240}
++            >
++              {(title, line) => (
++                <div className="flex-col-gap-1 min-w-0">
++                  <NextLink
++                    href={`/shop/${line.pieceId}`}
++                    className="inline-block max-w-full"
++                  >
++                    <Truncate>{title}</Truncate>
++                  </NextLink>
++                  <Caption>
++                    {line.glaze} · {sizeLabel(line.size)}
++                  </Caption>
++                </div>
++              )}
++            </CartTable.Column>
++            <CartTable.Column
++              id="price"
++              title="Price"
++              dataKey="price"
++              width={120}
++              align="right"
++            >
++              {(price) => <Numeral>{rupees.format(price)}</Numeral>}
++            </CartTable.Column>
++            <CartTable.Column
++              id="quantity"
++              title="Quantity"
++              dataKey="quantity"
++              width={220}
++            >
++              {(_, line) => (
++                <LineQuantity line={line} stock={stockOf(pieces.data ?? [], line).stock} />
++              )}
++            </CartTable.Column>
++            <CartTable.Column
++              id="lineTotal"
++              title="Line total"
++              dataKey="quantity"
++              width={130}
++              align="right"
++            >
++              {(_, line) => (
++                <Numeral>{rupees.format(line.price * line.quantity)}</Numeral>
++              )}
++            </CartTable.Column>
++            <CartTable.Column
++              id="remove"
++              title={<span className="sr-only">Remove</span>}
++              width={48}
++              align="right"
++            >
++              {(_, line) => (
++                <IconButton
++                  // A row remove stays quiet beside the row's quantity.
++                  variant="danger"
++                  // The ghost look keeps the remove as quiet as the row.
++                  look="ghost"
++                  tooltip="Remove line"
++                  aria-label={`Remove ${line.title}, ${line.glaze}, ${sizeLabel(line.size)}`}
++                  onClick={() => {
++                    removeLine(line.pieceId, line.glaze, line.size);
++                    toast({
++                      title: 'Removed from cart',
++                      description: `${line.title} (${line.glaze}, ${sizeLabel(line.size)}) is out of the cart.`,
++                      status: 'success',
++                    });
++                  }}
++                >
++                  <Trash2 />
++                </IconButton>
++              )}
++            </CartTable.Column>
++          </CartTable>
++          <div className="flex-row-gap-2 items-center">
++            <p>
++              Cart total: <Numeral>{rupees.format(total)}</Numeral>
++            </p>
++          </div>
++          <div className="flex-row-gap-2 flex-wrap items-center">
++            <Button
++              // Going back to browse is the quiet way out beside checkout.
++              variant="base"
++              as={NextLink}
++              href="/shop"
++            >
++              Continue browsing
++            </Button>
++            <Button onClick={proceed}>Proceed to checkout</Button>
++          </div>
++        </>
++      ) : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/checkout/page.tsx b/web/app/(routes)/(marketing)/checkout/page.tsx
+new file mode 100644
+index 0000000..53a5e34
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/checkout/page.tsx
+@@ -0,0 +1,442 @@
++'use client';
++
++import { useCartStore } from '@app/blocks/Cart';
++import {
++  OrderItems,
++  OrderTotals,
++  PickupInfo,
++  discountFor,
++  isCodeUsable,
++  isValidIndianPhone,
++  isValidPinCode,
++  nextOrderReference,
++  shippingFor,
++} from '@app/blocks/orders';
++import { findVariant, sizeLabel } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { useGetDiscountCodeByCode } from '@app/entities/discountCode';
++import { createOrderWithStock, useListOrders } from '@app/entities/order';
++import { useListPieces } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import { Controller, Form } from '@packages/ui/Form';
++import { Input } from '@packages/ui/Input';
++import { Radio, RadioGroup } from '@packages/ui/Radio';
++import { Paragraph } from '@packages/ui/Typography';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++type CheckoutValues = {
++  name: string;
++  phone: string;
++  fulfilmentChoice: string;
++  deliveryAddress: string;
++  city: string;
++  pinCode: string;
++  discountCode: string;
++};
++
++/** Checkout: contact, fulfilment and an optional discount code, then order. */
++export default function CheckoutPage() {
++  const router = useRouter();
++  const pieces = useListPieces();
++  const orders = useListOrders();
++  const references = (orders.data ?? []).map((order) => order.orderReference);
++  const lines = useCartStore((state) => state.lines);
++  const clearLines = useCartStore((state) => state.clearLines);
++  const [appliedCode, setAppliedCode] = useState('');
++  const [stockProblems, setStockProblems] = useState('');
++
++  const {
++    control,
++    handleSubmit,
++    getValues,
++    setError,
++    watch,
++    formState: { errors, isSubmitting },
++  } = useForm<CheckoutValues>({
++    defaultValues: {
++      name: '',
++      phone: '',
++      fulfilmentChoice: '',
++      deliveryAddress: '',
++      city: '',
++      pinCode: '',
++      discountCode: '',
++    },
++  });
++
++  const choice = watch('fulfilmentChoice');
++  const codeLookup = useGetDiscountCodeByCode(appliedCode);
++  const usableCode =
++    codeLookup.data && isCodeUsable(codeLookup.data)
++      ? codeLookup.data
++      : undefined;
++  const codeInvalid =
++    appliedCode !== '' && !codeLookup.loading && !usableCode;
++
++  const subtotal = lines.reduce(
++    (sum, line) => sum + line.price * line.quantity,
++    0,
++  );
++  const discount = discountFor(subtotal, usableCode);
++  const shipping = shippingFor(
++    subtotal - discount,
++    choice as 'studio_pickup' | 'courier_delivery' | '',
++  );
++  const total = subtotal - discount + shipping;
++
++  const applyDiscount = () => {
++    setAppliedCode(getValues('discountCode').trim().toUpperCase());
++  };
++
++  const submit = async (values: CheckoutValues) => {
++    setStockProblems('');
++    const records = pieces.data ?? [];
++
++    if (values.discountCode.trim() !== '') {
++      if (!usableCode) {
++        setError('discountCode', {
++          message:
++            'That code is invalid, expired or deactivated. Correct it or place the order without it.',
++        });
++        return;
++      }
++    }
++
++    const problems = lines.filter((line) => {
++      const piece = records.find((entry) => entry.id === line.pieceId);
++      const stock = piece
++        ? (findVariant(piece, line.glaze, line.size)?.stock ?? 0)
++        : 0;
++      return stock < line.quantity;
++    });
++    if (problems.length > 0) {
++      setStockProblems(
++        `No longer available in the wanted quantity: ${problems
++          .map((line) => `${line.title}, ${line.glaze} in ${sizeLabel(line.size)}`)
++          .join('; ')}.`,
++      );
++      return;
++    }
++
++    try {
++      const order = await createOrderWithStock(
++        {
++          name: values.name.trim(),
++          phoneNumber: values.phone.trim(),
++          fulfilmentChoice: values.fulfilmentChoice as
++            | 'studio_pickup'
++            | 'courier_delivery',
++          ...(values.fulfilmentChoice === 'courier_delivery'
++            ? {
++                deliveryAddress: values.deliveryAddress.trim(),
++                city: values.city.trim(),
++                pinCode: values.pinCode.trim(),
++              }
++            : {}),
++          ...(usableCode ? { discountCode: usableCode.code } : {}),
++          orderReference: nextOrderReference(references),
++          itemPieceId: lines.map((line) => line.pieceId),
++          quantity: lines.map((line) => line.quantity),
++          itemTitle: lines.map((line) => line.title),
++          itemGlaze: lines.map((line) => line.glaze),
++          itemSize: lines.map(
++            (line) => line.size as 'small' | 'medium' | 'large',
++          ),
++          itemPrice: lines.map((line) => line.price),
++          subtotal,
++          discountAmount: discount,
++          shippingCost: shipping,
++          total,
++          paymentStatus: 'unpaid',
++          fulfilmentStatus: 'new',
++        },
++        lines.map((line) => ({
++          pieceId: line.pieceId,
++          glaze: line.glaze,
++          size: line.size,
++          quantity: line.quantity,
++        })),
++      );
++      clearLines();
++      router.push(`/orders/${order.orderReference}`);
++    } catch (error) {
++      if (
++        error instanceof Error &&
++        (/no longer available/.test(error.message) ||
++          /left for/.test(error.message))
++      ) {
++        setStockProblems(`${error.message} Return to cart and adjust it.`);
++      } else {
++        setError('root', {
++          message:
++            'The order could not be placed. Nothing was saved. Try again.',
++        });
++      }
++    }
++  };
++
++  if (pieces.loading || pieces.error || orders.loading || orders.error) {
++    return (
++      <>
++        <PageHeader
++          title="Checkout"
++          description="Place your order as a guest. No online payment is taken."
++        />
++        <PageState
++          loading={pieces.loading || orders.loading}
++          loadingText="Loading checkout."
++          errorText={
++            pieces.error || orders.error
++              ? 'Checkout could not be loaded.'
++              : undefined
++          }
++          onRetry={() => {
++            pieces.retry();
++            orders.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (lines.length === 0) {
++    return (
++      <>
++        <PageHeader
++          title="Checkout"
++          description="Place your order as a guest. No online payment is taken."
++        />
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">Your cart is empty.</Paragraph>
++          <Button as={NextLink} href="/shop">
++            Browse pieces
++          </Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title="Checkout"
++        description="Place your order as a guest. No online payment is taken."
++      />
++      <div className="grid gap-6 grid-cols-2 items-start">
++          <Form
++            onSubmit={handleSubmit(submit)}
++            error={errors.root?.message}
++            actions={
++              <>
++                <Button
++                  // Going back to the cart is the quiet way out beside ordering.
++                  variant="base"
++                  as={NextLink}
++                  href="/cart"
++                >
++                  Back to cart
++                </Button>
++                <Button
++                  type="submit"
++                  loadingWithReason={isSubmitting ? 'Placing your order' : undefined}
++                >
++                  Place order
++                </Button>
++              </>
++            }
++          >
++            <Controller
++              name="name"
++              control={control}
++              rules={{ required: 'Enter your name' }}
++            >
++              {({ field }) => (
++                <Input label="Name" autoComplete="name" {...field} />
++              )}
++            </Controller>
++            <Controller
++              name="phone"
++              control={control}
++              rules={{
++                required: 'Enter your phone number',
++                validate: (phone) =>
++                  isValidIndianPhone(phone) ||
++                  'Enter a valid 10-digit Indian mobile number',
++              }}
++            >
++              {({ field }) => (
++                <Input
++                  label="Phone number"
++                  type="tel"
++                  autoComplete="tel"
++                  {...field}
++                />
++              )}
++            </Controller>
++            <Controller
++              name="fulfilmentChoice"
++              control={control}
++              rules={{ required: 'Choose studio pickup or courier delivery' }}
++            >
++              {({ field }) => (
++                <RadioGroup
++                  label="Fulfilment choice"
++                  {...field}
++                  className="flex-col-gap-2"
++                >
++                  <Radio value="studio_pickup">Studio pickup</Radio>
++                  <Radio value="courier_delivery">Courier delivery</Radio>
++                </RadioGroup>
++              )}
++            </Controller>
++            {choice === 'courier_delivery' ? (
++              <>
++                <Controller
++                  name="deliveryAddress"
++                  control={control}
++                  rules={{
++                    validate: (address) =>
++                      choice !== 'courier_delivery' ||
++                      address.trim() !== '' ||
++                      'Enter the delivery address',
++                  }}
++                >
++                  {({ field }) => (
++                    <Input
++                      label="Delivery address"
++                      autoComplete="street-address"
++                      {...field}
++                    />
++                  )}
++                </Controller>
++                <Controller
++                  name="city"
++                  control={control}
++                  rules={{
++                    validate: (city) =>
++                      choice !== 'courier_delivery' ||
++                      city.trim() !== '' ||
++                      'Enter the city',
++                  }}
++                >
++                  {({ field }) => (
++                    <Input
++                      label="City"
++                      autoComplete="address-level2"
++                      {...field}
++                    />
++                  )}
++                </Controller>
++                <Controller
++                  name="pinCode"
++                  control={control}
++                  rules={{
++                    validate: (pin) => {
++                      if (choice !== 'courier_delivery') return true;
++                      if (pin.trim() === '') return 'Enter the PIN code';
++                      return (
++                        isValidPinCode(pin) ||
++                        'Enter the 6-digit PIN code'
++                      );
++                    },
++                  }}
++                >
++                  {({ field }) => (
++                    <Input
++                      label="PIN code"
++                      autoComplete="postal-code"
++                      inputMode="numeric"
++                      {...field}
++                    />
++                  )}
++                </Controller>
++              </>
++            ) : null}
++            <Controller name="discountCode" control={control}>
++              {({ field }) => (
++                <Input
++                  label="Discount code"
++                  autoComplete="off"
++                  placeholder="Optional"
++                  {...field}
++                  action={
++                    <Button
++                      // Applying the code is the quiet step beside the field.
++                      variant="base"
++                      onClick={applyDiscount}
++                    >
++                      Apply
++                    </Button>
++                  }
++                />
++              )}
++            </Controller>
++            {appliedCode !== '' ? (
++              usableCode ? (
++                <Paragraph color="success" role="status">
++                  {usableCode.code} applied:{' '}
++                  {usableCode.discountType === 'percentage'
++                    ? `${usableCode.discountValue}% off`
++                    : `${usableCode.discountValue} off`}.
++                </Paragraph>
++              ) : codeInvalid ? (
++                <Paragraph color="error" role="alert">
++                  That code is invalid, expired or deactivated. Correct it or
++                  place the order without it.
++                </Paragraph>
++              ) : null
++            ) : null}
++            {stockProblems ? (
++              <div className="flex-col-gap-2 items-start">
++                <Paragraph color="error" role="alert">
++                  {stockProblems}
++                </Paragraph>
++                <Button
++                  // Returning to the cart is the way out when stock fell short.
++                  variant="base"
++                  as={NextLink}
++                  href="/cart"
++                >
++                  Return to cart
++                </Button>
++              </div>
++            ) : null}
++          </Form>
++          <div className="flex-col-gap-4">
++            <OrderItems
++              items={lines.map((line) => ({
++                key: `${line.pieceId}|${line.glaze}|${line.size}`,
++                title: line.title,
++                glaze: line.glaze,
++                size: line.size,
++                quantity: line.quantity,
++                price: line.price,
++              }))}
++            />
++            <OrderTotals
++              subtotal={subtotal}
++              discountAmount={discount}
++              shippingCost={shipping}
++              total={total}
++            />
++            <Paragraph color="muted">
++              Courier delivery is ₹99, free when your discounted subtotal is
++              above ₹1,500. Studio pickup is free.
++            </Paragraph>
++            {choice === 'studio_pickup' ? (
++              <PickupInfo />
++            ) : (
++              <Paragraph color="muted">
++                No online payment is taken. The owner will collect payment by
++                UPI after you place your order.
++              </Paragraph>
++            )}
++          </div>
++      </div>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/order-lookup/page.tsx b/web/app/(routes)/(marketing)/order-lookup/page.tsx
+new file mode 100644
+index 0000000..97da8f8
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/order-lookup/page.tsx
+@@ -0,0 +1,122 @@
++'use client';
++
++import { isValidIndianPhone } from '@app/blocks/orders';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { useLookupOrder } from '@app/entities/order';
++import { Button } from '@packages/ui/Button';
++import { Controller, Form } from '@packages/ui/Form';
++import { Input } from '@packages/ui/Input';
++import { Paragraph } from '@packages/ui/Typography';
++import { useRouter } from 'next/navigation';
++import React from 'react';
++import { useForm } from 'react-hook-form';
++
++type LookupValues = { orderReference: string; phone: string };
++
++/** Find a placed order again from its reference and phone number. */
++export default function OrderLookupPage() {
++  const router = useRouter();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    formState: { errors, isSubmitting },
++  } = useForm<LookupValues>({
++    defaultValues: { orderReference: '', phone: '' },
++  });
++
++  const lookup = useLookupOrder();
++
++  const submit = ({ orderReference, phone }: LookupValues) => {
++    if (lookup.error) {
++      lookup.retry();
++      setError('root', {
++        message: 'The lookup failed. Try again.',
++      });
++      return;
++    }
++    const match = (lookup.data ?? []).find(
++      (order) =>
++        order.orderReference === orderReference.trim() &&
++        order.phoneNumber === phone.trim(),
++    );
++    if (!match) {
++      setError('root', {
++        message:
++          'No order matches those values. Check the reference and phone number and try again.',
++      });
++      return;
++    }
++    router.push(`/orders/${match.orderReference}`);
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Look up an order"
++        description="Find a placed order with its reference and the phone number from checkout."
++      />
++      <Form
++        onSubmit={handleSubmit(submit)}
++        error={errors.root?.message}
++        actions={
++          <>
++            <Button
++              // Going back to the shop is the quiet way out beside finding.
++              variant="base"
++              as={NextLink}
++              href="/shop"
++            >
++              Back to the shop
++            </Button>
++            <Button
++              type="submit"
++              loadingWithReason={isSubmitting ? 'Finding your order' : undefined}
++            >
++              Find my order
++            </Button>
++          </>
++        }
++      >
++        <Controller
++          name="orderReference"
++          control={control}
++          rules={{ required: 'Enter the order reference' }}
++        >
++          {({ field }) => (
++            <Input
++              label="Order reference"
++              autoComplete="off"
++              placeholder="JSC-4821"
++              {...field}
++            />
++          )}
++        </Controller>
++        <Controller
++          name="phone"
++          control={control}
++          rules={{
++            required: 'Enter your phone number',
++            validate: (phone) =>
++              isValidIndianPhone(phone) ||
++              'Enter a valid 10-digit Indian mobile number',
++          }}
++        >
++          {({ field }) => (
++            <Input
++              label="Phone number"
++              type="tel"
++              autoComplete="tel"
++              {...field}
++            />
++          )}
++        </Controller>
++      </Form>
++      <Paragraph color="muted">
++        After placing an order you get a reference like JSC-4821. Keep it with
++        your phone number to find the order again.
++      </Paragraph>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx b/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx
+new file mode 100644
+index 0000000..320b11f
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx
+@@ -0,0 +1,127 @@
++'use client';
++
++import {
++  FulfilmentDetails,
++  OrderItems,
++  OrderTotals,
++} from '@app/blocks/orders';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { FulfilmentStatusOptions } from '@app/entities/enums';
++import { useGetOrder, useLookupOrder } from '@app/entities/order';
++import { Button } from '@packages/ui/Button';
++import { Tag } from '@packages/ui/Tag';
++import { Paragraph } from '@packages/ui/Typography';
++import { useParams } from 'next/navigation';
++import React from 'react';
++
++/** A placed order: its reference, items, totals and fulfilment. */
++export default function OrderConfirmationPage() {
++  const { orderReference } = useParams<{ orderReference: string }>();
++  const lookup = useLookupOrder();
++  const found = (lookup.data ?? []).find(
++    (order) => order.orderReference === orderReference,
++  );
++  const detail = useGetOrder(found?.id ?? '');
++  const order = detail.data ?? found;
++
++  const orderLoading =
++    lookup.loading || (found !== undefined && detail.loading);
++  const orderFailed = Boolean(lookup.error || detail.error);
++  if (orderLoading || orderFailed) {
++    return (
++      <PageState
++        loading={orderLoading}
++        loadingText="Loading your order."
++        errorText={orderFailed ? 'The order could not be loaded.' : undefined}
++        onRetry={() => {
++          lookup.retry();
++          detail.retry();
++        }}
++      />
++    );
++  }
++
++  if (!order) {
++    return (
++      <>
++        <NotFound
++          title="Order not found"
++          description="We could not find this order."
++          back={{ label: 'Look up an order', href: '/order-lookup' }}
++        />
++        <div className="flex-row-gap-2">
++          <Button as={NextLink} href="/shop">
++            Browse the shop
++          </Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title={`Order ${order.orderReference}`}
++        description="Order placed. The owner will collect payment by UPI later; no online payment has been taken."
++      />
++      <Paragraph>
++        Order {order.orderReference} is placed. Keep this reference with the
++        phone number from checkout to look the order up again.
++      </Paragraph>
++      <OrderItems
++        items={order.itemTitle.map((title, index) => ({
++          key: `${title}|${order.itemGlaze[index]}|${order.itemSize[index]}`,
++          title,
++          glaze: order.itemGlaze[index],
++          size: order.itemSize[index],
++          quantity: order.quantity[index],
++          price: order.itemPrice[index],
++        }))}
++      />
++      <OrderTotals
++        subtotal={order.subtotal}
++        discountAmount={order.discountAmount ?? 0}
++        shippingCost={order.shippingCost}
++        total={order.total}
++      />
++      {order.discountCode ? (
++        <Paragraph>
++          Discount code: {order.discountCode}
++        </Paragraph>
++      ) : null}
++      <div className="flex-row-gap-2 items-center">
++        <Paragraph>{order.fulfilmentChoice === 'studio_pickup' ? 'Studio pickup' : 'Courier delivery'}</Paragraph>
++        <Tag
++          // The fulfilment state sits beside what it describes.
++          variant={order.fulfilmentStatus === 'cancelled' ? 'error' : 'info'}
++        >
++          {FulfilmentStatusOptions.find(
++            (option) => option.key === order.fulfilmentStatus,
++          )?.label ?? order.fulfilmentStatus}
++        </Tag>
++      </div>
++      <FulfilmentDetails
++        choice={order.fulfilmentChoice}
++        deliveryAddress={order.deliveryAddress}
++        city={order.city}
++        pinCode={order.pinCode}
++      />
++      <div className="flex-row-gap-2 flex-wrap items-center">
++        <Button as={NextLink} href="/shop">
++          Continue browsing
++        </Button>
++        <Button
++          // Looking up the order is the quiet way out beside browsing.
++          variant="base"
++          as={NextLink}
++          href="/order-lookup"
++        >
++          Look up an order
++        </Button>
++      </div>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/page.tsx b/web/app/(routes)/(marketing)/page.tsx
+index 19adfed..d17d0e7 100644
+--- a/web/app/(routes)/(marketing)/page.tsx
++++ b/web/app/(routes)/(marketing)/page.tsx
+@@ -1,11 +1,108 @@
++'use client';
++
++import { PieceCards } from '@app/blocks/pieces';
+ import { Hero } from '@app/components/Hero';
++import { NextLink } from '@app/components/NextLink';
++import { PageState } from '@app/components/PageState';
++import { useListPieces } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import { CardList } from '@packages/ui/Card';
++import { Section } from '@packages/ui/Section';
++import { Paragraph } from '@packages/ui/Typography';
++import { Leaf, MessagesSquare, PackageCheck, Truck } from 'lucide-react';
+ import React from 'react';
+ 
++const reasons = [
++  {
++    id: 'batches',
++    title: 'Made in small batches',
++    line: 'Each glaze and size shows the real stock left, so what you order is what we have.',
++    icon: <Leaf />,
++  },
++  {
++    id: 'messaging',
++    title: 'Order without messaging',
++    line: 'Choose your glaze and size, place your order, and we will collect payment by UPI later.',
++    icon: <MessagesSquare />,
++  },
++  {
++    id: 'pickup',
++    title: 'Pickup or courier',
++    line: 'Collect from our Jaipur studio for free, or choose courier for ₹99, free when your discounted subtotal is above ₹1,500.',
++    icon: <Truck />,
++  },
++  {
++    id: 'honest',
++    title: 'Honest availability',
++    line: 'Sold-out glazes are marked sold out and cannot be ordered until a new batch is ready.',
++    icon: <PackageCheck />,
++  },
++];
++
++/** The studio's own shop: the headline, why to buy here, and featured pieces. */
+ export default function HomePage() {
++  const pieces = useListPieces();
++  const all = pieces.data ?? [];
++  const featured = all.slice(0, 3);
++
+   return (
+-    <Hero
+-      title="Application starter"
+-      description="React, Tailwind, vanilla-extract, Zustand, and React Query are ready."
+-    />
++    <>
++      <Hero
++        title="Handmade ceramics from our Jaipur studio"
++        description="Mugs, bowls, planters and vases made in small batches. Order what is actually in stock, with no account and no messaging."
++        actions={
++          <>
++            <Button as={NextLink} href="/shop">
++              Browse the shop
++            </Button>
++            <Button
++              // The way to sign in sits beside the main action, as the hero asks.
++              variant="base"
++              as={NextLink}
++              href="/sign-in"
++            >
++              Studio owner sign in
++            </Button>
++          </>
++        }
++        media={
++          <div className="flex-col-gap-3">
++            <PageState
++              loading={pieces.loading}
++              loadingText="Loading the latest pieces."
++              errorText={
++                pieces.error ? 'The pieces could not be loaded.' : undefined
++              }
++              onRetry={pieces.retry}
++            />
++            {!pieces.loading && !pieces.error && featured.length === 0 ? (
++              <Paragraph>
++                No pieces are available right now. New small batches are on
++                the way, please check back later.
++              </Paragraph>
++            ) : null}
++            {!pieces.loading && !pieces.error && featured.length > 0 ? (
++              <PieceCards pieces={featured} />
++            ) : null}
++          </div>
++        }
++      />
++      <Section title="Why buy from the studio">
++        <CardList
++          aria-label="Why buy from the studio"
++          items={reasons}
++          layout="grid"
++          // Four reasons take two rows of two, so none sits alone.
++          columns={2}
++          renderItem={(reason) => (
++            <>
++              <span aria-hidden>{reason.icon}</span>
++              <h3>{reason.title}</h3>
++              <p>{reason.line}</p>
++            </>
++          )}
++        />
++      </Section>
++    </>
+   );
+ }
+diff --git a/web/app/(routes)/(marketing)/shop/[pieceId]/page.tsx b/web/app/(routes)/(marketing)/shop/[pieceId]/page.tsx
+new file mode 100644
+index 0000000..0183318
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/shop/[pieceId]/page.tsx
+@@ -0,0 +1,257 @@
++'use client';
++
++import { useCartStore } from '@app/blocks/Cart';
++import { rupees } from '@app/blocks/orders';
++import { findVariant, pieceVariants, sizeLabel } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { PieceCategoryOptions } from '@app/entities/enums';
++import { useGetPiece } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import { Chip, ChipGroup } from '@packages/ui/Chip';
++import { Image } from '@packages/ui/Image';
++import { QuantitySelector } from '@packages/ui/Input';
++import { Numeral } from '@packages/ui/Numeral';
++import { Tag } from '@packages/ui/Tag';
++import { toast } from '@packages/ui/Toast';
++import {
++  Caption,
++  List,
++  ListItem,
++  Paragraph,
++} from '@packages/ui/Typography';
++import { useParams } from 'next/navigation';
++import React, { useState } from 'react';
++
++/** One piece with its variants: choose a glaze, size and quantity. */
++export default function PiecePage() {
++  const { pieceId } = useParams<{ pieceId: string }>();
++  const piece = useGetPiece(pieceId);
++  const addLine = useCartStore((state) => state.addLine);
++
++  const [glaze, setGlaze] = useState('');
++  const [size, setSize] = useState('');
++  const [quantity, setQuantity] = useState<number | null>(1);
++  const [notice, setNotice] = useState('');
++
++  if (piece.loading || piece.error) {
++    return (
++      <PageState
++        loading={piece.loading}
++        loadingText="Loading the piece."
++        errorText={piece.error ? 'The piece could not be loaded.' : undefined}
++        onRetry={piece.retry}
++      />
++    );
++  }
++
++  const record = piece.data;
++  if (!record) {
++    return (
++      <NotFound
++        title="Piece not found"
++        description="This piece is gone."
++        back={{ label: 'Back to the shop', href: '/shop' }}
++      />
++    );
++  }
++
++  const variants = pieceVariants(record);
++  const glazes = [...new Set(variants.map((variant) => variant.glaze))];
++  const sizes = [...new Set(variants.map((variant) => variant.size))];
++  const firstInStock = variants.find((variant) => variant.stock > 0);
++  const chosenGlaze = glaze || firstInStock?.glaze || variants[0]?.glaze || '';
++  const chosenSize = size || firstInStock?.size || variants[0]?.size || '';
++  const chosen = findVariant(record, chosenGlaze, chosenSize);
++  const categoryLabel =
++    PieceCategoryOptions.find((option) => option.key === record.category)
++      ?.label ?? record.category;
++
++  /** Picking a glaze keeps a size it is made in, preferring one in stock. */
++  const pickGlaze = (next: string) => {
++    setGlaze(next);
++    if (!variants.some((variant) => variant.glaze === next && variant.size === chosenSize)) {
++      const keep =
++        variants.find((variant) => variant.glaze === next && variant.stock > 0) ??
++        variants.find((variant) => variant.glaze === next);
++      if (keep) setSize(keep.size);
++    }
++  };
++
++  /** Picking a size keeps a glaze it is made in, preferring one in stock. */
++  const pickSize = (next: string) => {
++    setSize(next);
++    if (!variants.some((variant) => variant.size === next && variant.glaze === chosenGlaze)) {
++      const keep =
++        variants.find((variant) => variant.size === next && variant.stock > 0) ??
++        variants.find((variant) => variant.size === next);
++      if (keep) setGlaze(keep.glaze);
++    }
++  };
++  const stock = chosen?.stock ?? 0;
++  const soldOut = !chosen || stock <= 0;
++
++  const quantityError =
++    quantity === null || quantity < 1
++      ? 'Enter a quantity of at least 1.'
++      : quantity > stock
++        ? `Only up to ${stock} can be ordered.`
++        : undefined;
++
++  const addToCart = () => {
++    if (!chosen || chosen.stock <= 0) {
++      setNotice(
++        chosen
++          ? `${chosenGlaze} in ${sizeLabel(chosenSize)} just sold out. Pick another glaze or size.`
++          : 'Those glaze and size are not made together. Pick another glaze or size.',
++      );
++      return;
++    }
++    if (quantity === null || quantity < 1 || quantity > chosen.stock) {
++      setNotice(
++        `Only up to ${chosen.stock} can be ordered. ${chosen.stock} left for ${chosenGlaze} in ${sizeLabel(chosenSize)}.`,
++      );
++      return;
++    }
++    addLine({
++      pieceId: record.id,
++      title: record.title,
++      glaze: chosenGlaze,
++      size: chosenSize,
++      price: record.price,
++      quantity,
++    });
++    setNotice('');
++    toast({
++      title: 'Added to cart',
++      description: `${quantity} × ${record.title} (${chosenGlaze}, ${sizeLabel(chosenSize)}).`,
++      status: 'success',
++    });
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={record.title}
++        breadcrumb={[{ label: 'Shop', href: '/shop' }]}
++      />
++      <div className="grid gap-6 grid-cols-2 items-start">
++        <div className="flex-col-gap-4">
++          {record.photos.map((photo, index) => (
++            <Image
++              key={photo}
++              src={photo}
++              alt={
++                index === 0
++                  ? `Photo of ${record.title}`
++                  : `Another photo of ${record.title}`
++              }
++              width={600}
++              height={450}
++              fit="cover"
++            />
++          ))}
++        </div>
++        <div className="flex-col-gap-4">
++          <Paragraph>{record.description}</Paragraph>
++          <div className="flex-row-gap-2 items-center">
++            <Tag>{categoryLabel}</Tag>
++          </div>
++          <p className="text-heading">
++            <Numeral>{rupees.format(record.price)}</Numeral>
++          </p>
++          <List aria-label="Stock by variant">
++            {variants.map((variant) => (
++              <ListItem key={variant.index}>
++                {variant.glaze}, {sizeLabel(variant.size)}:{' '}
++                {variant.stock <= 0
++                  ? 'sold out'
++                  : `${variant.stock} left`}
++              </ListItem>
++            ))}
++          </List>
++          <ChipGroup
++            label="Glaze"
++            value={chosenGlaze}
++            onChange={(next) => next && pickGlaze(next)}
++            className="flex-row-gap-2 flex-wrap"
++          >
++            {glazes.map((option) => (
++              <Chip key={option} value={option}>
++                {option}
++              </Chip>
++            ))}
++          </ChipGroup>
++          <ChipGroup
++            label="Size"
++            value={chosenSize}
++            onChange={(next) => next && pickSize(next)}
++            className="flex-row-gap-2 flex-wrap"
++          >
++            {sizes.map((option) => (
++              <Chip key={option} value={option}>
++                {sizeLabel(option)}
++              </Chip>
++            ))}
++          </ChipGroup>
++          {soldOut ? (
++            <div className="flex-col-gap-2 items-start">
++              <Tag
++                // Sold out blocks ordering, so it reads as an error.
++                variant="error"
++              >
++                Sold out
++              </Tag>
++              <Paragraph>
++                This glaze and size is sold out. Pick another glaze or size.
++              </Paragraph>
++            </div>
++          ) : (
++            <>
++              <Caption>
++                {stock} left for {chosenGlaze} in {sizeLabel(chosenSize)}
++              </Caption>
++              <QuantitySelector
++                aria-label={`Quantity of ${record.title}, ${chosenGlaze}, ${sizeLabel(chosenSize)}`}
++                autoComplete="off"
++                value={quantity}
++                onChange={setQuantity}
++                min={1}
++                max={stock}
++                maxReason={`Only ${stock} in stock`}
++                error={quantityError}
++              />
++              <p>
++                Total for this quantity:{' '}
++                <Numeral>{rupees.format(record.price * (quantity ?? 0))}</Numeral>
++              </p>
++            </>
++          )}
++          {notice ? (
++            <Paragraph color="error" role="alert">
++              {notice}
++            </Paragraph>
++          ) : null}
++          <div className="flex-row-gap-2 flex-wrap items-center">
++            <Button
++              onClick={addToCart}
++              disabledWithReason={soldOut ? 'This variant is sold out' : undefined}
++            >
++              Add to cart
++            </Button>
++            <Button
++              // Reviewing the cart is the quiet step after adding.
++              variant="base"
++              as={NextLink}
++              href="/cart"
++            >
++              Review cart
++            </Button>
++          </div>
++        </div>
++      </div>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/shop/page.tsx b/web/app/(routes)/(marketing)/shop/page.tsx
+new file mode 100644
+index 0000000..ab6f379
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/shop/page.tsx
+@@ -0,0 +1,116 @@
++'use client';
++
++import { PieceCards } from '@app/blocks/pieces';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { PageState } from '@app/components/PageState';
++import { PieceCategoryOptions } from '@app/entities/enums';
++import { useListPieces } from '@app/entities/piece';
++import { Button } from '@packages/ui/Button';
++import { Chip, ChipGroup } from '@packages/ui/Chip';
++import { SearchInput } from '@packages/ui/Input';
++import { Paragraph } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++
++/** The full shop listing, with search and a category filter. */
++export default function ShopPage() {
++  const pieces = useListPieces();
++  const [search, setSearch] = useState('');
++  const [category, setCategory] = useState('all');
++
++  const all = pieces.data ?? [];
++  const query = search.trim().toLowerCase();
++  const matching = all.filter(
++    (piece) =>
++      (category === 'all' || piece.category === category) &&
++      (query === '' ||
++        [piece.title, piece.description ?? ''].some((text) =>
++          text.toLowerCase().includes(query),
++        )),
++  );
++
++  if (pieces.loading || pieces.error) {
++    return (
++      <>
++        <PageHeader
++          title="Shop"
++          description="Every piece made in our Jaipur studio, with honest availability."
++        />
++        <PageState
++          loading={pieces.loading}
++          loadingText="Loading the shop."
++          errorText={
++            pieces.error ? 'The shop could not be loaded.' : undefined
++          }
++          onRetry={pieces.retry}
++        />
++      </>
++    );
++  }
++
++  if (all.length === 0) {
++    return (
++      <>
++        <PageHeader
++          title="Shop"
++          description="Every piece made in our Jaipur studio, with honest availability."
++        />
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">
++            No pieces are available right now. Please check back later.
++          </Paragraph>
++          <Button as={NextLink} href="/">
++            Back to the studio page
++          </Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title="Shop"
++        description="Every piece made in our Jaipur studio, with honest availability."
++      />
++      <div className="flex-row-gap-4 flex-wrap items-end" role="search">
++        <SearchInput
++          label="Search pieces"
++          placeholder="Search pieces"
++          value={search}
++          onChange={setSearch}
++        />
++        <ChipGroup
++          label="Category"
++          value={category}
++          onChange={(next) => next && setCategory(next)}
++          className="flex-row-gap-2 flex-wrap"
++        >
++          <Chip value="all">All</Chip>
++          {PieceCategoryOptions.map((option) => (
++            <Chip key={option.key} value={option.key}>
++              {option.label}
++            </Chip>
++          ))}
++        </ChipGroup>
++      </div>
++      {matching.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph role="status">Nothing matches your search.</Paragraph>
++          <Button
++            // Clearing the search is secondary to browsing what is here.
++            variant="base"
++            onClick={() => {
++              setSearch('');
++              setCategory('all');
++            }}
++          >
++            Clear search and category
++          </Button>
++        </div>
++      ) : (
++        <PieceCards pieces={matching} />
++      )}
++    </>
++  );
++}
+diff --git a/web/app/blocks/PieceForm/PieceForm.tsx b/web/app/blocks/PieceForm/PieceForm.tsx
+new file mode 100644
+index 0000000..d2e09c2
+--- /dev/null
++++ b/web/app/blocks/PieceForm/PieceForm.tsx
+@@ -0,0 +1,297 @@
++'use client';
++
++import { NextLink } from '@app/components/NextLink';
++import {
++  PieceCategoryOptions,
++  SizeOptions,
++} from '@app/entities/enums';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Chip, ChipGroup } from '@packages/ui/Chip';
++import {
++  Controller,
++  Form,
++  FormRow,
++} from '@packages/ui/Form';
++import { Input, NumberInput } from '@packages/ui/Input';
++import { Textarea } from '@packages/ui/Textarea';
++import { Plus, Trash2 } from 'lucide-react';
++import React from 'react';
++import { useFieldArray, useForm } from 'react-hook-form';
++
++export type PieceVariantValue = {
++  glaze: string;
++  size: string;
++  stockQuantity: number | null;
++};
++
++export type PieceFormValues = {
++  title: string;
++  description: string;
++  price: number | null;
++  photos: { url: string }[];
++  category: string;
++  variants: PieceVariantValue[];
++};
++
++export const emptyPieceForm: PieceFormValues = {
++  title: '',
++  description: '',
++  price: null,
++  photos: [{ url: '' }],
++  category: '',
++  variants: [{ glaze: '', size: '', stockQuantity: null }],
++};
++
++const HTTP_URL = /^https?:\/\/.+/;
++
++/**
++ * The piece form (FM01): details, photos and one row per glaze-and-size
++ * variant. Used when adding a piece and when editing one.
++ */
++export const PieceForm = ({
++  defaultValues,
++  submitLabel,
++  savingLabel,
++  cancelHref,
++  failureMessage,
++  onSubmit,
++}: {
++  defaultValues: PieceFormValues;
++  submitLabel: string;
++  savingLabel: string;
++  cancelHref: string;
++  failureMessage: string;
++  onSubmit: (values: PieceFormValues) => Promise<void>;
++}) => {
++  const {
++    control,
++    handleSubmit,
++    setError,
++    formState: { errors, isSubmitting },
++  } = useForm<PieceFormValues>({ defaultValues });
++
++  const photos = useFieldArray({ control, name: 'photos' });
++  const variants = useFieldArray({ control, name: 'variants' });
++
++  const save = async (values: PieceFormValues) => {
++    try {
++      await onSubmit(values);
++    } catch {
++      setError('root', { message: failureMessage });
++    }
++  };
++
++  return (
++    <Form
++      onSubmit={handleSubmit(save)}
++      error={errors.root?.message}
++      actions={
++        <>
++          <Button
++            // Cancel keeps its quiet styling beside the main save.
++            variant="base"
++            as={NextLink}
++            href={cancelHref}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            loadingWithReason={isSubmitting ? savingLabel : undefined}
++          >
++            {submitLabel}
++          </Button>
++        </>
++      }
++    >
++      <Controller
++        name="title"
++        control={control}
++        rules={{ required: 'Enter the title' }}
++      >
++        {({ field }) => (
++          <Input label="Title" autoComplete="off" {...field} />
++        )}
++      </Controller>
++      <Controller name="description" control={control}>
++        {({ field }) => (
++          <Textarea
++            label="Description"
++            rows={4}
++            width="2x"
++            {...field}
++          />
++        )}
++      </Controller>
++      <Controller
++        name="price"
++        control={control}
++        rules={{
++          required: 'Enter the price',
++          min: { value: 1, message: 'The price must be at least ₹1' },
++        }}
++      >
++        {({ field }) => (
++          <NumberInput
++            label="Price"
++            autoComplete="off"
++            allowDecimal={false}
++            min={0}
++            leftAddOn="₹"
++            {...field}
++          />
++        )}
++      </Controller>
++      <Controller
++        name="category"
++        control={control}
++        rules={{ required: 'Choose a category' }}
++      >
++        {({ field }) => (
++          <ChipGroup
++            // Four visible choices take chips, not a select.
++            label="Category"
++            {...field}
++            className="flex-row-gap-2 flex-wrap"
++          >
++            {PieceCategoryOptions.map((option) => (
++              <Chip key={option.key} value={option.key}>
++                {option.label}
++              </Chip>
++            ))}
++          </ChipGroup>
++        )}
++      </Controller>
++      <div className="flex-col-gap-2">
++        <span>Photos</span>
++        {photos.fields.map((photo, index) => (
++          <FormRow key={photo.id}>
++            <Controller
++              name={`photos.${index}.url`}
++              control={control}
++              rules={{
++                required: 'Add at least one photo',
++                pattern: {
++                  value: HTTP_URL,
++                  message: 'Enter a photo address starting with http',
++                },
++              }}
++            >
++              {({ field }) => (
++                <Input
++                  label={`Photo ${index + 1}`}
++                  type="url"
++                  autoComplete="off"
++                  placeholder="https://"
++                  {...field}
++                />
++              )}
++            </Controller>
++            <IconButton
++              // The remove sits beside its row, quiet like other row actions.
++              look="ghost"
++              tooltip="Remove photo"
++              aria-label={`Remove photo ${index + 1}`}
++              disabledWithReason={
++                photos.fields.length <= 1
++                  ? 'A piece needs at least one photo'
++                  : undefined
++              }
++              onClick={() => photos.remove(index)}
++            >
++              <Trash2 />
++            </IconButton>
++          </FormRow>
++        ))}
++        <div>
++          <Button
++            // Adding another photo is secondary to saving the piece.
++            variant="base"
++            leftIcon={<Plus />}
++            onClick={() => photos.append({ url: '' })}
++          >
++            Add photo
++          </Button>
++        </div>
++      </div>
++      <div className="flex-col-gap-2">
++        <span>Variants</span>
++        {variants.fields.map((variant, index) => (
++          <FormRow key={variant.id}>
++            <Controller
++              name={`variants.${index}.glaze`}
++              control={control}
++              rules={{ required: 'Enter the glaze' }}
++            >
++              {({ field }) => (
++                <Input label="Glaze" autoComplete="off" {...field} />
++              )}
++            </Controller>
++            <Controller
++              name={`variants.${index}.size`}
++              control={control}
++              rules={{ required: 'Choose a size' }}
++            >
++              {({ field }) => (
++                <ChipGroup
++                  // Three visible sizes take chips, not a select.
++                  aria-label={`Size of variant ${index + 1}`}
++                  {...field}
++                  className="flex-row-gap-2 flex-wrap"
++                >
++                  {SizeOptions.map((option) => (
++                    <Chip key={option.key} value={option.key}>
++                      {option.label}
++                    </Chip>
++                  ))}
++                </ChipGroup>
++              )}
++            </Controller>
++            <Controller
++              name={`variants.${index}.stockQuantity`}
++              control={control}
++              rules={{
++                required: 'Enter the stock',
++                min: { value: 0, message: 'Stock cannot be negative' },
++              }}
++            >
++              {({ field }) => (
++                <NumberInput
++                  label="Stock left"
++                  autoComplete="off"
++                  allowDecimal={false}
++                  min={0}
++                  {...field}
++                />
++              )}
++            </Controller>
++            <IconButton
++              // The remove sits beside its row, quiet like other row actions.
++              look="ghost"
++              tooltip="Remove variant"
++              aria-label={`Remove variant ${index + 1}`}
++              disabledWithReason={
++                variants.fields.length <= 1
++                  ? 'A piece needs at least one variant'
++                  : undefined
++              }
++              onClick={() => variants.remove(index)}
++            >
++              <Trash2 />
++            </IconButton>
++          </FormRow>
++        ))}
++        <div>
++          <Button
++            // Adding another variant is secondary to saving the piece.
++            variant="base"
++            leftIcon={<Plus />}
++            onClick={() => variants.append({ glaze: '', size: '', stockQuantity: null })}
++          >
++            Add variant
++          </Button>
++        </div>
++      </div>
++    </Form>
++  );
++};
+diff --git a/web/app/blocks/PieceForm/index.ts b/web/app/blocks/PieceForm/index.ts
+new file mode 100644
+index 0000000..6dbcaa1
+--- /dev/null
++++ b/web/app/blocks/PieceForm/index.ts
+@@ -0,0 +1,2 @@
++export { PieceForm, emptyPieceForm } from './PieceForm';
++export type { PieceFormValues, PieceVariantValue } from './PieceForm';
+diff --git a/web/app/blocks/orders/FulfilmentDetails.tsx b/web/app/blocks/orders/FulfilmentDetails.tsx
+new file mode 100644
+index 0000000..90d28d2
+--- /dev/null
++++ b/web/app/blocks/orders/FulfilmentDetails.tsx
+@@ -0,0 +1,52 @@
++'use client';
++
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++import type { FulfilmentChoice } from '@app/entities/enums';
++
++export const PICKUP_ADDRESS =
++  '21 Rose Quartz Lane, Johari Bazaar, Jaipur 302003';
++
++/** The fixed studio pickup information every buyer reads. */
++export const PickupInfo = () => (
++  <div className="flex-col-gap-2">
++    <Paragraph>
++      Studio pickup is free from our Jaipur studio at {PICKUP_ADDRESS}.
++      Collect your order Tuesday to Sunday, 10am to 7pm.
++    </Paragraph>
++    <Paragraph>
++      No online payment is taken. The owner will collect payment by UPI after
++      you place your order.
++    </Paragraph>
++  </div>
++);
++
++/** Where the order goes: the pickup address or the courier destination. */
++export const FulfilmentDetails = ({
++  choice,
++  deliveryAddress,
++  city,
++  pinCode,
++}: {
++  choice: FulfilmentChoice;
++  deliveryAddress?: string;
++  city?: string;
++  pinCode?: string;
++}) =>
++  choice === 'studio_pickup' ? (
++    <PickupInfo />
++  ) : (
++    <div className="flex-col-gap-2">
++      <Paragraph>Courier delivery to:</Paragraph>
++      <Paragraph>
++        {deliveryAddress}
++        <br />
++        {city} {pinCode}
++      </Paragraph>
++      <Paragraph color="muted">
++        No online payment is taken. The owner will collect payment by UPI
++        after you place your order.
++      </Paragraph>
++    </div>
++  );
+diff --git a/web/app/blocks/orders/OrderItems.tsx b/web/app/blocks/orders/OrderItems.tsx
+new file mode 100644
+index 0000000..270142c
+--- /dev/null
++++ b/web/app/blocks/orders/OrderItems.tsx
+@@ -0,0 +1,66 @@
++'use client';
++
++import { sizeLabel } from '@app/blocks/pieces';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
++import React from 'react';
++
++import { rupees } from './money';
++
++export type OrderItemRow = {
++  key: string;
++  title: string;
++  glaze: string;
++  size: string;
++  quantity: number;
++  price: number;
++};
++
++const ItemsTable = createTable<OrderItemRow>();
++
++/** One order's pieces with glaze, size, quantity and price. */
++export const OrderItems = ({ items }: { items: OrderItemRow[] }) => (
++  <ItemsTable
++    caption="Ordered pieces"
++    data={items}
++    rowKey={(item) => item.key}
++  >
++    <ItemsTable.Column
++      id="title"
++      rowHeader
++      title="Piece"
++      dataKey="title"
++      width={220}
++    >
++      {(title) => <Truncate>{title}</Truncate>}
++    </ItemsTable.Column>
++    <ItemsTable.Column
++      id="glaze"
++      title="Glaze"
++      dataKey="glaze"
++      width={160}
++    />
++    <ItemsTable.Column id="size" title="Size" dataKey="size" width={110}>
++      {(size) => sizeLabel(size)}
++    </ItemsTable.Column>
++    <ItemsTable.Column
++      id="quantity"
++      title="Quantity"
++      dataKey="quantity"
++      width={90}
++      align="right"
++    >
++      {(quantity) => <Numeral>{quantity}</Numeral>}
++    </ItemsTable.Column>
++    <ItemsTable.Column
++      id="price"
++      title="Price"
++      dataKey="price"
++      width={130}
++      align="right"
++    >
++      {(price) => <Numeral>{rupees.format(price)}</Numeral>}
++    </ItemsTable.Column>
++  </ItemsTable>
++);
+diff --git a/web/app/blocks/orders/OrderTotals.tsx b/web/app/blocks/orders/OrderTotals.tsx
+new file mode 100644
+index 0000000..55afb73
+--- /dev/null
++++ b/web/app/blocks/orders/OrderTotals.tsx
+@@ -0,0 +1,51 @@
++'use client';
++
++import { Numeral } from '@packages/ui/Numeral';
++import {
++  DescriptionDetails,
++  DescriptionList,
++  DescriptionTerm,
++} from '@packages/ui/Typography';
++import React from 'react';
++
++import { rupees } from './money';
++
++/** The subtotal, discount, shipping and total, in rupees with no decimals. */
++export const OrderTotals = ({
++  subtotal,
++  discountAmount = 0,
++  shippingCost,
++  total,
++}: {
++  subtotal: number;
++  discountAmount?: number;
++  shippingCost: number;
++  total: number;
++}) => (
++  <DescriptionList>
++    <div>
++      <DescriptionTerm>Subtotal</DescriptionTerm>
++      <DescriptionDetails className="text-right">
++        <Numeral>{rupees.format(subtotal)}</Numeral>
++      </DescriptionDetails>
++    </div>
++    <div>
++      <DescriptionTerm>Discount</DescriptionTerm>
++      <DescriptionDetails className="text-right">
++        <Numeral>{rupees.format(discountAmount)}</Numeral>
++      </DescriptionDetails>
++    </div>
++    <div>
++      <DescriptionTerm>Shipping</DescriptionTerm>
++      <DescriptionDetails className="text-right">
++        <Numeral>{rupees.format(shippingCost)}</Numeral>
++      </DescriptionDetails>
++    </div>
++    <div>
++      <DescriptionTerm>Total</DescriptionTerm>
++      <DescriptionDetails className="text-right">
++        <Numeral>{rupees.format(total)}</Numeral>
++      </DescriptionDetails>
++    </div>
++  </DescriptionList>
++);
+diff --git a/web/app/blocks/orders/index.ts b/web/app/blocks/orders/index.ts
+new file mode 100644
+index 0000000..0bf6863
+--- /dev/null
++++ b/web/app/blocks/orders/index.ts
+@@ -0,0 +1,14 @@
++export { FulfilmentDetails, PickupInfo, PICKUP_ADDRESS } from './FulfilmentDetails';
++export { OrderItems } from './OrderItems';
++export type { OrderItemRow } from './OrderItems';
++export { OrderTotals } from './OrderTotals';
++export {
++  discountFor,
++  isCodeUsable,
++  isValidIndianPhone,
++  isValidPinCode,
++  nextOrderReference,
++  rupees,
++  shippingFor,
++  todayKey,
++} from './money';
+diff --git a/web/app/blocks/orders/money.ts b/web/app/blocks/orders/money.ts
+new file mode 100644
+index 0000000..b6dc080
+--- /dev/null
++++ b/web/app/blocks/orders/money.ts
+@@ -0,0 +1,69 @@
++import type { DiscountCode } from '@app/entities/discountCode';
++import type { FulfilmentChoice } from '@app/entities/enums';
++
++/** Money shows with no decimals everywhere in this shop. */
++export const rupees = new Intl.NumberFormat('en-IN', {
++  style: 'currency',
++  currency: 'INR',
++  maximumFractionDigits: 0,
++});
++
++/** Today as a day string, so dates compare as dates. */
++export const todayKey = () => {
++  const now = new Date();
++  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
++};
++
++export function isCodeUsable(code: DiscountCode): boolean {
++  return code.status === 'active' && code.expiryDate >= todayKey();
++}
++
++/** The discount a usable code takes off the subtotal, capped at the subtotal. */
++export function discountFor(
++  subtotal: number,
++  code: DiscountCode | undefined,
++): number {
++  if (!code || !isCodeUsable(code)) return 0;
++  const amount =
++    code.discountType === 'percentage'
++      ? (subtotal * code.discountValue) / 100
++      : code.discountValue;
++  // Rounded once, so the shown total equals shown subtotal minus shown
++  // discount plus shown shipping.
++  return Math.round(Math.min(Math.max(amount, 0), subtotal));
++}
++
++/**
++ * Courier is ₹99, free when the discounted subtotal is above ₹1,500;
++ * studio pickup is always free.
++ */
++export function shippingFor(
++  discountedSubtotal: number,
++  choice: FulfilmentChoice | '',
++): number {
++  if (choice === 'courier_delivery')
++    return discountedSubtotal > 1500 ? 0 : 99;
++  return 0;
++}
++
++/** The next free order reference, after the highest one in use. */
++export function nextOrderReference(existing: string[]): string {
++  const used = new Set(existing);
++  let number = 4821;
++  for (const reference of existing) {
++    const match = /^JSC-(\d+)$/.exec(reference);
++    if (match) number = Math.max(number, Number(match[1]) + 1);
++  }
++  while (used.has(`JSC-${number}`)) number += 1;
++  return `JSC-${number}`;
++}
++
++const INDIAN_PHONE = /^(\+?91|0)?[6-9]\d{9}$/;
++
++export function isValidIndianPhone(phone: string): boolean {
++  return INDIAN_PHONE.test(phone.replace(/[\s-]/g, ''));
++}
++
++export function isValidPinCode(pinCode: string): boolean {
++  return /^\d{6}$/.test(pinCode.trim());
++}
+diff --git a/web/app/blocks/pieces/PieceCards.tsx b/web/app/blocks/pieces/PieceCards.tsx
+new file mode 100644
+index 0000000..b048d8c
+--- /dev/null
++++ b/web/app/blocks/pieces/PieceCards.tsx
+@@ -0,0 +1,69 @@
++'use client';
++
++import { NextLink } from '@app/components/NextLink';
++import { PieceCategoryOptions } from '@app/entities/enums';
++import { CardList } from '@packages/ui/Card';
++import { Image } from '@packages/ui/Image';
++import { Numeral } from '@packages/ui/Numeral';
++import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
++import { Caption } from '@packages/ui/Typography';
++import React from 'react';
++
++import { rupees } from '../orders';
++
++import { isSoldOut, pieceStockTotal } from './variants';
++
++import type { Piece } from '@app/entities/piece';
++
++const categoryLabel = (category: Piece['category']) =>
++  PieceCategoryOptions.find((option) => option.key === category)?.label ??
++  category;
++
++/**
++ * Pieces browsed side by side: a CardList grid where each card opens its
++ * piece. Used by the landing page preview and the shop listing.
++ */
++export const PieceCards = ({ pieces }: { pieces: Piece[] }) => (
++  <CardList
++    aria-label="Pieces"
++    items={pieces}
++    // Records browsed side by side by photo, so they take a grid, not a column.
++    layout="grid"
++    stretchLink
++    renderItem={(piece) => (
++      <>
++        <Image
++          src={piece.photos[0]}
++          alt={`Photo of ${piece.title}`}
++          width={400}
++          height={300}
++          fit="cover"
++        />
++        <h3>
++          <NextLink
++            look="plain"
++            href={`/shop/${piece.id}`}
++            className="inline-block max-w-full"
++          >
++            <Truncate>{piece.title}</Truncate>
++          </NextLink>
++        </h3>
++        <div className="flex-row-gap-2 items-center">
++          <Tag
++            // The extra-small tag keeps the category from outweighing the price.
++            size="xs"
++          >
++            {categoryLabel(piece.category)}
++          </Tag>
++        </div>
++        <p>
++          <Numeral>{rupees.format(piece.price)}</Numeral>
++        </p>
++        <Caption>
++          {isSoldOut(piece) ? 'Sold out' : `${pieceStockTotal(piece)} left`}
++        </Caption>
++      </>
++    )}
++  />
++);
+diff --git a/web/app/blocks/pieces/index.ts b/web/app/blocks/pieces/index.ts
+new file mode 100644
+index 0000000..c40b294
+--- /dev/null
++++ b/web/app/blocks/pieces/index.ts
+@@ -0,0 +1,9 @@
++export { PieceCards } from './PieceCards';
++export {
++  findVariant,
++  isSoldOut,
++  pieceStockTotal,
++  pieceVariants,
++  sizeLabel,
++} from './variants';
++export type { PieceVariant } from './variants';
+diff --git a/web/app/blocks/pieces/variants.ts b/web/app/blocks/pieces/variants.ts
+new file mode 100644
+index 0000000..d006a0d
+--- /dev/null
++++ b/web/app/blocks/pieces/variants.ts
+@@ -0,0 +1,50 @@
++import { SizeOptions } from '@app/entities/enums';
++
++import type { Piece } from '@app/entities/piece';
++
++/** One glaze-and-size variant: the parallel arrays pair up by index. */
++export type PieceVariant = {
++  index: number;
++  glaze: string;
++  size: string;
++  stock: number;
++};
++
++export function pieceVariants(piece: Piece): PieceVariant[] {
++  const count = Math.min(
++    piece.glaze.length,
++    piece.size.length,
++    piece.stockQuantity.length,
++  );
++  return Array.from({ length: count }, (_, index) => ({
++    index,
++    glaze: piece.glaze[index],
++    size: piece.size[index],
++    stock: piece.stockQuantity[index],
++  }));
++}
++
++export function findVariant(
++  piece: Piece,
++  glaze: string,
++  size: string,
++): PieceVariant | undefined {
++  return pieceVariants(piece).find(
++    (variant) => variant.glaze === glaze && variant.size === size,
++  );
++}
++
++/** How many are left across every variant. */
++export function pieceStockTotal(piece: Piece): number {
++  return pieceVariants(piece).reduce((sum, variant) => sum + variant.stock, 0);
++}
++
++export function isSoldOut(piece: Piece): boolean {
++  const variants = pieceVariants(piece);
++  return variants.length > 0 && variants.every((variant) => variant.stock <= 0);
++}
++
++/** The label a buyer reads for a stored size key. */
++export function sizeLabel(size: string): string {
++  return SizeOptions.find((option) => option.key === size)?.label ?? size;
++}
+diff --git a/web/app/components/PageState/PageState.tsx b/web/app/components/PageState/PageState.tsx
+new file mode 100644
+index 0000000..aa39403
+--- /dev/null
++++ b/web/app/components/PageState/PageState.tsx
+@@ -0,0 +1,46 @@
++'use client';
++
++import { Button } from '@packages/ui/Button';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++/**
++ * The loading and failed-load states, the same on every screen: a status
++ * while records load, and an error with a retry when loading fails.
++ */
++export const PageState = ({
++  loading = false,
++  loadingText,
++  errorText,
++  onRetry,
++}: {
++  loading?: boolean;
++  loadingText?: string;
++  errorText?: string;
++  onRetry?: () => void;
++}) => {
++  if (loading) {
++    return (
++      <Paragraph color="muted" role="status">
++        {loadingText}
++      </Paragraph>
++    );
++  }
++  if (errorText && onRetry) {
++    return (
++      <div className="flex-col-gap-2 items-start">
++        <Paragraph color="error" role="alert">
++          {errorText}
++        </Paragraph>
++        <Button
++          // Retry is the quiet way back after a failed load.
++          variant="base"
++          onClick={onRetry}
++        >
++          Try again
++        </Button>
++      </div>
++    );
++  }
++  return null;
++};
+diff --git a/web/app/components/PageState/index.ts b/web/app/components/PageState/index.ts
+new file mode 100644
+index 0000000..575b0a8
+--- /dev/null
++++ b/web/app/components/PageState/index.ts
+@@ -0,0 +1 @@
++export { PageState } from './PageState';
+diff --git a/web/app/entities/auth/index.ts b/web/app/entities/auth/index.ts
+index eaf4860..3a21e3a 100644
+--- a/web/app/entities/auth/index.ts
++++ b/web/app/entities/auth/index.ts
+@@ -49,6 +49,17 @@ export function signOut(): void {
+   useAuthStore.setState({ user: null });
+ }
+ 
++/**
++ * Change the signed-in owner's password. There is no backend yet, so the
++ * secret is never written to browser storage, a log, the URL, or shown back.
++ */
++export async function changePassword(password: string): Promise<void> {
++  await mockCall('changePassword');
++  const email = useAuthStore.getState().user?.email;
++  if (!email) throw new Error('Not signed in');
++  void password;
++}
++
+ const noSubscription = () => () => undefined;
+ 
+ /**
+diff --git a/web/app/entities/order/index.ts b/web/app/entities/order/index.ts
+index eb1e204..9edaa8b 100644
+--- a/web/app/entities/order/index.ts
++++ b/web/app/entities/order/index.ts
+@@ -1,2 +1,3 @@
+ export type { Order, OrderInput } from './types';
+-export { listOrders, useListOrders, getOrder, useGetOrder, lookupOrder, useLookupOrder, createOrder, markOrderPaid, advanceOrderFulfilment, cancelOrder } from './operations';
++export { listOrders, useListOrders, getOrder, useGetOrder, lookupOrder, useLookupOrder, createOrder, createOrderWithStock, markOrderPaid, advanceOrderFulfilment, cancelOrder, cancelOrderWithRestore } from './operations';
++export type { StockDecrement, UnrestoredLine } from './operations';
+diff --git a/web/app/entities/order/operations.ts b/web/app/entities/order/operations.ts
+index 9719fc7..8e7d77d 100644
+--- a/web/app/entities/order/operations.ts
++++ b/web/app/entities/order/operations.ts
+@@ -1,4 +1,5 @@
+ import { mockCall, type Read, useRead } from '../mock';
++import { usePieceStore, type Piece } from '../piece';
+ 
+ import { useOrderStore } from './store';
+ 
+@@ -65,3 +66,138 @@ export async function cancelOrder(id: string, changes: Partial<OrderInput>): Pro
+   useOrderStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
+   return record;
+ }
++
++/** One cart line's draw on a variant's stock. */
++export type StockDecrement = {
++  pieceId: string;
++  glaze: string;
++  size: string;
++  quantity: number;
++};
++
++const variantIndex = (record: Piece, glaze: string, size: string) =>
++  record.glaze.findIndex(
++    (entry, i) => entry === glaze && record.size[i] === size,
++  );
++
++/**
++ * Place an order and reduce each variant's stock as one change: every
++ * decrement is checked first, and when creating the order fails the stock
++ * goes back, so a failure never leaves partial stock loss.
++ */
++export async function createOrderWithStock(
++  input: OrderInput,
++  decrements: StockDecrement[],
++): Promise<Order> {
++  await mockCall('createOrder');
++  const snapshot = usePieceStore.getState().records;
++  const next = snapshot.map((record) => ({
++    ...record,
++    stockQuantity: [...record.stockQuantity],
++  }));
++  for (const decrement of decrements) {
++    const record = next.find((entry) => entry.id === decrement.pieceId);
++    const at = record
++      ? variantIndex(record, decrement.glaze, decrement.size)
++      : -1;
++    if (!record || at < 0) {
++      throw new Error(
++        `${decrement.glaze} in ${decrement.size} is no longer available.`,
++      );
++    }
++    if (record.stockQuantity[at] < decrement.quantity) {
++      throw new Error(
++        `Only ${record.stockQuantity[at]} left for ${decrement.glaze} in ${decrement.size}.`,
++      );
++    }
++    record.stockQuantity[at] -= decrement.quantity;
++  }
++  usePieceStore.setState({ records: next });
++  try {
++    const now = new Date().toISOString();
++    const record: Order = {
++      ...input,
++      id: crypto.randomUUID(),
++      createdAt: now,
++      updatedAt: now,
++    };
++    useOrderStore.setState(({ records }) => ({ records: [...records, record] }));
++    return record;
++  } catch (error) {
++    usePieceStore.setState({ records: snapshot });
++    throw error;
++  }
++}
++
++/** An ordered line whose stock could not be restored on cancel. */
++export type UnrestoredLine = {
++  title: string;
++  glaze: string;
++  size: string;
++};
++
++/**
++ * Cancel a New or Packed order and restore each variant's stock as one
++ * change, matched by the ordered piece's id. Lines whose piece or variant
++ * is gone are restored for nothing and reported back instead of silently
++ * skipped; when cancelling itself fails the stock goes back, so the order
++ * is either cancelled or left exactly as it was.
++ */
++export async function cancelOrderWithRestore(
++  id: string,
++): Promise<{ order: Order; unrestored: UnrestoredLine[] }> {
++  await mockCall('cancelOrder');
++  const current = useOrderStore.getState().records.find(
++    (record) => record.id === id,
++  );
++  if (!current) throw new Error('Order not found');
++  if (
++    current.fulfilmentStatus !== 'new' &&
++    current.fulfilmentStatus !== 'packed'
++  ) {
++    throw new Error('Only New or Packed orders can be cancelled.');
++  }
++  const snapshot = usePieceStore.getState().records;
++  const next = snapshot.map((record) => ({
++    ...record,
++    stockQuantity: [...record.stockQuantity],
++  }));
++  const unrestored: UnrestoredLine[] = [];
++  current.itemTitle.forEach((title, index) => {
++    const pieceId = current.itemPieceId?.[index];
++    const record = pieceId
++      ? next.find((entry) => entry.id === pieceId)
++      : undefined;
++    const at = record
++      ? variantIndex(
++          record,
++          current.itemGlaze[index],
++          current.itemSize[index],
++        )
++      : -1;
++    if (!record || at < 0) {
++      unrestored.push({
++        title,
++        glaze: current.itemGlaze[index],
++        size: current.itemSize[index],
++      });
++      return;
++    }
++    record.stockQuantity[at] += current.quantity[index];
++  });
++  usePieceStore.setState({ records: next });
++  try {
++    const record: Order = {
++      ...current,
++      fulfilmentStatus: 'cancelled',
++      updatedAt: new Date().toISOString(),
++    };
++    useOrderStore.setState(({ records }) => ({
++      records: records.map((r) => (r.id === id ? record : r)),
++    }));
++    return { order: record, unrestored };
++  } catch (error) {
++    usePieceStore.setState({ records: snapshot });
++    throw error;
++  }
++}
+diff --git a/web/app/entities/order/seed.ts b/web/app/entities/order/seed.ts
+index eb815e5..1d59714 100644
+--- a/web/app/entities/order/seed.ts
++++ b/web/app/entities/order/seed.ts
+@@ -13,6 +13,7 @@ export const orderSeed: Order[] = [
+     "pinCode": "302017",
+     "discountCode": "WEEKEND10",
+     "orderReference": "JSC-4821",
++    "itemPieceId": ["piece-1"],
+     "quantity": [
+       2
+     ],
+@@ -43,6 +44,7 @@ export const orderSeed: Order[] = [
+     "phoneNumber": "9414056789",
+     "fulfilmentChoice": "studio_pickup",
+     "orderReference": "JSC-4825",
++    "itemPieceId": ["piece-4"],
+     "quantity": [
+       1
+     ],
+@@ -77,6 +79,7 @@ export const orderSeed: Order[] = [
+     "pinCode": "400050",
+     "discountCode": "DIWALI200",
+     "orderReference": "JSC-4830",
++    "itemPieceId": ["piece-2", "piece-1"],
+     "quantity": [
+       1,
+       2
+@@ -116,6 +119,7 @@ export const orderSeed: Order[] = [
+     "pinCode": "110024",
+     "discountCode": "FIRSTBUY15",
+     "orderReference": "JSC-4834",
++    "itemPieceId": ["piece-3"],
+     "quantity": [
+       3
+     ],
+@@ -146,6 +150,7 @@ export const orderSeed: Order[] = [
+     "phoneNumber": "9799398765",
+     "fulfilmentChoice": "studio_pickup",
+     "orderReference": "JSC-4840",
++    "itemPieceId": ["piece-5"],
+     "quantity": [
+       1
+     ],
+diff --git a/web/app/entities/order/types.ts b/web/app/entities/order/types.ts
+index 238c8fb..ec710b1 100644
+--- a/web/app/entities/order/types.ts
++++ b/web/app/entities/order/types.ts
+@@ -12,6 +12,7 @@ export type Order = {
+   pinCode?: string;
+   discountCode?: string;
+   orderReference: string;
++  itemPieceId: string[];
+   quantity: number[];
+   itemTitle: string[];
+   itemGlaze: string[];
+diff --git a/web/app/entities/piece/index.ts b/web/app/entities/piece/index.ts
+index ad3818e..7edc7a9 100644
+--- a/web/app/entities/piece/index.ts
++++ b/web/app/entities/piece/index.ts
+@@ -1,2 +1,3 @@
+ export type { Piece, PieceInput } from './types';
+ export { listPieces, useListPieces, getPiece, useGetPiece, createPiece, updatePiece, updatePieceStock, deletePiece } from './operations';
++export { usePieceStore } from './store';

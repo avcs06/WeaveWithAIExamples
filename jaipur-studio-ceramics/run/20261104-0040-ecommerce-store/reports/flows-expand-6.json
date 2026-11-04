@@ -1,0 +1,19 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The step opens one order from the list but has no notFound alternative. Fix: Add a \"notFound\" alternative from F16.S03 for the opened order being gone, saying the order is gone and showing the order list.",
+          "at": "F16.S03"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

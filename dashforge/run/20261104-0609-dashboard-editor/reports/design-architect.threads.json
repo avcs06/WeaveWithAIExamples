@@ -1,0 +1,182 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "ARCH-001",
+      "severity": "mandatory",
+      "message": "FR01: \"Sees the footer with product links, resources, legal and small print.\" names nothing the scope and the flows have. A step names what a flow gives the user there; drop what no flow has.",
+      "at": "FR01.steps[2]"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Removed footer step from FR01.steps as it referenced no flow.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Repeats the frame's main action 'Create dashboard' on the screen, so the same action appears in both FR02 and S04. Fix: Remove the step 'Can create a new dashboard via the header's \"Create dashboard\" action...' from S04. The create action lives once in FR02 as the main action. Keep it only in the empty-state alternative and state the header action is hidden while the list is empty.",
+      "at": "S04"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Removed duplicate Create dashboard step from S04.steps and kept creation only in empty-state alternative with note that frame action is hidden while empty.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "FR01 lists F02 but its steps do not carry any F02 step (sign-up); a frame may list only flows its own steps carry. Fix: Remove F02 from FR01.flows; keep only flows whose steps appear in FR01 (e.g., F03 for the Sign in action, and F01 if the logo/sign-in is considered part of F01).",
+      "at": "FR01.flows"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Removed F02 from FR01.flows, kept only F01 and F03 whose steps appear in frame.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S01 lists F03 but its steps contain no sign-in action; sign-in is in FR01, not S01. Fix: Remove F03 from S01.flows; S01 should list only F01 and F02 which its headline, main action and preview carry.",
+      "at": "S01.flows"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T04",
+        "status": "closed",
+        "reason": "Removed F03 from S01.flows, now only F01 and F02.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S05 lists F07 but its steps do not carry F07; Create dashboard is a frame action in FR02, not in S05. Fix: Remove F07 from S05.flows; F07 belongs to FR02 and S04 only.",
+      "at": "S05.flows"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T05",
+        "status": "closed",
+        "reason": "Removed F07 from S05.flows as creation lives in FR02.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Step says \"via the header's 'Create dashboard' action\" using location word header, which O12 forbids. Fix: Rewrite without position: \"Can choose 'Create dashboard', which creates a new dashboard with default name 'Untitled Dashboard' numbered if needed and goes to /dashboards/[dashboardId].\"",
+      "at": "S04.steps[5]"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T06",
+        "status": "closed",
+        "reason": "Fixed by T02 removal of header-located step; no position word remains.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Step says \"edit icon beside the name\" using position word beside, which O12 forbids. Fix: Rewrite without position: \"Can rename the dashboard name in place by choosing the edit icon, which turns the name into a field with save and cancel icon buttons, saving validates required and max 80 characters, shows Saving then Saved, updates lastEditedAt and shows a toast.\"",
+      "at": "S04.steps[8]"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T07",
+        "status": "closed",
+        "reason": "Rewrote S04 rename step to remove 'beside the name'.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Step describes look as \"glowing console grid\" and S01 preview describes \"dark glowing console style with neon edges, cyan mono numerals and faint grid\", which O12 forbids (dark, glowing, neon, grid). Fix: Remove look description; e.g., \"Sees the widgets in relative order, each widget shows its title (FD04) defaulting to capitalized type name and its size and type-specific content.\" and for S01 preview: \"Sees a preview of a dashboard showing a note called 'Launch plan', a counter showing 12, a checklist with 'Review the draft' checked, and a link list with 'Figma' linking to https://figma.com. The preview changes no records.\"",
+      "at": "S05.steps[1]"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T08",
+        "status": "closed",
+        "reason": "Removed glowing/neon/grid look descriptions from S05.steps[1] and S01 preview.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T09",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Editing alternative says \"with save and cancel icon buttons beside the value\" using position word beside. Fix: Rewrite without position: \"Sees the dashboard name field editable with current name ready to edit, with save and cancel icon buttons.\"",
+      "at": "S05.alternatives[0].steps[0]"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T09",
+        "status": "closed",
+        "reason": "Rewrote S05 editing alternative to remove 'beside the value'.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

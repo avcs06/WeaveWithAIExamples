@@ -1,0 +1,109 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Widget shows checklist items with text and checked state (F18.S01, S05) but entity has no field to store checked boolean; checklistItems is list text only. Fix: Add a field to persist checklist checked state, e.g. checklistChecked as boolean list or structured checklistItems with text+checked, so toggle in F18.S03 can be saved.",
+          "at": "entities.Widget.fields"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Link list widget shows ordered links each with title (FD11) and URL (FD12) (F19.S01, S05) but entity stores linkItems as list text and linkTitle/linkUrl as singular non-list fields, cannot store multiple title+URL pairs per widget. Fix: Replace singular linkTitle/linkUrl plus text list with a structured list that holds both title and URL per item (e.g. linkItems as list of objects or two parallel lists), and remove redundant singular fields if not needed as widget-level values.",
+          "at": "entities.Widget.fields"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S05 must show only the current dashboard's widgets in relative order (F06.S01, S05 steps) but listWidgets takes no inputs so it cannot filter by dashboard ref; Widget has dashboard ref but operation does not use it. Fix: Add input to listWidgets that filters by dashboard, e.g. {\"field\":\"FD??\",\"as\":\"dashboard\"} or q equivalent, so S05 reads load only widgets where dashboard == current dashboard id.",
+          "at": "operations.listWidgets.inputs"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Widget entity has checklistItemText, linkTitle, linkUrl as singular widget-level fields while also having checklistItems/linkItems lists; screens show these as per-item values inside a widget, not as single widget properties, causing duplicate/confusing storage. Fix: Keep only the list-based storage for checklist/link items (with proper structure including checked/title/url) and remove singular per-item fields from Widget, or document them as transient inputs only; ensure every value S05 shows has one field on the correct record.",
+          "at": "entities.Widget.fields"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Required flag does not match flow field: FD09, FD11, FD12 are required true but entity fields are required false Fix: Set required true for checklistItemText, linkTitle and linkUrl to match FD09, FD11, FD12",
+          "at": "entities.Widget.fields[checklistItemText,linkTitle,linkUrl]"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Widget stores checklist and link list content as text lists plus single text fields, losing checked state and per-item title/URL structure shown in S05 Fix: Remove synthetic checklistItems/linkItems text lists and single-item fields as persistent fields; keep only flow-field-derived fields (checklistItemText, linkTitle, linkUrl) as inputs or model items with proper structure, do not duplicate value with two field names",
+          "at": "entities.Widget.fields[checklistItems,linkItems,checklistItemText,linkTitle,linkUrl]"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "One update operation serves all Dashboard lastEditedAt touches (F11.S02, F13.S01, F14.S02, F16.S02, F17.S01 etc.) but requires FD03 name input which those steps do not provide Fix: Split Dashboard touches: keep updateDashboard for F08.S02 with FD03 input, and add separate touch operation(s) with no name input for widget-driven lastEditedAt updates or make name input optional per step",
+          "at": "operations.updateDashboard"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "One update operation serves every Widget update (reposition F13.S01, resize F14.S02, note F16.S02, counter F17.S01, checklist F18.S02 etc.) with union of all inputs, requiring fields not filled for that step Fix: Split into focused updates (e.g., updateWidgetTitle, resizeWidget, repositionWidget, updateNoteText, updateCounter etc.) each listing only its flowSteps and its own inputs, or ensure no operation requires an input not provided by its listed steps",
+          "at": "operations.updateWidget"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "listWidgets filters by Widget.dashboard but uses FD03 (Dashboard Name) as the filter field, which does not identify a dashboard Fix: Remove the input from listWidgets (or use no inputs and resolve dashboard from route context) so the list is not filtered by a name field; FD03 must not be used to filter by ref dashboard",
+          "at": "operations.listWidgets.inputs"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "createWidget lists F09.S01 (Duplicate dashboard) but duplicate creates widgets by copying with no type/title/size supplied, so the required inputs type/title/size do not exist at that step Fix: Remove F09.S01 from createWidget.flowSteps; let duplicateDashboard alone serve the Widget create effect of F09.S01 or add a dedicated duplicateWidgets operation with no user inputs",
+          "at": "operations.createWidget.flowSteps"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Input maps FD03 (Dashboard Name) to entity field dashboard; a Name field cannot filter by dashboard ref. Fix: Remove the input or replace it with a dashboard-scoped list with no inputs (dashboard is taken from route context). Do not use FD03 as dashboard.",
+          "at": "operations.listWidgets.inputs[0]"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "CONTRACT-011",
+          "severity": "mandatory",
+          "message": "F09.S01 creates Widget, but no create operation on Widget serves it.",
+          "at": "F09.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "listWidgets filters by Widget.dashboard but uses FD03 (Dashboard Name) as the filter field, which does not identify a dashboard Fix: Remove the input from listWidgets (or use no inputs and resolve dashboard from route context) so the list is not filtered by a name field; FD03 must not be used to filter by ref dashboard (addressed in the final fix, not re-reviewed)",
+          "at": "operations.listWidgets.inputs"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "createWidget lists F09.S01 (Duplicate dashboard) but duplicate creates widgets by copying with no type/title/size supplied, so the required inputs type/title/size do not exist at that step Fix: Remove F09.S01 from createWidget.flowSteps; let duplicateDashboard alone serve the Widget create effect of F09.S01 or add a dedicated duplicateWidgets operation with no user inputs (addressed in the final fix, not re-reviewed)",
+          "at": "operations.createWidget.flowSteps"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Input maps FD03 (Dashboard Name) to entity field dashboard; a Name field cannot filter by dashboard ref. Fix: Remove the input or replace it with a dashboard-scoped list with no inputs (dashboard is taken from route context). Do not use FD03 as dashboard. (addressed in the final fix, not re-reviewed)",
+          "at": "operations.listWidgets.inputs[0]"
+        }
+      ]
+    }
+  ]
+}

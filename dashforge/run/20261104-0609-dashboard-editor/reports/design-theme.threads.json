@@ -1,0 +1,162 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "THEME-013",
+      "severity": "mandatory",
+      "message": "The app header start names \"Saving status\", which the scope and the flows do not have. Name only what a flow gives the user, or leave it out.",
+      "at": "app.header.start"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Removed 'Saving status' and dashboard-specific content from app.header.start/end; header now only contains global Create button.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "THEME-001",
+      "severity": "mandatory",
+      "message": "page dark: pageFgMuted on the background's #004346 is 4.35:1; text needs 4.5:1.",
+      "at": "page.dark.pageFgMuted"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Changed page.dark.pageFgMuted from base step 10 to base step 11 to achieve 4.5:1 contrast on pageBg #004346 and frameBg.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link defaults to `plain` app-wide, which hides every link and violates the no-plain-links rule Fix: Change Link defaults to the visible default: variant default with no `look` override (remove `look: \"plain\"`) so links are underlined/colored and identifiable",
+      "at": "defaults.Link"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Removed look:plain from defaults.Link to restore visible default link style per no-plain-links rule.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Header holds screen-specific content that is not shown on every app page: dashboard title, Saving status and dashboard actions belong to the Dashboard editor/view screen, not the frame. Fix: Remove record details and editor-only state from the frame. Keep header slots to logo, navigation, account and global Create button only; move dashboard title, Saving/Saved indicator and rename/duplicate/delete actions into the Dashboard screens.",
+      "at": "layouts.app.header"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T04",
+        "status": "closed",
+        "reason": "Removed dashboard title, Saving status and dashboard actions from app header frame; header now only has global Create button, screen-specific title/status/actions moved to Dashboard screens.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link defaults to look plain app-wide, which hides every link. Fix: Change Link look from plain to none (default underline) so links are visible; do not use plain as the app-wide default.",
+      "at": "defaults.Link"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T05",
+        "status": "closed",
+        "reason": "Changed Link default from plain to none (removed plain look) so links are underlined/colored and identifiable app-wide.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "issue": {
+      "rule": "THEME-015",
+      "severity": "mandatory",
+      "message": "page dark: pageFgMuted #ABC8E2 is 1.51:1 from pageFg #E1F1FF; muted text needs 2:1 from pageFg so it reads as secondary. Pick a step for pageFgMuted further from pageFg's, such as 10 when pageFg is 12, and keep 4.5:1 on pageBg, frameBg and every color of the background.",
+      "at": "page.dark.pageFgMuted"
+    },
+    "by": "checks",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T06",
+        "status": "closed",
+        "reason": "Changed page.dark.pageFgMuted from step 11 to step 10 to achieve >=2:1 contrast against pageFg step 12 while retaining 4.5:1 on pageBg/frameBg/background.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link default is `plain` app-wide, which hides every link and violates the component defaults rule. Fix: Change Link default to not use `plain` (use the default underlined look, e.g. omit `look` or set it to `none`/default) so links remain recognizable.",
+      "at": "defaults.Link.look"
+    },
+    "by": "review-peer",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T07",
+        "status": "closed",
+        "reason": "Removed plain look from Link defaults; Link now uses variant default with no look override so links are visibly underlined/colored.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Link defaults to `plain` which hides every link app-wide. Fix: Remove the plain look from Link defaults and use the default none look (e.g., omit `look` or set to none) so links are visibly distinct.",
+      "at": "defaults.Link.look"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T08",
+        "status": "closed",
+        "reason": "Same fix as T07: removed plain look from Link defaults to use default none look, making links distinguishable app-wide.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  }
+]

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "ARCH-001",
+      "severity": "mandatory",
+      "message": "D10: \"Fills in Title (FD15).\" names nothing the scope and the flows have. A step names what a flow gives the user there; drop what no flow has.",
+      "at": "D10.steps[1]"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Changed D10 steps to name the task's Title so it names the Task noun from the scope.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Sign-up conflict F02.A03 has no place: S02 never says the email already has an account. Fix: Add an alternative 'when the email already has an account' that reads the quoted message and offers to go to /sign-in.",
+      "at": "S02"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Added alternative when the email already has an account with quoted message and link to /sign-in.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Sign-in denied F03.A03 has no place: S03 never says no account matches. Fix: Add an alternative 'when no account matches' that reads the quoted message and offers to try again or go to /sign-up.",
+      "at": "S03"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Added alternative when no account matches with quoted message and options to try again or go to /sign-up.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Follow-up gone F14.A02 and F15.A02 have no place on the client list. Fix: Add an alternative 'when the note is no longer there' that reads that the note is gone and shows the client list as it is.",
+      "at": "S05"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T04",
+        "status": "closed",
+        "reason": "Added alternative when the note is no longer there that reads the note is gone and shows the client list.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Tick-done gone F24.A02 has no place on the project page. Fix: Add an alternative 'when the task was deleted' for the tick action that reads that the task is gone and shows the remaining tasks.",
+      "at": "S08"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T05",
+        "status": "closed",
+        "reason": "Added alternative when the task was deleted for the tick action that reads the task is gone and shows remaining tasks.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Public frame navigation holds only one destination. Fix: Remove 'from the navigation' for Book a session and let the logo and screens' actions provide it, or add a second navigation destination.",
+      "at": "FR01"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T06",
+        "status": "closed",
+        "reason": "Removed 'from the navigation' wording so the single Book a session link is a frame action, not a one-item navigation.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S05, S07, S08 and S10 put Add, Search and filters before what the user came for. Fix: Move the client/project/task/session-type list to the first steps and put Add, Search and filters after it; apply the same order on S07, S08 and S10.",
+      "at": "S05"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T07",
+        "status": "closed",
+        "reason": "Moved the client, project, task and session-type lists before Add, Search and filters on S05, S07, S08 and S10.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Sign in and Book a session appear in both the public frame and the landing screen. Fix: Keep 'Sign in' only in FR01 and 'Book a session' only in FR01, removing the duplicate choices from S01 so each action appears once per view.",
+      "at": "S01"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T08",
+        "status": "closed",
+        "reason": "Removed Sign in and Book a session choices from S01 so each appears only in FR01 per view.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T09",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Availability empty state is paraphrased instead of quoted. Fix: Quote the empty-availability words, as in Reads \"No days set yet. No slots are offered until hours are set.\"",
+      "at": "S09"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T09",
+        "status": "closed",
+        "reason": "Quoted the empty-availability words as Reads \"No days set yet. No slots are offered until hours are set.\"",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

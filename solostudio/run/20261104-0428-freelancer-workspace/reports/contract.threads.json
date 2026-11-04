@@ -1,0 +1,182 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S04 shows session type, client name and project name through refs but reads load no SessionType, Client or Project. Fix: Add reads that load SessionType, Client and Project (e.g. getSessionType/listSessionTypes, getClient/listClients, getProject/listProjects) alongside listSlots, listBookings, listNotes and listTasks.",
+      "at": "screens S04 reads"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Fixed: S04 reads now include listSessionTypes, listClients and listProjects to load session type, client and project names shown through refs.",
+        "round": 2,
+        "by": "review-peer"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S06 shows bookings with session type and slot time and projects with open task count but reads have no Slot, SessionType or Task. Fix: Add reads that load Slot and SessionType for each booking row and Task for the open task count (e.g. listSlots/getSlot, getSessionType/listSessionTypes, listTasks).",
+      "at": "screens S06 reads"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Fixed: S06 reads now include listSlots, listSessionTypes and listTasks for booking slot/time and project open counts.",
+        "round": 2,
+        "by": "review-peer"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S07 shows each project's client name through Project.client but reads load no Client. Fix: Add a Client read (listClients or getClient) to load each project's client name.",
+      "at": "screens S07 reads"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Fixed: S07 reads now include listClients to load each project's client name.",
+        "round": 2,
+        "by": "review-peer"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S08 shows the project's client name through Project.client but reads load no Client. Fix: Add a Client read (listClients or getClient) to load the project's client name.",
+      "at": "screens S08 reads"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T04",
+        "status": "closed",
+        "reason": "Fixed: S08 reads now include getClient to load the project's client name.",
+        "round": 2,
+        "by": "review-peer"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S13 shows the booking's session type but reads load no SessionType. Fix: Add a SessionType read (getSessionType or listSessionTypes) to load the booking's session type name.",
+      "at": "screens S13 reads"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T05",
+        "status": "closed",
+        "reason": "Fixed: S13 reads now include getSessionType to load the booking's session type.",
+        "round": 2,
+        "by": "review-peer"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "S15 shows session type and slot date/time through refs but reads load only getBooking. Fix: Add Slot and SessionType reads (getSlot/listSlots and getSessionType/listSessionTypes) to load the slot time and session type shown.",
+      "at": "screens S15 reads"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T06",
+        "status": "closed",
+        "reason": "Fixed: S15 reads now include getSlot and getSessionType alongside getBooking.",
+        "round": 2,
+        "by": "review-peer"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "listClients lists project steps that have no Client list effect to serve. Fix: Keep only F06.S01 and F06.S02; remove F18.S02 and F19.S01 which have no Client list effect.",
+      "at": "operations.listClients.flowSteps"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T07",
+        "status": "closed",
+        "reason": "Removed F18.S02 and F19.S01 from listClients, keeping only F06.S01 and F06.S02.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "createClient serves F35.S03 but its inputs are the client-form fields, not the booking name and email the guest fills. Fix: Serve the booking flow with the fields the guest fills there, i.e. FD26 as name and FD27 as email, not only FD03 and FD04.",
+      "at": "operations.createClient.inputs"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T08",
+        "status": "closed",
+        "reason": "Added FD26 as name and FD27 as email to createClient so F35.S03 is served by the booking fields.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T09",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "getClient serves a Client read matched by email in the booking flow but takes no inputs. Fix: Add input FD27 as email so the Client read by matching email in F35.S03 is found by the typed email.",
+      "at": "operations.getClient.inputs"
+    },
+    "by": "review-output",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T09",
+        "status": "closed",
+        "reason": "Added FD27 as email to getClient so the Client read by matching email in F35.S03 is found.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  }
+]

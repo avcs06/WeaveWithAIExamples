@@ -1,0 +1,463 @@
+{
+  "duplicates": [
+    {
+      "firstFile": {
+        "end": 81,
+        "endLoc": {
+          "column": 11,
+          "line": 81,
+          "position": 2555
+        },
+        "name": "(routes)/(app)/dashboard/discount-codes/[discountCodeId]/page.tsx",
+        "start": 65,
+        "startLoc": {
+          "column": 81,
+          "line": 65,
+          "position": 1998
+        }
+      },
+      "format": "tsx",
+      "fragment": "      content: `Buyers will no longer be able to use ${record.code} at checkout.`,\n      // Deactivating stops the promotion, so the confirm reads as danger.\n      status: 'error',\n      footer: (closeDialog) => (\n        <>\n          <Button\n            // Keeping the code is the quiet way out of the confirm.\n            variant=\"base\"\n            onClick={() => closeDialog(DialogResult.cancel)}\n          >\n            Cancel\n          </Button>\n          <Button\n            // Deactivating is the confirm's filled danger button.\n            variant=\"danger\"\n            onClick={() => closeDialog(DialogResult.confirm)}\n          >",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 17,
+      "secondFile": {
+        "end": 78,
+        "endLoc": {
+          "column": 11,
+          "line": 78,
+          "position": 2673
+        },
+        "name": "(routes)/(app)/dashboard/pieces/[pieceId]/page.tsx",
+        "start": 62,
+        "startLoc": {
+          "column": 99,
+          "line": 62,
+          "position": 2126
+        }
+      },
+      "tokens": 59
+    },
+    {
+      "firstFile": {
+        "end": 44,
+        "endLoc": {
+          "column": 7,
+          "line": 44,
+          "position": 1248
+        },
+        "name": "(routes)/(app)/dashboard/pieces/[pieceId]/edit/page.tsx",
+        "start": 20,
+        "startLoc": {
+          "column": 35,
+          "line": 20,
+          "position": 726
+        }
+      },
+      "format": "tsx",
+      "fragment": "  const piece = useGetPiece(pieceId);\n\n  if (piece.loading || piece.error) {\n    return (\n      <PageState\n        loading={piece.loading}\n        loadingText=\"Loading the piece.\"\n        errorText={piece.error ? 'The piece could not be loaded.' : undefined}\n        onRetry={piece.retry}\n      />\n    );\n  }\n\n  const record = piece.data;\n  if (!record) {\n    return (\n      <NotFound\n        title=\"Piece not found\"\n        description=\"This piece is gone.\"\n        back={{ label: 'Back to pieces', href: '/dashboard/pieces' }}\n      />\n    );\n  }\n\n  const defaults: PieceFormValues = {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 25,
+      "secondFile": {
+        "end": 53,
+        "endLoc": {
+          "column": 7,
+          "line": 53,
+          "position": 1749
+        },
+        "name": "(routes)/(app)/dashboard/pieces/[pieceId]/page.tsx",
+        "start": 29,
+        "startLoc": {
+          "column": 48,
+          "line": 29,
+          "position": 1227
+        }
+      },
+      "tokens": 92
+    },
+    {
+      "firstFile": {
+        "end": 39,
+        "endLoc": {
+          "column": 22,
+          "line": 39,
+          "position": 1172
+        },
+        "name": "(routes)/(app)/dashboard/pieces/[pieceId]/edit/page.tsx",
+        "start": 20,
+        "startLoc": {
+          "column": 35,
+          "line": 20,
+          "position": 726
+        }
+      },
+      "format": "tsx",
+      "fragment": "  const piece = useGetPiece(pieceId);\n\n  if (piece.loading || piece.error) {\n    return (\n      <PageState\n        loading={piece.loading}\n        loadingText=\"Loading the piece.\"\n        errorText={piece.error ? 'The piece could not be loaded.' : undefined}\n        onRetry={piece.retry}\n      />\n    );\n  }\n\n  const record = piece.data;\n  if (!record) {\n    return (\n      <NotFound\n        title=\"Piece not found\"\n        description=\"This piece is gone.\"\n        back={{ label: 'Back to pieces', href: '/dashboard/pieces' }}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 20,
+      "secondFile": {
+        "end": 56,
+        "endLoc": {
+          "column": 22,
+          "line": 56,
+          "position": 1911
+        },
+        "name": "(routes)/(marketing)/shop/[pieceId]/page.tsx",
+        "start": 37,
+        "startLoc": {
+          "column": 41,
+          "line": 37,
+          "position": 1465
+        }
+      },
+      "tokens": 79
+    },
+    {
+      "firstFile": {
+        "end": 73,
+        "endLoc": {
+          "column": 16,
+          "line": 73,
+          "position": 2330
+        },
+        "name": "(routes)/(app)/dashboard/pieces/[pieceId]/edit/page.tsx",
+        "start": 61,
+        "startLoc": {
+          "column": 41,
+          "line": 61,
+          "position": 1836
+        }
+      },
+      "format": "tsx",
+      "fragment": "      price: values.price ?? record.price,\n      photos: values.photos.map((photo) => photo.url.trim()),\n      category: values.category as 'mug' | 'bowl' | 'planter' | 'vase',\n      glaze: values.variants.map((variant) => variant.glaze.trim()),\n      size: values.variants.map(\n        (variant) => variant.size as 'small' | 'medium' | 'large',\n      ),\n      stockQuantity: values.variants.map(\n        (variant) => variant.stockQuantity ?? 0,\n      ),\n    });\n    toast({ title: 'Piece saved', status: 'success' });\n    router.push(`/dashboard/pieces/${record.id}`);",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 13,
+      "secondFile": {
+        "end": 34,
+        "endLoc": {
+          "column": 16,
+          "line": 34,
+          "position": 1165
+        },
+        "name": "(routes)/(app)/dashboard/pieces/new/page.tsx",
+        "start": 22,
+        "startLoc": {
+          "column": 30,
+          "line": 22,
+          "position": 671
+        }
+      },
+      "tokens": 121
+    },
+    {
+      "firstFile": {
+        "end": 141,
+        "endLoc": {
+          "column": 10,
+          "line": 141,
+          "position": 4423
+        },
+        "name": "(routes)/(app)/dashboard/pieces/[pieceId]/page.tsx",
+        "start": 121,
+        "startLoc": {
+          "column": 8,
+          "line": 121,
+          "position": 3852
+        }
+      },
+      "format": "tsx",
+      "fragment": "        }\n      />\n      <div className=\"grid gap-6 grid-cols-2 items-start\">\n        <div className=\"flex-col-gap-4\">\n          {record.photos.map((photo, index) => (\n            <Image\n              key={photo}\n              src={photo}\n              alt={\n                index === 0\n                  ? `Photo of ${record.title}`\n                  : `Another photo of ${record.title}`\n              }\n              width={600}\n              height={450}\n              fit=\"cover\"\n            />\n          ))}\n        </div>\n        <div className=\"flex-col-gap-4\">\n          {record.description ? (",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 21,
+      "secondFile": {
+        "end": 158,
+        "endLoc": {
+          "column": 10,
+          "line": 158,
+          "position": 5349
+        },
+        "name": "(routes)/(marketing)/shop/[pieceId]/page.tsx",
+        "start": 138,
+        "startLoc": {
+          "column": 54,
+          "line": 138,
+          "position": 4778
+        }
+      },
+      "tokens": 94
+    },
+    {
+      "firstFile": {
+        "end": 56,
+        "endLoc": {
+          "column": 16,
+          "line": 56,
+          "position": 2066
+        },
+        "name": "(routes)/(app)/dashboard/pieces/page.tsx",
+        "start": 45,
+        "startLoc": {
+          "column": 71,
+          "line": 45,
+          "position": 1814
+        }
+      },
+      "format": "tsx",
+      "fragment": "      (availability === 'all' || availabilityOf(piece) === availability) &&\n      (query === '' ||\n        [piece.title, piece.description ?? ''].some((text) =>\n          text.toLowerCase().includes(query),\n        )),\n  );\n\n  if (pieces.loading || pieces.error) {\n    return (\n      <>\n        <PageHeader\n          title=\"Pieces\"",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 12,
+      "secondFile": {
+        "end": 36,
+        "endLoc": {
+          "column": 16,
+          "line": 36,
+          "position": 1250
+        },
+        "name": "(routes)/(marketing)/shop/page.tsx",
+        "start": 25,
+        "startLoc": {
+          "column": 56,
+          "line": 25,
+          "position": 998
+        }
+      },
+      "tokens": 61
+    },
+    {
+      "firstFile": {
+        "end": 73,
+        "endLoc": {
+          "column": 21,
+          "line": 73,
+          "position": 2290
+        },
+        "name": "(routes)/(auth)/sign-in/page.tsx",
+        "start": 58,
+        "startLoc": {
+          "column": 12,
+          "line": 58,
+          "position": 1862
+        }
+      },
+      "format": "tsx",
+      "fragment": "            </Button>\n          </>\n        }\n      >\n        <Controller\n          name=\"email\"\n          control={control}\n          rules={{\n            required: 'Enter your email',\n            pattern: { value: EMAIL, message: 'Enter an email like name@example.com' },\n          }}\n        >\n          {({ field }) => (\n            <Input label=\"Email\" type=\"email\" autoComplete=\"email\" {...field} />\n          )}\n        </Controller>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 80,
+        "endLoc": {
+          "column": 21,
+          "line": 80,
+          "position": 2533
+        },
+        "name": "(routes)/(auth)/sign-up/page.tsx",
+        "start": 65,
+        "startLoc": {
+          "column": 12,
+          "line": 65,
+          "position": 2105
+        }
+      },
+      "tokens": 77
+    },
+    {
+      "firstFile": {
+        "end": 11,
+        "endLoc": {
+          "column": 15,
+          "line": 11,
+          "position": 461
+        },
+        "name": "(routes)/(auth)/sign-up/page.tsx",
+        "start": 4,
+        "startLoc": {
+          "column": 78,
+          "line": 4,
+          "position": 146
+        }
+      },
+      "format": "tsx",
+      "fragment": "import { HOME_ROUTE, ROLES, signUp, useCurrentUser } from '@app/entities/auth';\nimport { Button } from '@packages/ui/Button';\nimport { Controller, Form } from '@packages/ui/Form';\nimport { Input } from '@packages/ui/Input';\nimport { Radio, RadioGroup } from '@packages/ui/Radio';\nimport { Paragraph } from '@packages/ui/Typography';\nimport { useRouter } from 'next/navigation';\nimport React, { useEffect } from 'react';",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 8,
+      "secondFile": {
+        "end": 28,
+        "endLoc": {
+          "column": 15,
+          "line": 28,
+          "position": 991
+        },
+        "name": "(routes)/(marketing)/checkout/page.tsx",
+        "start": 21,
+        "startLoc": {
+          "column": 51,
+          "line": 21,
+          "position": 676
+        }
+      },
+      "tokens": 51
+    },
+    {
+      "firstFile": {
+        "end": 52,
+        "endLoc": {
+          "column": 21,
+          "line": 52,
+          "position": 1899
+        },
+        "name": "entities/order/operations.ts",
+        "start": 44,
+        "startLoc": {
+          "column": 32,
+          "line": 44,
+          "position": 1521
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('markOrderPaid');\n  const current = useOrderStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Order not found');\n  const record: Order = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useOrderStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function advanceOrderFulfilment(id: string, changes: Partial<OrderInput>): Promise<Order> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 61,
+        "endLoc": {
+          "column": 21,
+          "line": 61,
+          "position": 2402
+        },
+        "name": "entities/order/operations.ts",
+        "start": 53,
+        "startLoc": {
+          "column": 41,
+          "line": 53,
+          "position": 2024
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 52,
+        "endLoc": {
+          "column": 6,
+          "line": 52,
+          "position": 1884
+        },
+        "name": "entities/order/operations.ts",
+        "start": 44,
+        "startLoc": {
+          "column": 32,
+          "line": 44,
+          "position": 1521
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('markOrderPaid');\n  const current = useOrderStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Order not found');\n  const record: Order = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useOrderStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function advanceOrderFulfilment(id: string, changes: Partial<OrderInput>): Promise<Order> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 71,
+        "endLoc": {
+          "column": 6,
+          "line": 71,
+          "position": 2918
+        },
+        "name": "entities/order/operations.ts",
+        "start": 62,
+        "startLoc": {
+          "column": 30,
+          "line": 62,
+          "position": 2505
+        }
+      },
+      "tokens": 105
+    },
+    {
+      "firstFile": {
+        "end": 42,
+        "endLoc": {
+          "column": 21,
+          "line": 42,
+          "position": 1594
+        },
+        "name": "entities/piece/operations.ts",
+        "start": 34,
+        "startLoc": {
+          "column": 30,
+          "line": 34,
+          "position": 1216
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updatePiece');\n  const current = usePieceStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Piece not found');\n  const record: Piece = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  usePieceStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function updatePieceStock(id: string, changes: Partial<PieceInput>): Promise<Piece> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 51,
+        "endLoc": {
+          "column": 21,
+          "line": 51,
+          "position": 2085
+        },
+        "name": "entities/piece/operations.ts",
+        "start": 43,
+        "startLoc": {
+          "column": 35,
+          "line": 43,
+          "position": 1707
+        }
+      },
+      "tokens": 107
+    }
+  ],
+  "statistics": {
+    "detectionDate": "2026-11-04T08:29:54.938Z",
+    "formats": {
+      "tsx": {
+        "clones": 8,
+        "duplicatedLines": 132,
+        "duplicatedTokens": 634,
+        "lines": 5779,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 2.2841322028032534,
+        "percentageTokens": 2.4041560805430207,
+        "sources": 52,
+        "tokens": 26371
+      },
+      "typescript": {
+        "clones": 3,
+        "duplicatedLines": 27,
+        "duplicatedTokens": 319,
+        "lines": 1710,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 1.5789473684210527,
+        "percentageTokens": 3.576634151810741,
+        "sources": 31,
+        "tokens": 8919
+      }
+    },
+    "total": {
+      "clones": 11,
+      "duplicatedLines": 159,
+      "duplicatedTokens": 953,
+      "lines": 7489,
+      "newClones": 0,
+      "newDuplicatedLines": 0,
+      "percentage": 2.1231139003872346,
+      "percentageTokens": 2.700481722867668,
+      "sources": 83,
+      "tokens": 35290
+    }
+  }
+}

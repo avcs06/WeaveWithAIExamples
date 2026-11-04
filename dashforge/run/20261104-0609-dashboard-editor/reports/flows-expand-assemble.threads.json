@@ -1,0 +1,22 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "FLOW-016",
+      "severity": "mandatory",
+      "message": "F05.A05 branches from \"F05.A04.S01\", which is not a step of F05; use one of its step ids.",
+      "at": "F05.A05"
+    },
+    "by": "checks",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Fixed F05.A05 branching from alternative step: moved 'open dashboard' to main step F05.S02 and changed notFound alternative to branch from F05.S02 (now F05.A04), removing the invalid F05.A04.S01 branch.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

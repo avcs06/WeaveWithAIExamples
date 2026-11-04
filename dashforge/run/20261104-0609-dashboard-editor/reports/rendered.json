@@ -1,0 +1,180 @@
+[
+  {
+    "route": "/",
+    "findings": [
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0609-dashboard-editor/shots/pages-fix-2/01-S01.png",
+    "title": null,
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 16,
+      "small24": 3,
+      "keyboard": {
+        "interactive": 5,
+        "reachable": 5,
+        "focusVisible": 5,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboards",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0609-dashboard-editor/shots/pages-fix-2/02-S04.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Orbitron, \"Orbitron Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(225, 241, 255)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 8,
+      "small24": 6,
+      "keyboard": {
+        "interactive": 8,
+        "reachable": 8,
+        "focusVisible": 8,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/dashboards/dashboard-1",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > nav:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > a:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0609-dashboard-editor/shots/pages-fix-2/03-S05.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Orbitron, \"Orbitron Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(225, 241, 255)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 6,
+      "small24": 2,
+      "keyboard": {
+        "interactive": 4,
+        "reachable": 4,
+        "focusVisible": 4,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  },
+  {
+    "route": "/account",
+    "findings": [
+      {
+        "rule": "DESIGN-R-007",
+        "severity": "warning",
+        "message": "text is 13px; body text is at least 14px",
+        "element": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+      },
+      {
+        "rule": "DESIGN-R-003",
+        "severity": "warning",
+        "message": "no skip link first in the tab order"
+      }
+    ],
+    "shot": "runs/20261104-0609-dashboard-editor/shots/pages-fix-2/04-S06.png",
+    "title": {
+      "element": "body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)",
+      "pageHeader": true,
+      "style": {
+        "font-family": "Orbitron, \"Orbitron Fallback\", Georgia, serif",
+        "font-size": "24px",
+        "font-weight": "600",
+        "line-height": "32px",
+        "color": "rgb(225, 241, 255)"
+      }
+    },
+    "metrics": {
+      "axeViolations": 0,
+      "contrastFailures": 0,
+      "contrastUnknown": 13,
+      "small24": 1,
+      "keyboard": {
+        "interactive": 3,
+        "reachable": 3,
+        "focusVisible": 3,
+        "inversions": 0,
+        "trap": false,
+        "activation": {
+          "buttons": 0,
+          "enterOk": 0,
+          "spaceOk": 0
+        },
+        "skipLink": false
+      }
+    }
+  }
+]

@@ -1,0 +1,91 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S04 shows session type, client name and project name through refs but reads load no SessionType, Client or Project. Fix: Add reads that load SessionType, Client and Project (e.g. getSessionType/listSessionTypes, getClient/listClients, getProject/listProjects) alongside listSlots, listBookings, listNotes and listTasks.",
+          "at": "screens S04 reads"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S06 shows bookings with session type and slot time and projects with open task count but reads have no Slot, SessionType or Task. Fix: Add reads that load Slot and SessionType for each booking row and Task for the open task count (e.g. listSlots/getSlot, getSessionType/listSessionTypes, listTasks).",
+          "at": "screens S06 reads"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S07 shows each project's client name through Project.client but reads load no Client. Fix: Add a Client read (listClients or getClient) to load each project's client name.",
+          "at": "screens S07 reads"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S08 shows the project's client name through Project.client but reads load no Client. Fix: Add a Client read (listClients or getClient) to load the project's client name.",
+          "at": "screens S08 reads"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S13 shows the booking's session type but reads load no SessionType. Fix: Add a SessionType read (getSessionType or listSessionTypes) to load the booking's session type name.",
+          "at": "screens S13 reads"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S15 shows session type and slot date/time through refs but reads load only getBooking. Fix: Add Slot and SessionType reads (getSlot/listSlots and getSessionType/listSessionTypes) to load the slot time and session type shown.",
+          "at": "screens S15 reads"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "listClients lists project steps that have no Client list effect to serve. Fix: Keep only F06.S01 and F06.S02; remove F18.S02 and F19.S01 which have no Client list effect.",
+          "at": "operations.listClients.flowSteps"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "createClient serves F35.S03 but its inputs are the client-form fields, not the booking name and email the guest fills. Fix: Serve the booking flow with the fields the guest fills there, i.e. FD26 as name and FD27 as email, not only FD03 and FD04.",
+          "at": "operations.createClient.inputs"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "getClient serves a Client read matched by email in the booking flow but takes no inputs. Fix: Add input FD27 as email so the Client read by matching email in F35.S03 is found by the typed email.",
+          "at": "operations.getClient.inputs"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "listClients lists project steps that have no Client list effect to serve. Fix: Keep only F06.S01 and F06.S02; remove F18.S02 and F19.S01 which have no Client list effect. (addressed in the final fix, not re-reviewed)",
+          "at": "operations.listClients.flowSteps"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "createClient serves F35.S03 but its inputs are the client-form fields, not the booking name and email the guest fills. Fix: Serve the booking flow with the fields the guest fills there, i.e. FD26 as name and FD27 as email, not only FD03 and FD04. (addressed in the final fix, not re-reviewed)",
+          "at": "operations.createClient.inputs"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "getClient serves a Client read matched by email in the booking flow but takes no inputs. Fix: Add input FD27 as email so the Client read by matching email in F35.S03 is found by the typed email. (addressed in the final fix, not re-reviewed)",
+          "at": "operations.getClient.inputs"
+        }
+      ]
+    }
+  ]
+}

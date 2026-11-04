@@ -1,0 +1,306 @@
+{
+  "meta": {
+    "artifact": "code-contract",
+    "version": 1,
+    "hash": "84395bc8979b2f60168519c30405c5468576d28af282b8bd891f6c8c100abe9d",
+    "inputs": {
+      "contract": {
+        "version": 1,
+        "hash": "c5c0257df549a2444d6f0af9fe337fbbf193180e95186535e63d1350d0149b67"
+      },
+      "flows-scope": {
+        "version": 1,
+        "hash": "88cf76dc9c1473a8b4b5043714057cb7248d5dd679ff39ba0e0146110fc0adb6"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "5b123f11d1a5d8c4c341f1b6ee85ecc0e3afd0e0349a58f9f37fa88effd8ae7d"
+      }
+    },
+    "stage": "code-contract",
+    "model": "muse-spark-1.3",
+    "rounds": 1,
+    "createdAt": "2026-11-03T23:36:45.398Z"
+  },
+  "data": {
+    "Client": [
+      {
+        "name": "Maya Sharma",
+        "email": "maya@acme.co",
+        "company": "Acme",
+        "profile": "Runs a D2C skincare brand, met at a meetup, pays 80000 per project",
+        "status": "active"
+      },
+      {
+        "name": "Jonas Weber",
+        "email": "jonas@weberfit.de",
+        "company": "Weber Fit",
+        "profile": "Owns boutique fitness studio chain, needs booking flow redesign, on 2500 monthly retainer",
+        "status": "active"
+      },
+      {
+        "name": "Priya Nair",
+        "email": "priya@loomandleaf.in",
+        "company": "Loom & Leaf",
+        "profile": "Handloom home decor startup, wants calm homepage redo, budget around 1800",
+        "status": "lead"
+      },
+      {
+        "name": "Daniel Okafor",
+        "email": "daniel@okaforlaw.com",
+        "company": "Okafor Legal",
+        "profile": "Solo law practice, needs trust-building landing page, referred by Sofia",
+        "status": "lead"
+      },
+      {
+        "name": "Sofia Marchetti",
+        "email": "sofia@casamarchetti.it",
+        "company": "Casa Marchetti",
+        "profile": "Italian restaurant group, menu site shipped in August, may return for reservations revamp",
+        "status": "past"
+      }
+    ],
+    "Note": [
+      {
+        "noteText": "Call about homepage redo, likes calm layouts, send proposal",
+        "noteDate": "2026-10-28",
+        "followUpDate": "2026-11-10",
+        "client": 1
+      },
+      {
+        "noteText": "Walked through class booking drop-off, wants mobile checkout fixed first",
+        "noteDate": "2026-10-30",
+        "followUpDate": "2026-11-06",
+        "client": 2
+      },
+      {
+        "noteText": "Discovery intro, loves earthy tones, will share competitor links by Friday",
+        "noteDate": "2026-11-02",
+        "followUpDate": "2026-11-10",
+        "client": 3
+      },
+      {
+        "noteText": "Needs intake form that filters time-wasters, worried about sounding too corporate",
+        "noteDate": "2026-11-01",
+        "followUpDate": "2026-11-08",
+        "client": 4
+      },
+      {
+        "noteText": "Handoff done, sent Figma files and care guide, asked for testimonial",
+        "noteDate": "2026-10-20",
+        "followUpDate": "",
+        "client": 5
+      }
+    ],
+    "Project": [
+      {
+        "name": "Acme homepage",
+        "description": "Redesign homepage and pricing page",
+        "dueDate": "2026-12-15",
+        "client": 1
+      },
+      {
+        "name": "Weber Fit booking flow",
+        "description": "Redesign class booking flow and mobile checkout",
+        "dueDate": "2026-11-20",
+        "client": 2
+      },
+      {
+        "name": "Loom & Leaf concept",
+        "description": "Discovery concept and moodboards for homepage redo",
+        "dueDate": "2026-11-15",
+        "client": 3
+      },
+      {
+        "name": "Okafor landing page",
+        "description": "Trust-building landing page with intake form",
+        "dueDate": "2026-12-01",
+        "client": 4
+      },
+      {
+        "name": "Casa Marchetti menu site",
+        "description": "Menu website with reservations link",
+        "dueDate": "2026-10-10",
+        "client": 5
+      }
+    ],
+    "Task": [
+      {
+        "title": "Draft hero section",
+        "status": "to_do",
+        "priority": "high",
+        "dueDate": "2026-11-08",
+        "project": 1
+      },
+      {
+        "title": "Collect Acme product photos",
+        "status": "in_progress",
+        "priority": "medium",
+        "dueDate": "2026-11-06",
+        "project": 1
+      },
+      {
+        "title": "Map current booking steps",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-10-28",
+        "project": 2
+      },
+      {
+        "title": "Moodboard calm layouts",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-10-30",
+        "project": 3
+      },
+      {
+        "title": "Draft intake questions",
+        "status": "to_do",
+        "priority": "medium",
+        "dueDate": "2026-11-18",
+        "project": 4
+      },
+      {
+        "title": "Export handoff files",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-10-12",
+        "project": 5
+      }
+    ],
+    "Availability": [
+      {
+        "days": [
+          "monday",
+          "tuesday"
+        ],
+        "fromTime": "10:00",
+        "toTime": "17:00"
+      },
+      {
+        "days": [
+          "wednesday",
+          "thursday"
+        ],
+        "fromTime": "10:00",
+        "toTime": "15:00"
+      },
+      {
+        "days": [
+          "friday"
+        ],
+        "fromTime": "09:00",
+        "toTime": "13:00"
+      },
+      {
+        "days": [
+          "saturday"
+        ],
+        "fromTime": "11:00",
+        "toTime": "13:00"
+      }
+    ],
+    "SessionType": [
+      {
+        "name": "Discovery call",
+        "durationInMinutes": 30,
+        "displayedPrice": 0,
+        "maximumPeople": 1
+      },
+      {
+        "name": "Design review",
+        "durationInMinutes": 60,
+        "displayedPrice": 75,
+        "maximumPeople": 1
+      },
+      {
+        "name": "Figma workshop",
+        "durationInMinutes": 90,
+        "displayedPrice": 150,
+        "maximumPeople": 4
+      },
+      {
+        "name": "Portfolio audit",
+        "durationInMinutes": 45,
+        "displayedPrice": 50,
+        "maximumPeople": 2
+      }
+    ],
+    "Slot": [
+      {
+        "sessionType": 1,
+        "startAt": "2026-11-05T10:00:00.000Z"
+      },
+      {
+        "sessionType": 1,
+        "startAt": "2026-11-06T11:00:00.000Z"
+      },
+      {
+        "sessionType": 2,
+        "startAt": "2026-11-10T14:00:00.000Z"
+      },
+      {
+        "sessionType": 2,
+        "startAt": "2026-11-12T10:30:00.000Z"
+      },
+      {
+        "sessionType": 3,
+        "startAt": "2026-11-14T11:00:00.000Z"
+      },
+      {
+        "sessionType": 4,
+        "startAt": "2026-11-11T13:00:00.000Z"
+      }
+    ],
+    "Booking": [
+      {
+        "name": "Priya Nair",
+        "email": "priya@loomandleaf.in",
+        "sessionType": 1,
+        "slot": 1,
+        "client": 3,
+        "isCancelled": false
+      },
+      {
+        "name": "Daniel Okafor",
+        "email": "daniel@okaforlaw.com",
+        "sessionType": 1,
+        "slot": 2,
+        "client": 4,
+        "isCancelled": false
+      },
+      {
+        "name": "Maya Sharma",
+        "email": "maya@acme.co",
+        "sessionType": 2,
+        "slot": 3,
+        "client": 1,
+        "isCancelled": false
+      },
+      {
+        "name": "Jonas Weber",
+        "email": "jonas@weberfit.de",
+        "sessionType": 2,
+        "slot": 4,
+        "client": 2,
+        "isCancelled": false
+      },
+      {
+        "name": "Priya Nair",
+        "email": "priya@loomandleaf.in",
+        "sessionType": 3,
+        "slot": 5,
+        "client": 3,
+        "isCancelled": false
+      },
+      {
+        "name": "Sofia Marchetti",
+        "email": "sofia@casamarchetti.it",
+        "sessionType": 4,
+        "slot": 6,
+        "client": 5,
+        "isCancelled": true
+      }
+    ]
+  }
+}

@@ -1,5 +1,7 @@
 # DashForge
 
+The full record of the run that made this app, from the brief to every review thread and model call, is in [run/](run).
+
 | | |
 |---|---|
 | Model | Muse Spark Open (`meta-models/muse-spark-open-1026`), open weights served on Baseten |

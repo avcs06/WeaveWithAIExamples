@@ -1,0 +1,321 @@
+{
+  "runId": "20261104-0609-dashboard-editor",
+  "createdAt": "2026-11-04T08:32:27.262Z",
+  "server": "next dev",
+  "generation": {
+    "backend": "baseten",
+    "agent": "OpenCode",
+    "models": [
+      {
+        "model": "meta-models/muse-spark-open-1026",
+        "calls": 334
+      }
+    ],
+    "timeMs": {
+      "total": 3490090,
+      "planning": 793158,
+      "code": 2568699,
+      "stages": [
+        {
+          "stage": "flows-scope",
+          "ms": 53464
+        },
+        {
+          "stage": "flows-catalog",
+          "ms": 114425
+        },
+        {
+          "stage": "flows-expand",
+          "ms": 107797
+        },
+        {
+          "stage": "design-theme",
+          "ms": 119294
+        },
+        {
+          "stage": "design-architect",
+          "ms": 304542
+        },
+        {
+          "stage": "contract",
+          "ms": 93571
+        },
+        {
+          "stage": "code-scaffold",
+          "ms": 75615
+        },
+        {
+          "stage": "code-contract",
+          "ms": 52586
+        },
+        {
+          "stage": "code-frames",
+          "ms": 465206
+        },
+        {
+          "stage": "code-pages",
+          "ms": 2103439
+        }
+      ]
+    },
+    "calls": 334,
+    "tokensIn": 35428832,
+    "tokensCached": 34421760,
+    "tokensOut": 512184,
+    "costUsd": 8.598886,
+    "rounds": 25,
+    "known": 29,
+    "review": [
+      {
+        "reviewer": "code",
+        "part": "code",
+        "caught": 11,
+        "fixed": 8,
+        "unchecked": 3,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "ux",
+        "part": "code",
+        "caught": 6,
+        "fixed": 5,
+        "unchecked": 1,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "checks",
+        "part": "code",
+        "caught": 35,
+        "fixed": 35,
+        "unchecked": 0,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "adherence",
+        "part": "code",
+        "caught": 7,
+        "fixed": 5,
+        "unchecked": 2,
+        "open": 0,
+        "threads": 2
+      },
+      {
+        "reviewer": "behavior",
+        "part": "code",
+        "caught": 10,
+        "fixed": 7,
+        "unchecked": 3,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "peer",
+        "part": "planning",
+        "caught": 22,
+        "fixed": 14,
+        "unchecked": 8,
+        "open": 0,
+        "threads": 0
+      },
+      {
+        "reviewer": "output",
+        "part": "planning",
+        "caught": 25,
+        "fixed": 16,
+        "unchecked": 9,
+        "open": 0,
+        "threads": 1
+      },
+      {
+        "reviewer": "checks",
+        "part": "planning",
+        "caught": 13,
+        "fixed": 11,
+        "unchecked": 0,
+        "open": 2,
+        "threads": 0
+      }
+    ],
+    "threads": {
+      "issues": 129,
+      "threads": 3
+    }
+  },
+  "code": {
+    "files": 88,
+    "lines": 3905,
+    "tsc": {
+      "errors": 0
+    },
+    "eslint": {
+      "errors": 0,
+      "warnings": 0,
+      "byRule": {}
+    },
+    "validate": {
+      "errors": 0,
+      "warnings": 0,
+      "byRule": {}
+    },
+    "clones": {
+      "percentage": 3.8461538461538463,
+      "count": 16,
+      "maxLines": 16
+    },
+    "longFiles": 0,
+    "linesByOrigin": {
+      "template": 1691,
+      "code": 691,
+      "model": 1523
+    }
+  },
+  "routes": [
+    {
+      "route": "/",
+      "screen": "S01",
+      "signedIn": false,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 22,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 34,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 9,
+        "reachable": 9,
+        "focusVisible": 9,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 0,
+        "enterOk": 0,
+        "spaceOk": 0,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboards",
+      "screen": "S04",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 73,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 21,
+        "reachable": 21,
+        "focusVisible": 20,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 12,
+        "enterOk": 12,
+        "spaceOk": 12,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/dashboards/dashboard-1",
+      "screen": "S05",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 28,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 32,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 1
+        }
+      },
+      "keyboard": {
+        "interactive": 11,
+        "reachable": 11,
+        "focusVisible": 10,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 6,
+        "enterOk": 6,
+        "spaceOk": 6,
+        "skipLink": false
+      }
+    },
+    {
+      "route": "/account",
+      "screen": "S06",
+      "signedIn": true,
+      "a11y": {
+        "axe": {
+          "critical": 0,
+          "serious": 0,
+          "moderate": 0,
+          "minor": 0
+        },
+        "rulesFailed": [],
+        "rulesPassed": 29,
+        "contrastFailures": 0,
+        "worstContrast": null,
+        "smallTargets": 0,
+        "tree": {
+          "nodes": 28,
+          "unnamedControls": [],
+          "mains": 1,
+          "h1s": 1,
+          "skippedLevels": 0
+        }
+      },
+      "keyboard": {
+        "interactive": 10,
+        "reachable": 10,
+        "focusVisible": 8,
+        "inversions": 0,
+        "trap": false,
+        "buttons": 5,
+        "enterOk": 5,
+        "spaceOk": 5,
+        "skipLink": false
+      }
+    }
+  ]
+}

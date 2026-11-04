@@ -1,0 +1,805 @@
+code-contract: 24a4548..1643290
+
+ web/app/entities/discountCode/index.ts      |   2 +
+ web/app/entities/discountCode/operations.ts |  49 ++++++++
+ web/app/entities/discountCode/seed.ts       |  54 +++++++++
+ web/app/entities/discountCode/store.ts      |  13 +++
+ web/app/entities/discountCode/types.ts      |  15 +++
+ web/app/entities/enums/index.ts             |  54 +++++++++
+ web/app/entities/order/index.ts             |   2 +
+ web/app/entities/order/operations.ts        |  67 +++++++++++
+ web/app/entities/order/seed.ts              | 171 ++++++++++++++++++++++++++++
+ web/app/entities/order/store.ts             |  13 +++
+ web/app/entities/order/types.ts             |  29 +++++
+ web/app/entities/piece/index.ts             |   2 +
+ web/app/entities/piece/operations.ts        |  54 +++++++++
+ web/app/entities/piece/seed.ts              | 133 ++++++++++++++++++++++
+ web/app/entities/piece/store.ts             |  13 +++
+ web/app/entities/piece/types.ts             |  18 +++
+ 16 files changed, 689 insertions(+)
+
+diff --git a/web/app/entities/discountCode/index.ts b/web/app/entities/discountCode/index.ts
+new file mode 100644
+index 0000000..686f054
+--- /dev/null
++++ b/web/app/entities/discountCode/index.ts
+@@ -0,0 +1,2 @@
++export type { DiscountCode, DiscountCodeInput } from './types';
++export { listDiscountCodes, useListDiscountCodes, getDiscountCode, useGetDiscountCode, getDiscountCodeByCode, useGetDiscountCodeByCode, createDiscountCode, deactivateDiscountCode } from './operations';
+diff --git a/web/app/entities/discountCode/operations.ts b/web/app/entities/discountCode/operations.ts
+new file mode 100644
+index 0000000..c43f54a
+--- /dev/null
++++ b/web/app/entities/discountCode/operations.ts
+@@ -0,0 +1,49 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useDiscountCodeStore } from './store';
++
++import type { DiscountCode, DiscountCodeInput } from './types';
++
++export async function listDiscountCodes(): Promise<DiscountCode[]> {
++  await mockCall('listDiscountCodes');
++  return useDiscountCodeStore.getState().records;
++}
++
++export function useListDiscountCodes(): Read<DiscountCode[]> {
++  return useRead('listDiscountCodes', useDiscountCodeStore('records'));
++}
++
++export async function getDiscountCode(id: string): Promise<DiscountCode | undefined> {
++  await mockCall('getDiscountCode');
++  return useDiscountCodeStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetDiscountCode(id: string): Read<DiscountCode | undefined> {
++  return useRead('getDiscountCode', useDiscountCodeStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function getDiscountCodeByCode(code: DiscountCode['code']): Promise<DiscountCode | undefined> {
++  await mockCall('getDiscountCodeByCode');
++  return useDiscountCodeStore.getState().records.find((record) => record.code === code);
++}
++
++export function useGetDiscountCodeByCode(code: DiscountCode['code']): Read<DiscountCode | undefined> {
++  return useRead('getDiscountCodeByCode', useDiscountCodeStore(({ records }) => records.find((record) => record.code === code)));
++}
++
++export async function createDiscountCode(input: DiscountCodeInput): Promise<DiscountCode> {
++  await mockCall('createDiscountCode');
++  const now = new Date().toISOString();
++  const record: DiscountCode = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useDiscountCodeStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function deactivateDiscountCode(id: string, changes: Partial<DiscountCodeInput>): Promise<DiscountCode> {
++  await mockCall('deactivateDiscountCode');
++  const current = useDiscountCodeStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('DiscountCode not found');
++  const record: DiscountCode = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useDiscountCodeStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
+diff --git a/web/app/entities/discountCode/seed.ts b/web/app/entities/discountCode/seed.ts
+new file mode 100644
+index 0000000..dd105be
+--- /dev/null
++++ b/web/app/entities/discountCode/seed.ts
+@@ -0,0 +1,54 @@
++import type { DiscountCode } from './types';
++
++export const discountCodeSeed: DiscountCode[] = [
++  {
++    "id": "discountCode-1",
++    "createdAt": "2026-10-24T19:43:11.773Z",
++    "updatedAt": "2026-10-24T20:43:11.773Z",
++    "code": "WEEKEND10",
++    "discountType": "percentage",
++    "discountValue": 10,
++    "expiryDate": "2026-11-15",
++    "status": "active"
++  },
++  {
++    "id": "discountCode-2",
++    "createdAt": "2026-10-26T19:43:11.773Z",
++    "updatedAt": "2026-10-26T21:43:11.773Z",
++    "code": "DIWALI200",
++    "discountType": "fixed_amount",
++    "discountValue": 200,
++    "expiryDate": "2026-11-10",
++    "status": "active"
++  },
++  {
++    "id": "discountCode-3",
++    "createdAt": "2026-10-28T19:43:11.773Z",
++    "updatedAt": "2026-10-28T22:43:11.773Z",
++    "code": "FIRSTBUY15",
++    "discountType": "percentage",
++    "discountValue": 15,
++    "expiryDate": "2027-01-15",
++    "status": "active"
++  },
++  {
++    "id": "discountCode-4",
++    "createdAt": "2026-10-30T19:43:11.773Z",
++    "updatedAt": "2026-10-30T23:43:11.773Z",
++    "code": "STUDIOPICKUP50",
++    "discountType": "fixed_amount",
++    "discountValue": 50,
++    "expiryDate": "2026-10-20",
++    "status": "deactivated"
++  },
++  {
++    "id": "discountCode-5",
++    "createdAt": "2026-11-01T19:43:11.773Z",
++    "updatedAt": "2026-11-02T00:43:11.773Z",
++    "code": "MONSOON20",
++    "discountType": "percentage",
++    "discountValue": 20,
++    "expiryDate": "2026-09-30",
++    "status": "deactivated"
++  }
++];
+diff --git a/web/app/entities/discountCode/store.ts b/web/app/entities/discountCode/store.ts
+new file mode 100644
+index 0000000..e586187
+--- /dev/null
++++ b/web/app/entities/discountCode/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { discountCodeSeed } from './seed';
++
++import type { DiscountCode } from './types';
++
++type DiscountCodeState = { records: DiscountCode[] };
++
++/** Every DiscountCode, saved in the browser so a reload keeps what the user changed. */
++export const useDiscountCodeStore = createPersistentStore<DiscountCodeState>(
++  () => ({ records: discountCodeSeed }),
++  'weave:20261104-0040-ecommerce-store:discountCode',
++);
+diff --git a/web/app/entities/discountCode/types.ts b/web/app/entities/discountCode/types.ts
+new file mode 100644
+index 0000000..ef33f24
+--- /dev/null
++++ b/web/app/entities/discountCode/types.ts
+@@ -0,0 +1,15 @@
++import type { DiscountCodeStatus, DiscountType } from '../enums';
++
++export type DiscountCode = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  code: string;
++  discountType: DiscountType;
++  discountValue: number;
++  expiryDate: string;
++  status: DiscountCodeStatus;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type DiscountCodeInput = Omit<DiscountCode, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/enums/index.ts b/web/app/entities/enums/index.ts
+new file mode 100644
+index 0000000..edcf090
+--- /dev/null
++++ b/web/app/entities/enums/index.ts
+@@ -0,0 +1,54 @@
++export const PieceCategoryOptions = [
++  { key: 'mug', label: "Mug" },
++  { key: 'bowl', label: "Bowl" },
++  { key: 'planter', label: "Planter" },
++  { key: 'vase', label: "Vase" },
++] as const;
++
++export type PieceCategory = (typeof PieceCategoryOptions)[number]['key'];
++
++export const SizeOptions = [
++  { key: 'small', label: "Small" },
++  { key: 'medium', label: "Medium" },
++  { key: 'large', label: "Large" },
++] as const;
++
++export type Size = (typeof SizeOptions)[number]['key'];
++
++export const FulfilmentChoiceOptions = [
++  { key: 'studio_pickup', label: "Studio pickup" },
++  { key: 'courier_delivery', label: "Courier delivery" },
++] as const;
++
++export type FulfilmentChoice = (typeof FulfilmentChoiceOptions)[number]['key'];
++
++export const DiscountTypeOptions = [
++  { key: 'percentage', label: "Percentage" },
++  { key: 'fixed_amount', label: "Fixed amount" },
++] as const;
++
++export type DiscountType = (typeof DiscountTypeOptions)[number]['key'];
++
++export const PaymentStatusOptions = [
++  { key: 'unpaid', label: "Unpaid" },
++  { key: 'paid', label: "Paid" },
++] as const;
++
++export type PaymentStatus = (typeof PaymentStatusOptions)[number]['key'];
++
++export const FulfilmentStatusOptions = [
++  { key: 'new', label: "New" },
++  { key: 'packed', label: "Packed" },
++  { key: 'shipped', label: "Shipped" },
++  { key: 'picked_up', label: "Picked Up" },
++  { key: 'cancelled', label: "Cancelled" },
++] as const;
++
++export type FulfilmentStatus = (typeof FulfilmentStatusOptions)[number]['key'];
++
++export const DiscountCodeStatusOptions = [
++  { key: 'active', label: "Active" },
++  { key: 'deactivated', label: "Deactivated" },
++] as const;
++
++export type DiscountCodeStatus = (typeof DiscountCodeStatusOptions)[number]['key'];
+diff --git a/web/app/entities/order/index.ts b/web/app/entities/order/index.ts
+new file mode 100644
+index 0000000..eb1e204
+--- /dev/null
++++ b/web/app/entities/order/index.ts
+@@ -0,0 +1,2 @@
++export type { Order, OrderInput } from './types';
++export { listOrders, useListOrders, getOrder, useGetOrder, lookupOrder, useLookupOrder, createOrder, markOrderPaid, advanceOrderFulfilment, cancelOrder } from './operations';
+diff --git a/web/app/entities/order/operations.ts b/web/app/entities/order/operations.ts
+new file mode 100644
+index 0000000..9719fc7
+--- /dev/null
++++ b/web/app/entities/order/operations.ts
+@@ -0,0 +1,67 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { useOrderStore } from './store';
++
++import type { Order, OrderInput } from './types';
++
++export async function listOrders(): Promise<Order[]> {
++  await mockCall('listOrders');
++  return useOrderStore.getState().records;
++}
++
++export function useListOrders(): Read<Order[]> {
++  return useRead('listOrders', useOrderStore('records'));
++}
++
++export async function getOrder(id: string): Promise<Order | undefined> {
++  await mockCall('getOrder');
++  return useOrderStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetOrder(id: string): Read<Order | undefined> {
++  return useRead('getOrder', useOrderStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function lookupOrder(): Promise<Order[]> {
++  await mockCall('lookupOrder');
++  return useOrderStore.getState().records;
++}
++
++export function useLookupOrder(): Read<Order[]> {
++  return useRead('lookupOrder', useOrderStore('records'));
++}
++
++export async function createOrder(input: OrderInput): Promise<Order> {
++  await mockCall('createOrder');
++  const now = new Date().toISOString();
++  const record: Order = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useOrderStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function markOrderPaid(id: string, changes: Partial<OrderInput>): Promise<Order> {
++  await mockCall('markOrderPaid');
++  const current = useOrderStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Order not found');
++  const record: Order = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useOrderStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function advanceOrderFulfilment(id: string, changes: Partial<OrderInput>): Promise<Order> {
++  await mockCall('advanceOrderFulfilment');
++  const current = useOrderStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Order not found');
++  const record: Order = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useOrderStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function cancelOrder(id: string, changes: Partial<OrderInput>): Promise<Order> {
++  await mockCall('cancelOrder');
++  const current = useOrderStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Order not found');
++  const record: Order = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  useOrderStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
+diff --git a/web/app/entities/order/seed.ts b/web/app/entities/order/seed.ts
+new file mode 100644
+index 0000000..eb815e5
+--- /dev/null
++++ b/web/app/entities/order/seed.ts
+@@ -0,0 +1,171 @@
++import type { Order } from './types';
++
++export const orderSeed: Order[] = [
++  {
++    "id": "order-1",
++    "createdAt": "2026-10-24T19:43:11.773Z",
++    "updatedAt": "2026-10-24T20:43:11.773Z",
++    "name": "Meera Sharma",
++    "phoneNumber": "9829012345",
++    "fulfilmentChoice": "courier_delivery",
++    "deliveryAddress": "14 Rose Lane, Malviya Nagar",
++    "city": "Jaipur",
++    "pinCode": "302017",
++    "discountCode": "WEEKEND10",
++    "orderReference": "JSC-4821",
++    "quantity": [
++      2
++    ],
++    "itemTitle": [
++      "Speckled Chai Mug"
++    ],
++    "itemGlaze": [
++      "Sage Green"
++    ],
++    "itemSize": [
++      "small"
++    ],
++    "itemPrice": [
++      650
++    ],
++    "subtotal": 1300,
++    "discountAmount": 130,
++    "shippingCost": 120,
++    "total": 1290,
++    "paymentStatus": "paid",
++    "fulfilmentStatus": "packed"
++  },
++  {
++    "id": "order-2",
++    "createdAt": "2026-10-26T19:43:11.773Z",
++    "updatedAt": "2026-10-26T21:43:11.773Z",
++    "name": "Arjun Mehta",
++    "phoneNumber": "9414056789",
++    "fulfilmentChoice": "studio_pickup",
++    "orderReference": "JSC-4825",
++    "quantity": [
++      1
++    ],
++    "itemTitle": [
++      "Amber Bud Vase"
++    ],
++    "itemGlaze": [
++      "Amber"
++    ],
++    "itemSize": [
++      "medium"
++    ],
++    "itemPrice": [
++      1200
++    ],
++    "subtotal": 1200,
++    "discountAmount": 0,
++    "shippingCost": 0,
++    "total": 1200,
++    "paymentStatus": "unpaid",
++    "fulfilmentStatus": "new"
++  },
++  {
++    "id": "order-3",
++    "createdAt": "2026-10-28T19:43:11.773Z",
++    "updatedAt": "2026-10-28T22:43:11.773Z",
++    "name": "Priya Nair",
++    "phoneNumber": "9982011223",
++    "fulfilmentChoice": "courier_delivery",
++    "deliveryAddress": "B-402 Sea Breeze, Bandra West",
++    "city": "Mumbai",
++    "pinCode": "400050",
++    "discountCode": "DIWALI200",
++    "orderReference": "JSC-4830",
++    "quantity": [
++      1,
++      2
++    ],
++    "itemTitle": [
++      "Indigo Ramen Bowl",
++      "Speckled Chai Mug"
++    ],
++    "itemGlaze": [
++      "Indigo Blue",
++      "Mustard Speckle"
++    ],
++    "itemSize": [
++      "medium",
++      "medium"
++    ],
++    "itemPrice": [
++      850,
++      650
++    ],
++    "subtotal": 2150,
++    "discountAmount": 200,
++    "shippingCost": 150,
++    "total": 2100,
++    "paymentStatus": "paid",
++    "fulfilmentStatus": "shipped"
++  },
++  {
++    "id": "order-4",
++    "createdAt": "2026-10-30T19:43:11.773Z",
++    "updatedAt": "2026-10-30T23:43:11.773Z",
++    "name": "Kabir Singh Rathore",
++    "phoneNumber": "9001894567",
++    "fulfilmentChoice": "courier_delivery",
++    "deliveryAddress": "C-56 Defence Colony",
++    "city": "New Delhi",
++    "pinCode": "110024",
++    "discountCode": "FIRSTBUY15",
++    "orderReference": "JSC-4834",
++    "quantity": [
++      3
++    ],
++    "itemTitle": [
++      "Terracotta Tulsi Planter"
++    ],
++    "itemGlaze": [
++      "Terracotta Natural"
++    ],
++    "itemSize": [
++      "large"
++    ],
++    "itemPrice": [
++      950
++    ],
++    "subtotal": 2850,
++    "discountAmount": 427.5,
++    "shippingCost": 180,
++    "total": 2602.5,
++    "paymentStatus": "paid",
++    "fulfilmentStatus": "new"
++  },
++  {
++    "id": "order-5",
++    "createdAt": "2026-11-01T19:43:11.773Z",
++    "updatedAt": "2026-11-02T00:43:11.773Z",
++    "name": "Ananya Iyer",
++    "phoneNumber": "9799398765",
++    "fulfilmentChoice": "studio_pickup",
++    "orderReference": "JSC-4840",
++    "quantity": [
++      1
++    ],
++    "itemTitle": [
++      "Jaipur Blue Serving Bowl"
++    ],
++    "itemGlaze": [
++      "Turquoise Jaal"
++    ],
++    "itemSize": [
++      "large"
++    ],
++    "itemPrice": [
++      1450
++    ],
++    "subtotal": 1450,
++    "discountAmount": 0,
++    "shippingCost": 0,
++    "total": 1450,
++    "paymentStatus": "unpaid",
++    "fulfilmentStatus": "cancelled"
++  }
++];
+diff --git a/web/app/entities/order/store.ts b/web/app/entities/order/store.ts
+new file mode 100644
+index 0000000..d7ea195
+--- /dev/null
++++ b/web/app/entities/order/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { orderSeed } from './seed';
++
++import type { Order } from './types';
++
++type OrderState = { records: Order[] };
++
++/** Every Order, saved in the browser so a reload keeps what the user changed. */
++export const useOrderStore = createPersistentStore<OrderState>(
++  () => ({ records: orderSeed }),
++  'weave:20261104-0040-ecommerce-store:order',
++);
+diff --git a/web/app/entities/order/types.ts b/web/app/entities/order/types.ts
+new file mode 100644
+index 0000000..238c8fb
+--- /dev/null
++++ b/web/app/entities/order/types.ts
+@@ -0,0 +1,29 @@
++import type { FulfilmentChoice, FulfilmentStatus, PaymentStatus, Size } from '../enums';
++
++export type Order = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  name: string;
++  phoneNumber: string;
++  fulfilmentChoice: FulfilmentChoice;
++  deliveryAddress?: string;
++  city?: string;
++  pinCode?: string;
++  discountCode?: string;
++  orderReference: string;
++  quantity: number[];
++  itemTitle: string[];
++  itemGlaze: string[];
++  itemSize: Size[];
++  itemPrice: number[];
++  subtotal: number;
++  discountAmount?: number;
++  shippingCost: number;
++  total: number;
++  paymentStatus: PaymentStatus;
++  fulfilmentStatus: FulfilmentStatus;
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type OrderInput = Omit<Order, 'id' | 'createdAt' | 'updatedAt'>;
+diff --git a/web/app/entities/piece/index.ts b/web/app/entities/piece/index.ts
+new file mode 100644
+index 0000000..ad3818e
+--- /dev/null
++++ b/web/app/entities/piece/index.ts
+@@ -0,0 +1,2 @@
++export type { Piece, PieceInput } from './types';
++export { listPieces, useListPieces, getPiece, useGetPiece, createPiece, updatePiece, updatePieceStock, deletePiece } from './operations';
+diff --git a/web/app/entities/piece/operations.ts b/web/app/entities/piece/operations.ts
+new file mode 100644
+index 0000000..e6191bc
+--- /dev/null
++++ b/web/app/entities/piece/operations.ts
+@@ -0,0 +1,54 @@
++import { mockCall, type Read, useRead } from '../mock';
++
++import { usePieceStore } from './store';
++
++import type { Piece, PieceInput } from './types';
++
++export async function listPieces(): Promise<Piece[]> {
++  await mockCall('listPieces');
++  return usePieceStore.getState().records;
++}
++
++export function useListPieces(): Read<Piece[]> {
++  return useRead('listPieces', usePieceStore('records'));
++}
++
++export async function getPiece(id: string): Promise<Piece | undefined> {
++  await mockCall('getPiece');
++  return usePieceStore.getState().records.find((record) => record.id === id);
++}
++
++export function useGetPiece(id: string): Read<Piece | undefined> {
++  return useRead('getPiece', usePieceStore(({ records }) => records.find((record) => record.id === id)));
++}
++
++export async function createPiece(input: PieceInput): Promise<Piece> {
++  await mockCall('createPiece');
++  const now = new Date().toISOString();
++  const record: Piece = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  usePieceStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
++export async function updatePiece(id: string, changes: Partial<PieceInput>): Promise<Piece> {
++  await mockCall('updatePiece');
++  const current = usePieceStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Piece not found');
++  const record: Piece = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  usePieceStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function updatePieceStock(id: string, changes: Partial<PieceInput>): Promise<Piece> {
++  await mockCall('updatePieceStock');
++  const current = usePieceStore.getState().records.find((record) => record.id === id);
++  if (!current) throw new Error('Piece not found');
++  const record: Piece = { ...current, ...changes, updatedAt: new Date().toISOString() };
++  usePieceStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
++  return record;
++}
++
++export async function deletePiece(id: string): Promise<void> {
++  await mockCall('deletePiece');
++  usePieceStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
+diff --git a/web/app/entities/piece/seed.ts b/web/app/entities/piece/seed.ts
+new file mode 100644
+index 0000000..d8cbcfe
+--- /dev/null
++++ b/web/app/entities/piece/seed.ts
+@@ -0,0 +1,133 @@
++import type { Piece } from './types';
++
++export const pieceSeed: Piece[] = [
++  {
++    "id": "piece-1",
++    "createdAt": "2026-10-24T19:43:11.773Z",
++    "updatedAt": "2026-10-24T20:43:11.773Z",
++    "title": "Speckled Chai Mug",
++    "description": "Wheel-thrown stoneware mug with speckled glaze, 300ml. Perfect for cutting chai.",
++    "price": 650,
++    "photos": [
++      "https://picsum.photos/seed/speckled-chai-mug-1/800/600",
++      "https://picsum.photos/seed/speckled-chai-mug-2/800/600"
++    ],
++    "category": "mug",
++    "glaze": [
++      "Sage Green",
++      "Mustard Speckle"
++    ],
++    "size": [
++      "small",
++      "medium"
++    ],
++    "stockQuantity": [
++      14,
++      6
++    ]
++  },
++  {
++    "id": "piece-2",
++    "createdAt": "2026-10-26T19:43:11.773Z",
++    "updatedAt": "2026-10-26T21:43:11.773Z",
++    "title": "Indigo Ramen Bowl",
++    "description": "Hand-thrown ramen bowl with deep indigo dip glaze, 700ml. Food-safe and chip resistant.",
++    "price": 850,
++    "photos": [
++      "https://picsum.photos/seed/indigo-ramen-bowl-1/800/600",
++      "https://picsum.photos/seed/indigo-ramen-bowl-2/800/600",
++      "https://picsum.photos/seed/indigo-ramen-bowl-3/800/600"
++    ],
++    "category": "bowl",
++    "glaze": [
++      "Indigo Blue",
++      "Oatmeal White"
++    ],
++    "size": [
++      "medium",
++      "large"
++    ],
++    "stockQuantity": [
++      8,
++      3
++    ]
++  },
++  {
++    "id": "piece-3",
++    "createdAt": "2026-10-28T19:43:11.773Z",
++    "updatedAt": "2026-10-28T22:43:11.773Z",
++    "title": "Terracotta Tulsi Planter",
++    "description": "Unglazed terracotta planter with drainage hole and saucer, for tulsi and herbs.",
++    "price": 950,
++    "photos": [
++      "https://picsum.photos/seed/terracotta-tulsi-planter-1/800/600",
++      "https://picsum.photos/seed/terracotta-tulsi-planter-2/800/600"
++    ],
++    "category": "planter",
++    "glaze": [
++      "Terracotta Natural",
++      "Sage Green"
++    ],
++    "size": [
++      "medium",
++      "large"
++    ],
++    "stockQuantity": [
++      5,
++      2
++    ]
++  },
++  {
++    "id": "piece-4",
++    "createdAt": "2026-10-30T19:43:11.773Z",
++    "updatedAt": "2026-10-30T23:43:11.773Z",
++    "title": "Amber Bud Vase",
++    "description": "Slender bud vase in warm amber glaze, ideal for single marigold stems.",
++    "price": 1200,
++    "photos": [
++      "https://picsum.photos/seed/amber-bud-vase-1/800/600",
++      "https://picsum.photos/seed/amber-bud-vase-2/800/600"
++    ],
++    "category": "vase",
++    "glaze": [
++      "Amber",
++      "Charcoal Black",
++      "Ivory Matte"
++    ],
++    "size": [
++      "small",
++      "medium",
++      "large"
++    ],
++    "stockQuantity": [
++      9,
++      4,
++      1
++    ]
++  },
++  {
++    "id": "piece-5",
++    "createdAt": "2026-11-01T19:43:11.773Z",
++    "updatedAt": "2026-11-02T00:43:11.773Z",
++    "title": "Jaipur Blue Serving Bowl",
++    "description": "Traditional Jaipur blue pottery serving bowl with turquoise jaal work, 1.2L.",
++    "price": 1450,
++    "photos": [
++      "https://picsum.photos/seed/jaipur-blue-serving-bowl-1/800/600",
++      "https://picsum.photos/seed/jaipur-blue-serving-bowl-2/800/600"
++    ],
++    "category": "bowl",
++    "glaze": [
++      "Jaipur Blue",
++      "Turquoise Jaal"
++    ],
++    "size": [
++      "medium",
++      "large"
++    ],
++    "stockQuantity": [
++      0,
++      7
++    ]
++  }
++];
+diff --git a/web/app/entities/piece/store.ts b/web/app/entities/piece/store.ts
+new file mode 100644
+index 0000000..5f4a71a
+--- /dev/null
++++ b/web/app/entities/piece/store.ts
+@@ -0,0 +1,13 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++import { pieceSeed } from './seed';
++
++import type { Piece } from './types';
++
++type PieceState = { records: Piece[] };
++
++/** Every Piece, saved in the browser so a reload keeps what the user changed. */
++export const usePieceStore = createPersistentStore<PieceState>(
++  () => ({ records: pieceSeed }),
++  'weave:20261104-0040-ecommerce-store:piece',
++);
+diff --git a/web/app/entities/piece/types.ts b/web/app/entities/piece/types.ts
+new file mode 100644
+index 0000000..6bdf4ac
+--- /dev/null
++++ b/web/app/entities/piece/types.ts
+@@ -0,0 +1,18 @@
++import type { PieceCategory, Size } from '../enums';
++
++export type Piece = {
++  id: string;
++  createdAt: string;
++  updatedAt: string;
++  title: string;
++  description?: string;
++  price: number;
++  photos: string[];
++  category: PieceCategory;
++  glaze: string[];
++  size: Size[];
++  stockQuantity: number[];
++};
++
++/** What a create takes: everything but the fields the store sets. */
++export type PieceInput = Omit<Piece, 'id' | 'createdAt' | 'updatedAt'>;

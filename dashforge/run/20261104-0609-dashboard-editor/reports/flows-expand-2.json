@@ -1,0 +1,31 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "websiteResponse and outcomes use position word 'top' ('places it at the top of the home list', 'appears at top', 'placed at top') which is a design/position detail the flows must not name. Fix: Remove position words. Describe the result by data/behavior only, e.g., 'shows it in the home list sorted by lastEditedAt descending (newest first) and opens it in the editor' and 'it appears in the home list sorted by lastEditedAt; refresh keeps it' without 'top'. Use 'first' if order must be explicit as in the example.",
+          "at": "F09.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Delete of Dashboard permanently removes its Widgets per business rules, but effects list only Dashboard delete. Fix: Add second effect on F10.S01: {\"noun\":\"Widget\",\"change\":\"delete\"} alongside Dashboard delete, keeping delete effect on the confirm-asking step.",
+          "at": "F10.S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Step response uses position word 'top' ('places it at the top of the home list'), which O23 forbids. Fix: Rephrase without position, e.g., 'places it in the home list sorted by lastEditedAt descending and opens it in the editor' and remove 'top' from any step/alternative websiteResponse.",
+          "at": "F09.S01"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

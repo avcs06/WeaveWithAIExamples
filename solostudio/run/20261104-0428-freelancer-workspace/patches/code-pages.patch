@@ -1,0 +1,5463 @@
+code-pages: 637b38d..dde20fd
+
+ web/app/(routes)/(app)/account/page.tsx            | 153 ++++++++
+ web/app/(routes)/(app)/availability/page.tsx       | 256 ++++++++++++
+ .../(routes)/(app)/bookings/[bookingId]/page.tsx   | 126 ++++++
+ .../[clientId]/components/AddNoteDialog.tsx        |  84 ++++
+ .../[clientId]/components/EditClientDialog.tsx     | 113 ++++++
+ .../[clientId]/components/EditNoteDialog.tsx       | 113 ++++++
+ .../clients/[clientId]/components/NoteForm.tsx     |  65 +++
+ web/app/(routes)/(app)/clients/[clientId]/page.tsx | 437 +++++++++++++++++++++
+ .../(app)/clients/components/AddClientDialog.tsx   |  86 ++++
+ web/app/(routes)/(app)/clients/page.tsx            | 283 +++++++++++++
+ web/app/(routes)/(app)/home/page.tsx               | 276 +++++++++++++
+ .../[projectId]/components/AddTaskDialog.tsx       |  85 ++++
+ .../[projectId]/components/EditProjectDialog.tsx   | 113 ++++++
+ .../[projectId]/components/EditTaskDialog.tsx      | 115 ++++++
+ .../projects/[projectId]/components/TaskForm.tsx   |  86 ++++
+ .../[projectId]/components/TaskStatusTag.tsx       |  39 ++
+ .../(routes)/(app)/projects/[projectId]/page.tsx   | 423 ++++++++++++++++++++
+ web/app/(routes)/(app)/projects/page.tsx           | 172 ++++++++
+ .../components/AddSessionTypeDialog.tsx            |  82 ++++
+ .../components/EditSessionTypeDialog.tsx           | 116 ++++++
+ .../session-types/components/SessionTypeForm.tsx   | 118 ++++++
+ web/app/(routes)/(app)/session-types/page.tsx      | 128 ++++++
+ .../sessions/[slotId]/components/SlotBookings.tsx  | 101 +++++
+ web/app/(routes)/(app)/sessions/[slotId]/page.tsx  | 160 ++++++++
+ web/app/(routes)/(app)/sessions/page.tsx           | 208 ++++++++++
+ web/app/(routes)/(marketing)/book/page.tsx         | 326 +++++++++++++++
+ .../(marketing)/my-booking/[bookingId]/page.tsx    | 196 +++++++++
+ web/app/(routes)/(marketing)/page.tsx              |  95 ++++-
+ web/app/blocks/ClientDialogs/ClientForm.tsx        | 106 +++++
+ web/app/blocks/Format/format.ts                    |  63 +++
+ web/app/blocks/ProjectDialogs/AddProjectDialog.tsx | 110 ++++++
+ web/app/blocks/ProjectDialogs/ProjectForm.tsx      |  80 ++++
+ web/app/blocks/Slots/slots.ts                      |  79 ++++
+ .../components/ClientStatusTag/ClientStatusTag.tsx |  28 ++
+ web/app/components/ClientStatusTag/index.ts        |   1 +
+ web/app/components/LoadError/LoadError.tsx         |  18 +
+ web/app/components/LoadError/index.ts              |   1 +
+ web/app/entities/auth/index.ts                     |  34 +-
+ web/app/entities/availability/index.ts             |   2 +-
+ web/app/entities/availability/operations.ts        |  22 ++
+ web/app/entities/client/operations.ts              |  10 +-
+ web/next-env.d.ts                                  |   2 +-
+ 42 files changed, 5100 insertions(+), 11 deletions(-)
+
+diff --git a/web/app/(routes)/(app)/account/page.tsx b/web/app/(routes)/(app)/account/page.tsx
+new file mode 100644
+index 0000000..4e1b429
+--- /dev/null
++++ b/web/app/(routes)/(app)/account/page.tsx
+@@ -0,0 +1,153 @@
++'use client';
++
++import { PageHeader } from '@app/components/PageHeader';
++import { updateAccount, useCurrentUser } from '@app/entities/auth';
++import { Button } from '@packages/ui/Button';
++import { Controller, Form } from '@packages/ui/Form';
++import { Input, PasswordInput } from '@packages/ui/Input';
++import { toast } from '@packages/ui/Toast';
++import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++type AccountFormValues = { email: string; password: string };
++
++/**
++ * S16 Account settings: see and change the sign-in email and password.
++ * The password is checked here and never stored.
++ */
++export default function AccountPage() {
++  const user = useCurrentUser();
++  const [editing, setEditing] = useState(false);
++
++  if (!user) return null;
++
++  return (
++    <>
++      <PageHeader
++        title="Account settings"
++        description="How you sign in to your workspace."
++        actions={
++          !editing ? (
++            <Button onClick={() => setEditing(true)}>
++              Edit
++            </Button>
++          ) : undefined
++        }
++      />
++      {editing ? (
++        <AccountEditor
++          key={user.email}
++          currentEmail={user.email}
++          saving={false}
++          onDone={() => setEditing(false)}
++          onCancel={() => setEditing(false)}
++        />
++      ) : (
++        <DescriptionList>
++          <div>
++            <DescriptionTerm>Sign-in email</DescriptionTerm>
++            <DescriptionDetails>{user.email}</DescriptionDetails>
++          </div>
++        </DescriptionList>
++      )}
++    </>
++  );
++}
++
++function AccountEditor({
++  currentEmail,
++  saving,
++  onDone,
++  onCancel,
++}: {
++  currentEmail: string;
++  saving: boolean;
++  onDone: () => void;
++  onCancel: () => void;
++}) {
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<AccountFormValues>({ defaultValues: { email: currentEmail, password: '' } });
++  const [busy, setBusy] = useState(saving);
++
++  const save = async (values: AccountFormValues) => {
++    setBusy(true);
++    try {
++      await updateAccount({ email: values.email.trim(), password: values.password });
++      toast({ title: 'Account saved', status: 'success' });
++      onDone();
++    } catch (error) {
++      if (error instanceof Error && (error as Error & { code?: string }).code === 'email-taken') {
++        setError('email', { message: 'That email is already in use' });
++      } else {
++        setError('root.server', { message: 'Saving failed. Try again.' });
++      }
++    } finally {
++      setBusy(false);
++    }
++  };
++
++  return (
++    <Form
++      onSubmit={(event) => {
++        clearErrors('root');
++        void handleSubmit(save)(event);
++      }}
++      error={errors.root?.server?.message}
++      actions={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Done.
++            onClick={onCancel}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            loadingWithReason={busy || isSubmitting ? 'Saving your account' : undefined}
++          >
++            Done
++          </Button>
++        </>
++      }
++    >
++      <Controller
++        name="email"
++        control={control}
++        rules={{
++          required: 'Enter your sign-in email',
++          pattern: {
++            value: /^\S+@\S+\.\S+$/,
++            message: 'Enter an email like name@example.com',
++          },
++          maxLength: { value: 254, message: 'Keep the email to 254 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Email" type="email" autoComplete="email" {...field} />}
++      </Controller>
++      <Controller
++        name="password"
++        control={control}
++        rules={{
++          required: 'Enter a password',
++          minLength: { value: 8, message: 'Use 8 or more characters' },
++          maxLength: { value: 128, message: 'Keep the password to 128 characters' },
++        }}
++      >
++        {({ field }) => (
++          <PasswordInput
++            label="Password"
++            autoComplete="new-password"
++            helpText="Use 8 or more characters."
++            {...field}
++          />
++        )}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/(routes)/(app)/availability/page.tsx b/web/app/(routes)/(app)/availability/page.tsx
+new file mode 100644
+index 0000000..824373b
+--- /dev/null
++++ b/web/app/(routes)/(app)/availability/page.tsx
+@@ -0,0 +1,256 @@
++'use client';
++
++import { LoadError } from '@app/components/LoadError';
++import { PageHeader } from '@app/components/PageHeader';
++import {
++  createAvailability,
++  deleteAvailability,
++  updateAvailability,
++  useGetAvailability,
++  useListAvailabilities,
++  type Availability,
++} from '@app/entities/availability';
++import { DayOfWeekOptions } from '@app/entities/enums';
++import { Button } from '@packages/ui/Button';
++import { Controller, Form } from '@packages/ui/Form';
++import { FormControl } from '@packages/ui/FormControl';
++import { MultiSelect, SelectOption } from '@packages/ui/Select';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++type AvailabilityFormValues = {
++  days: string[];
++  fromTime: string;
++  toTime: string;
++};
++
++const dayLabel = (day: string) => DayOfWeekOptions.find((option) => option.key === day)?.label ?? day;
++
++function ruleSummary(record: Availability): string {
++  const days = (record.days ?? []).map(dayLabel).join(', ');
++  if (!days) return 'No days';
++  if (record.fromTime && record.toTime) return `${days} · ${record.fromTime}–${record.toTime}`;
++  return days;
++}
++
++/**
++ * S09 Availability: see and set the weekly days and hours that can be booked.
++ * The saved rules show as a weekly summary; saving sets one weekly days and
++ * hours, which replaces the saved rules.
++ */
++export default function AvailabilityPage() {
++  const list = useListAvailabilities();
++  const primaryId = list.data[0]?.id ?? '';
++  const primary = useGetAvailability(primaryId);
++  const [editing, setEditing] = useState(false);
++  const [saving, setSaving] = useState(false);
++
++  const loading = list.loading || primary.loading;
++  const failed = list.error ?? primary.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Availability" />
++        <LoadError
++          message="The availability could not be loaded."
++          onRetry={() => {
++            list.retry();
++            primary.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && list.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Availability" />
++        <Paragraph>Loading availability.</Paragraph>
++      </>
++    );
++  }
++
++  const rules = list.data.filter((record) => (record.days ?? []).length > 0);
++  const saved = primary.data;
++
++  const done = async (values: AvailabilityFormValues) => {
++    setSaving(true);
++    try {
++      const changes = {
++        days: (values.days ?? []) as Availability['days'],
++        fromTime: values.fromTime || undefined,
++        toTime: values.toTime || undefined,
++      };
++      if (saved) {
++        await updateAvailability(saved.id, changes);
++        for (const record of list.data.filter((entry) => entry.id !== saved.id)) {
++          await deleteAvailability(record.id);
++        }
++      } else {
++        await createAvailability(changes);
++      }
++      toast({ title: 'Availability saved', status: 'success' });
++      setEditing(false);
++    } catch {
++      toast({ title: 'Could not save the availability', status: 'error' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Availability"
++        description="The weekly days and hours guests can book."
++        actions={
++          !editing ? (
++            <Button onClick={() => setEditing(true)}>
++              Edit
++            </Button>
++          ) : undefined
++        }
++      />
++      {editing ? (
++        <AvailabilityEditor
++          key={saved?.id ?? 'new'}
++          initial={{
++            days: saved?.days ?? [],
++            fromTime: saved?.fromTime ?? '',
++            toTime: saved?.toTime ?? '',
++          }}
++          saving={saving}
++          onCancel={() => setEditing(false)}
++          onDone={(values) => void done(values)}
++        />
++      ) : (
++        <div className="flex-col-gap-3 items-start">
++          {rules.length === 0 ? (
++            <Paragraph>No days set yet. No slots are offered until hours are set.</Paragraph>
++          ) : (
++            <DescriptionList>
++              {rules.map((record) => (
++                <div key={record.id}>
++                  <DescriptionTerm>Open hours</DescriptionTerm>
++                  <DescriptionDetails>
++                    <Truncate>{ruleSummary(record)}</Truncate>
++                  </DescriptionDetails>
++                </div>
++              ))}
++            </DescriptionList>
++          )}
++          <Paragraph color="muted">
++            Changing availability affects slots offered afterwards and does not move or cancel bookings
++            already made.
++          </Paragraph>
++        </div>
++      )}
++    </>
++  );
++}
++
++function AvailabilityEditor({
++  initial,
++  saving,
++  onCancel,
++  onDone,
++}: {
++  initial: AvailabilityFormValues;
++  saving: boolean;
++  onCancel: () => void;
++  onDone: (values: AvailabilityFormValues) => void;
++}) {
++  const { control, handleSubmit } = useForm<AvailabilityFormValues>({ defaultValues: initial });
++
++  return (
++    <Form
++      onSubmit={handleSubmit(onDone)}
++      actions={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Done.
++            onClick={onCancel}
++          >
++            Cancel
++          </Button>
++          <Button type="submit" loadingWithReason={saving ? 'Saving the availability' : undefined}>
++            Done
++          </Button>
++        </>
++      }
++    >
++      <Controller
++        name="days"
++        control={control}
++        rules={{ deps: ['fromTime', 'toTime'] }}
++      >
++        {({ field }) => (
++          <MultiSelect label="Days" {...field}>
++            {DayOfWeekOptions.map((option) => (
++              <SelectOption key={option.key} value={option.key} label={option.label} />
++            ))}
++          </MultiSelect>
++        )}
++      </Controller>
++      <Controller
++        name="fromTime"
++        control={control}
++        rules={{
++          deps: ['toTime'],
++          validate: (value, { days }) =>
++            days.length === 0 || value ? true : 'Enter the start time',
++        }}
++      >
++        {({ field: { value, onChange, onBlur, ...field } }) => (
++          <FormControl label="From time" {...field}>
++            {({ isDisabled, ...controlProps }) => (
++              <input
++                {...controlProps}
++                type="time"
++                value={value}
++                readOnly={isDisabled}
++                onChange={(event) => {
++                  if (!isDisabled) onChange(event.target.value);
++                }}
++                onBlur={onBlur}
++              />
++            )}
++          </FormControl>
++        )}
++      </Controller>
++      <Controller
++        name="toTime"
++        control={control}
++        rules={{
++          validate: (value, { days, fromTime }) => {
++            if (days.length === 0) return true;
++            if (!value) return 'Enter the end time';
++            if (fromTime && value <= fromTime) return 'End time must be after start time';
++            return true;
++          },
++        }}
++      >
++        {({ field: { value, onChange, onBlur, ...field } }) => (
++          <FormControl label="To time" {...field}>
++            {({ isDisabled, ...controlProps }) => (
++              <input
++                {...controlProps}
++                type="time"
++                value={value}
++                readOnly={isDisabled}
++                onChange={(event) => {
++                  if (!isDisabled) onChange(event.target.value);
++                }}
++                onBlur={onBlur}
++              />
++            )}
++          </FormControl>
++        )}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx b/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx
+new file mode 100644
+index 0000000..b25de36
+--- /dev/null
++++ b/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx
+@@ -0,0 +1,126 @@
++'use client';
++
++import { formatSlotTitle } from '@app/blocks/Format/format';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { useGetBooking } from '@app/entities/booking';
++import { useGetClient } from '@app/entities/client';
++import { useGetSessionType } from '@app/entities/sessionType';
++import { useGetSlot } from '@app/entities/slot';
++import { Section } from '@packages/ui/Section';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
++import { useParams } from 'next/navigation';
++import React from 'react';
++
++/** The booking's slot as a link, with its session type name and time. */
++function SlotLink({ slotId }: { slotId: string }) {
++  const slot = useGetSlot(slotId);
++  if (!slot.data) return <>—</>;
++  return <SlotNameLink slotId={slotId} startAt={slot.data.startAt} sessionTypeId={slot.data.sessionType} />;
++}
++
++function SlotNameLink({
++  slotId,
++  startAt,
++  sessionTypeId,
++}: {
++  slotId: string;
++  startAt: string;
++  sessionTypeId: string;
++}) {
++  const sessionType = useGetSessionType(sessionTypeId);
++  return (
++    <NextLink className="inline-block max-w-full" href={`/sessions/${slotId}`}>
++      <Truncate>{formatSlotTitle(sessionType.data?.name ?? 'Session', startAt)}</Truncate>
++    </NextLink>
++  );
++}
++
++/** The booking's linked client: its name, or that there is none. */
++function ClientLink({ clientId }: { clientId?: string }) {
++  const linked = useGetClient(clientId ?? '');
++  if (!clientId || !linked.data) return <Paragraph color="muted">There is no linked client.</Paragraph>;
++  return (
++    <NextLink className="inline-block max-w-full" href={`/clients/${clientId}`}>
++      <Truncate>{linked.data.name}</Truncate>
++    </NextLink>
++  );
++}
++
++/**
++ * S13 The booker's name: who booked, for what and when, as the designer.
++ */
++export default function BookingPage() {
++  const { bookingId } = useParams<{ bookingId: string }>();
++  const booking = useGetBooking(bookingId);
++
++  if (booking.error) {
++    return (
++      <>
++        <PageHeader title="Booking" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
++        <LoadError message="The booking could not be loaded." onRetry={() => booking.retry()} />
++      </>
++    );
++  }
++
++  if (booking.loading && !booking.data) {
++    return (
++      <>
++        <PageHeader title="Booking" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
++        <Paragraph>Loading booking.</Paragraph>
++      </>
++    );
++  }
++
++  if (!booking.data || booking.data.isCancelled) {
++    return (
++      <NotFound
++        title="This booking is gone."
++        description="It may have been cancelled, or the link is wrong."
++        back={{ label: 'Back to sessions', href: '/sessions' }}
++      />
++    );
++  }
++
++  const record = booking.data;
++
++  return (
++    <>
++      <PageHeader
++        title={<Truncate>{`${record.name}'s booking`}</Truncate>}
++        breadcrumb={[{ label: 'Sessions', href: '/sessions' }]}
++      />
++      <Section title="Details">
++        <DescriptionList>
++          <div>
++            <DescriptionTerm>Name</DescriptionTerm>
++            <DescriptionDetails>
++              <Truncate>{record.name}</Truncate>
++            </DescriptionDetails>
++          </div>
++          <div>
++            <DescriptionTerm>Email</DescriptionTerm>
++            <DescriptionDetails>
++              <Truncate>{record.email}</Truncate>
++            </DescriptionDetails>
++          </div>
++          <div>
++            <DescriptionTerm>Linked client</DescriptionTerm>
++            <DescriptionDetails>
++              <ClientLink clientId={record.client} />
++            </DescriptionDetails>
++          </div>
++          <div>
++            <DescriptionTerm>Slot</DescriptionTerm>
++            <DescriptionDetails>
++              <SlotLink slotId={record.slot} />
++            </DescriptionDetails>
++          </div>
++        </DescriptionList>
++      </Section>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/components/AddNoteDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/AddNoteDialog.tsx
+new file mode 100644
+index 0000000..1069dce
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/[clientId]/components/AddNoteDialog.tsx
+@@ -0,0 +1,84 @@
++'use client';
++
++import { createNote } from '@app/entities/note';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { emptyNoteForm, NoteForm, type NoteFormValues } from './NoteForm';
++
++/** D03 Add a note: jot a dated note after a call with an optional follow-up. */
++export function AddNoteDialog({
++  clientId,
++  open,
++  onOpenChange,
++}: {
++  clientId: string;
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<NoteFormValues>({ defaultValues: emptyNoteForm });
++  const [saving, setSaving] = useState(false);
++
++  const save = async (values: NoteFormValues) => {
++    setSaving(true);
++    try {
++      await createNote({
++        noteText: values.noteText.trim(),
++        noteDate: values.noteDate,
++        followUpDate: values.followUpDate || undefined,
++        client: clientId,
++      });
++      toast({ title: 'Note saved', status: 'success' });
++      onOpenChange(false);
++    } catch {
++      setError('root.server', { message: 'Saving failed. Try again.' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Add a note"
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the note' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <NoteForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx
+new file mode 100644
+index 0000000..6c7af33
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx
+@@ -0,0 +1,113 @@
++'use client';
++
++import { ClientForm, type ClientFormValues } from '@app/blocks/ClientDialogs/ClientForm';
++import { getClient, updateClient, type Client } from '@app/entities/client';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import { useRouter } from 'next/navigation';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++
++/** D02 Edit client: change a client's details or status. */
++export function EditClientDialog({
++  client,
++  open,
++  onOpenChange,
++}: {
++  client: Client;
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<ClientFormValues>({
++    defaultValues: {
++      name: client.name,
++      email: client.email,
++      company: client.company ?? '',
++      profile: client.profile ?? '',
++      status: client.status,
++    },
++  });
++  const [saving, setSaving] = useState(false);
++  const [gone, setGone] = useState(false);
++  const router = useRouter();
++
++  const cancel = () => {
++    onOpenChange(false);
++    if (gone) router.push('/clients');
++  };
++
++  const save = async (values: ClientFormValues) => {
++    setSaving(true);
++    try {
++      const current = await getClient(client.id);
++      if (!current) {
++        setGone(true);
++        setError('root.server', { message: 'This client is gone.' });
++        return;
++      }
++      await updateClient(client.id, {
++        name: values.name.trim(),
++        email: values.email.trim(),
++        company: values.company.trim() || undefined,
++        profile: values.profile.trim() || undefined,
++        status: values.status || client.status,
++      });
++      toast({ title: 'Client updated', status: 'success' });
++      onOpenChange(false);
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        setGone(true);
++        setError('root.server', { message: 'This client is gone.' });
++      } else {
++        setError('root.server', { message: 'Saving failed. Try again.' });
++      }
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title={`Edit ${client.name}`}
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={cancel}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the client' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <ClientForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++        actions={null}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
+new file mode 100644
+index 0000000..2038b9a
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
+@@ -0,0 +1,113 @@
++'use client';
++
++import { updateNote, useGetNote, type Note } from '@app/entities/note';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { NoteForm, type NoteFormValues } from './NoteForm';
++
++/** D04 Edit note: correct a note and its follow-up date. */
++export function EditNoteDialog({
++  note,
++  onOpenChange,
++}: {
++  note: Note;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const current = useGetNote(note.id);
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<NoteFormValues>({
++    defaultValues: {
++      noteText: note.noteText,
++      noteDate: note.noteDate,
++      followUpDate: note.followUpDate ?? '',
++    },
++  });
++  const [saving, setSaving] = useState(false);
++
++  if (!current.data && !current.loading) {
++    return (
++      <Dialog
++        title="Edit note"
++        open
++        onOpenChange={onOpenChange}
++        footer={
++          <Button
++            variant="base" // Cancel is the only way out once the note is gone.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++        }
++      >
++        <Paragraph>This note is gone.</Paragraph>
++      </Dialog>
++    );
++  }
++
++  const save = async (values: NoteFormValues) => {
++    setSaving(true);
++    try {
++      await updateNote(note.id, {
++        noteText: values.noteText.trim(),
++        noteDate: values.noteDate,
++        followUpDate: values.followUpDate || undefined,
++      });
++      toast({ title: 'Note updated', status: 'success' });
++      onOpenChange(false);
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        setError('root.server', { message: 'This note is gone.' });
++      } else {
++        setError('root.server', { message: 'Saving failed. Try again.' });
++      }
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Edit note"
++      open
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the note' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <NoteForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/components/NoteForm.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/NoteForm.tsx
+new file mode 100644
+index 0000000..254a426
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/[clientId]/components/NoteForm.tsx
+@@ -0,0 +1,65 @@
++'use client';
++
++import { todayKey } from '@app/blocks/Format/format';
++import { Controller, Form } from '@packages/ui/Form';
++import { DateInput } from '@packages/ui/Input';
++import { Textarea } from '@packages/ui/Textarea';
++import React from 'react';
++import { type Control } from 'react-hook-form';
++
++export type NoteFormValues = {
++  noteText: string;
++  noteDate: string;
++  followUpDate: string;
++};
++
++export const emptyNoteForm: NoteFormValues = {
++  noteText: '',
++  noteDate: todayKey(),
++  followUpDate: '',
++};
++
++/** The note form FM04: Note text, Note date and Follow-up date. */
++export function NoteForm({
++  control,
++  id,
++  onSubmit,
++  error,
++}: {
++  control: Control<NoteFormValues>;
++  id: string;
++  onSubmit: (event: React.FormEvent) => void;
++  error?: string;
++}) {
++  return (
++    <Form id={id} onSubmit={onSubmit} error={error} fill actions={null}>
++      <Controller
++        name="noteText"
++        control={control}
++        rules={{
++          required: 'Enter the note text',
++          maxLength: { value: 5000, message: 'Keep the note to 5000 characters' },
++        }}
++      >
++        {({ field }) => <Textarea label="Note text" {...field} />}
++      </Controller>
++      <Controller
++        name="noteDate"
++        control={control}
++        rules={{ required: 'Enter the note date' }}
++      >
++        {({ field }) => <DateInput label="Note date" autoComplete="off" {...field} />}
++      </Controller>
++      <Controller
++        name="followUpDate"
++        control={control}
++        rules={{
++          validate: (value) =>
++            value === '' || !Number.isNaN(new Date(value).getTime()) || 'Enter a date like 2026-11-10',
++        }}
++      >
++        {({ field }) => <DateInput label="Follow-up date" autoComplete="off" {...field} />}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/page.tsx b/web/app/(routes)/(app)/clients/[clientId]/page.tsx
+new file mode 100644
+index 0000000..376cc05
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/[clientId]/page.tsx
+@@ -0,0 +1,437 @@
++'use client';
++
++import { AddProjectDialog } from '@app/blocks/ProjectDialogs/AddProjectDialog';
++import { ClientStatusTag } from '@app/components/ClientStatusTag';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListBookings } from '@app/entities/booking';
++import { deleteClient, useGetClient, useListClients } from '@app/entities/client';
++import { deleteNote, useListNotes, type Note } from '@app/entities/note';
++import { deleteProject, useListProjects } from '@app/entities/project';
++import { useListSessionTypes } from '@app/entities/sessionType';
++import { useListSlots } from '@app/entities/slot';
++import { deleteTask, useListTasks } from '@app/entities/task';
++import { Button, IconButton } from '@packages/ui/Button';
++import { CardList } from '@packages/ui/Card';
++import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
++import { Section } from '@packages/ui/Section';
++import { createTable } from '@packages/ui/Table';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph, Time } from '@packages/ui/Typography';
++import { Pencil, Plus, Trash2 } from 'lucide-react';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++import { AddNoteDialog } from './components/AddNoteDialog';
++import { EditClientDialog } from './components/EditClientDialog';
++import { EditNoteDialog } from './components/EditNoteDialog';
++
++type BookingRow = {
++  id: string;
++  sessionTypeName: string;
++  startAt: string;
++  name: string;
++  email: string;
++};
++
++const BookingTable = createTable<BookingRow>();
++
++/**
++ * S06 The client's name: one client's details, notes, projects and bookings
++ * in one place.
++ */
++export default function ClientPage() {
++  const router = useRouter();
++  const { clientId } = useParams<{ clientId: string }>();
++  const client = useGetClient(clientId);
++  const notes = useListNotes();
++  const projects = useListProjects();
++  const bookings = useListBookings();
++  const slots = useListSlots();
++  const sessionTypes = useListSessionTypes();
++  const tasks = useListTasks();
++  const clients = useListClients();
++
++  const [editing, setEditing] = useState(false);
++  const [addingNote, setAddingNote] = useState(false);
++  const [editingNote, setEditingNote] = useState<Note | null>(null);
++  const [addingProject, setAddingProject] = useState(false);
++  const [busy, setBusy] = useState(false);
++
++  const loading =
++    client.loading ||
++    notes.loading ||
++    projects.loading ||
++    bookings.loading ||
++    slots.loading ||
++    sessionTypes.loading ||
++    tasks.loading;
++  const failed =
++    client.error ?? notes.error ?? projects.error ?? bookings.error ?? slots.error ?? sessionTypes.error ?? tasks.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Client" breadcrumb={[{ label: 'Clients', href: '/clients' }]} />
++        <LoadError
++          message="The client could not be loaded."
++          onRetry={() => {
++            client.retry();
++            notes.retry();
++            projects.retry();
++            bookings.retry();
++            slots.retry();
++            sessionTypes.retry();
++            tasks.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && !client.data) {
++    return (
++      <>
++        <PageHeader title="Client" breadcrumb={[{ label: 'Clients', href: '/clients' }]} />
++        <Paragraph>Loading client.</Paragraph>
++      </>
++    );
++  }
++
++  if (!client.data) {
++    return (
++      <NotFound
++        title="This client is gone."
++        description="It may have been deleted, or the link is wrong."
++        back={{ label: 'Back to clients', href: '/clients' }}
++      />
++    );
++  }
++
++  const record = client.data;
++  const clientNotes = notes.data.filter((note) => note.client === record.id);
++  const clientProjects = projects.data.filter((project) => project.client === record.id);
++  const openCount = (projectId: string) =>
++    tasks.data.filter((task) => task.project === projectId && task.status !== 'done').length;
++
++  const slotById = (slotId: string) => slots.data.find((slot) => slot.id === slotId);
++  const sessionTypeName = (sessionTypeId: string) =>
++    sessionTypes.data.find((type) => type.id === sessionTypeId)?.name ?? 'Session';
++  const clientBookings: BookingRow[] = bookings.data
++    .filter((booking) => booking.client === record.id || booking.email === record.email)
++    .map((booking) => {
++      const slot = slotById(booking.slot);
++      return {
++        id: booking.id,
++        sessionTypeName: slot ? sessionTypeName(slot.sessionType) : 'Session',
++        startAt: slot?.startAt ?? '',
++        name: booking.name,
++        email: booking.email,
++      };
++    })
++    .sort((a, b) => (a.startAt < b.startAt ? -1 : a.startAt > b.startAt ? 1 : 0));
++
++  const confirmDeleteClient = async () => {
++    const result = await openConfirmationDialog({
++      title: `Delete ${record.name}?`,
++      content:
++        'Deleting the client deletes its notes, projects and tasks. Its bookings stay visible without a client link.',
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            variant="base" // Keeping the client is the quiet way out.
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            variant="danger" // The filled confirm button destroys the client and everything under it.
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Delete
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setBusy(true);
++    try {
++      const projectIds = new Set(clientProjects.map((project) => project.id));
++      for (const note of clientNotes) await deleteNote(note.id);
++      for (const task of tasks.data.filter((task) => projectIds.has(task.project))) {
++        await deleteTask(task.id);
++      }
++      for (const project of clientProjects) await deleteProject(project.id);
++      await deleteClient(record.id);
++      toast({ title: 'Client deleted', status: 'success' });
++      router.push('/clients');
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'This client is already gone', status: 'info' });
++        router.push('/clients');
++      } else {
++        toast({ title: 'Could not delete the client', status: 'error' });
++      }
++    } finally {
++      setBusy(false);
++    }
++  };
++
++  const confirmDeleteNote = async (note: Note) => {
++    const result = await openConfirmationDialog({
++      title: 'Delete this note?',
++      content: `${note.noteText} (${note.noteDate})`,
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            variant="base" // Keeping the note is the quiet way out.
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            variant="danger" // The filled confirm button destroys the note.
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Delete
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    try {
++      await deleteNote(note.id);
++      toast({ title: 'Note deleted', status: 'success' });
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'That note is gone', status: 'info' });
++      } else {
++        toast({ title: 'Could not delete the note', status: 'error' });
++      }
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={<Truncate>{record.name}</Truncate>}
++        breadcrumb={[{ label: 'Clients', href: '/clients' }]}
++        actions={
++          <>
++            <Button
++              variant="base" // Edit is the secondary action beside the destructive Delete.
++              onClick={() => setEditing(true)}
++            >
++              Edit
++            </Button>
++            <Button
++              variant="danger" // Delete is the destructive action of this view.
++              loadingWithReason={busy ? 'Deleting the client' : undefined}
++              onClick={() => void confirmDeleteClient()}
++            >
++              Delete
++            </Button>
++          </>
++        }
++      />
++      <Section title="Details">
++        <DescriptionList>
++          <div>
++            <DescriptionTerm>Email</DescriptionTerm>
++            <DescriptionDetails>{record.email}</DescriptionDetails>
++          </div>
++          {record.company && (
++            <div>
++              <DescriptionTerm>Company</DescriptionTerm>
++              <DescriptionDetails>{record.company}</DescriptionDetails>
++            </div>
++          )}
++          {record.profile && (
++            <div>
++              <DescriptionTerm>Profile</DescriptionTerm>
++              <DescriptionDetails>{record.profile}</DescriptionDetails>
++            </div>
++          )}
++          <div>
++            <DescriptionTerm>Status</DescriptionTerm>
++            <DescriptionDetails>
++              <ClientStatusTag status={record.status} />
++            </DescriptionDetails>
++          </div>
++        </DescriptionList>
++      </Section>
++      <Section
++        title="Notes"
++        headerAction={
++          clientNotes.length > 0 ? (
++            <Button
++              variant="base" // Adding a note is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingNote(true)}
++            >
++              Add a note
++            </Button>
++          ) : undefined
++        }
++      >
++        {clientNotes.length === 0 ? (
++          <div className="flex-col-gap-3 items-start">
++            <Paragraph>No notes yet.</Paragraph>
++            <Button
++              variant="base" // Adding a note is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingNote(true)}
++            >
++              Add a note
++            </Button>
++          </div>
++        ) : (
++          <CardList
++            aria-label="Notes"
++            items={clientNotes}
++            renderItem={(note) => (
++              <div className="flex-col-gap-2">
++                <Paragraph>{note.noteText}</Paragraph>
++                <Paragraph color="muted">
++                  <Time value={note.noteDate} />
++                  {note.followUpDate ? (
++                    <>
++                      {' · '}Follow-up <Time value={note.followUpDate} />
++                    </>
++                  ) : null}
++                </Paragraph>
++                <div className="flex-row-gap-2 items-center">
++                  <IconButton
++                    variant="base"
++                    look="ghost"
++                    size="xs"
++                    tooltip="Edit note"
++                    aria-label={`Edit note from ${note.noteDate}`}
++                    onClick={() => setEditingNote(note)}
++                  >
++                    <Pencil />
++                  </IconButton>
++                  <IconButton
++                    variant="base" // Row deletes stay as quiet as the row's other actions.
++                    look="ghost"
++                    size="xs"
++                    tooltip="Delete note"
++                    aria-label={`Delete note from ${note.noteDate}`}
++                    onClick={() => void confirmDeleteNote(note)}
++                  >
++                    <Trash2 />
++                  </IconButton>
++                </div>
++              </div>
++            )}
++          />
++        )}
++      </Section>
++      <Section
++        title="Projects"
++        headerAction={
++          clientProjects.length > 0 ? (
++            <Button
++              variant="base" // Adding a project is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingProject(true)}
++            >
++              Add a project
++            </Button>
++          ) : undefined
++        }
++      >
++        {clientProjects.length === 0 ? (
++          <div className="flex-col-gap-3 items-start">
++            <Paragraph>No projects yet.</Paragraph>
++            <Button
++              variant="base" // Adding a project is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingProject(true)}
++            >
++              Add a project
++            </Button>
++          </div>
++        ) : (
++          <CardList
++            aria-label="Projects"
++            items={clientProjects}
++            stretchLink
++            renderItem={(project) => (
++              <>
++                <h3>
++                  <NextLink look="plain" href={`/projects/${project.id}`}>
++                    <Truncate>{project.name}</Truncate>
++                  </NextLink>
++                </h3>
++                <Paragraph color="muted">
++                  {project.dueDate ? (
++                    <>
++                      Due <Time value={project.dueDate} />
++                      {' · '}
++                    </>
++                  ) : null}
++                  {openCount(project.id)} open {openCount(project.id) === 1 ? 'task' : 'tasks'}
++                </Paragraph>
++              </>
++            )}
++          />
++        )}
++      </Section>
++      <Section title="Bookings">
++        <BookingTable
++          caption="Bookings"
++          data={clientBookings}
++          rowKey={(row) => row.id}
++          emptyMessage="No bookings yet."
++          onRowClick={(row, click) => {
++            void router.push(`/bookings/${row.id}`);
++            click.currentTarget.querySelector('a')?.click();
++          }}
++        >
++          <BookingTable.Column id="session" title="Session type" dataKey="sessionTypeName" width={200}>
++            {(name) => <Truncate>{name}</Truncate>}
++          </BookingTable.Column>
++          <BookingTable.Column id="time" title="Time" dataKey="startAt" width={200}>
++            {(startAt) => (startAt ? <Time value={startAt} withTime /> : '—')}
++          </BookingTable.Column>
++          <BookingTable.Column id="name" rowHeader title="Booker" dataKey="name" width={200}>
++            {(name, row) => (
++              <NextLink className="inline-block max-w-full" href={`/bookings/${row.id}`}>
++                <Truncate>{name}</Truncate>
++              </NextLink>
++            )}
++          </BookingTable.Column>
++          <BookingTable.Column id="email" title="Email" dataKey="email" width={220}>
++            {(email) => <Truncate>{email}</Truncate>}
++          </BookingTable.Column>
++        </BookingTable>
++      </Section>
++      {editing && (
++        <EditClientDialog client={record} open onOpenChange={(open) => !open && setEditing(false)} />
++      )}
++      {addingNote && (
++        <AddNoteDialog clientId={record.id} open onOpenChange={(open) => !open && setAddingNote(false)} />
++      )}
++      {editingNote && (
++        <EditNoteDialog note={editingNote} onOpenChange={(open) => !open && setEditingNote(null)} />
++      )}
++      {addingProject && (
++        <AddProjectDialog
++          open
++          onOpenChange={(open) => !open && setAddingProject(false)}
++          onSaved={() => {
++            setAddingProject(false);
++            router.push('/projects');
++          }}
++          clients={clients.data}
++          defaultClientId={record.id}
++        />
++      )}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/components/AddClientDialog.tsx b/web/app/(routes)/(app)/clients/components/AddClientDialog.tsx
+new file mode 100644
+index 0000000..05b26b8
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/components/AddClientDialog.tsx
+@@ -0,0 +1,86 @@
++'use client';
++
++import { ClientForm, emptyClientForm, type ClientFormValues } from '@app/blocks/ClientDialogs/ClientForm';
++import { createClient, type Client } from '@app/entities/client';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++
++/** D01 Add a client: a new client with status set to Lead by default. */
++export function AddClientDialog({
++  open,
++  onOpenChange,
++  onSaved,
++}: {
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++  onSaved: (client: Client) => void;
++}) {
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<ClientFormValues>({ defaultValues: emptyClientForm });
++  const [saving, setSaving] = useState(false);
++
++  const save = async (values: ClientFormValues) => {
++    setSaving(true);
++    try {
++      const client = await createClient({
++        name: values.name.trim(),
++        email: values.email.trim(),
++        company: values.company.trim() || undefined,
++        profile: values.profile.trim() || undefined,
++        status: values.status || 'lead',
++      });
++      toast({ title: 'Client saved', status: 'success' });
++      onSaved(client);
++    } catch {
++      setError('root.server', { message: 'Saving failed. Try again.' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Add a client"
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the client' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <ClientForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++        actions={null}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/clients/page.tsx b/web/app/(routes)/(app)/clients/page.tsx
+new file mode 100644
+index 0000000..e2bff3e
+--- /dev/null
++++ b/web/app/(routes)/(app)/clients/page.tsx
+@@ -0,0 +1,283 @@
++'use client';
++
++import { followUpNoteFor } from '@app/blocks/Slots/slots';
++import { ClientStatusTag } from '@app/components/ClientStatusTag';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListClients } from '@app/entities/client';
++import { ClientStatusOptions } from '@app/entities/enums';
++import { markFollowUpDone, pushFollowUpWeek, useListNotes } from '@app/entities/note';
++import { Button, IconButton } from '@packages/ui/Button';
++import { SearchInput } from '@packages/ui/Input';
++import { Select, SelectOption } from '@packages/ui/Select';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph, Time } from '@packages/ui/Typography';
++import { CalendarPlus, Check, Plus } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++import { AddClientDialog } from './components/AddClientDialog';
++
++type ClientRow = {
++  id: string;
++  name: string;
++  company: string;
++  status: string;
++  followUpId?: string;
++  followUpDate?: string;
++};
++
++const ClientTable = createTable<ClientRow>();
++
++function addDays(dateKey: string, days: number): string {
++  const date = new Date(`${dateKey}T00:00:00.000Z`);
++  date.setUTCDate(date.getUTCDate() + days);
++  return date.toISOString().slice(0, 10);
++}
++
++/**
++ * S05 Clients: find clients, see who needs a follow-up first, and act on a
++ * follow-up with one click.
++ */
++export default function ClientsPage() {
++  const router = useRouter();
++  const clients = useListClients();
++  const notes = useListNotes();
++  const [search, setSearch] = useState('');
++  const [status, setStatus] = useState('all');
++  const [adding, setAdding] = useState(false);
++  const today = new Date().toISOString().slice(0, 10);
++
++  const query = search.trim().toLowerCase();
++  const rows: ClientRow[] = clients.data
++    .filter((client) => {
++      const matchesQuery =
++        !query ||
++        client.name.toLowerCase().includes(query) ||
++        (client.company ?? '').toLowerCase().includes(query);
++      const matchesStatus = status === 'all' || client.status === status;
++      return matchesQuery && matchesStatus;
++    })
++    .map((client) => {
++      const followUp = followUpNoteFor(notes.data, client.id);
++      return {
++        id: client.id,
++        name: client.name,
++        company: client.company ?? '',
++        status: client.status,
++        followUpId: followUp?.id,
++        followUpDate: followUp?.followUpDate,
++      };
++    })
++    .sort((a, b) => {
++      // Overdue first, then due soonest; clients without a follow-up last.
++      const rank = (row: ClientRow) =>
++        !row.followUpDate ? 2 : row.followUpDate < today ? 0 : 1;
++      const rankDiff = rank(a) - rank(b);
++      if (rankDiff !== 0) return rankDiff;
++      return (a.followUpDate ?? '') < (b.followUpDate ?? '')
++        ? -1
++        : (a.followUpDate ?? '') > (b.followUpDate ?? '')
++          ? 1
++          : 0;
++    });
++
++  const markDone = async (row: ClientRow) => {
++    if (!row.followUpId) return;
++    try {
++      await markFollowUpDone(row.followUpId, { followUpDate: undefined });
++      toast({ title: 'Follow-up marked as done', status: 'success' });
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'That note is gone', status: 'info' });
++      } else {
++        toast({ title: 'Could not mark the follow-up as done', status: 'error' });
++      }
++    }
++  };
++
++  const pushWeek = async (row: ClientRow) => {
++    if (!row.followUpId || !row.followUpDate) return;
++    try {
++      await pushFollowUpWeek(row.followUpId, { followUpDate: addDays(row.followUpDate, 7) });
++      toast({ title: 'Follow-up pushed by a week', status: 'success' });
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'That note is gone', status: 'info' });
++      } else {
++        toast({ title: 'Could not push the follow-up', status: 'error' });
++      }
++    }
++  };
++
++  const loading = clients.loading || notes.loading;
++  const failed = clients.error ?? notes.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Clients" />
++        <LoadError
++          message="The client list could not be loaded."
++          onRetry={() => {
++            clients.retry();
++            notes.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && clients.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Clients" />
++        <Paragraph>Loading clients.</Paragraph>
++      </>
++    );
++  }
++
++  const filtering = query !== '' || status !== 'all';
++  const clearFilters = () => {
++    setSearch('');
++    setStatus('all');
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Clients"
++        description="Overdue follow-ups first, so you always know who to contact next."
++        actions={
++          rows.length > 0 || filtering ? (
++            <Button leftIcon={<Plus />} onClick={() => setAdding(true)}>
++              Add a client
++            </Button>
++          ) : undefined
++        }
++      />
++      {clients.data.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph>No clients yet. Add the first one to start your list.</Paragraph>
++          <Button leftIcon={<Plus />} onClick={() => setAdding(true)}>
++            Add a client
++          </Button>
++        </div>
++      ) : (
++        <div className="flex-col-gap-3">
++          <div role="search" className="flex-row-gap-3 flex-wrap items-end">
++            <SearchInput label="Search clients" placeholder="Name or company" value={search} onChange={setSearch} />
++            <Select aria-label="Client status filter" allowSearch={false} value={status} onChange={(next) => next && setStatus(next)}>
++              <SelectOption value="all" label="All" />
++              {ClientStatusOptions.map((option) => (
++                <SelectOption key={option.key} value={option.key} label={option.label} />
++              ))}
++            </Select>
++          </div>
++          <ClientTable
++            caption="Clients"
++            data={rows}
++            rowKey={(row) => row.id}
++            loading={clients.loading || notes.loading}
++            emptyMessage="Nothing matches your search or filter."
++            onRowClick={(row, click) => {
++              void router.push(`/clients/${row.id}`);
++              click.currentTarget.querySelector('a')?.click();
++            }}
++          >
++            <ClientTable.Column id="name" rowHeader title="Name" dataKey="name" width={220}>
++              {(name, row) => (
++                <NextLink className="inline-block max-w-full" href={`/clients/${row.id}`}>
++                  <Truncate>{name}</Truncate>
++                </NextLink>
++              )}
++            </ClientTable.Column>
++            <ClientTable.Column id="company" title="Company" dataKey="company" width={180}>
++              {(company) => (company ? <Truncate>{company}</Truncate> : '—')}
++            </ClientTable.Column>
++            <ClientTable.Column id="status" title="Status" dataKey="status" width={120}>
++              {(value: string) => <ClientStatusTag status={value} size="xs" />}
++            </ClientTable.Column>
++            <ClientTable.Column id="followUp" title="Follow-up" dataKey="followUpDate" width={220}>
++              {(_, row) =>
++                !row.followUpDate ? (
++                  <Paragraph color="muted">No follow-up</Paragraph>
++                ) : (
++                  <span className="flex-row-gap-2 items-center">
++                    {row.followUpDate < today ? (
++                      <Tag
++                        size="xs" // Fits the table row without stretching it.
++                        variant="warning" // Overdue needs the warning color to stand out.
++                      >
++                        Overdue
++                      </Tag>
++                    ) : (
++                      <Tag
++                        size="xs" // Fits the table row without stretching it.
++                        variant="info" // A coming follow-up keeps the calm info color.
++                      >
++                        Due
++                      </Tag>
++                    )}
++                    <Time value={row.followUpDate} />
++                  </span>
++                )
++              }
++            </ClientTable.Column>
++            <ClientTable.Column id="actions" title={<span className="sr-only">Follow-up actions</span>} width={88} align="right">
++              {(_, row) =>
++                row.followUpId ? (
++                  <span className="flex-row-gap-2 items-center justify-end">
++                    <IconButton
++                      variant="base"
++                      look="ghost"
++                      size="xs"
++                      tooltip="Mark follow-up done"
++                      aria-label={`Mark follow-up done for ${row.name}`}
++                      onClick={() => void markDone(row)}
++                    >
++                      <Check />
++                    </IconButton>
++                    <IconButton
++                      variant="base"
++                      look="ghost"
++                      size="xs"
++                      tooltip="Push follow-up a week"
++                      aria-label={`Push follow-up a week for ${row.name}`}
++                      onClick={() => void pushWeek(row)}
++                    >
++                      <CalendarPlus />
++                    </IconButton>
++                  </span>
++                ) : null
++              }
++            </ClientTable.Column>
++          </ClientTable>
++          {rows.length === 0 && (
++            <Button
++              variant="base" // The quiet way out beside the empty message, not the page's main action.
++              onClick={clearFilters}
++            >
++              Clear the search or filter
++            </Button>
++          )}
++        </div>
++      )}
++      {adding && (
++        <AddClientDialog
++          open
++          onOpenChange={(open) => {
++            if (!open) setAdding(false);
++          }}
++          onSaved={(client) => {
++            setAdding(false);
++            router.push(`/clients/${client.id}`);
++          }}
++        />
++      )}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/home/page.tsx b/web/app/(routes)/(app)/home/page.tsx
+new file mode 100644
+index 0000000..3e41840
+--- /dev/null
++++ b/web/app/(routes)/(app)/home/page.tsx
+@@ -0,0 +1,276 @@
++'use client';
++
++import { addDaysKey, todayKey, weekStartKey } from '@app/blocks/Format/format';
++import { bookingsForSlot } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListBookings } from '@app/entities/booking';
++import { useListClients } from '@app/entities/client';
++import { useListNotes } from '@app/entities/note';
++import { useListProjects } from '@app/entities/project';
++import { useListSessionTypes } from '@app/entities/sessionType';
++import { useListSlots } from '@app/entities/slot';
++import { useListTasks } from '@app/entities/task';
++import { CardList } from '@packages/ui/Card';
++import { Numeral } from '@packages/ui/Numeral';
++import { Section } from '@packages/ui/Section';
++import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph, Time } from '@packages/ui/Typography';
++import { useRouter } from 'next/navigation';
++import React from 'react';
++
++type SessionRow = {
++  id: string;
++  sessionTypeName: string;
++  startAt: string;
++  bookers: string;
++};
++
++type FollowUpRow = {
++  id: string;
++  clientId: string;
++  clientName: string;
++  followUpDate: string;
++};
++
++type TaskRow = {
++  id: string;
++  title: string;
++  projectId: string;
++  projectName: string;
++  dueDate: string;
++};
++
++const SessionTable = createTable<SessionRow>();
++const FollowUpTable = createTable<FollowUpRow>();
++const TaskTable = createTable<TaskRow>();
++
++/**
++ * S04 Home: what needs attention today — today's sessions, this week's
++ * follow-ups and overdue tasks — each opening its record.
++ */
++export default function HomePage() {
++  const router = useRouter();
++  const slots = useListSlots();
++  const bookings = useListBookings();
++  const notes = useListNotes();
++  const tasks = useListTasks();
++  const sessionTypes = useListSessionTypes();
++  const clients = useListClients();
++  const projects = useListProjects();
++
++  const today = todayKey();
++  const weekEnd = addDaysKey(weekStartKey(today), 6);
++
++  const typeName = (sessionTypeId: string) =>
++    sessionTypes.data.find((type) => type.id === sessionTypeId)?.name ?? 'Session';
++  const clientName = (clientId: string) =>
++    clients.data.find((client) => client.id === clientId)?.name ?? 'Client';
++  const projectName = (projectId: string) =>
++    projects.data.find((project) => project.id === projectId)?.name ?? 'Project';
++
++  const todaysSessions: SessionRow[] = slots.data
++    .filter((slot) => slot.startAt.slice(0, 10) === today)
++    .map((slot) => ({
++      id: slot.id,
++      sessionTypeName: typeName(slot.sessionType),
++      startAt: slot.startAt,
++      bookers: bookingsForSlot(bookings.data, slot.id)
++        .map((booking) => booking.name)
++        .join(', '),
++    }))
++    .sort((a, b) => (a.startAt < b.startAt ? -1 : a.startAt > b.startAt ? 1 : 0));
++
++  const followUps: FollowUpRow[] = notes.data
++    .filter((note) => note.followUpDate && note.followUpDate <= weekEnd)
++    .map((note) => ({
++      id: `${note.id}-${note.client}`,
++      clientId: note.client,
++      clientName: clientName(note.client),
++      followUpDate: note.followUpDate!,
++    }))
++    .sort((a, b) => {
++      const aOverdue = a.followUpDate < today ? 0 : 1;
++      const bOverdue = b.followUpDate < today ? 0 : 1;
++      if (aOverdue !== bOverdue) return aOverdue - bOverdue;
++      return a.followUpDate < b.followUpDate ? -1 : a.followUpDate > b.followUpDate ? 1 : 0;
++    });
++
++  const overdueTasks: TaskRow[] = tasks.data
++    .filter((task) => task.dueDate && task.dueDate < today && task.status !== 'done')
++    .map((task) => ({
++      id: task.id,
++      title: task.title,
++      projectId: task.project,
++      projectName: projectName(task.project),
++      dueDate: task.dueDate!,
++    }))
++    .sort((a, b) => (a.dueDate < b.dueDate ? -1 : a.dueDate > b.dueDate ? 1 : 0));
++
++  const loading =
++    slots.loading || bookings.loading || notes.loading || tasks.loading;
++  const failed = slots.error ?? bookings.error ?? notes.error ?? tasks.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Home" />
++        <LoadError
++          message="The home dashboard could not be loaded."
++          onRetry={() => {
++            slots.retry();
++            bookings.retry();
++            notes.retry();
++            tasks.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (
++    loading &&
++    slots.data.length === 0 &&
++    bookings.data.length === 0 &&
++    notes.data.length === 0 &&
++    tasks.data.length === 0
++  ) {
++    return (
++      <>
++        <PageHeader title="Home" />
++        <Paragraph>Loading your day.</Paragraph>
++      </>
++    );
++  }
++
++  if (todaysSessions.length === 0 && followUps.length === 0 && overdueTasks.length === 0) {
++    return (
++      <>
++        <PageHeader title="Home" />
++        <Paragraph>Everything is clear today. No sessions, follow-ups or overdue tasks need you.</Paragraph>
++        <nav aria-label="Workspace" className="flex-col-gap-2 items-start">
++          <NextLink look="plain" href="/clients">
++            Clients
++          </NextLink>
++          <NextLink look="plain" href="/projects">
++            Projects
++          </NextLink>
++          <NextLink look="plain" href="/sessions">
++            Sessions
++          </NextLink>
++          <NextLink look="plain" href="/availability">
++            Availability
++          </NextLink>
++          <NextLink look="plain" href="/session-types">
++            Session types
++          </NextLink>
++        </nav>
++      </>
++    );
++  }
++
++  const stats = [
++    { id: 'sessions', label: "Today's sessions", count: todaysSessions.length },
++    { id: 'follow-ups', label: 'Follow-ups due this week', count: followUps.length },
++    { id: 'tasks', label: 'Overdue tasks', count: overdueTasks.length },
++  ];
++
++  return (
++    <>
++      <PageHeader title="Home" />
++      <CardList
++        aria-label="What needs attention"
++        items={stats}
++        layout="grid" // Three fixed counts browsed side by side, not records read one by one.
++        columns={3} // Three counts in one row.
++        renderItem={(stat) => (
++          <>
++            <span className="text-heading">
++              <Numeral>{stat.count}</Numeral>
++            </span>
++            <p>{stat.label}</p>
++          </>
++        )}
++      />
++      <Section title="Today's sessions">
++        <SessionTable
++          caption="Today's sessions"
++          data={todaysSessions}
++          rowKey={(row) => row.id}
++          loading={loading}
++          emptyMessage="No sessions today."
++          onRowClick={(row, click) => {
++            void router.push(`/sessions/${row.id}`);
++            click.currentTarget.querySelector('a')?.click();
++          }}
++        >
++          <SessionTable.Column id="session" rowHeader title="Session" dataKey="sessionTypeName" width={220}>
++            {(name, row) => (
++              <NextLink className="inline-block max-w-full" href={`/sessions/${row.id}`}>
++                <Truncate>{name}</Truncate>
++              </NextLink>
++            )}
++          </SessionTable.Column>
++          <SessionTable.Column id="time" title="Time" dataKey="startAt" width={180}>
++            {(startAt) => <Time value={startAt} withTime />}
++          </SessionTable.Column>
++          <SessionTable.Column id="bookers" title="Bookers" dataKey="bookers" width={240}>
++            {(bookers) => (bookers ? <Truncate>{bookers}</Truncate> : 'No bookings yet')}
++          </SessionTable.Column>
++        </SessionTable>
++      </Section>
++      <Section title="Follow-ups due this week">
++        <FollowUpTable
++          caption="Follow-ups due this week"
++          data={followUps}
++          rowKey={(row) => row.id}
++          loading={loading}
++          emptyMessage="No follow-ups due this week."
++          onRowClick={(row, click) => {
++            void router.push(`/clients/${row.clientId}`);
++            click.currentTarget.querySelector('a')?.click();
++          }}
++        >
++          <FollowUpTable.Column id="client" rowHeader title="Client" dataKey="clientName" width={220}>
++            {(name, row) => (
++              <NextLink className="inline-block max-w-full" href={`/clients/${row.clientId}`}>
++                <Truncate>{name}</Truncate>
++              </NextLink>
++            )}
++          </FollowUpTable.Column>
++          <FollowUpTable.Column id="date" title="Follow-up date" dataKey="followUpDate" width={160}>
++            {(date) => <Time value={date} />}
++          </FollowUpTable.Column>
++        </FollowUpTable>
++      </Section>
++      <Section title="Overdue tasks">
++        <TaskTable
++          caption="Overdue tasks"
++          data={overdueTasks}
++          rowKey={(row) => row.id}
++          loading={loading}
++          emptyMessage="No overdue tasks."
++          onRowClick={(row, click) => {
++            void router.push(`/projects/${row.projectId}`);
++            click.currentTarget.querySelector('a')?.click();
++          }}
++        >
++          <TaskTable.Column id="task" rowHeader title="Task" dataKey="title" width={240}>
++            {(title, row) => (
++              <NextLink className="inline-block max-w-full" href={`/projects/${row.projectId}`}>
++                <Truncate>{title}</Truncate>
++              </NextLink>
++            )}
++          </TaskTable.Column>
++          <TaskTable.Column id="project" title="Project" dataKey="projectName" width={220}>
++            {(name) => <Truncate>{name}</Truncate>}
++          </TaskTable.Column>
++          <TaskTable.Column id="due" title="Due date" dataKey="dueDate" width={160}>
++            {(date) => <Time value={date} />}
++          </TaskTable.Column>
++        </TaskTable>
++      </Section>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/components/AddTaskDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/AddTaskDialog.tsx
+new file mode 100644
+index 0000000..92beb6b
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/AddTaskDialog.tsx
+@@ -0,0 +1,85 @@
++'use client';
++
++import { createTask } from '@app/entities/task';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { emptyTaskForm, TaskForm, type TaskFormValues } from './TaskForm';
++
++/** D10 Add a task: add a task to a project, standing out when overdue. */
++export function AddTaskDialog({
++  projectId,
++  open,
++  onOpenChange,
++}: {
++  projectId: string;
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<TaskFormValues>({ defaultValues: emptyTaskForm });
++  const [saving, setSaving] = useState(false);
++
++  const save = async (values: TaskFormValues) => {
++    setSaving(true);
++    try {
++      await createTask({
++        title: values.title.trim(),
++        status: values.status || 'to_do',
++        priority: values.priority || 'medium',
++        dueDate: values.dueDate || undefined,
++        project: projectId,
++      });
++      toast({ title: 'Task saved', status: 'success' });
++      onOpenChange(false);
++    } catch {
++      setError('root.server', { message: 'Saving failed. Try again.' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Add a task"
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the task' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <TaskForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx
+new file mode 100644
+index 0000000..e3b01a5
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx
+@@ -0,0 +1,113 @@
++'use client';
++
++import { ProjectForm, type ProjectFormValues } from '@app/blocks/ProjectDialogs/ProjectForm';
++import { getProject, updateProject, type Project } from '@app/entities/project';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import { useRouter } from 'next/navigation';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++
++import type { Client } from '@app/entities/client';
++
++/** D08 Edit project: change a project's details or move it to another client. */
++export function EditProjectDialog({
++  project,
++  onOpenChange,
++  clients,
++}: {
++  project: Project;
++  onOpenChange: (open: boolean) => void;
++  clients: Client[];
++}) {
++  const router = useRouter();
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<ProjectFormValues>({
++    defaultValues: {
++      name: project.name,
++      description: project.description,
++      dueDate: project.dueDate ?? '',
++      client: project.client,
++    },
++  });
++  const [saving, setSaving] = useState(false);
++  const [gone, setGone] = useState(false);
++
++  const cancel = () => {
++    onOpenChange(false);
++    if (gone) router.push('/projects');
++  };
++
++  const save = async (values: ProjectFormValues) => {
++    setSaving(true);
++    try {
++      const current = await getProject(project.id);
++      if (!current) {
++        setGone(true);
++        setError('root.server', { message: 'This project is gone.' });
++        return;
++      }
++      await updateProject(project.id, {
++        name: values.name.trim(),
++        description: values.description.trim(),
++        dueDate: values.dueDate || undefined,
++        client: values.client,
++      });
++      toast({ title: 'Project updated', status: 'success' });
++      onOpenChange(false);
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        setGone(true);
++        setError('root.server', { message: 'This project is gone.' });
++      } else {
++        setError('root.server', { message: 'Saving failed. Try again.' });
++      }
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title={`Edit ${project.name}`}
++      open
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={cancel}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the project' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <ProjectForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++        clients={clients}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
+new file mode 100644
+index 0000000..0c426d5
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
+@@ -0,0 +1,115 @@
++'use client';
++
++import { updateTask, useGetTask, type Task } from '@app/entities/task';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { TaskForm, type TaskFormValues } from './TaskForm';
++
++/** D11 Edit task: change a task's title, status, priority or due date. */
++export function EditTaskDialog({
++  task,
++  onOpenChange,
++}: {
++  task: Task;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const current = useGetTask(task.id);
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<TaskFormValues>({
++    defaultValues: {
++      title: task.title,
++      status: task.status,
++      priority: task.priority,
++      dueDate: task.dueDate ?? '',
++    },
++  });
++  const [saving, setSaving] = useState(false);
++
++  if (!current.data && !current.loading) {
++    return (
++      <Dialog
++        title={`Edit ${task.title}`}
++        open
++        onOpenChange={onOpenChange}
++        footer={
++          <Button
++            variant="base" // Cancel is the only way out once the task is gone.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++        }
++      >
++        <Paragraph>That task is gone.</Paragraph>
++      </Dialog>
++    );
++  }
++
++  const save = async (values: TaskFormValues) => {
++    setSaving(true);
++    try {
++      await updateTask(task.id, {
++        title: values.title.trim(),
++        status: values.status || task.status,
++        priority: values.priority || task.priority,
++        dueDate: values.dueDate || undefined,
++      });
++      toast({ title: 'Task updated', status: 'success' });
++      onOpenChange(false);
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        setError('root.server', { message: 'That task is gone.' });
++      } else {
++        setError('root.server', { message: 'Saving failed. Try again.' });
++      }
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title={`Edit ${task.title}`}
++      open
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the task' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <TaskForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/components/TaskForm.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/TaskForm.tsx
+new file mode 100644
+index 0000000..619fc5f
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/TaskForm.tsx
+@@ -0,0 +1,86 @@
++'use client';
++
++import { TaskPriorityOptions, TaskStatusOptions, type TaskPriority, type TaskStatus } from '@app/entities/enums';
++import { Controller, Form } from '@packages/ui/Form';
++import { DateInput, Input } from '@packages/ui/Input';
++import { Select, SelectOption } from '@packages/ui/Select';
++import React from 'react';
++import { type Control } from 'react-hook-form';
++
++export type TaskFormValues = {
++  title: string;
++  status: TaskStatus | '';
++  priority: TaskPriority | '';
++  dueDate: string;
++};
++
++export const emptyTaskForm: TaskFormValues = {
++  title: '',
++  status: 'to_do',
++  priority: 'medium',
++  dueDate: '',
++};
++
++/** The task form FM06: Title, Status, Priority and Due date. */
++export function TaskForm({
++  control,
++  id,
++  onSubmit,
++  error,
++}: {
++  control: Control<TaskFormValues>;
++  id: string;
++  onSubmit: (event: React.FormEvent) => void;
++  error?: string;
++}) {
++  return (
++    <Form id={id} onSubmit={onSubmit} error={error} fill actions={null}>
++      <Controller
++        name="title"
++        control={control}
++        rules={{
++          required: 'Enter the task title',
++          maxLength: { value: 200, message: 'Keep the title to 200 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Title" autoComplete="off" {...field} />}
++      </Controller>
++      <Controller
++        name="status"
++        control={control}
++        rules={{ required: 'Choose a status' }}
++      >
++        {({ field }) => (
++          <Select label="Status" {...field}>
++            {TaskStatusOptions.map((option) => (
++              <SelectOption key={option.key} value={option.key} label={option.label} />
++            ))}
++          </Select>
++        )}
++      </Controller>
++      <Controller
++        name="priority"
++        control={control}
++        rules={{ required: 'Choose a priority' }}
++      >
++        {({ field }) => (
++          <Select label="Priority" {...field}>
++            {TaskPriorityOptions.map((option) => (
++              <SelectOption key={option.key} value={option.key} label={option.label} />
++            ))}
++          </Select>
++        )}
++      </Controller>
++      <Controller
++        name="dueDate"
++        control={control}
++        rules={{
++          validate: (value) =>
++            value === '' || !Number.isNaN(new Date(value).getTime()) || 'Enter a date like 2026-11-08',
++        }}
++      >
++        {({ field }) => <DateInput label="Due date" autoComplete="off" {...field} />}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx
+new file mode 100644
+index 0000000..94d1802
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx
+@@ -0,0 +1,39 @@
++import { TaskPriorityOptions, TaskStatusOptions } from '@app/entities/enums';
++import { Tag } from '@packages/ui/Tag';
++import React from 'react';
++
++const statusVariantFor: Record<string, 'base' | 'info' | 'success'> = {
++  to_do: 'base',
++  in_progress: 'info',
++  done: 'success',
++};
++
++/** A task's status as a tag, in its own color. */
++export function TaskStatusTag({ status }: { status: string }) {
++  const label = TaskStatusOptions.find((option) => option.key === status)?.label ?? status;
++  return (
++    <Tag
++      variant={statusVariantFor[status] ?? 'base'} // Each task status keeps its own color.
++    >
++      {label}
++    </Tag>
++  );
++}
++
++const priorityVariantFor: Record<string, 'base' | 'warning' | 'error'> = {
++  low: 'base',
++  medium: 'warning',
++  high: 'error',
++};
++
++/** A task's priority as a tag, in its own color. */
++export function TaskPriorityTag({ priority }: { priority: string }) {
++  const label = TaskPriorityOptions.find((option) => option.key === priority)?.label ?? priority;
++  return (
++    <Tag
++      variant={priorityVariantFor[priority] ?? 'base'} // Each priority keeps its own color.
++    >
++      {label}
++    </Tag>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/page.tsx b/web/app/(routes)/(app)/projects/[projectId]/page.tsx
+new file mode 100644
+index 0000000..802a71c
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/[projectId]/page.tsx
+@@ -0,0 +1,423 @@
++'use client';
++
++import { isTaskOverdue } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListClients } from '@app/entities/client';
++import { deleteProject, useGetProject } from '@app/entities/project';
++import { completeTask, deleteTask, useListTasks, type Task } from '@app/entities/task';
++import { Button, IconButton } from '@packages/ui/Button';
++import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
++import { SearchInput } from '@packages/ui/Input';
++import { Section } from '@packages/ui/Section';
++import { Select, SelectOption } from '@packages/ui/Select';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph, Time } from '@packages/ui/Typography';
++import { Check, Pencil, Plus, Trash2 } from 'lucide-react';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++import { AddTaskDialog } from './components/AddTaskDialog';
++import { EditProjectDialog } from './components/EditProjectDialog';
++import { EditTaskDialog } from './components/EditTaskDialog';
++import { TaskPriorityTag, TaskStatusTag } from './components/TaskStatusTag';
++
++const statusOrder = ['to_do', 'in_progress', 'done'];
++
++type TaskRow = {
++  id: string;
++  title: string;
++  status: string;
++  priority: string;
++  dueDate?: string;
++  overdue: boolean;
++};
++
++const TaskTable = createTable<TaskRow>();
++
++/**
++ * S08 The project's name: a project's tasks, narrowed down and ticked done.
++ */
++export default function ProjectPage() {
++  const router = useRouter();
++  const { projectId } = useParams<{ projectId: string }>();
++  const project = useGetProject(projectId);
++  const tasks = useListTasks();
++  const clients = useListClients();
++
++  const [search, setSearch] = useState('');
++  const [status, setStatus] = useState('all');
++  const [priority, setPriority] = useState('all');
++  const [editing, setEditing] = useState(false);
++  const [addingTask, setAddingTask] = useState(false);
++  const [editingTask, setEditingTask] = useState<Task | null>(null);
++  const [busy, setBusy] = useState(false);
++
++  const today = new Date().toISOString().slice(0, 10);
++
++  const loading = project.loading || tasks.loading || clients.loading;
++  const failed = project.error ?? tasks.error ?? clients.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Project" breadcrumb={[{ label: 'Projects', href: '/projects' }]} />
++        <LoadError
++          message="The project could not be loaded."
++          onRetry={() => {
++            project.retry();
++            tasks.retry();
++            clients.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && !project.data) {
++    return (
++      <>
++        <PageHeader title="Project" breadcrumb={[{ label: 'Projects', href: '/projects' }]} />
++        <Paragraph>Loading project.</Paragraph>
++      </>
++    );
++  }
++
++  if (!project.data) {
++    return (
++      <NotFound
++        title="This project is gone."
++        description="It may have been deleted, or the link is wrong."
++        back={{ label: 'Back to projects', href: '/projects' }}
++      />
++    );
++  }
++
++  const record = project.data;
++  const query = search.trim().toLowerCase();
++  const rows: TaskRow[] = tasks.data
++    .filter((task) => task.project === record.id)
++    .filter((task) => {
++      const matchesQuery = !query || task.title.toLowerCase().includes(query);
++      const matchesStatus = status === 'all' || task.status === status;
++      const matchesPriority = priority === 'all' || task.priority === priority;
++      return matchesQuery && matchesStatus && matchesPriority;
++    })
++    .map((task) => ({
++      id: task.id,
++      title: task.title,
++      status: task.status,
++      priority: task.priority,
++      dueDate: task.dueDate,
++      overdue: isTaskOverdue(task, today),
++    }))
++    .sort((a, b) => {
++      // Grouped by status, then by due date.
++      const orderDiff = statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
++      if (orderDiff !== 0) return orderDiff;
++      return (a.dueDate ?? '') < (b.dueDate ?? '')
++        ? -1
++        : (a.dueDate ?? '') > (b.dueDate ?? '')
++          ? 1
++          : 0;
++    });
++
++  const hasTasks = tasks.data.some((task) => task.project === record.id);
++  const clearFilters = () => {
++    setSearch('');
++    setStatus('all');
++    setPriority('all');
++  };
++
++  const tickDone = async (row: TaskRow) => {
++    try {
++      await completeTask(row.id, { status: 'done' });
++      toast({ title: 'Task marked as done', status: 'success' });
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'That task is gone', status: 'info' });
++      } else {
++        toast({ title: 'Could not mark the task as done', status: 'error' });
++      }
++    }
++  };
++
++  const confirmDeleteProject = async () => {
++    const result = await openConfirmationDialog({
++      title: `Delete ${record.name}?`,
++      content: 'Deleting the project deletes its tasks.',
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            variant="base" // Keeping the project is the quiet way out.
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            variant="danger" // The filled confirm button destroys the project and its tasks.
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Delete
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setBusy(true);
++    try {
++      const recordCheck = project.data;
++      if (!recordCheck) {
++        toast({ title: 'This project is already gone', status: 'info' });
++        router.push('/projects');
++        return;
++      }
++      for (const task of tasks.data.filter((task) => task.project === record.id)) {
++        await deleteTask(task.id);
++      }
++      await deleteProject(record.id);
++      toast({ title: 'Project deleted', status: 'success' });
++      router.push('/projects');
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'This project is already gone', status: 'info' });
++        router.push('/projects');
++      } else {
++        toast({ title: 'Could not delete the project', status: 'error' });
++      }
++    } finally {
++      setBusy(false);
++    }
++  };
++
++  const confirmDeleteTask = async (task: Task) => {
++    const result = await openConfirmationDialog({
++      title: `Delete ${task.title}?`,
++      content: 'Deleting the task removes it from the project.',
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            variant="base" // Keeping the task is the quiet way out.
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            variant="danger" // The filled confirm button destroys the task.
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Delete
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    try {
++      await deleteTask(task.id);
++      toast({ title: 'Task deleted', status: 'success' });
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'That task is gone', status: 'info' });
++      } else {
++        toast({ title: 'Could not delete the task', status: 'error' });
++      }
++    }
++  };
++
++  const clientName = clients.data.find((client) => client.id === record.client)?.name ?? 'Client';
++
++  return (
++    <>
++      <PageHeader
++        title={<Truncate>{record.name}</Truncate>}
++        description={record.description}
++        breadcrumb={[{ label: 'Projects', href: '/projects' }]}
++        actions={
++          <>
++            <Button
++              variant="base" // Edit is the secondary action beside the destructive Delete.
++              onClick={() => setEditing(true)}
++            >
++              Edit
++            </Button>
++            <Button
++              variant="danger" // Delete is the destructive action of this view.
++              loadingWithReason={busy ? 'Deleting the project' : undefined}
++              onClick={() => void confirmDeleteProject()}
++            >
++              Delete
++            </Button>
++          </>
++        }
++      />
++      <Section title="Details">
++        <DescriptionList>
++          {record.dueDate && (
++            <div>
++              <DescriptionTerm>Due date</DescriptionTerm>
++              <DescriptionDetails>
++                <Time value={record.dueDate} />
++              </DescriptionDetails>
++            </div>
++          )}
++          <div>
++            <DescriptionTerm>Client</DescriptionTerm>
++            <DescriptionDetails>
++              <NextLink href={`/clients/${record.client}`}>{clientName}</NextLink>
++            </DescriptionDetails>
++          </div>
++        </DescriptionList>
++      </Section>
++      <Section
++        title="Tasks"
++        headerAction={
++          hasTasks ? (
++            <Button
++              variant="base" // Adding a task is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingTask(true)}
++            >
++              Add a task
++            </Button>
++          ) : undefined
++        }
++      >
++        {!hasTasks ? (
++          <div className="flex-col-gap-3 items-start">
++            <Paragraph>No tasks yet. Add the first task to plan this project.</Paragraph>
++            <Button leftIcon={<Plus />} onClick={() => setAddingTask(true)}>
++              Add a task
++            </Button>
++          </div>
++        ) : (
++          <div className="flex-col-gap-3">
++            <div role="search" className="flex-row-gap-3 flex-wrap items-end">
++              <SearchInput label="Search tasks" placeholder="Task title" value={search} onChange={setSearch} />
++              <Select label="Status" allowSearch={false} value={status} onChange={(next) => next && setStatus(next)}>
++                <SelectOption value="all" label="All" />
++                <SelectOption value="to_do" label="To do" />
++                <SelectOption value="in_progress" label="In progress" />
++                <SelectOption value="done" label="Done" />
++              </Select>
++              <Select label="Priority" allowSearch={false} value={priority} onChange={(next) => next && setPriority(next)}>
++                <SelectOption value="all" label="All" />
++                <SelectOption value="low" label="Low" />
++                <SelectOption value="medium" label="Medium" />
++                <SelectOption value="high" label="High" />
++              </Select>
++            </div>
++            <TaskTable
++              caption="Tasks"
++              data={rows}
++              rowKey={(row) => row.id}
++              loading={tasks.loading}
++              emptyMessage="Nothing matches your search or filters."
++            >
++              <TaskTable.Column id="done" title={<span className="sr-only">Mark done</span>} width={48}>
++                {(_, row) =>
++                  row.status !== 'done' ? (
++                    <IconButton
++                      variant="base"
++                      look="ghost"
++                      size="xs"
++                      tooltip="Mark as done"
++                      aria-label={`Mark ${row.title} as done`}
++                      onClick={() => void tickDone(row)}
++                    >
++                      <Check />
++                    </IconButton>
++                  ) : null
++                }
++              </TaskTable.Column>
++              <TaskTable.Column id="title" rowHeader title="Title" dataKey="title" width={240}>
++                {(title) => <Truncate>{title}</Truncate>}
++              </TaskTable.Column>
++              <TaskTable.Column id="status" title="Status" dataKey="status" width={130}>
++                {(value: string) => <TaskStatusTag status={value} />}
++              </TaskTable.Column>
++              <TaskTable.Column id="priority" title="Priority" dataKey="priority" width={120}>
++                {(value: string) => <TaskPriorityTag priority={value} />}
++              </TaskTable.Column>
++              <TaskTable.Column id="due" title="Due date" dataKey="dueDate" width={220}>
++                {(_, row) =>
++                  row.dueDate ? (
++                    <span className="flex-row-gap-2 items-center">
++                      {row.overdue ? (
++                        <Tag
++                          size="xs" // Fits the table row without stretching it.
++                          variant="warning" // Overdue tasks stand out in the warning color.
++                        >
++                          Overdue
++                        </Tag>
++                      ) : null}
++                      <Time value={row.dueDate} />
++                    </span>
++                  ) : (
++                    '—'
++                  )
++                }
++              </TaskTable.Column>
++              <TaskTable.Column id="actions" title={<span className="sr-only">Task actions</span>} width={88} align="right">
++                {(_, row) => {
++                  const task = tasks.data.find((entry) => entry.id === row.id);
++                  if (!task) return null;
++                  return (
++                    <span className="flex-row-gap-2 items-center justify-end">
++                      <IconButton
++                        variant="base"
++                        look="ghost"
++                        size="xs"
++                        tooltip="Edit task"
++                        aria-label={`Edit ${row.title}`}
++                        onClick={() => setEditingTask(task)}
++                      >
++                        <Pencil />
++                      </IconButton>
++                      <IconButton
++                        variant="base" // Row deletes stay as quiet as the row's other actions.
++                        look="ghost"
++                        size="xs"
++                        tooltip="Delete task"
++                        aria-label={`Delete ${row.title}`}
++                        onClick={() => void confirmDeleteTask(task)}
++                      >
++                        <Trash2 />
++                      </IconButton>
++                    </span>
++                  );
++                }}
++              </TaskTable.Column>
++            </TaskTable>
++            {rows.length === 0 && (
++              <Button
++                variant="base" // The quiet way out beside the empty message, not the page's main action.
++                onClick={clearFilters}
++              >
++                Clear the search and filters
++              </Button>
++            )}
++          </div>
++        )}
++      </Section>
++      {editing && (
++        <EditProjectDialog
++          project={record}
++          onOpenChange={(open) => !open && setEditing(false)}
++          clients={clients.data}
++        />
++      )}
++      {addingTask && (
++        <AddTaskDialog projectId={record.id} open onOpenChange={(open) => !open && setAddingTask(false)} />
++      )}
++      {editingTask && (
++        <EditTaskDialog task={editingTask} onOpenChange={(open) => !open && setEditingTask(null)} />
++      )}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/projects/page.tsx b/web/app/(routes)/(app)/projects/page.tsx
+new file mode 100644
+index 0000000..a6bd5f9
+--- /dev/null
++++ b/web/app/(routes)/(app)/projects/page.tsx
+@@ -0,0 +1,172 @@
++'use client';
++
++import { AddProjectDialog } from '@app/blocks/ProjectDialogs/AddProjectDialog';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListClients } from '@app/entities/client';
++import { useListProjects } from '@app/entities/project';
++import { useListTasks } from '@app/entities/task';
++import { Button } from '@packages/ui/Button';
++import { SearchInput } from '@packages/ui/Input';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph, Time } from '@packages/ui/Typography';
++import { Plus } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++type ProjectRow = {
++  id: string;
++  name: string;
++  clientId: string;
++  clientName: string;
++  dueDate?: string;
++  openTasks: number;
++};
++
++const ProjectTable = createTable<ProjectRow>();
++
++/**
++ * S07 Projects: every project and how much work is still open.
++ */
++export default function ProjectsPage() {
++  const router = useRouter();
++  const projects = useListProjects();
++  const tasks = useListTasks();
++  const clients = useListClients();
++  const [search, setSearch] = useState('');
++  const [adding, setAdding] = useState(false);
++
++  const clientName = (clientId: string) =>
++    clients.data.find((client) => client.id === clientId)?.name ?? 'Client';
++
++  const query = search.trim().toLowerCase();
++  const rows: ProjectRow[] = projects.data
++    .filter((project) => {
++      if (!query) return true;
++      return (
++        project.name.toLowerCase().includes(query) ||
++        clientName(project.client).toLowerCase().includes(query)
++      );
++    })
++    .map((project) => ({
++      id: project.id,
++      name: project.name,
++      clientId: project.client,
++      clientName: clientName(project.client),
++      dueDate: project.dueDate,
++      openTasks: tasks.data.filter((task) => task.project === project.id && task.status !== 'done').length,
++    }));
++
++  const loading = projects.loading || tasks.loading || clients.loading;
++  const failed = projects.error ?? tasks.error ?? clients.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Projects" />
++        <LoadError
++          message="The project list could not be loaded."
++          onRetry={() => {
++            projects.retry();
++            tasks.retry();
++            clients.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && projects.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Projects" />
++        <Paragraph>Loading projects.</Paragraph>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title="Projects"
++        description="Every project and how much work is still open."
++        actions={
++          projects.data.length > 0 ? (
++            <Button leftIcon={<Plus />} onClick={() => setAdding(true)}>
++              Add a project
++            </Button>
++          ) : undefined
++        }
++      />
++      {projects.data.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph>No projects yet. Add the first project to track your work.</Paragraph>
++          <Button leftIcon={<Plus />} onClick={() => setAdding(true)}>
++            Add a project
++          </Button>
++        </div>
++      ) : (
++        <div className="flex-col-gap-3">
++          <div role="search">
++            <SearchInput
++              label="Search projects"
++              placeholder="Project or client name"
++              value={search}
++              onChange={setSearch}
++            />
++          </div>
++          <ProjectTable
++            caption="Projects"
++            data={rows}
++            rowKey={(row) => row.id}
++            loading={projects.loading || tasks.loading || clients.loading}
++            emptyMessage="Nothing matches your search."
++            onRowClick={(row, click) => {
++              void router.push(`/projects/${row.id}`);
++              click.currentTarget.querySelector('a')?.click();
++            }}
++          >
++            <ProjectTable.Column id="name" rowHeader title="Name" dataKey="name" width={240}>
++              {(name, row) => (
++                <NextLink className="inline-block max-w-full" href={`/projects/${row.id}`}>
++                  <Truncate>{name}</Truncate>
++                </NextLink>
++              )}
++            </ProjectTable.Column>
++            <ProjectTable.Column id="client" title="Client" dataKey="clientName" width={200}>
++              {(name, row) => (
++                <NextLink className="inline-block max-w-full" href={`/clients/${row.clientId}`}>
++                  <Truncate>{name}</Truncate>
++                </NextLink>
++              )}
++            </ProjectTable.Column>
++            <ProjectTable.Column id="due" title="Due date" dataKey="dueDate" width={160}>
++              {(dueDate: string | undefined) => (dueDate ? <Time value={dueDate} /> : '—')}
++            </ProjectTable.Column>
++            <ProjectTable.Column id="open" title="Open tasks" dataKey="openTasks" width={120} align="right">
++              {(count: number) => <Numeral>{count}</Numeral>}
++            </ProjectTable.Column>
++          </ProjectTable>
++          {rows.length === 0 && (
++            <Button
++              variant="base" // The quiet way out beside the empty message, not the page's main action.
++              onClick={() => setSearch('')}
++            >
++              Clear the search
++            </Button>
++          )}
++        </div>
++      )}
++      {adding && (
++        <AddProjectDialog
++          open
++          onOpenChange={(open) => !open && setAdding(false)}
++          onSaved={() => setAdding(false)}
++          clients={clients.data}
++        />
++      )}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/session-types/components/AddSessionTypeDialog.tsx b/web/app/(routes)/(app)/session-types/components/AddSessionTypeDialog.tsx
+new file mode 100644
+index 0000000..23a0f7c
+--- /dev/null
++++ b/web/app/(routes)/(app)/session-types/components/AddSessionTypeDialog.tsx
+@@ -0,0 +1,82 @@
++'use client';
++
++import { createSessionType } from '@app/entities/sessionType';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { emptySessionTypeForm, SessionTypeForm, type SessionTypeFormValues } from './SessionTypeForm';
++
++/** D13 Add a session type: offer a new kind of bookable session. */
++export function AddSessionTypeDialog({
++  open,
++  onOpenChange,
++}: {
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<SessionTypeFormValues>({ defaultValues: emptySessionTypeForm });
++  const [saving, setSaving] = useState(false);
++
++  const save = async (values: SessionTypeFormValues) => {
++    setSaving(true);
++    try {
++      await createSessionType({
++        name: values.name.trim(),
++        durationInMinutes: values.durationInMinutes ?? 0,
++        displayedPrice: values.displayedPrice ?? 0,
++        maximumPeople: values.maximumPeople ?? 0,
++      });
++      toast({ title: 'Session type saved', status: 'success' });
++      onOpenChange(false);
++    } catch {
++      setError('root.server', { message: 'Saving failed. Try again.' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Add a session type"
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the session type' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <SessionTypeForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++      />
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx b/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
+new file mode 100644
+index 0000000..7c626b1
+--- /dev/null
++++ b/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
+@@ -0,0 +1,116 @@
++'use client';
++
++import { updateSessionType, useGetSessionType, type SessionType } from '@app/entities/sessionType';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { SessionTypeForm, type SessionTypeFormValues } from './SessionTypeForm';
++
++/** D14 Edit session type: change length, price or seats; bookings are unchanged. */
++export function EditSessionTypeDialog({
++  sessionType,
++  onOpenChange,
++}: {
++  sessionType: SessionType;
++  onOpenChange: (open: boolean) => void;
++}) {
++  const formId = useId();
++  const current = useGetSessionType(sessionType.id);
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<SessionTypeFormValues>({
++    defaultValues: {
++      name: sessionType.name,
++      durationInMinutes: sessionType.durationInMinutes,
++      displayedPrice: sessionType.displayedPrice,
++      maximumPeople: sessionType.maximumPeople,
++    },
++  });
++  const [saving, setSaving] = useState(false);
++
++  if (!current.data && !current.loading) {
++    return (
++      <Dialog
++        title={`Edit ${sessionType.name}`}
++        open
++        onOpenChange={onOpenChange}
++        footer={
++          <Button
++            variant="base" // Cancel is the only way out once the session type is gone.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++        }
++      >
++        <Paragraph>That session type is gone.</Paragraph>
++      </Dialog>
++    );
++  }
++
++  const save = async (values: SessionTypeFormValues) => {
++    setSaving(true);
++    try {
++      await updateSessionType(sessionType.id, {
++        name: values.name.trim(),
++        durationInMinutes: values.durationInMinutes ?? sessionType.durationInMinutes,
++        displayedPrice: values.displayedPrice ?? sessionType.displayedPrice,
++        maximumPeople: values.maximumPeople ?? sessionType.maximumPeople,
++      });
++      toast({ title: 'Session type updated', status: 'success' });
++      onOpenChange(false);
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        setError('root.server', { message: 'That session type is gone.' });
++      } else {
++        setError('root.server', { message: 'Saving failed. Try again.' });
++      }
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title={`Edit ${sessionType.name}`}
++      open
++      onOpenChange={onOpenChange}
++      footer={
++        <>
++          <Button
++            variant="base" // Cancel is the secondary action beside the main Save.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++          <Button
++            type="submit"
++            form={formId}
++            loadingWithReason={saving || isSubmitting ? 'Saving the session type' : undefined}
++          >
++            Save
++          </Button>
++        </>
++      }
++    >
++      <SessionTypeForm
++        control={control}
++        id={formId}
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(save)(event);
++        }}
++        error={errors.root?.server?.message}
++      />
++      <Paragraph color="muted">Existing bookings are unchanged.</Paragraph>
++    </Dialog>
++  );
++}
+diff --git a/web/app/(routes)/(app)/session-types/components/SessionTypeForm.tsx b/web/app/(routes)/(app)/session-types/components/SessionTypeForm.tsx
+new file mode 100644
+index 0000000..2d36c83
+--- /dev/null
++++ b/web/app/(routes)/(app)/session-types/components/SessionTypeForm.tsx
+@@ -0,0 +1,118 @@
++'use client';
++
++import { Controller, Form } from '@packages/ui/Form';
++import { Input, NumberInput } from '@packages/ui/Input';
++import React from 'react';
++import { type Control } from 'react-hook-form';
++
++export type SessionTypeFormValues = {
++  name: string;
++  durationInMinutes: number | null;
++  displayedPrice: number | null;
++  maximumPeople: number | null;
++};
++
++export const emptySessionTypeForm: SessionTypeFormValues = {
++  name: '',
++  durationInMinutes: null,
++  displayedPrice: null,
++  maximumPeople: null,
++};
++
++const wholeBetween = (min: number, max: number, message: string) => (value: number | null) => {
++  if (value === null || !Number.isInteger(value) || value < min || value > max) return message;
++  return true;
++};
++
++/** The session type form FM08: Name, Duration, Displayed price, Maximum people. */
++export function SessionTypeForm({
++  control,
++  id,
++  onSubmit,
++  error,
++}: {
++  control: Control<SessionTypeFormValues>;
++  id: string;
++  onSubmit: (event: React.FormEvent) => void;
++  error?: string;
++}) {
++  return (
++    <Form id={id} onSubmit={onSubmit} error={error} fill actions={null}>
++      <Controller
++        name="name"
++        control={control}
++        rules={{
++          required: 'Enter the session type name',
++          maxLength: { value: 120, message: 'Keep the name to 120 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Name" autoComplete="off" {...field} />}
++      </Controller>
++      <Controller
++        name="durationInMinutes"
++        control={control}
++        rules={{
++          required: 'Enter the duration in minutes',
++          validate: {
++            whole: wholeBetween(15, 480, 'Enter a whole number of minutes from 15 to 480'),
++          },
++        }}
++      >
++        {({ field }) => (
++          <NumberInput
++            label="Duration in minutes"
++            autoComplete="off"
++            allowDecimal={false}
++            min={15}
++            max={480}
++            {...field}
++          />
++        )}
++      </Controller>
++      <Controller
++        name="displayedPrice"
++        control={control}
++        rules={{
++          required: 'Enter the displayed price',
++          validate: {
++            amount: (value: number | null) =>
++              value === null || Number.isNaN(value) || value < 0
++                ? 'Enter a price of 0 or more'
++                : true,
++          },
++        }}
++      >
++        {({ field }) => (
++          <NumberInput
++            label="Displayed price"
++            helpText="Shown for information only. Nobody pays in the app."
++            autoComplete="off"
++            min={0}
++            {...field}
++          />
++        )}
++      </Controller>
++      <Controller
++        name="maximumPeople"
++        control={control}
++        rules={{
++          required: 'Enter the maximum people',
++          validate: {
++            whole: wholeBetween(1, 20, 'Enter a whole number of people from 1 to 20'),
++          },
++        }}
++      >
++        {({ field }) => (
++          <NumberInput
++            label="Maximum people"
++            autoComplete="off"
++            allowDecimal={false}
++            min={1}
++            max={20}
++            {...field}
++          />
++        )}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/(routes)/(app)/session-types/page.tsx b/web/app/(routes)/(app)/session-types/page.tsx
+new file mode 100644
+index 0000000..b8091ac
+--- /dev/null
++++ b/web/app/(routes)/(app)/session-types/page.tsx
+@@ -0,0 +1,128 @@
++'use client';
++
++import { formatPrice } from '@app/blocks/Format/format';
++import { LoadError } from '@app/components/LoadError';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListSessionTypes, type SessionType } from '@app/entities/sessionType';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph } from '@packages/ui/Typography';
++import { Pencil, Plus } from 'lucide-react';
++import React, { useState } from 'react';
++
++import { AddSessionTypeDialog } from './components/AddSessionTypeDialog';
++import { EditSessionTypeDialog } from './components/EditSessionTypeDialog';
++
++type SessionTypeRow = {
++  id: string;
++  name: string;
++  durationInMinutes: number;
++  displayedPrice: number;
++  maximumPeople: number;
++};
++
++const SessionTypeTable = createTable<SessionTypeRow>();
++
++/**
++ * S10 Session types: the kinds of sessions visitors can book, kept up to date.
++ */
++export default function SessionTypesPage() {
++  const sessionTypes = useListSessionTypes();
++  const [adding, setAdding] = useState(false);
++  const [editing, setEditing] = useState<SessionType | null>(null);
++
++  const rows: SessionTypeRow[] = sessionTypes.data.map((type) => ({
++    id: type.id,
++    name: type.name,
++    durationInMinutes: type.durationInMinutes,
++    displayedPrice: type.displayedPrice,
++    maximumPeople: type.maximumPeople,
++  }));
++
++  if (sessionTypes.error) {
++    return (
++      <>
++        <PageHeader title="Session types" />
++        <LoadError message="The session types could not be loaded." onRetry={() => sessionTypes.retry()} />
++      </>
++    );
++  }
++
++  if (sessionTypes.loading && sessionTypes.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Session types" />
++        <Paragraph>Loading session types.</Paragraph>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title="Session types"
++        description="Displayed prices are shown for information only. Nobody pays in the app."
++        actions={
++          sessionTypes.data.length > 0 ? (
++            <Button leftIcon={<Plus />} onClick={() => setAdding(true)}>
++              Add a session type
++            </Button>
++          ) : undefined
++        }
++      />
++      {sessionTypes.data.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph>No session types yet. Add one so visitors can book.</Paragraph>
++          <Button leftIcon={<Plus />} onClick={() => setAdding(true)}>
++            Add a session type
++          </Button>
++        </div>
++      ) : (
++        <SessionTypeTable
++          caption="Session types"
++          data={rows}
++          rowKey={(row) => row.id}
++          loading={sessionTypes.loading}
++        >
++          <SessionTypeTable.Column id="name" rowHeader title="Name" dataKey="name" width={220}>
++            {(name) => <Truncate>{name}</Truncate>}
++          </SessionTypeTable.Column>
++          <SessionTypeTable.Column id="duration" title="Duration" dataKey="durationInMinutes" width={140} align="right">
++            {(minutes: number) => <Numeral>{`${minutes} min`}</Numeral>}
++          </SessionTypeTable.Column>
++          <SessionTypeTable.Column id="price" title="Displayed price" dataKey="displayedPrice" width={150} align="right">
++            {(price: number) => <Numeral>{formatPrice(price)}</Numeral>}
++          </SessionTypeTable.Column>
++          <SessionTypeTable.Column id="seats" title="Maximum people" dataKey="maximumPeople" width={150} align="right">
++            {(seats: number) => <Numeral>{seats}</Numeral>}
++          </SessionTypeTable.Column>
++          <SessionTypeTable.Column id="actions" title={<span className="sr-only">Session type actions</span>} width={56} align="right">
++            {(_, row) => {
++              const sessionType = sessionTypes.data.find((type) => type.id === row.id);
++              return sessionType ? (
++                <IconButton
++                  variant="base"
++                  look="ghost"
++                  size="xs"
++                  tooltip="Edit session type"
++                  aria-label={`Edit ${row.name}`}
++                  onClick={() => setEditing(sessionType)}
++                >
++                  <Pencil />
++                </IconButton>
++              ) : null;
++            }}
++          </SessionTypeTable.Column>
++        </SessionTypeTable>
++      )}
++      {adding && (
++        <AddSessionTypeDialog open onOpenChange={(open) => !open && setAdding(false)} />
++      )}
++      {editing && (
++        <EditSessionTypeDialog sessionType={editing} onOpenChange={(open) => !open && setEditing(null)} />
++      )}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx b/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx
+new file mode 100644
+index 0000000..4da9d29
+--- /dev/null
++++ b/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx
+@@ -0,0 +1,101 @@
++'use client';
++
++import { formatSlotTitle } from '@app/blocks/Format/format';
++import { NextLink } from '@app/components/NextLink';
++import { useGetClient } from '@app/entities/client';
++import { useGetSessionType } from '@app/entities/sessionType';
++import { Numeral } from '@packages/ui/Numeral';
++import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++import type { Booking } from '@app/entities/booking';
++
++type SlotBookingRow = {
++  id: string;
++  name: string;
++  email: string;
++  clientId?: string;
++};
++
++const SlotBookingTable = createTable<SlotBookingRow>();
++
++/** A booking's linked client: its name opening the client, or nothing to open. */
++function BookingRow({ booking }: { booking: Booking }) {
++  const linked = useGetClient(booking.client ?? '');
++  if (!booking.client || !linked.data) return <Paragraph color="muted">No linked client</Paragraph>;
++  return (
++    <NextLink className="inline-block max-w-full" href={`/clients/${booking.client}`}>
++      <Truncate>{linked.data.name}</Truncate>
++    </NextLink>
++  );
++}
++
++/**
++ * A slot's bookings as a table: booker, email and linked client, each
++ * opening its record.
++ */
++export function SlotBookings({
++  bookings,
++  onOpenBooking,
++}: {
++  bookings: Booking[];
++  onOpenBooking: (bookingId: string) => void;
++}) {
++  const rows: SlotBookingRow[] = bookings.map((booking) => ({
++    id: booking.id,
++    name: booking.name,
++    email: booking.email,
++    clientId: booking.client,
++  }));
++  return (
++    <SlotBookingTable
++      caption="Bookings"
++      data={rows}
++      rowKey={(row) => row.id}
++      emptyMessage="No bookings yet. This time stays open for booking until the slot is cancelled."
++      onRowClick={(row, click) => {
++        onOpenBooking(row.id);
++        click.currentTarget.querySelector('a')?.click();
++      }}
++    >
++      <SlotBookingTable.Column id="name" rowHeader title="Booker" dataKey="name" width={200}>
++        {(name, row) => (
++          <NextLink className="inline-block max-w-full" href={`/bookings/${row.id}`}>
++            <Truncate>{name}</Truncate>
++          </NextLink>
++        )}
++      </SlotBookingTable.Column>
++      <SlotBookingTable.Column id="email" title="Email" dataKey="email" width={240}>
++        {(email) => <Truncate>{email}</Truncate>}
++      </SlotBookingTable.Column>
++      <SlotBookingTable.Column id="client" title="Linked client" dataKey="clientId" width={220}>
++        {(_, row) => {
++          const booking = bookings.find((entry) => entry.id === row.id);
++          if (!booking) return <Paragraph color="muted">No linked client</Paragraph>;
++          return <BookingRow booking={booking} />;
++        }}
++      </SlotBookingTable.Column>
++    </SlotBookingTable>
++  );
++}
++
++/** A slot's booked seats as "2 of 4". */
++export function SlotSeatCount({
++  booked,
++  sessionTypeId,
++}: {
++  booked: number;
++  sessionTypeId: string;
++}) {
++  const sessionType = useGetSessionType(sessionTypeId);
++  const maximum = sessionType.data?.maximumPeople ?? 1;
++  return <Numeral>{`${booked} of ${maximum}`}</Numeral>;
++}
++
++/** A slot's session type name and time, formatted the same as the page title. */
++export function SlotSessionLine({ sessionTypeId, startAt }: { sessionTypeId: string; startAt: string }) {
++  const sessionType = useGetSessionType(sessionTypeId);
++  return <Truncate>{formatSlotTitle(sessionType.data?.name ?? 'Session', startAt)}</Truncate>;
++}
+diff --git a/web/app/(routes)/(app)/sessions/[slotId]/page.tsx b/web/app/(routes)/(app)/sessions/[slotId]/page.tsx
+new file mode 100644
+index 0000000..212d008
+--- /dev/null
++++ b/web/app/(routes)/(app)/sessions/[slotId]/page.tsx
+@@ -0,0 +1,160 @@
++'use client';
++
++import { formatSlotTitle } from '@app/blocks/Format/format';
++import { bookingsForSlot } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { deleteBooking, useListBookings } from '@app/entities/booking';
++import { useGetSessionType } from '@app/entities/sessionType';
++import { deleteSlot, getSlot, useGetSlot } from '@app/entities/slot';
++import { Button } from '@packages/ui/Button';
++import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
++import { Section } from '@packages/ui/Section';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++import { SlotBookings, SlotSeatCount, SlotSessionLine } from './components/SlotBookings';
++
++/**
++ * S12 The slot's session type name and time: who booked a time slot and
++ * for what.
++ */
++export default function SlotPage() {
++  const router = useRouter();
++  const { slotId } = useParams<{ slotId: string }>();
++  const slot = useGetSlot(slotId);
++  const bookings = useListBookings();
++  const sessionType = useGetSessionType(slot.data?.sessionType ?? '');
++  const [busy, setBusy] = useState(false);
++
++  const loading = slot.loading || bookings.loading || sessionType.loading;
++  const failed = slot.error ?? bookings.error ?? sessionType.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Session" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
++        <LoadError
++          message="The session could not be loaded."
++          onRetry={() => {
++            slot.retry();
++            bookings.retry();
++            sessionType.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && !slot.data) {
++    return (
++      <>
++        <PageHeader title="Session" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
++        <Paragraph>Loading session.</Paragraph>
++      </>
++    );
++  }
++
++  if (!slot.data) {
++    return (
++      <NotFound
++        title="This session is gone."
++        description="It may have been cancelled, or the link is wrong."
++        back={{ label: 'Back to sessions', href: '/sessions' }}
++      />
++    );
++  }
++
++  const record = slot.data;
++  const held = bookingsForSlot(bookings.data, record.id);
++  const title = formatSlotTitle(sessionType.data?.name ?? 'Session', record.startAt);
++
++  const confirmCancelSlot = async () => {
++    const result = await openConfirmationDialog({
++      title: 'Cancel this session?',
++      content: `${title}. Cancelling the slot cancels every booking on it.`,
++      status: 'error',
++      footer: (closeDialog) => (
++        <>
++          <Button
++            variant="base" // Keeping the slot is the quiet way out.
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            variant="danger" // The filled confirm button cancels the slot and its bookings.
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Cancel slot
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setBusy(true);
++    try {
++      const current = await getSlot(record.id);
++      if (!current) {
++        toast({ title: 'This session is gone', status: 'info' });
++        router.push('/sessions');
++        return;
++      }
++      for (const booking of held) await deleteBooking(booking.id);
++      await deleteSlot(record.id);
++      toast({ title: 'Session cancelled', status: 'success' });
++      router.push('/sessions');
++    } catch (error) {
++      if (error instanceof Error && error.message.includes('not found')) {
++        toast({ title: 'This session is gone', status: 'info' });
++        router.push('/sessions');
++      } else {
++        toast({ title: 'Could not cancel the session', status: 'error' });
++      }
++    } finally {
++      setBusy(false);
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={<Truncate>{title}</Truncate>}
++        breadcrumb={[{ label: 'Sessions', href: '/sessions' }]}
++        actions={
++          <Button
++            variant="danger" // Cancelling the slot is the destructive action of this view.
++            loadingWithReason={busy ? 'Cancelling the session' : undefined}
++            onClick={() => void confirmCancelSlot()}
++          >
++            Cancel slot
++          </Button>
++        }
++      />
++      <Section title="Details">
++        <DescriptionList>
++          <div>
++            <DescriptionTerm>Session</DescriptionTerm>
++            <DescriptionDetails>
++              <SlotSessionLine sessionTypeId={record.sessionType} startAt={record.startAt} />
++            </DescriptionDetails>
++          </div>
++          <div>
++            <DescriptionTerm>Booked</DescriptionTerm>
++            <DescriptionDetails>
++              <SlotSeatCount booked={held.length} sessionTypeId={record.sessionType} />
++            </DescriptionDetails>
++          </div>
++        </DescriptionList>
++      </Section>
++      <Section title="Bookings">
++        <SlotBookings bookings={held} onOpenBooking={(bookingId) => router.push(`/bookings/${bookingId}`)} />
++      </Section>
++    </>
++  );
++}
++
++
+diff --git a/web/app/(routes)/(app)/sessions/page.tsx b/web/app/(routes)/(app)/sessions/page.tsx
+new file mode 100644
+index 0000000..b0e595b
+--- /dev/null
++++ b/web/app/(routes)/(app)/sessions/page.tsx
+@@ -0,0 +1,208 @@
++'use client';
++
++import { bookingsForSlot } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { useListBookings, type Booking } from '@app/entities/booking';
++import { useGetSessionType } from '@app/entities/sessionType';
++import { useListSlots, type Slot } from '@app/entities/slot';
++import { Numeral } from '@packages/ui/Numeral';
++import { Section } from '@packages/ui/Section';
++import { createTable } from '@packages/ui/Table';
++import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph, Time } from '@packages/ui/Typography';
++import { useRouter } from 'next/navigation';
++import React from 'react';
++
++type SlotRow = {
++  id: string;
++  sessionTypeId: string;
++  startAt: string;
++  bookingCount: number;
++  bookings: Booking[];
++};
++
++const SlotTable = createTable<SlotRow>();
++
++/** A slot's session type name, read through the single-slot operation. */
++function SlotTypeName({ sessionTypeId }: { sessionTypeId: string }) {
++  const sessionType = useGetSessionType(sessionTypeId);
++  return <Truncate>{sessionType.data?.name ?? 'Session'}</Truncate>;
++}
++
++/** How many of a slot's seats are taken, and whether it is full. */
++function SlotSeats({ booked, sessionTypeId }: { booked: number; sessionTypeId: string }) {
++  const sessionType = useGetSessionType(sessionTypeId);
++  const maximum = sessionType.data?.maximumPeople ?? 1;
++  return (
++    <span className="flex-row-gap-2 items-center">
++      <Numeral>{`${booked} of ${maximum}`}</Numeral>
++      {booked >= maximum ? (
++        <Tag
++          size="xs" // Fits the table row without stretching it.
++          variant="info" // Full is a state worth noticing, not a warning.
++        >
++          Full
++        </Tag>
++      ) : null}
++    </span>
++  );
++}
++
++/** A slot's booker names, each opening its booking. */
++function SlotBookers({ bookings }: { bookings: Booking[] }) {
++  if (bookings.length === 0) return <Paragraph color="muted">No bookings</Paragraph>;
++  return (
++    <>
++      {bookings.map((booking, index) => (
++        <React.Fragment key={booking.id}>
++          {index > 0 ? ', ' : null}
++          <NextLink className="inline-block max-w-full" href={`/bookings/${booking.id}`}>
++            <Truncate>{booking.name}</Truncate>
++          </NextLink>
++        </React.Fragment>
++      ))}
++    </>
++  );
++}
++
++/** Builds the row for one slot from the bookings still holding a seat. */
++function toRow(slot: Slot, bookings: Booking[]): SlotRow {
++  const held = bookingsForSlot(bookings, slot.id);
++  return {
++    id: slot.id,
++    sessionTypeId: slot.sessionType,
++    startAt: slot.startAt,
++    bookingCount: held.length,
++    bookings: held,
++  };
++}
++
++/**
++ * S11 Sessions: upcoming sessions and who booked them, with past sessions
++ * kept separate.
++ */
++export default function SessionsPage() {
++  const router = useRouter();
++  const slots = useListSlots();
++  const bookings = useListBookings();
++  const now = Date.now();
++
++  const openSlot = (row: SlotRow) => router.push(`/sessions/${row.id}`);
++
++  const upcoming: SlotRow[] = slots.data
++    .filter((slot) => new Date(slot.startAt).getTime() >= now)
++    .map((slot) => toRow(slot, bookings.data))
++    .sort((a, b) => (a.startAt < b.startAt ? -1 : a.startAt > b.startAt ? 1 : 0));
++  const past: SlotRow[] = slots.data
++    .filter((slot) => new Date(slot.startAt).getTime() < now)
++    .map((slot) => toRow(slot, bookings.data))
++    .sort((a, b) => (a.startAt < b.startAt ? 1 : a.startAt > b.startAt ? -1 : 0));
++
++  const loading = slots.loading || bookings.loading;
++  const failed = slots.error ?? bookings.error;
++  if (failed) {
++    return (
++      <>
++        <PageHeader title="Sessions" />
++        <LoadError
++          message="The sessions could not be loaded."
++          onRetry={() => {
++            slots.retry();
++            bookings.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && slots.data.length === 0 && bookings.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Sessions" />
++        <Paragraph>Loading sessions.</Paragraph>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader title="Sessions" description="Upcoming sessions and who booked them." />
++      {upcoming.length === 0 ? (
++        <div className="flex-col-gap-3 items-start">
++          <Paragraph>No upcoming sessions yet. New sessions appear here when guests book open times.</Paragraph>
++          <nav aria-label="Booking setup" className="flex-col-gap-2 items-start">
++            <NextLink look="plain" href="/availability">
++              Availability
++            </NextLink>
++            <NextLink look="plain" href="/session-types">
++              Session types
++            </NextLink>
++          </nav>
++        </div>
++      ) : (
++        <Section title="Upcoming sessions">
++          <SlotTable
++            caption="Upcoming sessions"
++            data={upcoming}
++            rowKey={(row) => row.id}
++            loading={slots.loading || bookings.loading}
++            onRowClick={(row, click) => {
++              openSlot(row);
++              click.currentTarget.querySelector('a')?.click();
++            }}
++          >
++            <SlotTable.Column id="session" rowHeader title="Session" dataKey="sessionTypeId" width={220}>
++              {(_, row) => (
++                <NextLink className="inline-block max-w-full" href={`/sessions/${row.id}`}>
++                  <SlotTypeName sessionTypeId={row.sessionTypeId} />
++                </NextLink>
++              )}
++            </SlotTable.Column>
++            <SlotTable.Column id="time" title="Date and time" dataKey="startAt" width={220}>
++              {(startAt) => <Time value={startAt} withTime />}
++            </SlotTable.Column>
++            <SlotTable.Column id="seats" title="Bookings" dataKey="bookingCount" width={160}>
++              {(_, row) => <SlotSeats booked={row.bookingCount} sessionTypeId={row.sessionTypeId} />}
++            </SlotTable.Column>
++            <SlotTable.Column id="bookers" title="Bookers" dataKey="id" width={240}>
++              {(_, row) => <SlotBookers bookings={row.bookings} />}
++            </SlotTable.Column>
++          </SlotTable>
++        </Section>
++      )}
++      <Section title="Past sessions">
++        {past.length === 0 ? (
++          <Paragraph color="muted">No past sessions yet.</Paragraph>
++        ) : (
++          <SlotTable
++            caption="Past sessions"
++            data={past}
++            rowKey={(row) => row.id}
++            loading={loading}
++            onRowClick={(row, click) => {
++              openSlot(row);
++              click.currentTarget.querySelector('a')?.click();
++            }}
++          >
++            <SlotTable.Column id="session" rowHeader title="Session" dataKey="sessionTypeId" width={220}>
++              {(_, row) => (
++                <NextLink className="inline-block max-w-full" href={`/sessions/${row.id}`}>
++                  <SlotTypeName sessionTypeId={row.sessionTypeId} />
++                </NextLink>
++              )}
++            </SlotTable.Column>
++            <SlotTable.Column id="time" title="Date and time" dataKey="startAt" width={220}>
++              {(startAt) => <Time value={startAt} withTime />}
++            </SlotTable.Column>
++            <SlotTable.Column id="bookers" title="Bookers" dataKey="id" width={240}>
++              {(_, row) => <SlotBookers bookings={row.bookings} />}
++            </SlotTable.Column>
++          </SlotTable>
++        )}
++      </Section>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/book/page.tsx b/web/app/(routes)/(marketing)/book/page.tsx
+new file mode 100644
+index 0000000..0e7b589
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/book/page.tsx
+@@ -0,0 +1,326 @@
++'use client';
++
++import { formatPrice, formatSlotTime } from '@app/blocks/Format/format';
++import { openSlotsFor } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { createBooking, useListBookings, type Booking } from '@app/entities/booking';
++import { createClient, getClient } from '@app/entities/client';
++import { useGetSessionType, useListSessionTypes, type SessionType } from '@app/entities/sessionType';
++import { getSlot, useGetSlot, useListSlots } from '@app/entities/slot';
++import { Button } from '@packages/ui/Button';
++import { Card, CardGroup } from '@packages/ui/Card';
++import { Controller, Form } from '@packages/ui/Form';
++import { Input } from '@packages/ui/Input';
++import { Section } from '@packages/ui/Section';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph } from '@packages/ui/Typography';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++/** One session type as a pickable card. */
++function TypeOption({ sessionType }: { sessionType: SessionType }) {
++  const titleId = useId();
++  return (
++    <Card value={sessionType.id} aria-labelledby={titleId}>
++      <strong id={titleId}>
++        <Truncate>{sessionType.name}</Truncate>
++      </strong>
++      <span>
++        {sessionType.durationInMinutes} min · {formatPrice(sessionType.displayedPrice)}
++      </span>
++    </Card>
++  );
++}
++
++/** One open slot as a pickable card. */
++function SlotOption({ slotId, startAt }: { slotId: string; startAt: string }) {
++  const titleId = useId();
++  return (
++    <Card value={slotId} aria-labelledby={titleId}>
++      <strong id={titleId}>
++        <Truncate>{formatSlotTime(startAt)}</Truncate>
++      </strong>
++    </Card>
++  );
++}
++
++/** The chosen session type's duration and displayed price. */
++function TypeSummary({ sessionTypeId }: { sessionTypeId: string }) {
++  const sessionType = useGetSessionType(sessionTypeId);
++  if (!sessionType.data) return null;
++  return (
++    <Paragraph>
++      {sessionType.data.name} · {sessionType.data.durationInMinutes} min ·{' '}
++      {formatPrice(sessionType.data.displayedPrice)}
++    </Paragraph>
++  );
++}
++
++/** The chosen slot's date and time, read fresh from the store. */
++function SlotSummary({ slotId }: { slotId: string }) {
++  const slot = useGetSlot(slotId);
++  if (!slot.data) return null;
++  return <Paragraph>{formatSlotTime(slot.data.startAt)}</Paragraph>;
++}
++
++type BookingFlowValues = {
++  sessionType: string;
++  slot: string;
++  name: string;
++  email: string;
++};
++
++/**
++ * S14 Book a session: pick a session type and an open time, book with name
++ * and email, and keep the private cancellation link.
++ */
++export default function BookPage() {
++  const sessionTypes = useListSessionTypes();
++  const slots = useListSlots();
++  const bookings = useListBookings();
++  const [slotGone, setSlotGone] = useState(false);
++  const [confirmed, setConfirmed] = useState<Booking | null>(null);
++
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    setValue,
++    watch,
++    formState: { errors, isSubmitting },
++  } = useForm<BookingFlowValues>({ defaultValues: { sessionType: '', slot: '', name: '', email: '' } });
++  const [saving, setSaving] = useState(false);
++
++  const pickedType = watch('sessionType');
++  const pickedSlot = watch('slot');
++
++  if (sessionTypes.error ?? slots.error ?? bookings.error) {
++    return (
++      <>
++        <PageHeader title="Book a session" />
++        <LoadError
++          message="The booking page could not be loaded."
++          onRetry={() => {
++            sessionTypes.retry();
++            slots.retry();
++            bookings.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (
++    (sessionTypes.loading && sessionTypes.data.length === 0) ||
++    (slots.loading && slots.data.length === 0)
++  ) {
++    return (
++      <>
++        <PageHeader
++          title="Book a session"
++          description="Pick a session type and an open time. No account is needed, and nobody pays in the app. Displayed prices are shown for information only."
++        />
++        <Paragraph>Loading booking options.</Paragraph>
++      </>
++    );
++  }
++
++  if (sessionTypes.data.length === 0) {
++    return (
++      <>
++        <PageHeader
++          title="Book a session"
++          description="Pick a session type and an open time. No account is needed, and nobody pays in the app. Displayed prices are shown for information only."
++        />
++        <Paragraph>No sessions are currently offered. Please check back later.</Paragraph>
++      </>
++    );
++  }
++
++  if (confirmed) {
++    return (
++      <>
++        <PageHeader
++          title="Book a session"
++          description="Pick a session type and an open time. No account is needed, and nobody pays in the app. Displayed prices are shown for information only."
++        />
++        <Section title="You're booked.">
++          <div className="flex-col-gap-3 items-start">
++            <TypeSummary sessionTypeId={confirmed.sessionType} />
++            <SlotSummary slotId={confirmed.slot} />
++            <Paragraph>
++              Keep this private cancellation link. It is the only way back to your booking, as no
++              email is sent.
++            </Paragraph>
++            <NextLink href={`/my-booking/${confirmed.id}`}>
++              {`Your booking: ${confirmed.id}`}
++            </NextLink>
++            <Button
++              variant="base" // Starting over is the quiet way out after booking.
++              onClick={() => setConfirmed(null)}
++            >
++              Book another session
++            </Button>
++          </div>
++        </Section>
++      </>
++    );
++  }
++
++  const open = pickedType
++    ? openSlotsFor(slots.data, bookings.data, sessionTypes.data, pickedType)
++    : [];
++
++  const confirm = async (values: BookingFlowValues) => {
++    setSaving(true);
++    try {
++      // The slot may have filled or gone since it was picked.
++      const current = await getSlot(values.slot);
++      const stillOpen =
++        current &&
++        openSlotsFor(slots.data, bookings.data, sessionTypes.data, values.sessionType).some(
++          (slot) => slot.id === values.slot,
++        );
++      if (!stillOpen) {
++        setValue('slot', '');
++        setSlotGone(true);
++        return;
++      }
++      const name = values.name.trim();
++      const email = values.email.trim();
++      const existing = await getClient(email);
++      const clientId = existing?.id ?? (await createClient({ name, email, status: 'lead' })).id;
++      const booking = await createBooking({
++        name,
++        email,
++        sessionType: values.sessionType,
++        slot: values.slot,
++        client: clientId,
++      });
++      setConfirmed(booking);
++    } catch {
++      setError('root.server', { message: 'Creating the booking failed. Try again.' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title="Book a session"
++        description="Pick a session type and an open time. No account is needed, and nobody pays in the app. Displayed prices are shown for information only."
++      />
++      <Form
++        onSubmit={(event) => {
++          clearErrors('root');
++          void handleSubmit(confirm)(event);
++        }}
++        error={errors.root?.server?.message}
++        actions={
++          pickedSlot ? (
++            <>
++              <Button
++                variant="base" // Choosing another time is the quiet way out.
++                onClick={() => {
++                  setValue('slot', '');
++                  setSlotGone(false);
++                }}
++              >
++                Choose another time
++              </Button>
++              <Button
++                type="submit"
++                loadingWithReason={saving || isSubmitting ? 'Confirming your booking' : undefined}
++              >
++                Confirm booking
++              </Button>
++            </>
++          ) : null
++        }
++      >
++        <Controller
++          name="sessionType"
++          control={control}
++          rules={{ required: 'Choose a session type' }}
++        >
++          {({ field }) => (
++            <CardGroup
++              mode="single"
++              label="Session type"
++              {...field}
++              onChange={(next) => {
++                field.onChange(next);
++                setValue('slot', '');
++                setSlotGone(false);
++              }}
++              className="flex-row-gap-3 flex-wrap"
++            >
++              {sessionTypes.data.map((sessionType) => (
++                <TypeOption key={sessionType.id} sessionType={sessionType} />
++              ))}
++            </CardGroup>
++          )}
++        </Controller>
++        {pickedType &&
++          (open.length === 0 ? (
++            <>
++              <Paragraph>There are no open times for this session type in the next two weeks.</Paragraph>
++              <Paragraph color="muted">Pick another session type to see its open times.</Paragraph>
++            </>
++          ) : (
++            <Controller
++              name="slot"
++              control={control}
++              rules={{ required: 'Choose an open time' }}
++            >
++              {({ field }) => (
++                <CardGroup
++                  mode="single"
++                  label="Open times"
++                  {...field}
++                  className="flex-row-gap-3 flex-wrap"
++                >
++                  {open.map((slot) => (
++                    <SlotOption key={slot.id} slotId={slot.id} startAt={slot.startAt} />
++                  ))}
++                </CardGroup>
++              )}
++            </Controller>
++          ))}
++        {slotGone && pickedSlot === '' && open.length > 0 && (
++          <Paragraph>That time is no longer open.</Paragraph>
++        )}
++        {pickedSlot && (
++          <>
++            <TypeSummary sessionTypeId={pickedType} />
++            <SlotSummary slotId={pickedSlot} />
++            <Controller
++              name="name"
++              control={control}
++              rules={{ required: 'Enter your name' }}
++            >
++              {({ field }) => <Input label="Name" autoComplete="name" {...field} />}
++            </Controller>
++            <Controller
++              name="email"
++              control={control}
++              rules={{
++                required: 'Enter your email',
++                pattern: {
++                  value: /^\S+@\S+\.\S+$/,
++                  message: 'Enter an email like name@example.com',
++                },
++              }}
++            >
++              {({ field }) => <Input label="Email" type="email" autoComplete="email" {...field} />}
++            </Controller>
++          </>
++        )}
++      </Form>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx b/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
+new file mode 100644
+index 0000000..c953870
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
+@@ -0,0 +1,196 @@
++'use client';
++
++import { formatSlotTime, formatSlotTitle } from '@app/blocks/Format/format';
++import { LoadError } from '@app/components/LoadError';
++import { NextLink } from '@app/components/NextLink';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { cancelBooking, useGetBooking } from '@app/entities/booking';
++import { useGetSessionType } from '@app/entities/sessionType';
++import { useGetSlot } from '@app/entities/slot';
++import { Button } from '@packages/ui/Button';
++import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
++import { Section } from '@packages/ui/Section';
++import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
++import { useParams } from 'next/navigation';
++import React, { useState } from 'react';
++
++/**
++ * S15 The booking's session type name and time: check a booking from its
++ * private link and cancel only that booking.
++ */
++export default function MyBookingPage() {
++  const { bookingId } = useParams<{ bookingId: string }>();
++  const booking = useGetBooking(bookingId);
++  const slot = useGetSlot(booking.data?.slot ?? '');
++  const sessionType = useGetSessionType(booking.data?.sessionType ?? '');
++  const [busy, setBusy] = useState(false);
++
++  if (booking.error) {
++    return (
++      <>
++        <PageHeader title="Your booking" />
++        <LoadError message="Your booking could not be loaded." onRetry={() => booking.retry()} />
++      </>
++    );
++  }
++
++  if (booking.loading && !booking.data) {
++    return (
++      <>
++        <PageHeader title="Your booking" />
++        <Paragraph>Loading your booking.</Paragraph>
++      </>
++    );
++  }
++
++  if (!booking.data) {
++    return (
++      <NotFound
++        title="This link is not recognised."
++        description="The booking may have been removed, or the link is wrong."
++        back={{ label: 'Book a session', href: '/book' }}
++      />
++    );
++  }
++
++  const record = booking.data;
++  const title = slot.data?.startAt
++    ? formatSlotTitle(sessionType.data?.name ?? 'Session', slot.data.startAt)
++    : 'Your booking';
++
++  const confirmCancel = async () => {
++    const result = await openConfirmationDialog({
++      title: 'Cancel your booking?',
++      content: `${title}. Only this booking will be cancelled and the seat will be freed.`,
++      footer: (closeDialog) => (
++        <>
++          <Button
++            variant="base" // Keeping the booking is the quiet way out.
++            onClick={() => closeDialog(DialogResult.cancel)}
++          >
++            Cancel
++          </Button>
++          <Button
++            variant="danger" // The filled confirm button cancels only this booking.
++            onClick={() => closeDialog(DialogResult.confirm)}
++          >
++            Cancel booking
++          </Button>
++        </>
++      ),
++    });
++    if (result !== DialogResult.confirm) return;
++    setBusy(true);
++    try {
++      await cancelBooking(record.id, { isCancelled: true });
++      toast({ title: 'Booking cancelled', status: 'success' });
++    } catch {
++      toast({ title: 'Cancelling failed. Try cancelling again.', status: 'error' });
++    } finally {
++      setBusy(false);
++    }
++  };
++
++  if (record.isCancelled) {
++    return (
++      <>
++        <PageHeader
++          title={<Truncate>{title}</Truncate>}
++          description="This booking was cancelled."
++          actions={
++            <Button as={NextLink} href="/book">
++              Book another time
++            </Button>
++          }
++        />
++        <Section title="Details">
++          <BookingDetails
++            name={record.name}
++            email={record.email}
++            sessionTypeName={sessionType.data?.name ?? 'Session'}
++            startAt={slot.data?.startAt}
++            status="Cancelled"
++          />
++        </Section>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader
++        title={<Truncate>{title}</Truncate>}
++        actions={
++          <Button
++            variant="danger" // Cancelling is the destructive action of this view.
++            loadingWithReason={busy ? 'Cancelling your booking' : undefined}
++            onClick={() => void confirmCancel()}
++          >
++            Cancel booking
++          </Button>
++        }
++      />
++      <Section title="Details">
++        <BookingDetails
++          name={record.name}
++          email={record.email}
++          sessionTypeName={sessionType.data?.name ?? 'Session'}
++          startAt={slot.data?.startAt}
++          status="Booked"
++        />
++      </Section>
++    </>
++  );
++}
++
++function BookingDetails({
++  name,
++  email,
++  sessionTypeName,
++  startAt,
++  status,
++}: {
++  name: string;
++  email: string;
++  sessionTypeName: string;
++  startAt?: string;
++  status: string;
++}) {
++  return (
++    <DescriptionList>
++      <div>
++        <DescriptionTerm>Session type</DescriptionTerm>
++        <DescriptionDetails>
++          <Truncate>{sessionTypeName}</Truncate>
++        </DescriptionDetails>
++      </div>
++      <div>
++        <DescriptionTerm>Time</DescriptionTerm>
++        <DescriptionDetails>
++          <Truncate>{startAt ? formatSlotTime(startAt) : '—'}</Truncate>
++        </DescriptionDetails>
++      </div>
++      <div>
++        <DescriptionTerm>Status</DescriptionTerm>
++        <DescriptionDetails>
++          <Truncate>{status}</Truncate>
++        </DescriptionDetails>
++      </div>
++      <div>
++        <DescriptionTerm>Name</DescriptionTerm>
++        <DescriptionDetails>
++          <Truncate>{name}</Truncate>
++        </DescriptionDetails>
++      </div>
++      <div>
++        <DescriptionTerm>Email</DescriptionTerm>
++        <DescriptionDetails>
++          <Truncate>{email}</Truncate>
++        </DescriptionDetails>
++      </div>
++    </DescriptionList>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/page.tsx b/web/app/(routes)/(marketing)/page.tsx
+index 19adfed..5934485 100644
+--- a/web/app/(routes)/(marketing)/page.tsx
++++ b/web/app/(routes)/(marketing)/page.tsx
+@@ -1,11 +1,96 @@
++'use client';
++
+ import { Hero } from '@app/components/Hero';
++import { NextLink } from '@app/components/NextLink';
++import { Button } from '@packages/ui/Button';
++import { Card, CardList } from '@packages/ui/Card';
++import { Paragraph } from '@packages/ui/Typography';
++import { BellRing, CalendarCheck, FolderKanban, Lock } from 'lucide-react';
+ import React from 'react';
+ 
+-export default function HomePage() {
++const reasons = [
++  {
++    id: 'follow-ups',
++    icon: <BellRing aria-hidden />,
++    title: 'Follow-ups first',
++    line: 'Your client list puts overdue follow-ups first, so you always know who to contact next.',
++  },
++  {
++    id: 'projects',
++    icon: <FolderKanban aria-hidden />,
++    title: 'Projects with clear next steps',
++    line: 'Each project shows its tasks and how many are still open, with overdue tasks standing out.',
++  },
++  {
++    id: 'bookings',
++    icon: <CalendarCheck aria-hidden />,
++    title: 'Bookings without the back and forth',
++    line: 'Visitors pick a session type and an open time, and you see who booked in your sessions.',
++  },
++  {
++    id: 'private',
++    icon: <Lock aria-hidden />,
++    title: 'Private to you',
++    line: 'Your clients, notes, projects and bookings live in one private workspace only you can open.',
++  },
++];
++
++/**
++ * S01 SoloStudio: what the workspace is for, with a read-only preview of the
++ * home dashboard and the four reasons to use it.
++ */
++export default function LandingPage() {
+   return (
+-    <Hero
+-      title="Application starter"
+-      description="React, Tailwind, vanilla-extract, Zustand, and React Query are ready."
+-    />
++    <>
++      <Hero
++        title="Clients, projects and bookings, all in one calm place"
++        description="SoloStudio is a single workspace for a solo freelance designer to manage clients, projects and bookings, without scattering them across email, notes and spreadsheets."
++        actions={
++          <Button as={NextLink} href="/sign-up">
++            Create your workspace
++          </Button>
++        }
++        media={
++          <Card aria-label="Preview of the home dashboard">
++            <div className="flex-col-gap-3">
++              <div className="flex-row-gap-2 items-center">
++                <CalendarCheck aria-hidden />
++                <div>
++                  <Paragraph>Discovery call</Paragraph>
++                  <Paragraph color="muted">Today</Paragraph>
++                </div>
++              </div>
++              <div className="flex-row-gap-2 items-center">
++                <BellRing aria-hidden />
++                <div>
++                  <Paragraph>Maya Sharma</Paragraph>
++                  <Paragraph color="muted">Follow-up due this week</Paragraph>
++                </div>
++              </div>
++              <div className="flex-row-gap-2 items-center">
++                <FolderKanban aria-hidden />
++                <div>
++                  <Paragraph>Draft hero section</Paragraph>
++                  <Paragraph color="muted">Overdue</Paragraph>
++                </div>
++              </div>
++            </div>
++          </Card>
++        }
++      />
++      <CardList
++        aria-label="Why SoloStudio"
++        items={reasons}
++        layout="grid" // Four fixed reasons browsed side by side, not records read one by one.
++        columns={2} // Two columns keep the four reasons in two even rows.
++        renderItem={(reason) => (
++          <>
++            {reason.icon}
++            <h3>{reason.title}</h3>
++            <p>{reason.line}</p>
++          </>
++        )}
++      />
++    </>
+   );
+ }
+diff --git a/web/app/blocks/ClientDialogs/ClientForm.tsx b/web/app/blocks/ClientDialogs/ClientForm.tsx
+new file mode 100644
+index 0000000..5b267af
+--- /dev/null
++++ b/web/app/blocks/ClientDialogs/ClientForm.tsx
+@@ -0,0 +1,106 @@
++'use client';
++
++import { ClientStatus, ClientStatusOptions } from '@app/entities/enums';
++import { Controller, Form } from '@packages/ui/Form';
++import { Input } from '@packages/ui/Input';
++import { Select, SelectOption } from '@packages/ui/Select';
++import { Textarea } from '@packages/ui/Textarea';
++import React from 'react';
++import { type Control } from 'react-hook-form';
++
++export type ClientFormValues = {
++  name: string;
++  email: string;
++  company: string;
++  profile: string;
++  status: ClientStatus | '';
++};
++
++export const emptyClientForm: ClientFormValues = {
++  name: '',
++  email: '',
++  company: '',
++  profile: '',
++  status: 'lead',
++};
++
++/** The client form FM03: Name, Email, Company, Profile and Status. */
++export function ClientForm({
++  control,
++  id,
++  onSubmit,
++  error,
++  actions,
++}: {
++  control: Control<ClientFormValues>;
++  id: string;
++  onSubmit: (event: React.FormEvent) => void;
++  error?: string;
++  actions: React.ReactNode;
++}) {
++  return (
++    <Form id={id} onSubmit={onSubmit} error={error} fill actions={actions}>
++      <Controller
++        name="name"
++        control={control}
++        rules={{
++          required: 'Enter the client name',
++          maxLength: { value: 120, message: 'Keep the name to 120 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Name" autoComplete="off" {...field} />}
++      </Controller>
++      <Controller
++        name="email"
++        control={control}
++        rules={{
++          required: 'Enter the client email',
++          pattern: {
++            value: /^\S+@\S+\.\S+$/,
++            message: 'Enter an email like name@example.com',
++          },
++          maxLength: { value: 254, message: 'Keep the email to 254 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Email" type="email" autoComplete="email" {...field} />}
++      </Controller>
++      <Controller
++        name="company"
++        control={control}
++        rules={{
++          maxLength: { value: 120, message: 'Keep the company to 120 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Company" autoComplete="organization" {...field} />}
++      </Controller>
++      <Controller
++        name="profile"
++        control={control}
++        rules={{
++          maxLength: { value: 2000, message: 'Keep the profile to 2000 characters' },
++        }}
++      >
++        {({ field }) => (
++          <Textarea
++            label="Profile"
++            helpText="What they do, how you met and what they pay."
++            {...field}
++          />
++        )}
++      </Controller>
++      <Controller
++        name="status"
++        control={control}
++        rules={{ required: 'Choose a status' }}
++      >
++        {({ field }) => (
++          <Select label="Status" {...field}>
++            {ClientStatusOptions.map((option) => (
++              <SelectOption key={option.key} value={option.key} label={option.label} />
++            ))}
++          </Select>
++        )}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/blocks/Format/format.ts b/web/app/blocks/Format/format.ts
+new file mode 100644
+index 0000000..f9805f7
+--- /dev/null
++++ b/web/app/blocks/Format/format.ts
+@@ -0,0 +1,63 @@
++/**
++ * Shared formatting helpers for dates, times and money. Every screen formats
++ * these the same way, in UTC so the server and the browser agree.
++ */
++
++/** Today's date as `YYYY-MM-DD` in UTC. */
++export function todayKey(now: Date = new Date()): string {
++  return now.toISOString().slice(0, 10);
++}
++
++/** Adds whole days to a `YYYY-MM-DD` key, staying in UTC. */
++export function addDaysKey(key: string, days: number): string {
++  const date = new Date(`${key}T00:00:00.000Z`);
++  date.setUTCDate(date.getUTCDate() + days);
++  return date.toISOString().slice(0, 10);
++}
++
++/** Monday of the week holding `key`, as `YYYY-MM-DD`. */
++export function weekStartKey(key: string): string {
++  const date = new Date(`${key}T00:00:00.000Z`);
++  const mondayFirst = (date.getUTCDay() + 6) % 7;
++  date.setUTCDate(date.getUTCDate() - mondayFirst);
++  return date.toISOString().slice(0, 10);
++}
++
++/** A slot's time as "5 Nov at 10:00", in UTC so every reader sees the same. */
++export function formatSlotTime(startAt: string): string {
++  const date = new Date(startAt);
++  const day = new Intl.DateTimeFormat('en-GB', {
++    day: 'numeric',
++    month: 'short',
++    timeZone: 'UTC',
++  }).format(date);
++  const time = new Intl.DateTimeFormat('en-GB', {
++    hour: '2-digit',
++    minute: '2-digit',
++    hourCycle: 'h23',
++    timeZone: 'UTC',
++  }).format(date);
++  return `${day} at ${time}`;
++}
++
++/** A slot's title as "Discovery call, 5 Nov at 10:00". */
++export function formatSlotTitle(sessionTypeName: string, startAt: string): string {
++  return `${sessionTypeName}, ${formatSlotTime(startAt)}`;
++}
++
++const wholeUsd = new Intl.NumberFormat('en-US', {
++  style: 'currency',
++  currency: 'USD',
++  maximumFractionDigits: 0,
++});
++const centsUsd = new Intl.NumberFormat('en-US', {
++  style: 'currency',
++  currency: 'USD',
++  minimumFractionDigits: 2,
++  maximumFractionDigits: 2,
++});
++
++/** Money one way everywhere: whole amounts without decimals, others with two. */
++export function formatPrice(value: number): string {
++  return Number.isInteger(value) ? wholeUsd.format(value) : centsUsd.format(value);
++}
+diff --git a/web/app/blocks/ProjectDialogs/AddProjectDialog.tsx b/web/app/blocks/ProjectDialogs/AddProjectDialog.tsx
+new file mode 100644
+index 0000000..6f99bba
+--- /dev/null
++++ b/web/app/blocks/ProjectDialogs/AddProjectDialog.tsx
+@@ -0,0 +1,110 @@
++'use client';
++
++import { createProject, type Project } from '@app/entities/project';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import { Paragraph } from '@packages/ui/Typography';
++import React, { useId, useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++import { ProjectForm, type ProjectFormValues } from './ProjectForm';
++
++import type { Client } from '@app/entities/client';
++
++/**
++ * D07 Add a project: start a new project for a client. After saving, the
++ * designer lands on the projects view.
++ */
++export function AddProjectDialog({
++  open,
++  onOpenChange,
++  onSaved,
++  clients,
++  defaultClientId,
++}: {
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++  onSaved: (project: Project) => void;
++  clients: Client[];
++  defaultClientId?: string;
++}) {
++  const formId = useId();
++  const {
++    control,
++    handleSubmit,
++    setError,
++    clearErrors,
++    formState: { errors, isSubmitting },
++  } = useForm<ProjectFormValues>({
++    defaultValues: { name: '', description: '', dueDate: '', client: defaultClientId ?? '' },
++  });
++  const [saving, setSaving] = useState(false);
++
++  const save = async (values: ProjectFormValues) => {
++    setSaving(true);
++    try {
++      const project = await createProject({
++        name: values.name.trim(),
++        description: values.description.trim(),
++        dueDate: values.dueDate || undefined,
++        client: values.client,
++      });
++      toast({ title: 'Project saved', status: 'success' });
++      onSaved(project);
++    } catch {
++      setError('root.server', { message: 'Saving failed. Try again.' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <Dialog
++      title="Add a project"
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={
++        clients.length === 0 ? (
++          <Button
++            variant="base" // Cancel is the only way out without clients.
++            onClick={() => onOpenChange(false)}
++          >
++            Cancel
++          </Button>
++        ) : (
++          <>
++            <Button
++              variant="base" // Cancel is the secondary action beside the main Save.
++              onClick={() => onOpenChange(false)}
++            >
++              Cancel
++            </Button>
++            <Button
++              type="submit"
++              form={formId}
++              loadingWithReason={saving || isSubmitting ? 'Saving the project' : undefined}
++            >
++              Save
++            </Button>
++          </>
++        )
++      }
++    >
++      {clients.length === 0 ? (
++        <Paragraph>No clients yet. Add a client before starting a project.</Paragraph>
++      ) : (
++        <ProjectForm
++          control={control}
++          id={formId}
++          onSubmit={(event) => {
++            clearErrors('root');
++            void handleSubmit(save)(event);
++          }}
++          error={errors.root?.server?.message}
++          clients={clients}
++        />
++      )}
++    </Dialog>
++  );
++}
+diff --git a/web/app/blocks/ProjectDialogs/ProjectForm.tsx b/web/app/blocks/ProjectDialogs/ProjectForm.tsx
+new file mode 100644
+index 0000000..66941ed
+--- /dev/null
++++ b/web/app/blocks/ProjectDialogs/ProjectForm.tsx
+@@ -0,0 +1,80 @@
++'use client';
++
++import { Controller, Form } from '@packages/ui/Form';
++import { DateInput, Input } from '@packages/ui/Input';
++import { Select, SelectOption } from '@packages/ui/Select';
++import { Textarea } from '@packages/ui/Textarea';
++import React from 'react';
++import { type Control } from 'react-hook-form';
++
++import type { Client } from '@app/entities/client';
++
++export type ProjectFormValues = {
++  name: string;
++  description: string;
++  dueDate: string;
++  client: string;
++};
++
++/** The project form FM05: Name, Description, Due date and Client. */
++export function ProjectForm({
++  control,
++  id,
++  onSubmit,
++  error,
++  clients,
++}: {
++  control: Control<ProjectFormValues>;
++  id: string;
++  onSubmit: (event: React.FormEvent) => void;
++  error?: string;
++  clients: Client[];
++}) {
++  return (
++    <Form id={id} onSubmit={onSubmit} error={error} fill actions={null}>
++      <Controller
++        name="name"
++        control={control}
++        rules={{
++          required: 'Enter the project name',
++          maxLength: { value: 200, message: 'Keep the name to 200 characters' },
++        }}
++      >
++        {({ field }) => <Input label="Name" autoComplete="off" {...field} />}
++      </Controller>
++      <Controller
++        name="description"
++        control={control}
++        rules={{
++          required: 'Enter the project description',
++          maxLength: { value: 2000, message: 'Keep the description to 2000 characters' },
++        }}
++      >
++        {({ field }) => <Textarea label="Description" {...field} />}
++      </Controller>
++      <Controller
++        name="dueDate"
++        control={control}
++        rules={{
++          validate: (value) =>
++            value === '' || !Number.isNaN(new Date(value).getTime()) || 'Enter a date like 2026-12-15',
++        }}
++      >
++        {({ field }) => <DateInput label="Due date" autoComplete="off" {...field} />}
++      </Controller>
++      <Controller
++        name="client"
++        control={control}
++        rules={{ required: 'Choose a client' }}
++      >
++        {({ field }) => (
++          <Select label="Client" {...field}>
++            {clients.map((client) => (
++              <SelectOption key={client.id} value={client.id} label={client.name} />
++            ))}
++          </Select>
++        )}
++      </Controller>
++    </Form>
++  );
++}
+diff --git a/web/app/blocks/Slots/slots.ts b/web/app/blocks/Slots/slots.ts
+new file mode 100644
+index 0000000..c23c3ed
+--- /dev/null
++++ b/web/app/blocks/Slots/slots.ts
+@@ -0,0 +1,79 @@
++/**
++ * Shared slot, booking and follow-up helpers. Every screen derives these
++ * values while rendering, never from state synced by an effect.
++ */
++import type { Booking } from '@app/entities/booking';
++import type { Note } from '@app/entities/note';
++import type { SessionType } from '@app/entities/sessionType';
++import type { Slot } from '@app/entities/slot';
++
++/** A slot's bookings that still hold their seat. */
++export function bookingsForSlot(bookings: Booking[], slotId: string): Booking[] {
++  return bookings.filter((booking) => booking.slot === slotId && !booking.isCancelled);
++}
++
++/** Whether a slot holds as many bookings as its session type allows. */
++function isSlotFull(
++  slot: Slot,
++  sessionType: SessionType | undefined,
++  bookings: Booking[],
++): boolean {
++  return bookingsForSlot(bookings, slot.id).length >= (sessionType?.maximumPeople ?? 1);
++}
++
++/** A slot's booked time range, from its session type's duration. */
++function slotRange(slot: Slot, durationInMinutes: number): [number, number] {
++  const start = new Date(slot.startAt).getTime();
++  return [start, start + durationInMinutes * 60_000];
++}
++
++/**
++ * One session type's open slots for the next two weeks: not full, and not
++ * overlapping a booked time, since a booked time blocks overlapping slots
++ * for every other session type. Sorted earliest first.
++ */
++export function openSlotsFor(
++  slots: Slot[],
++  bookings: Booking[],
++  sessionTypes: SessionType[],
++  sessionTypeId: string,
++  now: number = Date.now(),
++): Slot[] {
++  const horizon = now + 14 * 24 * 60 * 60 * 1000;
++  const durationOf = (slot: Slot) =>
++    sessionTypes.find((type) => type.id === slot.sessionType)?.durationInMinutes ?? 0;
++  const booked = (slot: Slot) => bookingsForSlot(bookings, slot.id).length > 0;
++  return slots
++    .filter((slot) => {
++      if (slot.sessionType !== sessionTypeId) return false;
++      const start = new Date(slot.startAt).getTime();
++      if (Number.isNaN(start) || start < now || start > horizon) return false;
++      const sessionType = sessionTypes.find((type) => type.id === slot.sessionType);
++      if (isSlotFull(slot, sessionType, bookings)) return false;
++      const [from, to] = slotRange(slot, durationOf(slot));
++      return !slots.some((other) => {
++        if (other.id === slot.id || !booked(other)) return false;
++        const [otherFrom, otherTo] = slotRange(other, durationOf(other));
++        return from < otherTo && otherFrom < to;
++      });
++    })
++    .sort((a, b) => (a.startAt < b.startAt ? -1 : a.startAt > b.startAt ? 1 : 0));
++}
++
++/**
++ * The follow-up a client list shows: the client's most urgent dated note,
++ * so an overdue follow-up always stands out first.
++ */
++export function followUpNoteFor(notes: Note[], clientId: string): Note | undefined {
++  const dated = notes.filter((note) => note.client === clientId && note.followUpDate);
++  dated.sort((a, b) => (a.followUpDate! < b.followUpDate! ? -1 : a.followUpDate! > b.followUpDate! ? 1 : 0));
++  return dated[0];
++}
++
++/** Whether a task stands out as overdue: due before today and not done. */
++export function isTaskOverdue(
++  task: { dueDate?: string; status: string },
++  today: string,
++): boolean {
++  return Boolean(task.dueDate) && task.dueDate! < today && task.status !== 'done';
++}
+diff --git a/web/app/components/ClientStatusTag/ClientStatusTag.tsx b/web/app/components/ClientStatusTag/ClientStatusTag.tsx
+new file mode 100644
+index 0000000..189355f
+--- /dev/null
++++ b/web/app/components/ClientStatusTag/ClientStatusTag.tsx
+@@ -0,0 +1,28 @@
++import { ClientStatusOptions } from '@app/entities/enums';
++import { Tag, type TagProps } from '@packages/ui/Tag';
++import React from 'react';
++
++const variantFor: Record<string, 'info' | 'success' | 'base'> = {
++  lead: 'info',
++  active: 'success',
++  past: 'base',
++};
++
++/** A client's status as a tag, in its own color. */
++export function ClientStatusTag({
++  status,
++  size,
++}: {
++  status: string;
++  size?: TagProps['size'];
++}) {
++  const label = ClientStatusOptions.find((option) => option.key === status)?.label ?? status;
++  return (
++    <Tag
++      size={size} // In tables the small tag fits the row; elsewhere the default applies.
++      variant={variantFor[status] ?? 'base'} // Each client status keeps its own color.
++    >
++      {label}
++    </Tag>
++  );
++}
+diff --git a/web/app/components/ClientStatusTag/index.ts b/web/app/components/ClientStatusTag/index.ts
+new file mode 100644
+index 0000000..d895b80
+--- /dev/null
++++ b/web/app/components/ClientStatusTag/index.ts
+@@ -0,0 +1 @@
++export { ClientStatusTag } from './ClientStatusTag';
+diff --git a/web/app/components/LoadError/LoadError.tsx b/web/app/components/LoadError/LoadError.tsx
+new file mode 100644
+index 0000000..80ab1c8
+--- /dev/null
++++ b/web/app/components/LoadError/LoadError.tsx
+@@ -0,0 +1,18 @@
++import { Button } from '@packages/ui/Button';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++/** A failed load with a retry, the same on every screen. */
++export function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
++  return (
++    <div role="alert" className="flex-row-gap-3 items-center">
++      <Paragraph>{message}</Paragraph>
++      <Button
++        variant="base" // The quiet way out beside the error message, not the page's main action.
++        onClick={onRetry}
++      >
++        Retry
++      </Button>
++    </div>
++  );
++}
+diff --git a/web/app/components/LoadError/index.ts b/web/app/components/LoadError/index.ts
+new file mode 100644
+index 0000000..4c91961
+--- /dev/null
++++ b/web/app/components/LoadError/index.ts
+@@ -0,0 +1 @@
++export { LoadError } from './LoadError';
+diff --git a/web/app/entities/auth/index.ts b/web/app/entities/auth/index.ts
+index 3ee350e..999ff42 100644
+--- a/web/app/entities/auth/index.ts
++++ b/web/app/entities/auth/index.ts
+@@ -11,7 +11,8 @@ export type User = { email: string; role?: string };
+ export type Role = { id: string; name: string };
+ 
+ // `roles` keeps each email's role from sign up, so signing in again restores it.
+-type AuthState = { user: User | null; roles: Record<string, string> };
++// `knownEmails` keeps every email this browser has signed up, so changing to one of them conflicts.
++type AuthState = { user: User | null; roles: Record<string, string>; knownEmails: string[] };
+ 
+ // The scaffold writes the run's key over this, so no two apps on one origin share a session.
+ const AUTH_KEY = "weave:20261104-0428-freelancer-workspace:auth";
+@@ -23,20 +24,49 @@ export const ROLES: Role[] = [{"id":"designer","name":"Designer"}];
+ export const HOME_ROUTE = "/home";
+ 
+ const useAuthStore = createPersistentStore<AuthState>(
+-  () => ({ user: null, roles: {} }),
++  () => ({ user: null, roles: {}, knownEmails: [] }),
+   AUTH_KEY,
+ );
+ 
++/** Adds an email to the store's known emails, once. */
++function rememberEmail(email: string): string[] {
++  const knownEmails = useAuthStore.getState().knownEmails ?? [];
++  return knownEmails.includes(email) ? knownEmails : [...knownEmails, email];
++}
++
+ export async function signUp(email: string, role?: string): Promise<User> {
+   await mockCall('signUp');
+   const user = role ? { email, role } : { email };
+   useAuthStore.setState((state) => ({
+     user,
+     roles: role ? { ...state.roles, [email]: role } : state.roles,
++    knownEmails: rememberEmail(email),
+   }));
+   return user;
+ }
+ 
++export type AccountUpdate = { email: string; password: string };
++
++/**
++ * Save the designer's sign-in email and password. The password is checked by
++ * the caller and never stored: there is no backend yet, so anyone signs in
++ * with any password. Throws a coded error when the email is taken.
++ */
++export async function updateAccount(input: AccountUpdate): Promise<User> {
++  await mockCall('updateAccount');
++  const current = useAuthStore.getState().user;
++  if (!current) throw new Error('Not signed in');
++  const knownEmails = useAuthStore.getState().knownEmails ?? [];
++  if (input.email !== current.email && knownEmails.includes(input.email)) {
++    const taken = new Error('That email is already in use') as Error & { code: string };
++    taken.code = 'email-taken';
++    throw taken;
++  }
++  const user = { ...current, email: input.email };
++  useAuthStore.setState({ user, knownEmails: rememberEmail(current.email) });
++  return user;
++}
++
+ export async function signIn(email: string): Promise<User> {
+   await mockCall('signIn');
+   const role = useAuthStore.getState().roles[email];
+diff --git a/web/app/entities/availability/index.ts b/web/app/entities/availability/index.ts
+index 7a975a6..e7a059d 100644
+--- a/web/app/entities/availability/index.ts
++++ b/web/app/entities/availability/index.ts
+@@ -1,2 +1,2 @@
+ export type { Availability, AvailabilityInput } from './types';
+-export { getAvailability, useGetAvailability, updateAvailability } from './operations';
++export { createAvailability, deleteAvailability, getAvailability, listAvailabilities, updateAvailability, useGetAvailability, useListAvailabilities } from './operations';
+diff --git a/web/app/entities/availability/operations.ts b/web/app/entities/availability/operations.ts
+index 3ea3e32..5169a98 100644
+--- a/web/app/entities/availability/operations.ts
++++ b/web/app/entities/availability/operations.ts
+@@ -4,6 +4,14 @@ import { useAvailabilityStore } from './store';
+ 
+ import type { Availability, AvailabilityInput } from './types';
+ 
++export async function createAvailability(input: AvailabilityInput): Promise<Availability> {
++  await mockCall('createAvailability');
++  const now = new Date().toISOString();
++  const record: Availability = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useAvailabilityStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
+ export async function getAvailability(id: string): Promise<Availability | undefined> {
+   await mockCall('getAvailability');
+   return useAvailabilityStore.getState().records.find((record) => record.id === id);
+@@ -13,6 +21,20 @@ export function useGetAvailability(id: string): Read<Availability | undefined> {
+   return useRead('getAvailability', useAvailabilityStore(({ records }) => records.find((record) => record.id === id)));
+ }
+ 
++export async function listAvailabilities(): Promise<Availability[]> {
++  await mockCall('listAvailabilities');
++  return useAvailabilityStore.getState().records;
++}
++
++export function useListAvailabilities(): Read<Availability[]> {
++  return useRead('listAvailabilities', useAvailabilityStore('records'));
++}
++
++export async function deleteAvailability(id: string): Promise<void> {
++  await mockCall('deleteAvailability');
++  useAvailabilityStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));
++}
++
+ export async function updateAvailability(id: string, changes: Partial<AvailabilityInput>): Promise<Availability> {
+   await mockCall('updateAvailability');
+   const current = useAvailabilityStore.getState().records.find((record) => record.id === id);
+diff --git a/web/app/entities/client/operations.ts b/web/app/entities/client/operations.ts
+index e6af6b8..78f0caf 100644
+--- a/web/app/entities/client/operations.ts
++++ b/web/app/entities/client/operations.ts
+@@ -15,11 +15,17 @@ export function useListClients(): Read<Client[]> {
+ 
+ export async function getClient(email: Client['email']): Promise<Client | undefined> {
+   await mockCall('getClient');
+-  return useClientStore.getState().records.find((record) => record.email === email);
++  // Client pages read by id, while the booking flow matches by email: both find the client.
++  return useClientStore
++    .getState()
++    .records.find((record) => record.id === email || record.email === email);
+ }
+ 
+ export function useGetClient(email: Client['email']): Read<Client | undefined> {
+-  return useRead('getClient', useClientStore(({ records }) => records.find((record) => record.email === email)));
++  return useRead(
++    'getClient',
++    useClientStore(({ records }) => records.find((record) => record.id === email || record.email === email)),
++  );
+ }
+ 
+ export async function createClient(input: ClientInput): Promise<Client> {
+diff --git a/web/next-env.d.ts b/web/next-env.d.ts
+index 9edff1c..c4b7818 100644
+--- a/web/next-env.d.ts
++++ b/web/next-env.d.ts
+@@ -1,6 +1,6 @@
+ /// <reference types="next" />
+ /// <reference types="next/image-types/global" />
+-import "./.next/types/routes.d.ts";
++import "./.next/dev/types/routes.d.ts";
+ 
+ // NOTE: This file should not be edited
+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.

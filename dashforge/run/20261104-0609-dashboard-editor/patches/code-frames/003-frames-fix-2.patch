@@ -1,0 +1,43 @@
+From 77d3a9760aef371b9029092c98ef2e9e78889660 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 06:32:16 +0530
+Subject: [PATCH] code-frames: frames-fix-2
+
+---
+ .../components/MarketingFooter/MarketingFooter.tsx | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/web/app/components/MarketingFooter/MarketingFooter.tsx b/web/app/components/MarketingFooter/MarketingFooter.tsx
+index 3ff83a6..7b26a46 100644
+--- a/web/app/components/MarketingFooter/MarketingFooter.tsx
++++ b/web/app/components/MarketingFooter/MarketingFooter.tsx
+@@ -1,4 +1,5 @@
+ import { NextLink } from '@app/components/NextLink';
++import { Link } from '@packages/ui/Link';
+ import { Paragraph } from '@packages/ui/Typography';
+ import React from 'react';
+ 
+@@ -44,18 +45,9 @@ export const MarketingFooter = () => {
+   return (
+     <>
+       <div className="flex-row-gap-6 flex-wrap">
+-        <NextLink look="plain" href="/">DashForge</NextLink>
+         <NextLink look="plain" href="/dashboards">Dashboards</NextLink>
+-        <NextLink look="plain" href="/account">Account</NextLink>
+-      </div>
+-      <div className="flex-row-gap-6 flex-wrap">
+-        <NextLink look="plain" href="/">Resources</NextLink>
+-        <NextLink look="plain" href="/">Docs</NextLink>
+-        <NextLink look="plain" href="/">Support</NextLink>
+-      </div>
+-      <div className="flex-row-gap-6 flex-wrap">
+-        <NextLink look="plain" href="/">Privacy</NextLink>
+-        <NextLink look="plain" href="/">Terms</NextLink>
++        <NextLink look="plain" href="/sign-in">Sign in</NextLink>
++        <Link look="plain" href="mailto:support@dashforge.com">Support</Link>
+       </div>
+       <Paragraph color="muted">© 2026 DashForge. Your personal console, finally in one place.</Paragraph>
+     </>
+-- 
+2.34.1
+

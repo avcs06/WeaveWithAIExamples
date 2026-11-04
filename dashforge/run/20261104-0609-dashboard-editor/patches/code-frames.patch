@@ -1,0 +1,283 @@
+code-frames: 52fefc3..77d3a97
+
+ .../AppHeaderRightSlot/AppHeaderRightSlot.tsx      | 44 +++++++++++++++++++++-
+ web/app/components/AppSidebar/AppSidebar.tsx       | 35 ++++++++++++++++-
+ .../AppSidebarHeader/AppSidebarHeader.tsx          |  2 +-
+ .../components/MarketingFooter/MarketingFooter.tsx | 18 ++++++++-
+ .../MarketingHeaderRightSlot.tsx                   | 19 +++++++++-
+ web/app/components/PageLogo/PageLogo.tsx           |  4 +-
+ web/app/components/PageLogo/PageLogo.types.ts      |  2 +
+ web/app/components/UserMenu/UserMenu.tsx           | 13 ++++++-
+ web/app/entities/auth/index.ts                     |  3 +-
+ 9 files changed, 130 insertions(+), 10 deletions(-)
+
+diff --git a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+index 6606c2e..544f972 100644
+--- a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
++++ b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+@@ -1,3 +1,12 @@
++'use client';
++
++import { useCurrentUser } from '@app/entities/auth';
++import { createDashboard, useListDashboards } from '@app/entities/dashboard';
++import { Button } from '@packages/ui/Button';
++import { Plus } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
+ /**
+  * The right end of the app's header bar.
+  *
+@@ -19,4 +28,37 @@
+  *
+  * The theme puts here: It holds: Create button.
+  */
+-export const AppHeaderRightSlot = () => null;
++export const AppHeaderRightSlot = () => {
++  const user = useCurrentUser();
++  const { data: dashboards } = useListDashboards();
++  const router = useRouter();
++  const [creating, setCreating] = useState(false);
++
++  if (user === undefined || user === null) return null;
++
++  const handleCreate = async () => {
++    if (creating) return;
++    setCreating(true);
++    try {
++      const records = dashboards ?? [];
++      const base = 'Untitled Dashboard';
++      let name = base;
++      let n = 2;
++      const names = new Set(records.map((r) => r.name));
++      while (names.has(name)) {
++        name = `${base} ${n}`;
++        n += 1;
++      }
++      const dashboard = await createDashboard({ name, lastEditedAt: new Date().toISOString() });
++      router.push(`/dashboards/${dashboard.id}`);
++    } finally {
++      setCreating(false);
++    }
++  };
++
++  return (
++    <Button leftIcon={<Plus />} loading={creating} onClick={handleCreate}>
++      Create dashboard
++    </Button>
++  );
++};
+diff --git a/web/app/components/AppSidebar/AppSidebar.tsx b/web/app/components/AppSidebar/AppSidebar.tsx
+index b657cac..b0a3246 100644
+--- a/web/app/components/AppSidebar/AppSidebar.tsx
++++ b/web/app/components/AppSidebar/AppSidebar.tsx
+@@ -1,3 +1,12 @@
++'use client';
++
++import { NextLink } from '@app/components/NextLink';
++import { useCurrentUser } from '@app/entities/auth';
++import { SidebarMenuItem } from '@packages/ui/SidebarMenu';
++import { LayoutDashboard, User } from 'lucide-react';
++import { usePathname } from 'next/navigation';
++import React from 'react';
++
+ /**
+  * The rows of the app's sidebar: one link per page.
+  *
+@@ -38,4 +47,28 @@
+  *
+  * The theme puts here: Rows: navigation.
+  */
+-export const AppSidebar = () => null;
++export const AppSidebar = () => {
++  const user = useCurrentUser();
++  const pathname = usePathname();
++
++  if (user === undefined) return null;
++
++  if (user === null) {
++    return (
++      <SidebarMenuItem as={NextLink} href="/sign-in">
++        Sign in to continue
++      </SidebarMenuItem>
++    );
++  }
++
++  return (
++    <>
++      <SidebarMenuItem as={NextLink} href="/dashboards" selected={pathname.startsWith('/dashboards')} leftIcon={<LayoutDashboard />}>
++        Dashboards
++      </SidebarMenuItem>
++      <SidebarMenuItem as={NextLink} href="/account" selected={pathname.startsWith('/account')} leftIcon={<User />}>
++        Account
++      </SidebarMenuItem>
++    </>
++  );
++};
+diff --git a/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx b/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx
+index 6912e7e..5a92fe3 100644
+--- a/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx
++++ b/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx
+@@ -35,7 +35,7 @@ import React from 'react';
+ export const AppSidebarHeader = () => {
+   return (
+     <SidebarMenuItem as="div">
+-      <PageLogo />
++      <PageLogo href="/dashboards" />
+     </SidebarMenuItem>
+   );
+ };
+diff --git a/web/app/components/MarketingFooter/MarketingFooter.tsx b/web/app/components/MarketingFooter/MarketingFooter.tsx
+index fea7aa6..7b26a46 100644
+--- a/web/app/components/MarketingFooter/MarketingFooter.tsx
++++ b/web/app/components/MarketingFooter/MarketingFooter.tsx
+@@ -1,3 +1,8 @@
++import { NextLink } from '@app/components/NextLink';
++import { Link } from '@packages/ui/Link';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
+ /**
+  * The public site's footer bar, under its pages. Sign in and sign up have
+  * their own layout, without this footer.
+@@ -36,4 +41,15 @@
+  *
+  * The theme puts here: It holds: Product links, Resources, Legal and small print.
+  */
+-export const MarketingFooter = () => null;
++export const MarketingFooter = () => {
++  return (
++    <>
++      <div className="flex-row-gap-6 flex-wrap">
++        <NextLink look="plain" href="/dashboards">Dashboards</NextLink>
++        <NextLink look="plain" href="/sign-in">Sign in</NextLink>
++        <Link look="plain" href="mailto:support@dashforge.com">Support</Link>
++      </div>
++      <Paragraph color="muted">© 2026 DashForge. Your personal console, finally in one place.</Paragraph>
++    </>
++  );
++};
+diff --git a/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx b/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx
+index f71f158..cdefc52 100644
+--- a/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx
++++ b/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx
+@@ -1,4 +1,8 @@
+-import { UserMenu } from '@app/components/UserMenu';
++'use client';
++
++import { NextLink } from '@app/components/NextLink';
++import { useCurrentUser } from '@app/entities/auth';
++import { Button } from '@packages/ui/Button';
+ import React from 'react';
+ 
+ /**
+@@ -24,7 +28,18 @@ import React from 'react';
+  * The theme puts here: It holds: account.
+  */
+ export const MarketingHeaderRightSlot = () => {
++  const user = useCurrentUser();
++  if (user === undefined) return null;
++  if (user) {
++    return (
++      <Button as={NextLink} href="/dashboards">
++        Go to dashboards
++      </Button>
++    );
++  }
+   return (
+-    <UserMenu placement="header" signInHref="/sign-in" />
++    <Button as={NextLink} href="/sign-in" data-user-menu="">
++      Sign in
++    </Button>
+   );
+ };
+diff --git a/web/app/components/PageLogo/PageLogo.tsx b/web/app/components/PageLogo/PageLogo.tsx
+index 16ce50d..d810b75 100644
+--- a/web/app/components/PageLogo/PageLogo.tsx
++++ b/web/app/components/PageLogo/PageLogo.tsx
+@@ -15,9 +15,9 @@ const APP_NAME = 'DashForge';
+  * on either side, all one link home. Place it as it is; the theme and the
+  * scaffold set its name and look.
+  */
+-export const PageLogo = ({ leftIcon, rightIcon }: PageLogoProps) => (
++export const PageLogo = ({ href = '/', leftIcon, rightIcon }: PageLogoProps) => (
+   <NextLink
+-    href="/"
++    href={href}
+     look="plain"
+     // Marked, so the rendered checks find the logo in every frame.
+     data-page-logo=""
+diff --git a/web/app/components/PageLogo/PageLogo.types.ts b/web/app/components/PageLogo/PageLogo.types.ts
+index b0e5492..4d2414b 100644
+--- a/web/app/components/PageLogo/PageLogo.types.ts
++++ b/web/app/components/PageLogo/PageLogo.types.ts
+@@ -1,6 +1,8 @@
+ import type { ReactNode } from 'react';
+ 
+ export type PageLogoProps = {
++  /** Where the logo links to. */
++  href?: string;
+   /** An icon before the name, such as the app's mark; it leads home with the name. */
+   leftIcon?: ReactNode;
+   /** An icon after the name; it leads home with the name. */
+diff --git a/web/app/components/UserMenu/UserMenu.tsx b/web/app/components/UserMenu/UserMenu.tsx
+index 393ae2d..38cc5da 100644
+--- a/web/app/components/UserMenu/UserMenu.tsx
++++ b/web/app/components/UserMenu/UserMenu.tsx
+@@ -5,8 +5,10 @@ import { classNames } from '@packages/styles/classNames';
+ import { Avatar } from '@packages/ui/Avatar';
+ import { Button, PlainButton } from '@packages/ui/Button';
+ import { Dropdown } from '@packages/ui/Dropdown';
++import { toast } from '@packages/ui/Toast';
+ import { Truncate } from '@packages/ui/Truncate';
+ import { LogOut } from 'lucide-react';
++import { useRouter } from 'next/navigation';
+ import React from 'react';
+ 
+ import { NextLink } from '../NextLink';
+@@ -29,6 +31,7 @@ export const UserMenu = ({
+   className,
+ }: UserMenuProps) => {
+   const session = useCurrentUser();
++  const router = useRouter();
+   if (session === undefined) return null;
+ 
+   if (session === null)
+@@ -50,6 +53,14 @@ export const UserMenu = ({
+   const inSidebar = placement === 'sidebar';
+   // The session knows the user by email.
+   const name = session.email;
++  const handleSignOut = async () => {
++    try {
++      await signOut();
++      router.push('/');
++    } catch {
++      toast({ title: 'Could not sign out. Try again.', status: 'error' });
++    }
++  };
+   return (
+     <Dropdown
+       side={inSidebar ? 'right' : 'bottom'}
+@@ -58,7 +69,7 @@ export const UserMenu = ({
+           <Dropdown.Group label={name} />
+           {children}
+           <Dropdown.Separator />
+-          <Dropdown.Item leftIcon={<LogOut />} onSelect={signOut}>
++          <Dropdown.Item leftIcon={<LogOut />} onSelect={handleSignOut}>
+             Sign out
+           </Dropdown.Item>
+         </>
+diff --git a/web/app/entities/auth/index.ts b/web/app/entities/auth/index.ts
+index b647d53..2c6dd1b 100644
+--- a/web/app/entities/auth/index.ts
++++ b/web/app/entities/auth/index.ts
+@@ -45,7 +45,8 @@ export async function signIn(email: string): Promise<User> {
+   return user;
+ }
+ 
+-export function signOut(): void {
++export async function signOut(): Promise<void> {
++  await mockCall('signOut');
+   useAuthStore.setState({ user: null });
+ }
+ 

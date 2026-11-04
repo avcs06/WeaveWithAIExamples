@@ -1,0 +1,16 @@
+{"at":"2026-11-04T00:34:06.211Z","tool":"bash","command":"cd /app && grep -n \"type\" packages/ui/src/Input/Input.tsx | head -20; grep -rn \"time\" packages/ui/src/Input/*.tsx | grep -vi \"timeout\\|sometimes\" | head -10"}
+{"at":"2026-11-04T00:34:12.508Z","tool":"bash","command":"cd /app && sed -n 1,80p packages/ui/src/Input/Input.types.ts 2>/dev/null || ls packages/ui/src/Input/"}
+{"at":"2026-11-04T00:34:24.604Z","tool":"bash","command":"cd /app && grep -rn \"TaskStatusTag\\|TaskPriorityTag\" web/app --include=\"*.tsx\" | grep -v \".next\" | grep -v \"components/TaskStatusTag/\""}
+{"at":"2026-11-04T00:34:28.693Z","tool":"bash","command":"cd /app && mv web/app/components/TaskStatusTag/TaskStatusTag.tsx \"web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx\" && printf \"export { TaskPriorityTag, TaskStatusTag } from './TaskStatusTag';\\n\" > \"web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.index\" && mv \"web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.index\" \"web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag-index.tmp\" && rm -rf web/app/components/TaskStatusTag && ls \"web/app/(routes)/(app)/projects/[projectId]/components/\""}
+{"at":"2026-11-04T00:34:34.414Z","tool":"bash","command":"cd /app && rm \"web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag-index.tmp\" && ls \"web/app/(routes)/(app)/projects/[projectId]/components/\""}
+{"at":"2026-11-04T00:34:34.469Z","tool":"edit_file","path":"web/app/(routes)/(app)/projects/[projectId]/page.tsx"}
+{"at":"2026-11-04T00:34:45.029Z","tool":"read_file","path":"web/app/entities/auth/index.ts"}
+{"at":"2026-11-04T00:34:55.508Z","tool":"edit_file","path":"web/app/entities/auth/index.ts"}
+{"at":"2026-11-04T00:34:59.645Z","tool":"edit_file","path":"web/app/entities/auth/index.ts"}
+{"at":"2026-11-04T00:35:08.458Z","tool":"edit_file","path":"web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx"}
+{"at":"2026-11-04T00:35:12.581Z","tool":"edit_file","path":"web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx"}
+{"at":"2026-11-04T00:35:16.664Z","tool":"edit_file","path":"web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx"}
+{"at":"2026-11-04T00:35:26.972Z","tool":"edit_file","path":"web/app/(routes)/(app)/projects/[projectId]/page.tsx"}
+{"at":"2026-11-04T00:35:31.112Z","tool":"edit_file","path":"web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx"}
+{"at":"2026-11-04T00:36:05.802Z","tool":"bash","command":"cd /app && pnpm typecheck 2>&1 | tail -3 && pnpm nx lint web --fix 2>&1 | tail -3 && pnpm nx lint web 2>&1 | tail -3 && pnpm typecheck 2>&1 | tail -3"}
+{"at":"2026-11-04T00:36:10.283Z","tool":"write_file","path":".weave/replies.json"}

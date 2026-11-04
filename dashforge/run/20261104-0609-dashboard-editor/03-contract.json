@@ -1,0 +1,589 @@
+{
+  "meta": {
+    "artifact": "contract",
+    "version": 1,
+    "hash": "cd76aade8c1d42cda1f3c0552a81cab49728e90c78110781b7e7767e9c9fffbd",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "657ac613ddf2280da3a4796cf32dabe3a5f541d519da6148e7da35b0ab1648a1"
+      },
+      "flows-expand": {
+        "version": 1,
+        "hash": "232afe2a836cd5e78f4c879bf4a49906132cf240a7cbef60669c61716e3e4e8e"
+      },
+      "design-architect": {
+        "version": 1,
+        "hash": "25ff14d233562a4a0012b57c49218d4c7c6fa61bd78881916ccb02b09bd068ba"
+      }
+    },
+    "stage": "contract",
+    "model": "meta-models/muse-spark-open-1026",
+    "rounds": 3,
+    "createdAt": "2026-11-04T00:52:34.465Z"
+  },
+  "data": {
+    "enums": [
+      {
+        "name": "WidgetType",
+        "values": [
+          {
+            "key": "note",
+            "label": "note"
+          },
+          {
+            "key": "counter",
+            "label": "counter"
+          },
+          {
+            "key": "checklist",
+            "label": "checklist"
+          },
+          {
+            "key": "link_list",
+            "label": "linkList"
+          }
+        ]
+      },
+      {
+        "name": "WidgetSize",
+        "values": [
+          {
+            "key": "small",
+            "label": "small"
+          },
+          {
+            "key": "medium",
+            "label": "medium"
+          },
+          {
+            "key": "large",
+            "label": "large"
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "name": "Dashboard",
+        "noun": "Dashboard",
+        "fields": [
+          {
+            "name": "name",
+            "kind": "text",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": true
+          },
+          {
+            "name": "lastEditedAt",
+            "kind": "datetime",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "Widget",
+        "noun": "Widget",
+        "fields": [
+          {
+            "name": "title",
+            "kind": "text",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": false
+          },
+          {
+            "name": "type",
+            "kind": "enum",
+            "enum": "WidgetType",
+            "ref": "",
+            "list": false,
+            "required": true
+          },
+          {
+            "name": "size",
+            "kind": "enum",
+            "enum": "WidgetSize",
+            "ref": "",
+            "list": false,
+            "required": true
+          },
+          {
+            "name": "noteText",
+            "kind": "text",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": false
+          },
+          {
+            "name": "counterLabel",
+            "kind": "text",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": false
+          },
+          {
+            "name": "counterValue",
+            "kind": "int",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": false
+          },
+          {
+            "name": "position",
+            "kind": "int",
+            "enum": "",
+            "ref": "",
+            "list": false,
+            "required": true
+          },
+          {
+            "name": "dashboard",
+            "kind": "ref",
+            "enum": "",
+            "ref": "Dashboard",
+            "list": false,
+            "required": true
+          },
+          {
+            "name": "checklistItemText",
+            "kind": "text",
+            "enum": "",
+            "ref": "",
+            "list": true,
+            "required": false
+          },
+          {
+            "name": "checklistChecked",
+            "kind": "boolean",
+            "enum": "",
+            "ref": "",
+            "list": true,
+            "required": false
+          },
+          {
+            "name": "linkTitle",
+            "kind": "text",
+            "enum": "",
+            "ref": "",
+            "list": true,
+            "required": false
+          },
+          {
+            "name": "linkUrl",
+            "kind": "url",
+            "enum": "",
+            "ref": "",
+            "list": true,
+            "required": false
+          }
+        ]
+      }
+    ],
+    "operations": [
+      {
+        "id": "listDashboards",
+        "kind": "list",
+        "entity": "Dashboard",
+        "summary": "List user's dashboards sorted by lastEditedAt descending, filtered by name search",
+        "inputs": [
+          {
+            "field": "FD14",
+            "as": "q"
+          }
+        ],
+        "flowSteps": [
+          "F05.S01"
+        ]
+      },
+      {
+        "id": "getDashboard",
+        "kind": "get",
+        "entity": "Dashboard",
+        "summary": "Get single dashboard by id",
+        "inputs": [],
+        "flowSteps": [
+          "F05.S02",
+          "F06.S01",
+          "F08.S01"
+        ]
+      },
+      {
+        "id": "createDashboard",
+        "kind": "create",
+        "entity": "Dashboard",
+        "summary": "Create new dashboard with default name Untitled Dashboard",
+        "inputs": [],
+        "flowSteps": [
+          "F07.S01"
+        ]
+      },
+      {
+        "id": "duplicateDashboard",
+        "kind": "create",
+        "entity": "Dashboard",
+        "summary": "Duplicate dashboard as '{original name} Copy' with all widgets copied",
+        "inputs": [],
+        "flowSteps": [
+          "F09.S01"
+        ]
+      },
+      {
+        "id": "updateDashboard",
+        "kind": "update",
+        "entity": "Dashboard",
+        "summary": "Update dashboard name and refresh lastEditedAt",
+        "inputs": [
+          {
+            "field": "FD03",
+            "as": "name"
+          }
+        ],
+        "flowSteps": [
+          "F08.S02"
+        ]
+      },
+      {
+        "id": "deleteDashboard",
+        "kind": "delete",
+        "entity": "Dashboard",
+        "summary": "Permanently delete dashboard and all its widgets",
+        "inputs": [],
+        "flowSteps": [
+          "F10.S01"
+        ]
+      },
+      {
+        "id": "listWidgets",
+        "kind": "list",
+        "entity": "Widget",
+        "summary": "List widgets of a dashboard in relative order",
+        "inputs": [
+          {
+            "field": "FD03",
+            "as": "dashboard"
+          }
+        ],
+        "flowSteps": [
+          "F06.S01"
+        ]
+      },
+      {
+        "id": "getWidget",
+        "kind": "get",
+        "entity": "Widget",
+        "summary": "Get single widget by id",
+        "inputs": [],
+        "flowSteps": [
+          "F12.S01",
+          "F14.S01",
+          "F16.S01",
+          "F18.S01",
+          "F19.S01"
+        ]
+      },
+      {
+        "id": "createWidget",
+        "kind": "create",
+        "entity": "Widget",
+        "summary": "Create widget with type, title, size and type-specific defaults",
+        "inputs": [
+          {
+            "field": "FD05",
+            "as": "type"
+          },
+          {
+            "field": "FD04",
+            "as": "title"
+          },
+          {
+            "field": "FD06",
+            "as": "size"
+          }
+        ],
+        "flowSteps": [
+          "F11.S02"
+        ]
+      },
+      {
+        "id": "deleteWidget",
+        "kind": "delete",
+        "entity": "Widget",
+        "summary": "Permanently delete widget and its contents",
+        "inputs": [],
+        "flowSteps": [
+          "F10.S01",
+          "F15.S01"
+        ]
+      },
+      {
+        "id": "touchDashboard",
+        "kind": "update",
+        "entity": "Dashboard",
+        "summary": "Touch dashboard to refresh lastEditedAt after widget changes",
+        "inputs": [],
+        "flowSteps": [
+          "F11.S02",
+          "F12.S02",
+          "F13.S01",
+          "F14.S02",
+          "F16.S02",
+          "F17.S01",
+          "F17.S02",
+          "F18.S02",
+          "F18.S03",
+          "F18.S04",
+          "F18.S05",
+          "F19.S02",
+          "F19.S03",
+          "F19.S04"
+        ]
+      },
+      {
+        "id": "updateWidgetTitle",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Update widget title",
+        "inputs": [
+          {
+            "field": "FD04",
+            "as": "title"
+          }
+        ],
+        "flowSteps": [
+          "F12.S02"
+        ]
+      },
+      {
+        "id": "repositionWidget",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Reposition widget to new order index",
+        "inputs": [],
+        "flowSteps": [
+          "F13.S01"
+        ]
+      },
+      {
+        "id": "resizeWidget",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Resize widget to small/medium/large",
+        "inputs": [
+          {
+            "field": "FD06",
+            "as": "size"
+          }
+        ],
+        "flowSteps": [
+          "F14.S02"
+        ]
+      },
+      {
+        "id": "updateNoteText",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Update note widget text",
+        "inputs": [
+          {
+            "field": "FD07",
+            "as": "noteText"
+          }
+        ],
+        "flowSteps": [
+          "F16.S02"
+        ]
+      },
+      {
+        "id": "incrementCounter",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Increase or decrease counter value by 1",
+        "inputs": [],
+        "flowSteps": [
+          "F17.S01"
+        ]
+      },
+      {
+        "id": "updateCounterLabel",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Update counter label",
+        "inputs": [
+          {
+            "field": "FD08",
+            "as": "counterLabel"
+          }
+        ],
+        "flowSteps": [
+          "F17.S02"
+        ]
+      },
+      {
+        "id": "addChecklistItem",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Add checklist item to ordered list",
+        "inputs": [
+          {
+            "field": "FD09",
+            "as": "checklistItemText"
+          }
+        ],
+        "flowSteps": [
+          "F18.S02"
+        ]
+      },
+      {
+        "id": "toggleChecklistItem",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Toggle checklist item checked state",
+        "inputs": [],
+        "flowSteps": [
+          "F18.S03"
+        ]
+      },
+      {
+        "id": "updateChecklistItem",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Update checklist item text",
+        "inputs": [
+          {
+            "field": "FD09",
+            "as": "checklistItemText"
+          }
+        ],
+        "flowSteps": [
+          "F18.S04"
+        ]
+      },
+      {
+        "id": "removeChecklistItem",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Remove checklist item from ordered list",
+        "inputs": [],
+        "flowSteps": [
+          "F18.S05"
+        ]
+      },
+      {
+        "id": "addLink",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Add link to link list",
+        "inputs": [
+          {
+            "field": "FD11",
+            "as": "linkTitle"
+          },
+          {
+            "field": "FD12",
+            "as": "linkUrl"
+          }
+        ],
+        "flowSteps": [
+          "F19.S02"
+        ]
+      },
+      {
+        "id": "updateLink",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Update link title and URL",
+        "inputs": [
+          {
+            "field": "FD11",
+            "as": "linkTitle"
+          },
+          {
+            "field": "FD12",
+            "as": "linkUrl"
+          }
+        ],
+        "flowSteps": [
+          "F19.S03"
+        ]
+      },
+      {
+        "id": "removeLink",
+        "kind": "update",
+        "entity": "Widget",
+        "summary": "Remove link from ordered list",
+        "inputs": [],
+        "flowSteps": [
+          "F19.S04"
+        ]
+      }
+    ],
+    "screens": [
+      {
+        "screen": "FR02",
+        "reads": []
+      },
+      {
+        "screen": "S01",
+        "reads": []
+      },
+      {
+        "screen": "S02",
+        "reads": []
+      },
+      {
+        "screen": "S03",
+        "reads": []
+      },
+      {
+        "screen": "S04",
+        "reads": [
+          "listDashboards"
+        ]
+      },
+      {
+        "screen": "S05",
+        "reads": [
+          "getDashboard",
+          "listWidgets",
+          "getWidget"
+        ]
+      },
+      {
+        "screen": "S06",
+        "reads": []
+      },
+      {
+        "screen": "D01",
+        "reads": [
+          "getDashboard"
+        ]
+      },
+      {
+        "screen": "D02",
+        "reads": []
+      },
+      {
+        "screen": "D03",
+        "reads": [
+          "getWidget"
+        ]
+      },
+      {
+        "screen": "D04",
+        "reads": [
+          "getWidget"
+        ]
+      }
+    ]
+  }
+}

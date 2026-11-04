@@ -1,0 +1,42 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "F19 combines two different actions and goals, advancing fulfilment and cancelling with stock restore, in one flow. Fix: Split F19 into two act flows on Order: one to advance fulfilment from New to Packed then to Shipped or Picked Up, and one to cancel a New or Packed Order with stock restored, each with a single goal and outcome.",
+      "at": "F19"
+    },
+    "by": "review-peer",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Split F19 into F19 to advance fulfilment and F24 to cancel with stock restore, each with a single goal and outcome.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Order reference is stored on the Order and used to look it up, but its noun is empty. Fix: Set FD17 \"noun\" to \"Order\" so the reference is kept by the Order record it identifies.",
+      "at": "FD17"
+    },
+    "by": "review-output",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Set FD17 noun to Order so the reference is kept by the Order record.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  }
+]

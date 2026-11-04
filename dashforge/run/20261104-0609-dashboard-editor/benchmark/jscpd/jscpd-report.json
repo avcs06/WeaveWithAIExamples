@@ -1,0 +1,653 @@
+{
+  "duplicates": [
+    {
+      "firstFile": {
+        "end": 73,
+        "endLoc": {
+          "column": 21,
+          "line": 73,
+          "position": 2290
+        },
+        "name": "(routes)/(auth)/sign-in/page.tsx",
+        "start": 58,
+        "startLoc": {
+          "column": 12,
+          "line": 58,
+          "position": 1862
+        }
+      },
+      "format": "tsx",
+      "fragment": "            </Button>\n          </>\n        }\n      >\n        <Controller\n          name=\"email\"\n          control={control}\n          rules={{\n            required: 'Enter your email',\n            pattern: { value: EMAIL, message: 'Enter an email like name@example.com' },\n          }}\n        >\n          {({ field }) => (\n            <Input label=\"Email\" type=\"email\" autoComplete=\"email\" {...field} />\n          )}\n        </Controller>",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 16,
+      "secondFile": {
+        "end": 80,
+        "endLoc": {
+          "column": 21,
+          "line": 80,
+          "position": 2533
+        },
+        "name": "(routes)/(auth)/sign-up/page.tsx",
+        "start": 65,
+        "startLoc": {
+          "column": 12,
+          "line": 65,
+          "position": 2105
+        }
+      },
+      "tokens": 77
+    },
+    {
+      "firstFile": {
+        "end": 21,
+        "endLoc": {
+          "column": 35,
+          "line": 21,
+          "position": 649
+        },
+        "name": "(routes)/(marketing)/page.css.ts",
+        "start": 14,
+        "startLoc": {
+          "column": 25,
+          "line": 14,
+          "position": 408
+        }
+      },
+      "format": "typescript",
+      "fragment": "export const previewCard = style({\n  display: 'flex',\n  flexDirection: 'column',\n  gap: tokens.spacing[2],\n  padding: tokens.spacing[4],\n  borderRadius: tokens.radius.surface,\n  border: `1px solid ${tokens.color.surface.divider}`,\n  background: tokens.color.base.bg,",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 8,
+      "secondFile": {
+        "end": 31,
+        "endLoc": {
+          "column": 35,
+          "line": 31,
+          "position": 924
+        },
+        "name": "(routes)/(marketing)/page.css.ts",
+        "start": 24,
+        "startLoc": {
+          "column": 28,
+          "line": 24,
+          "position": 683
+        }
+      },
+      "tokens": 60
+    },
+    {
+      "firstFile": {
+        "end": 33,
+        "endLoc": {
+          "column": 21,
+          "line": 33,
+          "position": 1213
+        },
+        "name": "entities/dashboard/operations.ts",
+        "start": 26,
+        "startLoc": {
+          "column": 34,
+          "line": 26,
+          "position": 946
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('createDashboard');\n  const now = new Date().toISOString();\n  const record: Dashboard = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };\n  useDashboardStore.setState(({ records }) => ({ records: [...records, record] }));\n  return record;\n}\n\nexport async function duplicateDashboard(input: DashboardInput): Promise<Dashboard> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 8,
+      "secondFile": {
+        "end": 41,
+        "endLoc": {
+          "column": 21,
+          "line": 41,
+          "position": 1582
+        },
+        "name": "entities/dashboard/operations.ts",
+        "start": 34,
+        "startLoc": {
+          "column": 37,
+          "line": 34,
+          "position": 1315
+        }
+      },
+      "tokens": 71
+    },
+    {
+      "firstFile": {
+        "end": 48,
+        "endLoc": {
+          "column": 1,
+          "line": 48,
+          "position": 2072
+        },
+        "name": "entities/dashboard/operations.ts",
+        "start": 42,
+        "startLoc": {
+          "column": 34,
+          "line": 42,
+          "position": 1701
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateDashboard');\n  const current = useDashboardStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Dashboard not found');\n  const record: Dashboard = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useDashboardStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 7,
+      "secondFile": {
+        "end": 62,
+        "endLoc": {
+          "column": 1,
+          "line": 62,
+          "position": 2798
+        },
+        "name": "entities/dashboard/operations.ts",
+        "start": 56,
+        "startLoc": {
+          "column": 33,
+          "line": 56,
+          "position": 2427
+        }
+      },
+      "tokens": 104
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 56,
+        "endLoc": {
+          "column": 21,
+          "line": 56,
+          "position": 2340
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 48,
+        "startLoc": {
+          "column": 35,
+          "line": 48,
+          "position": 1958
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 65,
+        "endLoc": {
+          "column": 21,
+          "line": 65,
+          "position": 2829
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 57,
+        "startLoc": {
+          "column": 31,
+          "line": 57,
+          "position": 2447
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 74,
+        "endLoc": {
+          "column": 21,
+          "line": 74,
+          "position": 3322
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 66,
+        "startLoc": {
+          "column": 33,
+          "line": 66,
+          "position": 2940
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 83,
+        "endLoc": {
+          "column": 21,
+          "line": 83,
+          "position": 3819
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 75,
+        "startLoc": {
+          "column": 35,
+          "line": 75,
+          "position": 3437
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 92,
+        "endLoc": {
+          "column": 21,
+          "line": 92,
+          "position": 4320
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 84,
+        "startLoc": {
+          "column": 37,
+          "line": 84,
+          "position": 3938
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 101,
+        "endLoc": {
+          "column": 21,
+          "line": 101,
+          "position": 4817
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 93,
+        "startLoc": {
+          "column": 35,
+          "line": 93,
+          "position": 4435
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 110,
+        "endLoc": {
+          "column": 21,
+          "line": 110,
+          "position": 5320
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 102,
+        "startLoc": {
+          "column": 38,
+          "line": 102,
+          "position": 4938
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 119,
+        "endLoc": {
+          "column": 21,
+          "line": 119,
+          "position": 5823
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 111,
+        "startLoc": {
+          "column": 38,
+          "line": 111,
+          "position": 5441
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 128,
+        "endLoc": {
+          "column": 21,
+          "line": 128,
+          "position": 6326
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 120,
+        "startLoc": {
+          "column": 38,
+          "line": 120,
+          "position": 5944
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 137,
+        "endLoc": {
+          "column": 21,
+          "line": 137,
+          "position": 6805
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 129,
+        "startLoc": {
+          "column": 26,
+          "line": 129,
+          "position": 6423
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 47,
+        "endLoc": {
+          "column": 21,
+          "line": 47,
+          "position": 1843
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}\n\nexport async function repositionWidget(id: string, changes: Partial<WidgetInput>): Promise<Widget> {",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 9,
+      "secondFile": {
+        "end": 146,
+        "endLoc": {
+          "column": 21,
+          "line": 146,
+          "position": 7290
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 138,
+        "startLoc": {
+          "column": 29,
+          "line": 138,
+          "position": 6908
+        }
+      },
+      "tokens": 107
+    },
+    {
+      "firstFile": {
+        "end": 45,
+        "endLoc": {
+          "column": 1,
+          "line": 45,
+          "position": 1820
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 39,
+        "startLoc": {
+          "column": 36,
+          "line": 39,
+          "position": 1461
+        }
+      },
+      "format": "typescript",
+      "fragment": "  await mockCall('updateWidgetTitle');\n  const current = useWidgetStore.getState().records.find((record) => record.id === id);\n  if (!current) throw new Error('Widget not found');\n  const record: Widget = { ...current, ...changes, updatedAt: new Date().toISOString() };\n  useWidgetStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));\n  return record;\n}",
+      "isNew": false,
+      "kind": "exact",
+      "lines": 7,
+      "secondFile": {
+        "end": 153,
+        "endLoc": {
+          "column": 1,
+          "line": 153,
+          "position": 7752
+        },
+        "name": "entities/widget/operations.ts",
+        "start": 147,
+        "startLoc": {
+          "column": 29,
+          "line": 147,
+          "position": 7393
+        }
+      },
+      "tokens": 104
+    }
+  ],
+  "statistics": {
+    "detectionDate": "2026-11-04T08:32:33.669Z",
+    "formats": {
+      "tsx": {
+        "clones": 1,
+        "duplicatedLines": 16,
+        "duplicatedTokens": 77,
+        "lines": 2585,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 0.6189555125725338,
+        "percentageTokens": 0.46525679758308164,
+        "sources": 37,
+        "tokens": 16550
+      },
+      "typescript": {
+        "clones": 15,
+        "duplicatedLines": 129,
+        "duplicatedTokens": 1516,
+        "lines": 1185,
+        "newClones": 0,
+        "newDuplicatedLines": 0,
+        "percentage": 10.886075949367088,
+        "percentageTokens": 20.83848797250859,
+        "sources": 24,
+        "tokens": 7275
+      }
+    },
+    "total": {
+      "clones": 16,
+      "duplicatedLines": 145,
+      "duplicatedTokens": 1593,
+      "lines": 3770,
+      "newClones": 0,
+      "newDuplicatedLines": 0,
+      "percentage": 3.8461538461538463,
+      "percentageTokens": 6.686253934942288,
+      "sources": 61,
+      "tokens": 23825
+    }
+  }
+}

@@ -1,0 +1,3979 @@
+{
+  "meta": {
+    "artifact": "flows-expand",
+    "version": 1,
+    "hash": "5b123f11d1a5d8c4c341f1b6ee85ecc0e3afd0e0349a58f9f37fa88effd8ae7d",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "88cf76dc9c1473a8b4b5043714057cb7248d5dd679ff39ba0e0146110fc0adb6"
+      },
+      "flows-catalog": {
+        "version": 1,
+        "hash": "78fa7505b2b3f14ad6d63aa868e2b5a8971d6a823708bbdf30b271f38635e1a7"
+      }
+    },
+    "stage": "flows-expand",
+    "model": "muse-spark-1.3",
+    "rounds": 14,
+    "createdAt": "2026-11-03T23:12:41.704Z"
+  },
+  "data": {
+    "flows": [
+      {
+        "id": "F01",
+        "name": "Visit the landing page",
+        "role": "designer",
+        "kind": "landing",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public landing page",
+        "goal": "Understand what SoloStudio is for and get started.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "steps": [
+          {
+            "id": "F01.S01",
+            "kind": "user",
+            "userAction": "The visitor opens the landing page.",
+            "websiteResponse": "The website shows that SoloStudio is a single workspace for a solo freelance designer to manage clients, projects and bookings, with options to sign up, sign in, and a link to the public booking page.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F01.S02",
+            "kind": "user",
+            "userAction": "The visitor chooses to sign up, sign in, or open the public booking page.",
+            "websiteResponse": "The website shows the chosen starting point: the sign-up form, the sign-in form, or the public booking page.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          }
+        ],
+        "alternatives": [],
+        "outcome": "Nothing changes; the visitor knows how to sign up, sign in or open the booking page."
+      },
+      {
+        "id": "F02",
+        "name": "Sign up",
+        "role": "designer",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signUp",
+        "signedOut": true,
+        "start": "On the landing page",
+        "goal": "Create an account to get a private workspace.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "steps": [
+          {
+            "id": "F02.S01",
+            "kind": "user",
+            "userAction": "The visitor chooses to sign up.",
+            "websiteResponse": "The website shows the sign-up form.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F02.S02",
+            "kind": "user",
+            "userAction": "The visitor fills in the form and submits it.",
+            "websiteResponse": "The website creates the account and private workspace with the three pre-created session types and empty weekly availability, signs the designer in and shows the home dashboard.",
+            "fields": [],
+            "form": "FM01",
+            "effects": []
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F02.A01",
+            "from": "F02.S02",
+            "kind": "invalid",
+            "condition": "The email is not an address or the password is shorter than 8 characters.",
+            "steps": [
+              {
+                "id": "F02.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the field that is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F02.S02"
+          },
+          {
+            "id": "F02.A02",
+            "from": "F02.S02",
+            "kind": "failure",
+            "condition": "Creating the account fails.",
+            "steps": [
+              {
+                "id": "F02.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the typed values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F02.S02"
+          },
+          {
+            "id": "F02.A03",
+            "from": "F02.S02",
+            "kind": "conflict",
+            "condition": "The email already has an account.",
+            "steps": [
+              {
+                "id": "F02.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the email already has an account and offers to sign in instead.",
+                "fields": [],
+                "form": ""
+              },
+              {
+                "id": "F02.A03.S02",
+                "kind": "user",
+                "userAction": "The visitor chooses to sign in.",
+                "websiteResponse": "The website shows the sign-in form.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The designer has an account and private workspace and is signed in; after refresh still signed in."
+      },
+      {
+        "id": "F03",
+        "name": "Sign in",
+        "role": "designer",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signIn",
+        "signedOut": true,
+        "start": "On the landing page",
+        "goal": "Sign in to the private workspace.",
+        "preconditions": [
+          "Not signed in.",
+          "Has an account."
+        ],
+        "steps": [
+          {
+            "id": "F03.S01",
+            "kind": "user",
+            "userAction": "The visitor chooses to sign in.",
+            "websiteResponse": "The website shows the sign-in form.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F03.S02",
+            "kind": "user",
+            "userAction": "The visitor fills in the form and submits it.",
+            "websiteResponse": "The website checks the account, signs the designer in and shows the home dashboard with today's sessions, follow-ups due this week and overdue tasks.",
+            "fields": [],
+            "form": "FM02",
+            "effects": []
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F03.A01",
+            "from": "F03.S02",
+            "kind": "invalid",
+            "condition": "The email is not an address or the password is shorter than 8 characters.",
+            "steps": [
+              {
+                "id": "F03.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the field that is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F03.S02"
+          },
+          {
+            "id": "F03.A02",
+            "from": "F03.S02",
+            "kind": "failure",
+            "condition": "Signing in fails.",
+            "steps": [
+              {
+                "id": "F03.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the typed values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F03.S02"
+          },
+          {
+            "id": "F03.A03",
+            "from": "F03.S02",
+            "kind": "denied",
+            "condition": "The email and password match no account.",
+            "steps": [
+              {
+                "id": "F03.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says no account matches and offers to try again or sign up instead.",
+                "fields": [],
+                "form": ""
+              },
+              {
+                "id": "F03.A03.S02",
+                "kind": "user",
+                "userAction": "The visitor chooses to sign up.",
+                "websiteResponse": "The website shows the sign-up form.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The designer is signed in and sees the home dashboard; after refresh still signed in."
+      },
+      {
+        "id": "F04",
+        "name": "Sign out",
+        "role": "designer",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signOut",
+        "signedOut": false,
+        "start": "On any signed-in page",
+        "goal": "Leave the workspace signed out.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F04.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to sign out.",
+            "websiteResponse": "The website signs her out and shows the public landing page.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          }
+        ],
+        "alternatives": [],
+        "outcome": "The designer is signed out; after refresh she stays signed out."
+      },
+      {
+        "id": "F05",
+        "name": "See the home dashboard",
+        "role": "designer",
+        "kind": "home",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the home dashboard",
+        "goal": "See what needs attention today in one place.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F05.S01",
+            "kind": "user",
+            "userAction": "The designer opens the home dashboard.",
+            "websiteResponse": "The website shows today's sessions with their bookings, follow-ups due this week with overdue first, and overdue tasks, each linking to the relevant client, session or project.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Slot",
+                "change": "list"
+              },
+              {
+                "noun": "Booking",
+                "change": "list"
+              },
+              {
+                "noun": "Note",
+                "change": "list"
+              },
+              {
+                "noun": "Task",
+                "change": "list"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F05.A01",
+            "from": "F05.S01",
+            "kind": "empty",
+            "condition": "There are no sessions today, no follow-ups due this week and no overdue tasks.",
+            "steps": [
+              {
+                "id": "F05.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows that everything is clear and offers to go to clients, projects, sessions, availability and session types.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen today's sessions, follow-ups due this week and overdue tasks."
+      },
+      {
+        "id": "F06",
+        "name": "Browse clients",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Find clients and see who needs a follow-up first.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F06.S01",
+            "kind": "user",
+            "userAction": "The designer opens the client list.",
+            "websiteResponse": "The website shows all clients sorted with overdue follow-ups first then soonest due, each showing name, company, status and follow-up due state.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "list"
+              },
+              {
+                "noun": "Note",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F06.S02",
+            "kind": "user",
+            "userAction": "The designer searches by name or company and filters by status.",
+            "websiteResponse": "The website shows only the matching clients in the same follow-up order.",
+            "fields": [
+              "FD30",
+              "FD31"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F06.S03",
+            "kind": "user",
+            "userAction": "The designer opens a client from the list.",
+            "websiteResponse": "The website shows that client's details, notes, projects and bookings.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "read"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F06.A01",
+            "from": "F06.S01",
+            "kind": "empty",
+            "condition": "No clients exist yet.",
+            "steps": [
+              {
+                "id": "F06.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says there are no clients yet and offers to add a client.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F06.A02",
+            "from": "F06.S02",
+            "kind": "empty",
+            "condition": "No clients match the search or filter.",
+            "steps": [
+              {
+                "id": "F06.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says nothing matches and offers to clear the search or filter.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F06.S02"
+          },
+          {
+            "id": "F06.A03",
+            "from": "F06.S03",
+            "kind": "notFound",
+            "condition": "The client was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F06.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the client is gone and shows the client list.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen the sorted client list."
+      },
+      {
+        "id": "F07",
+        "name": "View a client",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "See one client's details, notes, projects and bookings in one place.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "steps": [
+          {
+            "id": "F07.S01",
+            "kind": "user",
+            "userAction": "The designer opens a client from the client list.",
+            "websiteResponse": "The website shows the client's name, email, company, profile and status together with its dated notes with follow-up dates, its projects and its bookings matched by email.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "read"
+              },
+              {
+                "noun": "Note",
+                "change": "list"
+              },
+              {
+                "noun": "Project",
+                "change": "list"
+              },
+              {
+                "noun": "Booking",
+                "change": "list"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F07.A01",
+            "from": "F07.S01",
+            "kind": "empty",
+            "condition": "The client has no notes, projects or bookings yet.",
+            "steps": [
+              {
+                "id": "F07.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows empty notes, projects and bookings sections with offers to add a note or a project.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F07.A02",
+            "from": "F07.S01",
+            "kind": "notFound",
+            "condition": "The client was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F07.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the client is gone and shows the client list.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen the client's details, notes, projects and bookings."
+      },
+      {
+        "id": "F08",
+        "name": "Add a client",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Remember a new client.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F08.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to add a client.",
+            "websiteResponse": "The website shows an empty client form with status already set to Lead.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F08.S02",
+            "kind": "user",
+            "userAction": "The designer fills in the client and saves it.",
+            "websiteResponse": "The website saves the client and shows it in the client list and as a client page.",
+            "fields": [],
+            "form": "FM03",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "create"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F08.A01",
+            "from": "F08.S02",
+            "kind": "invalid",
+            "condition": "The name is empty, the email is not an address, or the status is missing.",
+            "steps": [
+              {
+                "id": "F08.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F08.S02"
+          },
+          {
+            "id": "F08.A02",
+            "from": "F08.S02",
+            "kind": "failure",
+            "condition": "Saving fails.",
+            "steps": [
+              {
+                "id": "F08.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F08.S02"
+          },
+          {
+            "id": "F08.A03",
+            "from": "F08.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels.",
+            "steps": [
+              {
+                "id": "F08.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is saved; the website shows the client list as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "A new client is saved and still there after refresh."
+      },
+      {
+        "id": "F09",
+        "name": "Edit a client",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Change a client's details or status.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "steps": [
+          {
+            "id": "F09.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to edit the client.",
+            "websiteResponse": "The website shows the client form filled with the current name, email, company, profile and status.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F09.S02",
+            "kind": "user",
+            "userAction": "The designer changes values and saves them.",
+            "websiteResponse": "The website updates the client and shows the updated client details.",
+            "fields": [],
+            "form": "FM03",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F09.A01",
+            "from": "F09.S01",
+            "kind": "notFound",
+            "condition": "The client was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F09.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the client is gone and shows the client list.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F09.A02",
+            "from": "F09.S02",
+            "kind": "invalid",
+            "condition": "The name is empty, the email is not an address, or the status is missing.",
+            "steps": [
+              {
+                "id": "F09.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F09.S02"
+          },
+          {
+            "id": "F09.A03",
+            "from": "F09.S02",
+            "kind": "failure",
+            "condition": "Saving fails.",
+            "steps": [
+              {
+                "id": "F09.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F09.S02"
+          },
+          {
+            "id": "F09.A04",
+            "from": "F09.S02",
+            "kind": "cancel",
+            "condition": "The designer cancels.",
+            "steps": [
+              {
+                "id": "F09.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is changed; the website shows the client again as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The client is updated and stays updated after refresh."
+      },
+      {
+        "id": "F10",
+        "name": "Delete a client",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Remove a client and everything under them.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "steps": [
+          {
+            "id": "F10.S01",
+            "kind": "user",
+            "userAction": "The designer chooses Delete on the client.",
+            "websiteResponse": "The website asks the designer to confirm deleting the client with its notes, projects and tasks, explaining its bookings will stay visible without a client link.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Client",
+                "change": "delete"
+              },
+              {
+                "noun": "Note",
+                "change": "delete"
+              },
+              {
+                "noun": "Project",
+                "change": "delete"
+              },
+              {
+                "noun": "Task",
+                "change": "delete"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F10.A01",
+            "from": "F10.S01",
+            "kind": "confirm",
+            "condition": "The designer confirmed the deletion.",
+            "steps": [
+              {
+                "id": "F10.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the client list without the client.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F10.A02",
+            "from": "F10.S01",
+            "kind": "cancel",
+            "condition": "The designer cancelled.",
+            "steps": [
+              {
+                "id": "F10.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is deleted; the website shows the client again, unchanged.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F10.A03",
+            "from": "F10.S01",
+            "kind": "notFound",
+            "condition": "The client was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F10.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the client is already gone and shows the client list.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The client, its notes, projects and tasks are gone after refresh; its bookings remain unlinked."
+      },
+      {
+        "id": "F11",
+        "name": "Add a note with a follow-up date",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Jot a dated note after a call and optionally set a follow-up.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "steps": [
+          {
+            "id": "F11.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to add a note.",
+            "websiteResponse": "The website shows an empty note form with the note date set to today.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F11.S02",
+            "kind": "user",
+            "userAction": "The designer fills in the note and saves it.",
+            "websiteResponse": "The website saves the note under the client and shows it with its follow-up date in the client's notes.",
+            "fields": [],
+            "form": "FM04",
+            "effects": [
+              {
+                "noun": "Note",
+                "change": "create"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F11.A01",
+            "from": "F11.S02",
+            "kind": "invalid",
+            "condition": "The note text is empty or a date cannot be understood.",
+            "steps": [
+              {
+                "id": "F11.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the field that needs fixing and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F11.S02"
+          },
+          {
+            "id": "F11.A02",
+            "from": "F11.S02",
+            "kind": "failure",
+            "condition": "Saving the note fails.",
+            "steps": [
+              {
+                "id": "F11.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the entered values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F11.S02"
+          },
+          {
+            "id": "F11.A03",
+            "from": "F11.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels adding the note.",
+            "steps": [
+              {
+                "id": "F11.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is saved; the website shows the client as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The new dated note with its follow-up date is saved under the client after refresh."
+      },
+      {
+        "id": "F12",
+        "name": "Edit a note",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Correct or update a note and its follow-up date.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note exists."
+        ],
+        "steps": [
+          {
+            "id": "F12.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to edit a note under the client.",
+            "websiteResponse": "The website shows the note form filled with the note's current text, note date and follow-up date.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Note",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F12.S02",
+            "kind": "user",
+            "userAction": "The designer changes the values and saves the note.",
+            "websiteResponse": "The website updates the note and shows it under the client with its new follow-up date.",
+            "fields": [],
+            "form": "FM04",
+            "effects": [
+              {
+                "noun": "Note",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F12.A01",
+            "from": "F12.S02",
+            "kind": "invalid",
+            "condition": "The note text is empty or a date cannot be understood.",
+            "steps": [
+              {
+                "id": "F12.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the field that needs fixing and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F12.S02"
+          },
+          {
+            "id": "F12.A02",
+            "from": "F12.S02",
+            "kind": "failure",
+            "condition": "Saving the note fails.",
+            "steps": [
+              {
+                "id": "F12.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the entered values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F12.S02"
+          },
+          {
+            "id": "F12.A03",
+            "from": "F12.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels editing the note.",
+            "steps": [
+              {
+                "id": "F12.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is changed; the website shows the note as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F12.A04",
+            "from": "F12.S01",
+            "kind": "notFound",
+            "condition": "The note is no longer there.",
+            "steps": [
+              {
+                "id": "F12.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the note is gone and shows the client's remaining notes.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The note is updated and stays updated after refresh."
+      },
+      {
+        "id": "F13",
+        "name": "Delete a note",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Remove a note that is no longer needed.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note exists."
+        ],
+        "steps": [
+          {
+            "id": "F13.S01",
+            "kind": "user",
+            "userAction": "The designer chooses Delete on a note under the client.",
+            "websiteResponse": "The website asks the designer to confirm deleting the note.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Note",
+                "change": "delete"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F13.A01",
+            "from": "F13.S01",
+            "kind": "confirm",
+            "condition": "The designer confirms the deletion.",
+            "steps": [
+              {
+                "id": "F13.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the client's remaining notes without the deleted note.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F13.A02",
+            "from": "F13.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels the deletion.",
+            "steps": [
+              {
+                "id": "F13.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the note again, unchanged.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F13.A03",
+            "from": "F13.S01",
+            "kind": "notFound",
+            "condition": "The note is already gone.",
+            "steps": [
+              {
+                "id": "F13.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the note is gone and shows the client's remaining notes.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The note is gone and stays gone after refresh."
+      },
+      {
+        "id": "F14",
+        "name": "Mark a follow-up done",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Mark a follow-up done with one click.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note with a follow-up date exists."
+        ],
+        "steps": [
+          {
+            "id": "F14.S01",
+            "kind": "user",
+            "userAction": "The designer marks a follow-up done with one click.",
+            "websiteResponse": "The website clears the follow-up date and shows the client no longer due for a follow-up.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Note",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F14.A01",
+            "from": "F14.S01",
+            "kind": "failure",
+            "condition": "Clearing the follow-up date fails.",
+            "steps": [
+              {
+                "id": "F14.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the follow-up date and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F14.S01"
+          },
+          {
+            "id": "F14.A02",
+            "from": "F14.S01",
+            "kind": "notFound",
+            "condition": "The note is no longer there.",
+            "steps": [
+              {
+                "id": "F14.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the note is gone and shows the client list as it is.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The follow-up date is cleared and stays cleared after refresh."
+      },
+      {
+        "id": "F15",
+        "name": "Push a follow-up a week",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Push a follow-up a week with one click.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note with a follow-up date exists."
+        ],
+        "steps": [
+          {
+            "id": "F15.S01",
+            "kind": "user",
+            "userAction": "The designer pushes a follow-up a week with one click.",
+            "websiteResponse": "The website adds 7 days to the follow-up date and shows the new due date in sorted order.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Note",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F15.A01",
+            "from": "F15.S01",
+            "kind": "failure",
+            "condition": "Pushing the follow-up date fails.",
+            "steps": [
+              {
+                "id": "F15.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the follow-up date and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F15.S01"
+          },
+          {
+            "id": "F15.A02",
+            "from": "F15.S01",
+            "kind": "notFound",
+            "condition": "The note is no longer there.",
+            "steps": [
+              {
+                "id": "F15.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the note is gone and shows the client list as it is.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The follow-up date is 7 days later and stays so after refresh."
+      },
+      {
+        "id": "F16",
+        "name": "Browse projects",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the projects view",
+        "goal": "See every project and how much work is left.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F16.S01",
+            "kind": "user",
+            "userAction": "The designer opens the projects view.",
+            "websiteResponse": "The website shows all projects with their name, client name, due date and open task count and that each row links to its project and client.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "list"
+              },
+              {
+                "noun": "Task",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F16.S02",
+            "kind": "user",
+            "userAction": "The designer searches by project name or client name.",
+            "websiteResponse": "The website shows only projects whose name or client name matches.",
+            "fields": [
+              "FD35"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "list"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F16.A01",
+            "from": "F16.S01",
+            "kind": "empty",
+            "condition": "There are no projects yet.",
+            "steps": [
+              {
+                "id": "F16.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows that there are no projects yet and offers to add a project.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F16.A02",
+            "from": "F16.S02",
+            "kind": "empty",
+            "condition": "No project matches the search.",
+            "steps": [
+              {
+                "id": "F16.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows that nothing matches and offers to clear the search or add a project.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F16.S02"
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen all projects with open task counts."
+      },
+      {
+        "id": "F17",
+        "name": "View a project with its tasks",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the projects view",
+        "goal": "See a project's tasks and narrow them down.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "steps": [
+          {
+            "id": "F17.S01",
+            "kind": "user",
+            "userAction": "The designer opens a project from the projects view.",
+            "websiteResponse": "The website shows the project's name, description, due date and client together with its tasks grouped by status, with overdue tasks standing out.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "read"
+              },
+              {
+                "noun": "Task",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F17.S02",
+            "kind": "user",
+            "userAction": "The designer searches by title and filters by status and priority.",
+            "websiteResponse": "The website shows only tasks whose title matches and whose status and priority match the chosen filters.",
+            "fields": [
+              "FD32",
+              "FD33",
+              "FD34"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Task",
+                "change": "list"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F17.A01",
+            "from": "F17.S01",
+            "kind": "notFound",
+            "condition": "The project was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F17.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the project is gone and shows the projects view.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F17.A02",
+            "from": "F17.S01",
+            "kind": "empty",
+            "condition": "The project has no tasks yet.",
+            "steps": [
+              {
+                "id": "F17.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows that there are no tasks yet and offers to add a task.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F17.A03",
+            "from": "F17.S02",
+            "kind": "empty",
+            "condition": "No task matches the search or filters.",
+            "steps": [
+              {
+                "id": "F17.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows that nothing matches and offers to clear the search and filters.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F17.S02"
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen the project and its filtered tasks."
+      },
+      {
+        "id": "F18",
+        "name": "Add a project",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the projects view",
+        "goal": "Start a new project for a client.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "steps": [
+          {
+            "id": "F18.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to add a project.",
+            "websiteResponse": "The website shows an empty project form.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F18.S02",
+            "kind": "user",
+            "userAction": "The designer fills in the project and saves it.",
+            "websiteResponse": "The website saves the project under the chosen client and shows it in the projects view.",
+            "fields": [],
+            "form": "FM05",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "create"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F18.A01",
+            "from": "F18.S02",
+            "kind": "invalid",
+            "condition": "The name or description is empty, the due date is not a date, or no client is chosen.",
+            "steps": [
+              {
+                "id": "F18.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is missing or wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F18.S02"
+          },
+          {
+            "id": "F18.A02",
+            "from": "F18.S02",
+            "kind": "failure",
+            "condition": "Saving the project fails.",
+            "steps": [
+              {
+                "id": "F18.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F18.S02"
+          },
+          {
+            "id": "F18.A03",
+            "from": "F18.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels.",
+            "steps": [
+              {
+                "id": "F18.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is saved; the website shows the projects view as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The new project is saved and still there after refresh."
+      },
+      {
+        "id": "F19",
+        "name": "Edit a project",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Change a project's details or move it to another client.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "steps": [
+          {
+            "id": "F19.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to edit the project.",
+            "websiteResponse": "The website shows the project form with the current name, description, due date and client.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F19.S02",
+            "kind": "user",
+            "userAction": "The designer changes the project and saves it.",
+            "websiteResponse": "The website saves the changes and shows the updated project.",
+            "fields": [],
+            "form": "FM05",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F19.A01",
+            "from": "F19.S01",
+            "kind": "notFound",
+            "condition": "The project was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F19.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the project is gone and shows the projects view.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F19.A02",
+            "from": "F19.S02",
+            "kind": "invalid",
+            "condition": "The name or description is empty, the due date is not a date, or no client is chosen.",
+            "steps": [
+              {
+                "id": "F19.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is missing or wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F19.S02"
+          },
+          {
+            "id": "F19.A03",
+            "from": "F19.S02",
+            "kind": "failure",
+            "condition": "Saving the changes fails.",
+            "steps": [
+              {
+                "id": "F19.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F19.S02"
+          },
+          {
+            "id": "F19.A04",
+            "from": "F19.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels.",
+            "steps": [
+              {
+                "id": "F19.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is changed; the website shows the project as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The project is updated and stays updated after refresh."
+      },
+      {
+        "id": "F20",
+        "name": "Delete a project",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Remove a project and its tasks.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "steps": [
+          {
+            "id": "F20.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to delete the project.",
+            "websiteResponse": "The website asks the designer to confirm deleting the project and its tasks.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Project",
+                "change": "delete"
+              },
+              {
+                "noun": "Task",
+                "change": "delete"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F20.A01",
+            "from": "F20.S01",
+            "kind": "confirm",
+            "condition": "The designer confirms the deletion.",
+            "steps": [
+              {
+                "id": "F20.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website deletes the project and its tasks and shows the projects view without the project.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F20.A02",
+            "from": "F20.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels.",
+            "steps": [
+              {
+                "id": "F20.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is deleted; the website shows the project as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F20.A03",
+            "from": "F20.S01",
+            "kind": "notFound",
+            "condition": "The project was already deleted.",
+            "steps": [
+              {
+                "id": "F20.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the project is already gone and shows the projects view.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The project and its tasks are gone after refresh."
+      },
+      {
+        "id": "F21",
+        "name": "Add a task",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Add a task to a project.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "steps": [
+          {
+            "id": "F21.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to add a task.",
+            "websiteResponse": "The website shows an empty task form with status set to To do and priority set to Medium.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F21.S02",
+            "kind": "user",
+            "userAction": "The designer fills in the task and saves it.",
+            "websiteResponse": "The website saves the task and shows it in the project's task list, standing out when its due date is before today and it is not Done.",
+            "fields": [],
+            "form": "FM06",
+            "effects": [
+              {
+                "noun": "Task",
+                "change": "create"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F21.A01",
+            "from": "F21.S02",
+            "kind": "invalid",
+            "condition": "The title is empty.",
+            "steps": [
+              {
+                "id": "F21.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the empty title and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F21.S02"
+          },
+          {
+            "id": "F21.A02",
+            "from": "F21.S02",
+            "kind": "failure",
+            "condition": "Saving the task fails.",
+            "steps": [
+              {
+                "id": "F21.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the entered values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F21.S02"
+          },
+          {
+            "id": "F21.A03",
+            "from": "F21.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels adding the task.",
+            "steps": [
+              {
+                "id": "F21.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is saved; the website shows the project with its tasks as they were.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The new task is saved under the project after refresh."
+      },
+      {
+        "id": "F22",
+        "name": "Edit a task",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Change a task's title, status, priority or due date.",
+        "preconditions": [
+          "Signed in.",
+          "At least one task exists."
+        ],
+        "steps": [
+          {
+            "id": "F22.S01",
+            "kind": "user",
+            "userAction": "The designer opens a task from the project's task list.",
+            "websiteResponse": "The website shows the task form with the task's current title, status, priority and due date.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Task",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F22.S02",
+            "kind": "user",
+            "userAction": "The designer changes the values and saves them.",
+            "websiteResponse": "The website updates the task and shows the updated task list with updated open counts.",
+            "fields": [],
+            "form": "FM06",
+            "effects": [
+              {
+                "noun": "Task",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F22.A01",
+            "from": "F22.S01",
+            "kind": "notFound",
+            "condition": "The task was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F22.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the task is gone and shows the project's remaining tasks.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F22.A02",
+            "from": "F22.S02",
+            "kind": "invalid",
+            "condition": "The title is empty.",
+            "steps": [
+              {
+                "id": "F22.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the empty title and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F22.S02"
+          },
+          {
+            "id": "F22.A03",
+            "from": "F22.S02",
+            "kind": "failure",
+            "condition": "Saving the changes fails.",
+            "steps": [
+              {
+                "id": "F22.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the entered values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F22.S02"
+          },
+          {
+            "id": "F22.A04",
+            "from": "F22.S02",
+            "kind": "cancel",
+            "condition": "The designer cancels without saving.",
+            "steps": [
+              {
+                "id": "F22.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is changed; the website shows the project with its tasks as they were.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The task is updated and stays updated after refresh."
+      },
+      {
+        "id": "F23",
+        "name": "Delete a task",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Remove a task that is no longer needed.",
+        "preconditions": [
+          "Signed in.",
+          "At least one task exists."
+        ],
+        "steps": [
+          {
+            "id": "F23.S01",
+            "kind": "user",
+            "userAction": "The designer chooses Delete on a task.",
+            "websiteResponse": "The website asks the designer to confirm deleting the task.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Task",
+                "change": "delete"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F23.A01",
+            "from": "F23.S01",
+            "kind": "confirm",
+            "condition": "The designer confirmed the deletion.",
+            "steps": [
+              {
+                "id": "F23.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the project's remaining tasks with updated open counts.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F23.A02",
+            "from": "F23.S01",
+            "kind": "cancel",
+            "condition": "The designer cancelled.",
+            "steps": [
+              {
+                "id": "F23.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is deleted; the website shows the project with its tasks as they were.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F23.A03",
+            "from": "F23.S01",
+            "kind": "notFound",
+            "condition": "The task was already gone.",
+            "steps": [
+              {
+                "id": "F23.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the task is gone and shows the project's remaining tasks.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The task is gone and stays gone after refresh."
+      },
+      {
+        "id": "F24",
+        "name": "Tick a task done",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Tick a task done quickly.",
+        "preconditions": [
+          "Signed in.",
+          "At least one open task exists."
+        ],
+        "steps": [
+          {
+            "id": "F24.S01",
+            "kind": "user",
+            "userAction": "The designer ticks an open task done.",
+            "websiteResponse": "The website marks the task Done, updates the open task counts and no longer shows it as overdue.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Task",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F24.A01",
+            "from": "F24.S01",
+            "kind": "failure",
+            "condition": "Marking the task done fails.",
+            "steps": [
+              {
+                "id": "F24.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the task as it was and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F24.S01"
+          },
+          {
+            "id": "F24.A02",
+            "from": "F24.S01",
+            "kind": "notFound",
+            "condition": "The task was deleted in the meantime.",
+            "steps": [
+              {
+                "id": "F24.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the task is gone and shows the project's remaining tasks.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F24.A03",
+            "from": "F24.S01",
+            "kind": "other",
+            "condition": "The task is already Done.",
+            "steps": [
+              {
+                "id": "F24.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the task as Done with updated open counts.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The task is Done and stays Done after refresh."
+      },
+      {
+        "id": "F25",
+        "name": "Set weekly availability",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Availability",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On availability settings",
+        "goal": "Set the weekly days and hours that can be booked.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F25.S01",
+            "kind": "user",
+            "userAction": "The designer changes the days, from time and to time and saves them.",
+            "websiteResponse": "The website saves the weekly availability and shows the saved days and hours; future open slots use the new hours and existing bookings are unchanged.",
+            "fields": [],
+            "form": "FM07",
+            "effects": [
+              {
+                "noun": "Availability",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F25.A01",
+            "from": "F25.S01",
+            "kind": "invalid",
+            "condition": "At least one day is selected but From time or To time is missing, or To time is not after From time.",
+            "steps": [
+              {
+                "id": "F25.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is missing or wrong, keeps the entered days and times, and offers to correct them.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F25.S01"
+          },
+          {
+            "id": "F25.A02",
+            "from": "F25.S01",
+            "kind": "failure",
+            "condition": "Saving the availability fails.",
+            "steps": [
+              {
+                "id": "F25.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the entered days and times and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F25.S01"
+          }
+        ],
+        "outcome": "Availability is updated and still shows after refresh; existing bookings are unchanged."
+      },
+      {
+        "id": "F26",
+        "name": "Browse session types",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "SessionType",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On session types",
+        "goal": "See the kinds of sessions visitors can book.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F26.S01",
+            "kind": "user",
+            "userAction": "The designer opens session types.",
+            "websiteResponse": "The website shows all session types with their name, duration in minutes, displayed price and maximum people.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "list"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F26.A01",
+            "from": "F26.S01",
+            "kind": "empty",
+            "condition": "There are no session types yet.",
+            "steps": [
+              {
+                "id": "F26.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says there are no session types yet and offers to add one.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen all session types."
+      },
+      {
+        "id": "F27",
+        "name": "Add a session type",
+        "role": "designer",
+        "kind": "create",
+        "noun": "SessionType",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On session types",
+        "goal": "Offer a new kind of bookable session.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F27.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to add a session type.",
+            "websiteResponse": "The website shows an empty session type form.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F27.S02",
+            "kind": "user",
+            "userAction": "The designer fills in the session type and saves it.",
+            "websiteResponse": "The website saves the session type and shows it in the session type list.",
+            "fields": [],
+            "form": "FM08",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "create"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F27.A01",
+            "from": "F27.S02",
+            "kind": "invalid",
+            "condition": "The name is empty, the duration is not a whole number or is below 15 or above 480, the displayed price is not a number or is negative, or the maximum people is not a whole number or is below 1 or above 20.",
+            "steps": [
+              {
+                "id": "F27.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F27.S02"
+          },
+          {
+            "id": "F27.A02",
+            "from": "F27.S02",
+            "kind": "failure",
+            "condition": "Saving fails.",
+            "steps": [
+              {
+                "id": "F27.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F27.S02"
+          },
+          {
+            "id": "F27.A03",
+            "from": "F27.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels without saving.",
+            "steps": [
+              {
+                "id": "F27.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is saved; the website shows the session type list as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The new session type is saved and still there after refresh."
+      },
+      {
+        "id": "F28",
+        "name": "Edit a session type",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "SessionType",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On session types",
+        "goal": "Change a session's length, displayed price or seats.",
+        "preconditions": [
+          "Signed in.",
+          "At least one session type exists."
+        ],
+        "steps": [
+          {
+            "id": "F28.S01",
+            "kind": "user",
+            "userAction": "The designer opens a session type to edit it.",
+            "websiteResponse": "The website shows the session type with its current name, duration in minutes, displayed price and maximum people in the session type form.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F28.S02",
+            "kind": "user",
+            "userAction": "The designer changes the values and saves them.",
+            "websiteResponse": "The website updates the session type and shows it in the session type list; existing bookings are unchanged.",
+            "fields": [],
+            "form": "FM08",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F28.A01",
+            "from": "F28.S01",
+            "kind": "notFound",
+            "condition": "The session type is gone.",
+            "steps": [
+              {
+                "id": "F28.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the session type is gone and shows the session type list.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F28.A02",
+            "from": "F28.S02",
+            "kind": "invalid",
+            "condition": "The name is empty, the duration is not a whole number or is below 15 or above 480, the displayed price is not a number or is negative, or the maximum people is not a whole number or is below 1 or above 20.",
+            "steps": [
+              {
+                "id": "F28.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F28.S02"
+          },
+          {
+            "id": "F28.A03",
+            "from": "F28.S02",
+            "kind": "failure",
+            "condition": "Saving fails.",
+            "steps": [
+              {
+                "id": "F28.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F28.S02"
+          },
+          {
+            "id": "F28.A04",
+            "from": "F28.S01",
+            "kind": "cancel",
+            "condition": "The designer cancels without saving.",
+            "steps": [
+              {
+                "id": "F28.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is changed; the website shows the session type list as it was.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The session type is updated and stays updated after refresh; existing bookings are unchanged."
+      },
+      {
+        "id": "F29",
+        "name": "See upcoming sessions",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On upcoming sessions",
+        "goal": "See upcoming sessions and who booked them.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F29.S01",
+            "kind": "user",
+            "userAction": "The designer opens upcoming sessions.",
+            "websiteResponse": "The website shows upcoming slots with their session type, time and bookings, including full slots, and past sessions separately.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Slot",
+                "change": "list"
+              },
+              {
+                "noun": "Booking",
+                "change": "list"
+              },
+              {
+                "noun": "SessionType",
+                "change": "read"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F29.A01",
+            "from": "F29.S01",
+            "kind": "empty",
+            "condition": "There are no upcoming slots.",
+            "steps": [
+              {
+                "id": "F29.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says there are no upcoming sessions yet and explains new sessions appear when guests book open times, and the designer can check availability and session types.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen upcoming slots with their bookings."
+      },
+      {
+        "id": "F30",
+        "name": "View a slot",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On upcoming sessions",
+        "goal": "See who booked a time slot and for what.",
+        "preconditions": [
+          "Signed in.",
+          "At least one slot with or without bookings exists."
+        ],
+        "steps": [
+          {
+            "id": "F30.S01",
+            "kind": "user",
+            "userAction": "The designer opens a slot from upcoming sessions.",
+            "websiteResponse": "The website shows the slot's time and session type with its bookings showing name, email and linked client.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Slot",
+                "change": "read"
+              },
+              {
+                "noun": "Booking",
+                "change": "list"
+              },
+              {
+                "noun": "SessionType",
+                "change": "read"
+              },
+              {
+                "noun": "Client",
+                "change": "read"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F30.A01",
+            "from": "F30.S01",
+            "kind": "empty",
+            "condition": "The slot has no bookings yet.",
+            "steps": [
+              {
+                "id": "F30.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the slot with no bookings yet and says the time stays open for booking until the slot is cancelled.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F30.A02",
+            "from": "F30.S01",
+            "kind": "notFound",
+            "condition": "The slot no longer exists.",
+            "steps": [
+              {
+                "id": "F30.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the slot is gone and shows upcoming sessions.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen the slot and its bookings."
+      },
+      {
+        "id": "F31",
+        "name": "Cancel a slot",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a slot's page",
+        "goal": "Cancel a time slot and everyone booked on it.",
+        "preconditions": [
+          "Signed in.",
+          "At least one upcoming slot exists."
+        ],
+        "steps": [
+          {
+            "id": "F31.S01",
+            "kind": "user",
+            "userAction": "The designer chooses to cancel the slot.",
+            "websiteResponse": "The website asks the designer to confirm cancelling the slot and every booking on it.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Slot",
+                "change": "delete"
+              },
+              {
+                "noun": "Booking",
+                "change": "delete"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F31.A01",
+            "from": "F31.S01",
+            "kind": "confirm",
+            "condition": "The designer confirms the cancellation.",
+            "steps": [
+              {
+                "id": "F31.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website cancels the slot and every booking on it and shows upcoming sessions without the slot.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F31.A02",
+            "from": "F31.S01",
+            "kind": "cancel",
+            "condition": "The designer does not confirm.",
+            "steps": [
+              {
+                "id": "F31.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is cancelled; the website shows the slot again unchanged.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F31.A03",
+            "from": "F31.S01",
+            "kind": "notFound",
+            "condition": "The slot was already cancelled.",
+            "steps": [
+              {
+                "id": "F31.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the slot is gone and shows upcoming sessions.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "The slot and its bookings are cancelled and stay cancelled after refresh."
+      },
+      {
+        "id": "F32",
+        "name": "View a booking as designer",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On upcoming sessions",
+        "goal": "See who booked, for what and when.",
+        "preconditions": [
+          "Signed in.",
+          "At least one booking exists."
+        ],
+        "steps": [
+          {
+            "id": "F32.S01",
+            "kind": "user",
+            "userAction": "The designer opens a booking from the upcoming sessions.",
+            "websiteResponse": "The website shows the booking's name, email, session type, slot time and linked client when one exists, with ways to open the client and the slot.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Booking",
+                "change": "read"
+              },
+              {
+                "noun": "Slot",
+                "change": "read"
+              },
+              {
+                "noun": "Client",
+                "change": "read"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F32.A01",
+            "from": "F32.S01",
+            "kind": "notFound",
+            "condition": "The booking was cancelled in the meantime.",
+            "steps": [
+              {
+                "id": "F32.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the booking is gone and shows the upcoming sessions.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the designer has seen the booking details."
+      },
+      {
+        "id": "F33",
+        "name": "Open the public booking page",
+        "role": "bookingGuest",
+        "kind": "landing",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public booking page",
+        "goal": "Arrive at the public booking page and get started.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "steps": [
+          {
+            "id": "F33.S01",
+            "kind": "user",
+            "userAction": "The visitor opens the public booking page using the designer's booking link.",
+            "websiteResponse": "The website shows what booking is for, the session types with duration and displayed price, and how to start by picking a session type.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F33.S02",
+            "kind": "user",
+            "userAction": "The visitor chooses to continue to open times.",
+            "websiteResponse": "The website shows the session type choice to continue toward finding an open time.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F33.A01",
+            "from": "F33.S01",
+            "kind": "empty",
+            "condition": "No session types are offered right now.",
+            "steps": [
+              {
+                "id": "F33.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says no sessions are currently offered and to check back later.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the guest knows how to pick a session type and see open times."
+      },
+      {
+        "id": "F34",
+        "name": "Find an open slot",
+        "role": "bookingGuest",
+        "kind": "browse",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public booking page",
+        "goal": "Pick a service and see which times are still open.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "steps": [
+          {
+            "id": "F34.S01",
+            "kind": "user",
+            "userAction": "The guest picks a session type.",
+            "websiteResponse": "The website shows the session type's duration and displayed price and lists its open slots for the next two weeks, excluding full slots and times blocked by overlapping bookings.",
+            "fields": [
+              "FD28"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "read"
+              },
+              {
+                "noun": "Slot",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F34.S02",
+            "kind": "user",
+            "userAction": "The guest picks an open slot to book.",
+            "websiteResponse": "The website shows the chosen session type and slot with the booking details form.",
+            "fields": [
+              "FD29"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Slot",
+                "change": "read"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F34.A01",
+            "from": "F34.S01",
+            "kind": "empty",
+            "condition": "There are no open slots for the chosen session type in the next two weeks.",
+            "steps": [
+              {
+                "id": "F34.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says there are no open times for the chosen session type in the next two weeks and offers to try another session type.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F34.S01"
+          },
+          {
+            "id": "F34.A02",
+            "from": "F34.S02",
+            "kind": "other",
+            "condition": "The chosen slot became full or blocked by an overlapping booking before the guest picked it.",
+            "steps": [
+              {
+                "id": "F34.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says that time is no longer open and shows the updated list of open slots for the chosen session type.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F34.S02"
+          }
+        ],
+        "outcome": "Nothing changes; the guest has seen open slots for the chosen session type."
+      },
+      {
+        "id": "F35",
+        "name": "Book a session",
+        "role": "bookingGuest",
+        "kind": "create",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public booking page",
+        "goal": "Book an open time and get a confirmation with a cancellation link.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "steps": [
+          {
+            "id": "F35.S01",
+            "kind": "user",
+            "userAction": "The guest chooses a session type.",
+            "websiteResponse": "The website shows open slots for the next two weeks for that session type with its duration and displayed price, hiding full slots and times blocked by another booking.",
+            "fields": [
+              "FD28"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "SessionType",
+                "change": "read"
+              },
+              {
+                "noun": "Slot",
+                "change": "list"
+              }
+            ]
+          },
+          {
+            "id": "F35.S02",
+            "kind": "user",
+            "userAction": "The guest chooses an open slot.",
+            "websiteResponse": "The website shows the chosen session type and slot time with the booking details form.",
+            "fields": [
+              "FD29"
+            ],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Slot",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F35.S03",
+            "kind": "user",
+            "userAction": "The guest fills in name and email and confirms the booking.",
+            "websiteResponse": "The website creates the booking, links it to the client with the same email or creates a new Lead client when the email is new, and shows a confirmation with the booking time and the private cancellation link.",
+            "fields": [],
+            "form": "FM09",
+            "effects": [
+              {
+                "noun": "Booking",
+                "change": "create"
+              },
+              {
+                "noun": "Client",
+                "change": "read"
+              },
+              {
+                "noun": "Client",
+                "change": "create"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F35.A01",
+            "from": "F35.S01",
+            "kind": "empty",
+            "condition": "There are no open slots for the chosen session type in the next two weeks.",
+            "steps": [
+              {
+                "id": "F35.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says no times are open for that session type and invites the guest to choose another session type.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F35.S01"
+          },
+          {
+            "id": "F35.A02",
+            "from": "F35.S03",
+            "kind": "invalid",
+            "condition": "The name is empty or the email is not an address.",
+            "steps": [
+              {
+                "id": "F35.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks what is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F35.S03"
+          },
+          {
+            "id": "F35.A03",
+            "from": "F35.S03",
+            "kind": "failure",
+            "condition": "Creating the booking fails.",
+            "steps": [
+              {
+                "id": "F35.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the entered values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F35.S03"
+          },
+          {
+            "id": "F35.A04",
+            "from": "F35.S03",
+            "kind": "conflict",
+            "condition": "The slot became full or was cancelled before the booking was saved.",
+            "steps": [
+              {
+                "id": "F35.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the time is no longer open and invites the guest to choose another open slot.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F35.S01"
+          }
+        ],
+        "outcome": "The booking is saved and the confirmation with cancellation link is shown; refresh still shows the booking as booked."
+      },
+      {
+        "id": "F36",
+        "name": "Open a booking via its link",
+        "role": "bookingGuest",
+        "kind": "view",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the booking's private link",
+        "goal": "Check a booking's time and status.",
+        "preconditions": [
+          "Not signed in.",
+          "Has the cancellation link."
+        ],
+        "steps": [
+          {
+            "id": "F36.S01",
+            "kind": "user",
+            "userAction": "The guest opens the private cancellation link.",
+            "websiteResponse": "The website shows the booking's session type, slot time and status with the name and email it was booked with, and the option to cancel it.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Booking",
+                "change": "read"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F36.A01",
+            "from": "F36.S01",
+            "kind": "notFound",
+            "condition": "The link is unknown or the booking no longer exists.",
+            "steps": [
+              {
+                "id": "F36.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the link is not recognised and offers to open the public booking page.",
+                "fields": [],
+                "form": ""
+              },
+              {
+                "id": "F36.A01.S02",
+                "kind": "user",
+                "userAction": "The guest chooses to open the public booking page.",
+                "websiteResponse": "The website shows the public booking page with session types.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F36.A02",
+            "from": "F36.S01",
+            "kind": "other",
+            "condition": "The booking is already cancelled.",
+            "steps": [
+              {
+                "id": "F36.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the booking as cancelled with its former time and offers to book another time.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          }
+        ],
+        "outcome": "Nothing changes; the guest has seen the booking details."
+      },
+      {
+        "id": "F37",
+        "name": "Cancel own booking",
+        "role": "bookingGuest",
+        "kind": "act",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the booking's private link",
+        "goal": "Cancel a booking and free the seat.",
+        "preconditions": [
+          "Not signed in.",
+          "Has the cancellation link for an active booking."
+        ],
+        "steps": [
+          {
+            "id": "F37.S01",
+            "kind": "user",
+            "userAction": "The guest opens the private cancellation link.",
+            "websiteResponse": "The website shows the booking's session type, slot time and status with the option to cancel it.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Booking",
+                "change": "read"
+              }
+            ]
+          },
+          {
+            "id": "F37.S02",
+            "kind": "user",
+            "userAction": "The guest chooses to cancel the booking.",
+            "websiteResponse": "The website asks the guest to confirm cancelling only this booking.",
+            "fields": [],
+            "form": "",
+            "effects": [
+              {
+                "noun": "Booking",
+                "change": "update"
+              }
+            ]
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F37.A01",
+            "from": "F37.S01",
+            "kind": "notFound",
+            "condition": "The link is unknown or the booking no longer exists.",
+            "steps": [
+              {
+                "id": "F37.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the link is not recognised and offers to open the public booking page.",
+                "fields": [],
+                "form": ""
+              },
+              {
+                "id": "F37.A01.S02",
+                "kind": "user",
+                "userAction": "The guest chooses to open the public booking page.",
+                "websiteResponse": "The website shows the public booking page with session types.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F37.A02",
+            "from": "F37.S01",
+            "kind": "other",
+            "condition": "The booking is already cancelled.",
+            "steps": [
+              {
+                "id": "F37.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website shows the booking as already cancelled with its former time and offers to book another time.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F37.A03",
+            "from": "F37.S02",
+            "kind": "confirm",
+            "condition": "The guest confirms the cancellation.",
+            "steps": [
+              {
+                "id": "F37.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website cancels only that person's booking, frees the seat and shows the booking as cancelled.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F37.A04",
+            "from": "F37.S02",
+            "kind": "cancel",
+            "condition": "The guest does not confirm.",
+            "steps": [
+              {
+                "id": "F37.A04.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "Nothing is cancelled; the website shows the booking again unchanged.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": ""
+          },
+          {
+            "id": "F37.A05",
+            "from": "F37.S02",
+            "kind": "failure",
+            "condition": "Cancelling the booking fails.",
+            "steps": [
+              {
+                "id": "F37.A05.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the booking unchanged and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F37.S02"
+          }
+        ],
+        "outcome": "The booking is cancelled and stays cancelled after refresh; the seat is open again."
+      },
+      {
+        "id": "F38",
+        "name": "Manage account",
+        "role": "designer",
+        "kind": "account",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On account settings",
+        "goal": "See and change the sign-in email and password.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "steps": [
+          {
+            "id": "F38.S01",
+            "kind": "user",
+            "userAction": "The designer opens account settings.",
+            "websiteResponse": "The website shows the current sign-in email with options to change the email and password.",
+            "fields": [],
+            "form": "",
+            "effects": []
+          },
+          {
+            "id": "F38.S02",
+            "kind": "user",
+            "userAction": "The designer changes the email and password and saves.",
+            "websiteResponse": "The website updates the account and shows the updated sign-in email.",
+            "fields": [
+              "FD01",
+              "FD02"
+            ],
+            "form": "",
+            "effects": []
+          }
+        ],
+        "alternatives": [
+          {
+            "id": "F38.A01",
+            "from": "F38.S02",
+            "kind": "invalid",
+            "condition": "The email is not an address or the password is shorter than 8 characters.",
+            "steps": [
+              {
+                "id": "F38.A01.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website marks the field that is wrong and keeps what was typed.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F38.S02"
+          },
+          {
+            "id": "F38.A02",
+            "from": "F38.S02",
+            "kind": "failure",
+            "condition": "Saving the account changes fails.",
+            "steps": [
+              {
+                "id": "F38.A02.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website keeps the typed values and offers to try again.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F38.S02"
+          },
+          {
+            "id": "F38.A03",
+            "from": "F38.S02",
+            "kind": "conflict",
+            "condition": "The new email already has another account.",
+            "steps": [
+              {
+                "id": "F38.A03.S01",
+                "kind": "system",
+                "userAction": "",
+                "websiteResponse": "The website says the email is already in use and keeps the current sign-in email unchanged.",
+                "fields": [],
+                "form": ""
+              }
+            ],
+            "resumesAt": "F38.S02"
+          }
+        ],
+        "outcome": "The email and password are updated and stay updated after refresh; the designer stays signed in."
+      }
+    ],
+    "fields": [
+      {
+        "id": "FD01",
+        "noun": "",
+        "label": "Email",
+        "meaning": "How the designer signs in",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "ana@example.com"
+      },
+      {
+        "id": "FD02",
+        "noun": "",
+        "label": "Password",
+        "meaning": "Secret that protects the designer's workspace",
+        "type": "password",
+        "required": true,
+        "min": 8,
+        "max": 128,
+        "options": [],
+        "optionsFrom": "",
+        "example": "correct-horse-battery"
+      },
+      {
+        "id": "FD03",
+        "noun": "Client",
+        "label": "Name",
+        "meaning": "How the designer refers to the client",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Maya Sharma"
+      },
+      {
+        "id": "FD04",
+        "noun": "Client",
+        "label": "Email",
+        "meaning": "How to reach the client and match bookings to the client",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "maya@acme.co"
+      },
+      {
+        "id": "FD05",
+        "noun": "Client",
+        "label": "Company",
+        "meaning": "Client company when the client is a business",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Acme"
+      },
+      {
+        "id": "FD06",
+        "noun": "Client",
+        "label": "Profile",
+        "meaning": "What the client does, how they met and what they pay",
+        "type": "longText",
+        "required": false,
+        "min": null,
+        "max": 2000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Runs a D2C skincare brand, met at a meetup, pays 80000 per project"
+      },
+      {
+        "id": "FD07",
+        "noun": "Client",
+        "label": "Status",
+        "meaning": "Where the client is in the relationship",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Lead",
+          "Active",
+          "Past"
+        ],
+        "optionsFrom": "",
+        "example": "Lead"
+      },
+      {
+        "id": "FD08",
+        "noun": "Note",
+        "label": "Note text",
+        "meaning": "What was discussed or observed after a call",
+        "type": "longText",
+        "required": true,
+        "min": null,
+        "max": 5000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Call about homepage redo, likes calm layouts, send proposal"
+      },
+      {
+        "id": "FD09",
+        "noun": "Note",
+        "label": "Note date",
+        "meaning": "The day the note is about, defaults to today",
+        "type": "date",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-11-02"
+      },
+      {
+        "id": "FD10",
+        "noun": "Note",
+        "label": "Follow-up date",
+        "meaning": "When to follow up next, empty when no follow-up is needed",
+        "type": "date",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-11-10"
+      },
+      {
+        "id": "FD11",
+        "noun": "Project",
+        "label": "Name",
+        "meaning": "How the designer refers to the project",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 200,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Acme homepage"
+      },
+      {
+        "id": "FD12",
+        "noun": "Project",
+        "label": "Description",
+        "meaning": "What the project covers in a few words",
+        "type": "longText",
+        "required": true,
+        "min": null,
+        "max": 2000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Redesign homepage and pricing page"
+      },
+      {
+        "id": "FD13",
+        "noun": "Project",
+        "label": "Due date",
+        "meaning": "When the project should be finished, empty when none",
+        "type": "date",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-12-15"
+      },
+      {
+        "id": "FD14",
+        "noun": "Project",
+        "label": "Client",
+        "meaning": "Which client the project belongs to",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "Client",
+        "example": "Maya Sharma"
+      },
+      {
+        "id": "FD15",
+        "noun": "Task",
+        "label": "Title",
+        "meaning": "What needs to be done",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 200,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Draft hero section"
+      },
+      {
+        "id": "FD16",
+        "noun": "Task",
+        "label": "Status",
+        "meaning": "Where the task is in the work",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "To do",
+          "In progress",
+          "Done"
+        ],
+        "optionsFrom": "",
+        "example": "To do"
+      },
+      {
+        "id": "FD17",
+        "noun": "Task",
+        "label": "Priority",
+        "meaning": "How urgent the task is",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "optionsFrom": "",
+        "example": "High"
+      },
+      {
+        "id": "FD18",
+        "noun": "Task",
+        "label": "Due date",
+        "meaning": "When the task should be done, empty when none",
+        "type": "date",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-11-08"
+      },
+      {
+        "id": "FD19",
+        "noun": "Availability",
+        "label": "Days",
+        "meaning": "Which weekdays the designer can be booked",
+        "type": "multiChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "optionsFrom": "",
+        "example": "Monday"
+      },
+      {
+        "id": "FD20",
+        "noun": "Availability",
+        "label": "From time",
+        "meaning": "When bookable hours start on the chosen days",
+        "type": "time",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "10:00"
+      },
+      {
+        "id": "FD21",
+        "noun": "Availability",
+        "label": "To time",
+        "meaning": "When bookable hours end on the chosen days",
+        "type": "time",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "17:00"
+      },
+      {
+        "id": "FD22",
+        "noun": "SessionType",
+        "label": "Name",
+        "meaning": "How visitors recognise the kind of session",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Discovery call"
+      },
+      {
+        "id": "FD23",
+        "noun": "SessionType",
+        "label": "Duration in minutes",
+        "meaning": "How long one slot of this type lasts",
+        "type": "integer",
+        "required": true,
+        "min": 15,
+        "max": 480,
+        "options": [],
+        "optionsFrom": "",
+        "example": "30"
+      },
+      {
+        "id": "FD24",
+        "noun": "SessionType",
+        "label": "Displayed price",
+        "meaning": "Price shown for information only, nobody pays in the app",
+        "type": "money",
+        "required": true,
+        "min": 0,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "0"
+      },
+      {
+        "id": "FD25",
+        "noun": "SessionType",
+        "label": "Maximum people",
+        "meaning": "How many bookings a slot takes before it is full",
+        "type": "integer",
+        "required": true,
+        "min": 1,
+        "max": 20,
+        "options": [],
+        "optionsFrom": "",
+        "example": "1"
+      },
+      {
+        "id": "FD26",
+        "noun": "Booking",
+        "label": "Name",
+        "meaning": "Who is booking the seat",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Ravi Patel"
+      },
+      {
+        "id": "FD27",
+        "noun": "Booking",
+        "label": "Email",
+        "meaning": "How to match the booking to a client and identify the booker",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "ravi@example.com"
+      },
+      {
+        "id": "FD28",
+        "noun": "Booking",
+        "label": "Session type",
+        "meaning": "Which kind of session the visitor wants to book",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "SessionType",
+        "example": "Discovery call"
+      },
+      {
+        "id": "FD29",
+        "noun": "Booking",
+        "label": "Slot",
+        "meaning": "Which open time the visitor books",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "Slot",
+        "example": "2026-11-05 10:00"
+      },
+      {
+        "id": "FD30",
+        "noun": "",
+        "label": "Search clients",
+        "meaning": "Finds clients by name or company",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "maya"
+      },
+      {
+        "id": "FD31",
+        "noun": "",
+        "label": "Client status filter",
+        "meaning": "Shows only clients with the chosen status",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "Lead",
+          "Active",
+          "Past"
+        ],
+        "optionsFrom": "",
+        "example": "Active"
+      },
+      {
+        "id": "FD32",
+        "noun": "",
+        "label": "Search tasks",
+        "meaning": "Finds tasks by title inside a project",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "hero"
+      },
+      {
+        "id": "FD33",
+        "noun": "",
+        "label": "Task status filter",
+        "meaning": "Shows only tasks with the chosen status",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "To do",
+          "In progress",
+          "Done"
+        ],
+        "optionsFrom": "",
+        "example": "To do"
+      },
+      {
+        "id": "FD34",
+        "noun": "",
+        "label": "Task priority filter",
+        "meaning": "Shows only tasks with the chosen priority",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "optionsFrom": "",
+        "example": "High"
+      },
+      {
+        "id": "FD35",
+        "noun": "",
+        "label": "Search projects",
+        "meaning": "Finds projects by name or client name",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "acme"
+      }
+    ],
+    "forms": [
+      {
+        "id": "FM01",
+        "name": "Sign-up form",
+        "fields": [
+          "FD01",
+          "FD02"
+        ]
+      },
+      {
+        "id": "FM02",
+        "name": "Sign-in form",
+        "fields": [
+          "FD01",
+          "FD02"
+        ]
+      },
+      {
+        "id": "FM03",
+        "name": "Client form",
+        "fields": [
+          "FD03",
+          "FD04",
+          "FD05",
+          "FD06",
+          "FD07"
+        ]
+      },
+      {
+        "id": "FM04",
+        "name": "Note form",
+        "fields": [
+          "FD08",
+          "FD09",
+          "FD10"
+        ]
+      },
+      {
+        "id": "FM05",
+        "name": "Project form",
+        "fields": [
+          "FD11",
+          "FD12",
+          "FD13",
+          "FD14"
+        ]
+      },
+      {
+        "id": "FM06",
+        "name": "Task form",
+        "fields": [
+          "FD15",
+          "FD16",
+          "FD17",
+          "FD18"
+        ]
+      },
+      {
+        "id": "FM07",
+        "name": "Availability form",
+        "fields": [
+          "FD19",
+          "FD20",
+          "FD21"
+        ]
+      },
+      {
+        "id": "FM08",
+        "name": "Session type form",
+        "fields": [
+          "FD22",
+          "FD23",
+          "FD24",
+          "FD25"
+        ]
+      },
+      {
+        "id": "FM09",
+        "name": "Booking details form",
+        "fields": [
+          "FD26",
+          "FD27"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "id": "A09",
+        "text": "Client list offers search by name or company and filter by status; project task list offers search by title and filters by status and priority. Client sorting follows A02 (overdue follow-ups first, then soonest due). Task overdue highlighting follows A03.",
+        "kind": "behavior",
+        "affects": [
+          "Client",
+          "Task"
+        ]
+      },
+      {
+        "id": "A10",
+        "text": "New Tasks default to status To do and priority Medium unless the designer changes them. SessionTypes cannot be deleted in MVP to protect existing Slots and Bookings; the designer edits or adds types instead. There is no profile or preferences screen beyond sign-up and sign-in for the single designer.",
+        "kind": "data",
+        "affects": [
+          "Task",
+          "SessionType"
+        ]
+      },
+      {
+        "id": "A11",
+        "text": "Weekly Availability is pre-created at sign-up as empty with no days selected and is managed only by editing in F25; until hours are set no Slots are offered.",
+        "kind": "data",
+        "affects": [
+          "Availability"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "id": "Q04",
+        "question": "Should past sessions and cancelled bookings remain visible to the designer?",
+        "whyItMatters": "This changes whether Slot and Booking history is kept or disappears after the time passes.",
+        "defaultAnswer": "Past slots and bookings stay visible in a past list and cannot be booked or cancelled.",
+        "blocking": false
+      }
+    ]
+  }
+}

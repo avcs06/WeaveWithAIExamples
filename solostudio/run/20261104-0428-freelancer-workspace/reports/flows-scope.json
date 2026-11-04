@@ -1,0 +1,19 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Booking is marked shared while inScope states all Bookings belong to the single designer. Fix: Change Booking belongsTo from \"shared\" to \"designer\" so it matches inScope that all Bookings belong to her and guests act only via the private cancellation link.",
+          "at": "vocabulary[7].belongsTo"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

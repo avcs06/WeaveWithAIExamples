@@ -1,0 +1,1694 @@
+{
+  "meta": {
+    "artifact": "flows-catalog",
+    "version": 1,
+    "hash": "78fa7505b2b3f14ad6d63aa868e2b5a8971d6a823708bbdf30b271f38635e1a7",
+    "inputs": {
+      "flows-scope": {
+        "version": 1,
+        "hash": "88cf76dc9c1473a8b4b5043714057cb7248d5dd679ff39ba0e0146110fc0adb6"
+      }
+    },
+    "stage": "flows-catalog",
+    "model": "muse-spark-1.3",
+    "rounds": 3,
+    "createdAt": "2026-11-03T23:09:19.752Z"
+  },
+  "data": {
+    "flows": [
+      {
+        "id": "F01",
+        "name": "Visit the landing page",
+        "role": "designer",
+        "kind": "landing",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public landing page",
+        "goal": "Understand what SoloStudio is for and get started.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "Nothing changes; the visitor knows how to sign up, sign in or open the booking page.",
+        "description": "The visitor arrives on the public SoloStudio landing page that explains it is a single workspace for a solo freelance designer to manage clients, projects and bookings, and shows how to start with sign-up or sign-in and a link to the public booking page. The visitor chooses to sign up or sign in as designer, or follows the link to the public booking page as a guest."
+      },
+      {
+        "id": "F02",
+        "name": "Sign up",
+        "role": "designer",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signUp",
+        "signedOut": true,
+        "start": "On the landing page",
+        "goal": "Create an account to get a private workspace.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "The designer has an account and private workspace and is signed in; after refresh still signed in.",
+        "description": "The visitor chooses to sign up from the landing page, sees FM01, fills in Email (FD01) and Password (FD02) and submits. The website creates the private workspace with pre-created session types per A04 and empty weekly Availability per A11, signs the designer in and shows the home dashboard."
+      },
+      {
+        "id": "F03",
+        "name": "Sign in",
+        "role": "designer",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signIn",
+        "signedOut": true,
+        "start": "On the landing page",
+        "goal": "Sign in to the private workspace.",
+        "preconditions": [
+          "Not signed in.",
+          "Has an account."
+        ],
+        "outcome": "The designer is signed in and sees the home dashboard; after refresh still signed in.",
+        "description": "The visitor chooses to sign in, sees FM02, fills in Email (FD01) and Password (FD02) and submits. The website checks the account, signs the designer in and shows the home dashboard with today's sessions, follow-ups due this week and overdue tasks."
+      },
+      {
+        "id": "F04",
+        "name": "Sign out",
+        "role": "designer",
+        "kind": "auth",
+        "noun": "",
+        "authKind": "signOut",
+        "signedOut": false,
+        "start": "On any signed-in page",
+        "goal": "Leave the workspace signed out.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "The designer is signed out; after refresh she stays signed out.",
+        "description": "The signed-in designer chooses to sign out. The website signs her out and shows the public landing page."
+      },
+      {
+        "id": "F05",
+        "name": "See the home dashboard",
+        "role": "designer",
+        "kind": "home",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the home dashboard",
+        "goal": "See what needs attention today in one place.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Nothing changes; the designer has seen today's sessions, follow-ups due this week and overdue tasks.",
+        "description": "The designer opens the home dashboard after signing in and sees today's sessions with their bookings, follow-ups due this week with overdue first, and overdue tasks. Each item links to its client, session or project. From here she can go to clients, projects, sessions, availability and session types."
+      },
+      {
+        "id": "F06",
+        "name": "Browse clients",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Find clients and see who needs a follow-up first.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Nothing changes; the designer has seen the sorted client list.",
+        "description": "The designer opens the client list and sees clients sorted with overdue follow-ups first then soonest due, each showing who is due for a follow-up. She can search by name or company (FD30) and filter by status (FD31), and from each row can mark a follow-up done or push it a week, which lead to F14 and F15."
+      },
+      {
+        "id": "F07",
+        "name": "View a client",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "See one client's details, notes, projects and bookings in one place.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "outcome": "Nothing changes; the designer has seen the client's details, notes, projects and bookings.",
+        "description": "The designer opens a client from the list and sees its Name (FD03), Email (FD04), Company (FD05), Profile (FD06) and Status (FD07) together with its dated notes with follow-up dates, its projects and its bookings matched by email. From here she can edit the client, manage notes and projects, or delete the client."
+      },
+      {
+        "id": "F08",
+        "name": "Add a client",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Remember a new client.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "A new client is saved and still there after refresh.",
+        "description": "The designer chooses to add a client, sees FM03, fills in Name (FD03) and Email (FD04) with optional Company (FD05), Profile (FD06) and Status (FD07, defaults to Lead per A01) and saves. The website creates the client and shows it in the list and as a detail page."
+      },
+      {
+        "id": "F09",
+        "name": "Edit a client",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Change a client's details or status.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "outcome": "The client is updated and stays updated after refresh.",
+        "description": "The designer opens a client and chooses to edit it, sees FM03 with Name (FD03), Email (FD04), Company (FD05), Profile (FD06) and Status (FD07), changes values and saves. The website updates the client and shows the updated details."
+      },
+      {
+        "id": "F10",
+        "name": "Delete a client",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Client",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Remove a client and everything under them.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "outcome": "The client, its notes, projects and tasks are gone after refresh; its bookings remain unlinked.",
+        "description": "The designer chooses Delete on a client, confirms, and the website deletes the client with its notes, projects and their tasks per idea and A07, leaving its bookings visible in the session list without a client link, then shows the client list without the client."
+      },
+      {
+        "id": "F11",
+        "name": "Add a note with a follow-up date",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Jot a dated note after a call and optionally set a follow-up.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "outcome": "The new dated note with its follow-up date is saved under the client after refresh.",
+        "description": "The designer opens a client and chooses to add a note, sees FM04, fills in Note text (FD08) and Note date (FD09, defaults to today) with optional Follow-up date (FD10) and saves. The website creates the dated note under the client and shows it with the client, affecting follow-up sorting per A02."
+      },
+      {
+        "id": "F12",
+        "name": "Edit a note",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Correct or update a note and its follow-up date.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note exists."
+        ],
+        "outcome": "The note is updated and stays updated after refresh.",
+        "description": "The designer opens a note under a client, chooses to edit it, sees FM04 with Note text (FD08), Note date (FD09) and Follow-up date (FD10), changes values and saves. The website updates the note and shows it under the client."
+      },
+      {
+        "id": "F13",
+        "name": "Delete a note",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a client's page",
+        "goal": "Remove a note that is no longer needed.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note exists."
+        ],
+        "outcome": "The note is gone and stays gone after refresh.",
+        "description": "The designer chooses Delete on a note under a client and confirms. The website deletes the note and shows the client's remaining notes."
+      },
+      {
+        "id": "F14",
+        "name": "Mark a follow-up done",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Mark a follow-up done with one click.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note with a follow-up date exists."
+        ],
+        "outcome": "The follow-up date is cleared and stays cleared after refresh.",
+        "description": "From the client list or home follow-ups, the designer marks a follow-up done with one click on the note's Follow-up date (FD10). The website clears the follow-up date per A02 and shows the client no longer due."
+      },
+      {
+        "id": "F15",
+        "name": "Push a follow-up a week",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Note",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the client list",
+        "goal": "Push a follow-up a week with one click.",
+        "preconditions": [
+          "Signed in.",
+          "At least one note with a follow-up date exists."
+        ],
+        "outcome": "The follow-up date is 7 days later and stays so after refresh.",
+        "description": "From the client list or home follow-ups, the designer pushes a follow-up a week with one click on the note's Follow-up date (FD10). The website adds 7 days to the current follow-up date per A02 and shows the new due date in sorted order."
+      },
+      {
+        "id": "F16",
+        "name": "Browse projects",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the projects view",
+        "goal": "See every project and how much work is left.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Nothing changes; the designer has seen all projects with open task counts.",
+        "description": "The designer opens the projects view and sees all projects with how many tasks are still open per A03. She can search by name or client name (FD35). Each row links to its project and client."
+      },
+      {
+        "id": "F17",
+        "name": "View a project with its tasks",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the projects view",
+        "goal": "See a project's tasks and narrow them down.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "outcome": "Nothing changes; the designer has seen the project and its filtered tasks.",
+        "description": "The designer opens a project and sees its Name (FD11), Description (FD12), Due date (FD13) and Client (FD14) with its tasks grouped by status, overdue tasks standing out per A03. She can search by title (FD32) and filter by status (FD33) and priority (FD34), and from here can add, tick done, edit or delete tasks."
+      },
+      {
+        "id": "F18",
+        "name": "Add a project",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On the projects view",
+        "goal": "Start a new project for a client.",
+        "preconditions": [
+          "Signed in.",
+          "At least one client exists."
+        ],
+        "outcome": "The new project is saved and still there after refresh.",
+        "description": "The designer chooses to add a project, sees FM05, fills in Name (FD11), Description (FD12), optional Due date (FD13) and Client (FD14) and saves. The website creates the project under the chosen client and shows it in the projects view."
+      },
+      {
+        "id": "F19",
+        "name": "Edit a project",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Change a project's details or move it to another client.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "outcome": "The project is updated and stays updated after refresh.",
+        "description": "The designer opens a project and chooses to edit it, sees FM05 with Name (FD11), Description (FD12), Due date (FD13) and Client (FD14), changes values and saves. The website updates the project and shows the updated details."
+      },
+      {
+        "id": "F20",
+        "name": "Delete a project",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Project",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Remove a project and its tasks.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "outcome": "The project and its tasks are gone after refresh.",
+        "description": "The designer chooses Delete on a project and confirms. The website deletes the project and its tasks, then shows the projects view without it."
+      },
+      {
+        "id": "F21",
+        "name": "Add a task",
+        "role": "designer",
+        "kind": "create",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Add a task to a project.",
+        "preconditions": [
+          "Signed in.",
+          "At least one project exists."
+        ],
+        "outcome": "The new task is saved under the project after refresh.",
+        "description": "On a project's page the designer chooses to add a task, sees FM06, fills in Title (FD15) with Status (FD16, defaults to To do), Priority (FD17, defaults to Medium) and optional Due date (FD18) and saves. The website creates the task and shows it in the project's task list with overdue highlighting per A03."
+      },
+      {
+        "id": "F22",
+        "name": "Edit a task",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Change a task's title, status, priority or due date.",
+        "preconditions": [
+          "Signed in.",
+          "At least one task exists."
+        ],
+        "outcome": "The task is updated and stays updated after refresh.",
+        "description": "On a project's page the designer opens a task, sees FM06 with Title (FD15), Status (FD16), Priority (FD17) and Due date (FD18), changes values and saves. The website updates the task and shows the updated task list."
+      },
+      {
+        "id": "F23",
+        "name": "Delete a task",
+        "role": "designer",
+        "kind": "delete",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Remove a task that is no longer needed.",
+        "preconditions": [
+          "Signed in.",
+          "At least one task exists."
+        ],
+        "outcome": "The task is gone and stays gone after refresh.",
+        "description": "On a project's page the designer chooses Delete on a task and confirms. The website deletes the task and shows the remaining tasks with updated open counts."
+      },
+      {
+        "id": "F24",
+        "name": "Tick a task done",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Task",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a project's page",
+        "goal": "Tick a task done quickly.",
+        "preconditions": [
+          "Signed in.",
+          "At least one open task exists."
+        ],
+        "outcome": "The task is Done and stays Done after refresh.",
+        "description": "On a project's page or home overdue list the designer ticks a task done with one click, changing its Status (FD16) to Done. The website marks it done, updates open counts and shows overdue styling removed."
+      },
+      {
+        "id": "F25",
+        "name": "Set weekly availability",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "Availability",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On availability settings",
+        "goal": "Set the weekly days and hours that can be booked.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Availability is updated and still shows after refresh; existing bookings are unchanged.",
+        "description": "The designer opens availability settings, sees FM07 with current Days (FD19), From time (FD20) and To time (FD21), changes which days and from what time to what time she can be booked and saves. The website updates weekly availability for future slots only per A08 and A05 and shows the saved hours."
+      },
+      {
+        "id": "F26",
+        "name": "Browse session types",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "SessionType",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On session types",
+        "goal": "See the kinds of sessions visitors can book.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Nothing changes; the designer has seen all session types.",
+        "description": "The designer opens session types and sees the three pre-created types per A04 with their Name (FD22), Duration in minutes (FD23), Displayed price (FD24) and Maximum people (FD25), including the 30 minute free discovery call, 60 minute design review and 2 hour workshop. From here she can add or edit a type."
+      },
+      {
+        "id": "F27",
+        "name": "Add a session type",
+        "role": "designer",
+        "kind": "create",
+        "noun": "SessionType",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On session types",
+        "goal": "Offer a new kind of bookable session.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "The new session type is saved and still there after refresh.",
+        "description": "The designer chooses to add a session type, sees FM08, fills in Name (FD22), Duration in minutes (FD23), Displayed price (FD24, information only) and Maximum people (FD25) and saves. The website creates the type and shows it in the session type list for future slots."
+      },
+      {
+        "id": "F28",
+        "name": "Edit a session type",
+        "role": "designer",
+        "kind": "edit",
+        "noun": "SessionType",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On session types",
+        "goal": "Change a session's length, displayed price or seats.",
+        "preconditions": [
+          "Signed in.",
+          "At least one session type exists."
+        ],
+        "outcome": "The session type is updated and stays updated after refresh; existing bookings are unchanged.",
+        "description": "The designer opens a session type, sees FM08 with Name (FD22), Duration in minutes (FD23), Displayed price (FD24) and Maximum people (FD25), changes values and saves. The website updates the type for future slots only per A08 and shows the updated list."
+      },
+      {
+        "id": "F29",
+        "name": "See upcoming sessions",
+        "role": "designer",
+        "kind": "browse",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On upcoming sessions",
+        "goal": "See upcoming sessions and who booked them.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "Nothing changes; the designer has seen upcoming slots with their bookings.",
+        "description": "The designer opens upcoming sessions and sees slots with their session type, time and bookings, including full slots. Past sessions remain visible separately. From here she can open a slot or cancel it."
+      },
+      {
+        "id": "F30",
+        "name": "View a slot",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On upcoming sessions",
+        "goal": "See who booked a time slot and for what.",
+        "preconditions": [
+          "Signed in.",
+          "At least one slot with or without bookings exists."
+        ],
+        "outcome": "Nothing changes; the designer has seen the slot and its bookings.",
+        "description": "The designer opens a slot from upcoming sessions and sees its time, session type and the list of bookings with Name (FD26) and Email (FD27) and linked client. From here she can cancel the slot."
+      },
+      {
+        "id": "F31",
+        "name": "Cancel a slot",
+        "role": "designer",
+        "kind": "act",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On a slot's page",
+        "goal": "Cancel a time slot and everyone booked on it.",
+        "preconditions": [
+          "Signed in.",
+          "At least one upcoming slot exists."
+        ],
+        "outcome": "The slot and its bookings are cancelled and stay cancelled after refresh.",
+        "description": "The designer chooses to cancel a slot on its page and confirms. The website cancels the slot and every booking on it per A06 and shows upcoming sessions without the slot, freeing the time from future offers."
+      },
+      {
+        "id": "F32",
+        "name": "View a booking as designer",
+        "role": "designer",
+        "kind": "view",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On upcoming sessions",
+        "goal": "See who booked, for what and when.",
+        "preconditions": [
+          "Signed in.",
+          "At least one booking exists."
+        ],
+        "outcome": "Nothing changes; the designer has seen the booking details.",
+        "description": "The designer opens a booking from a slot or client and sees its Name (FD26), Email (FD27), Session type (FD28), Slot (FD29) time and linked client created by email match or as Lead per A07. From here she can go to the client or the slot."
+      },
+      {
+        "id": "F33",
+        "name": "Open the public booking page",
+        "role": "bookingGuest",
+        "kind": "landing",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public booking page",
+        "goal": "Arrive at the public booking page and get started.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "Nothing changes; the guest knows how to pick a session type and see open times.",
+        "description": "A visitor without an account opens the designer's public booking page from its link and sees what booking is for and how to start by picking a session type. The visitor chooses to continue to open times."
+      },
+      {
+        "id": "F34",
+        "name": "Find an open slot",
+        "role": "bookingGuest",
+        "kind": "browse",
+        "noun": "Slot",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public booking page",
+        "goal": "Pick a service and see which times are still open.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "Nothing changes; the guest has seen open slots for the chosen session type.",
+        "description": "On the public booking page the guest picks a Session type (FD28) and sees open Slots (FD29) for the next two weeks generated from availability per A05, with full slots no longer offered and overlapping booked times blocked per Q01 default. The guest picks an open slot to book."
+      },
+      {
+        "id": "F35",
+        "name": "Book a session",
+        "role": "bookingGuest",
+        "kind": "create",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the public booking page",
+        "goal": "Book an open time and get a confirmation with a cancellation link.",
+        "preconditions": [
+          "Not signed in."
+        ],
+        "outcome": "The booking is saved and the confirmation with cancellation link is shown; refresh still shows the booking as booked.",
+        "description": "After picking Session type (FD28) and Slot (FD29), the guest fills in FM09 with Name (FD26) and Email (FD27) and confirms. The website creates the booking when the slot still has seats per its maximum, links it to the matching client by exact email or creates a new Lead client per A07, and shows a confirmation with the private cancellation link on screen; no emails are sent."
+      },
+      {
+        "id": "F36",
+        "name": "Open a booking via its link",
+        "role": "bookingGuest",
+        "kind": "view",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the booking's private link",
+        "goal": "Check a booking's time and status.",
+        "preconditions": [
+          "Not signed in.",
+          "Has the cancellation link."
+        ],
+        "outcome": "Nothing changes; the guest has seen the booking details.",
+        "description": "The guest opens the private cancellation link shown after booking and sees the booking's time, session type and status with Name (FD26) and Email (FD27). From here the guest can cancel the booking."
+      },
+      {
+        "id": "F37",
+        "name": "Cancel own booking",
+        "role": "bookingGuest",
+        "kind": "act",
+        "noun": "Booking",
+        "authKind": "none",
+        "signedOut": true,
+        "start": "On the booking's private link",
+        "goal": "Cancel a booking and free the seat.",
+        "preconditions": [
+          "Not signed in.",
+          "Has the cancellation link for an active booking."
+        ],
+        "outcome": "The booking is cancelled and stays cancelled after refresh; the seat is open again.",
+        "description": "On the booking's private link the guest chooses to cancel their own booking and confirms. The website cancels only that person's booking per A06, frees their seat for others, and shows the slot as cancelled for them."
+      },
+      {
+        "id": "F38",
+        "name": "Manage account",
+        "role": "designer",
+        "kind": "account",
+        "noun": "",
+        "authKind": "none",
+        "signedOut": false,
+        "start": "On account settings",
+        "goal": "See and change the sign-in email and password.",
+        "preconditions": [
+          "Signed in."
+        ],
+        "outcome": "The email and password are updated and stay updated after refresh; the designer stays signed in.",
+        "description": "The designer opens account settings and sees the current sign-in Email (FD01). She changes the email and/or Password (FD02) and saves. The website updates the account and shows the updated email."
+      }
+    ],
+    "fields": [
+      {
+        "id": "FD01",
+        "noun": "",
+        "label": "Email",
+        "meaning": "How the designer signs in",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "ana@example.com"
+      },
+      {
+        "id": "FD02",
+        "noun": "",
+        "label": "Password",
+        "meaning": "Secret that protects the designer's workspace",
+        "type": "password",
+        "required": true,
+        "min": 8,
+        "max": 128,
+        "options": [],
+        "optionsFrom": "",
+        "example": "correct-horse-battery"
+      },
+      {
+        "id": "FD03",
+        "noun": "Client",
+        "label": "Name",
+        "meaning": "How the designer refers to the client",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Maya Sharma"
+      },
+      {
+        "id": "FD04",
+        "noun": "Client",
+        "label": "Email",
+        "meaning": "How to reach the client and match bookings to the client",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "maya@acme.co"
+      },
+      {
+        "id": "FD05",
+        "noun": "Client",
+        "label": "Company",
+        "meaning": "Client company when the client is a business",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Acme"
+      },
+      {
+        "id": "FD06",
+        "noun": "Client",
+        "label": "Profile",
+        "meaning": "What the client does, how they met and what they pay",
+        "type": "longText",
+        "required": false,
+        "min": null,
+        "max": 2000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Runs a D2C skincare brand, met at a meetup, pays 80000 per project"
+      },
+      {
+        "id": "FD07",
+        "noun": "Client",
+        "label": "Status",
+        "meaning": "Where the client is in the relationship",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Lead",
+          "Active",
+          "Past"
+        ],
+        "optionsFrom": "",
+        "example": "Lead"
+      },
+      {
+        "id": "FD08",
+        "noun": "Note",
+        "label": "Note text",
+        "meaning": "What was discussed or observed after a call",
+        "type": "longText",
+        "required": true,
+        "min": null,
+        "max": 5000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Call about homepage redo, likes calm layouts, send proposal"
+      },
+      {
+        "id": "FD09",
+        "noun": "Note",
+        "label": "Note date",
+        "meaning": "The day the note is about, defaults to today",
+        "type": "date",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-11-02"
+      },
+      {
+        "id": "FD10",
+        "noun": "Note",
+        "label": "Follow-up date",
+        "meaning": "When to follow up next, empty when no follow-up is needed",
+        "type": "date",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-11-10"
+      },
+      {
+        "id": "FD11",
+        "noun": "Project",
+        "label": "Name",
+        "meaning": "How the designer refers to the project",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 200,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Acme homepage"
+      },
+      {
+        "id": "FD12",
+        "noun": "Project",
+        "label": "Description",
+        "meaning": "What the project covers in a few words",
+        "type": "longText",
+        "required": true,
+        "min": null,
+        "max": 2000,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Redesign homepage and pricing page"
+      },
+      {
+        "id": "FD13",
+        "noun": "Project",
+        "label": "Due date",
+        "meaning": "When the project should be finished, empty when none",
+        "type": "date",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-12-15"
+      },
+      {
+        "id": "FD14",
+        "noun": "Project",
+        "label": "Client",
+        "meaning": "Which client the project belongs to",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "Client",
+        "example": "Maya Sharma"
+      },
+      {
+        "id": "FD15",
+        "noun": "Task",
+        "label": "Title",
+        "meaning": "What needs to be done",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 200,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Draft hero section"
+      },
+      {
+        "id": "FD16",
+        "noun": "Task",
+        "label": "Status",
+        "meaning": "Where the task is in the work",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "To do",
+          "In progress",
+          "Done"
+        ],
+        "optionsFrom": "",
+        "example": "To do"
+      },
+      {
+        "id": "FD17",
+        "noun": "Task",
+        "label": "Priority",
+        "meaning": "How urgent the task is",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "optionsFrom": "",
+        "example": "High"
+      },
+      {
+        "id": "FD18",
+        "noun": "Task",
+        "label": "Due date",
+        "meaning": "When the task should be done, empty when none",
+        "type": "date",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "2026-11-08"
+      },
+      {
+        "id": "FD19",
+        "noun": "Availability",
+        "label": "Days",
+        "meaning": "Which weekdays the designer can be booked",
+        "type": "multiChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "optionsFrom": "",
+        "example": "Monday"
+      },
+      {
+        "id": "FD20",
+        "noun": "Availability",
+        "label": "From time",
+        "meaning": "When bookable hours start on the chosen days",
+        "type": "time",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "10:00"
+      },
+      {
+        "id": "FD21",
+        "noun": "Availability",
+        "label": "To time",
+        "meaning": "When bookable hours end on the chosen days",
+        "type": "time",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "17:00"
+      },
+      {
+        "id": "FD22",
+        "noun": "SessionType",
+        "label": "Name",
+        "meaning": "How visitors recognise the kind of session",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Discovery call"
+      },
+      {
+        "id": "FD23",
+        "noun": "SessionType",
+        "label": "Duration in minutes",
+        "meaning": "How long one slot of this type lasts",
+        "type": "integer",
+        "required": true,
+        "min": 15,
+        "max": 480,
+        "options": [],
+        "optionsFrom": "",
+        "example": "30"
+      },
+      {
+        "id": "FD24",
+        "noun": "SessionType",
+        "label": "Displayed price",
+        "meaning": "Price shown for information only, nobody pays in the app",
+        "type": "money",
+        "required": true,
+        "min": 0,
+        "max": null,
+        "options": [],
+        "optionsFrom": "",
+        "example": "0"
+      },
+      {
+        "id": "FD25",
+        "noun": "SessionType",
+        "label": "Maximum people",
+        "meaning": "How many bookings a slot takes before it is full",
+        "type": "integer",
+        "required": true,
+        "min": 1,
+        "max": 20,
+        "options": [],
+        "optionsFrom": "",
+        "example": "1"
+      },
+      {
+        "id": "FD26",
+        "noun": "Booking",
+        "label": "Name",
+        "meaning": "Who is booking the seat",
+        "type": "text",
+        "required": true,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "Ravi Patel"
+      },
+      {
+        "id": "FD27",
+        "noun": "Booking",
+        "label": "Email",
+        "meaning": "How to match the booking to a client and identify the booker",
+        "type": "email",
+        "required": true,
+        "min": null,
+        "max": 254,
+        "options": [],
+        "optionsFrom": "",
+        "example": "ravi@example.com"
+      },
+      {
+        "id": "FD28",
+        "noun": "Booking",
+        "label": "Session type",
+        "meaning": "Which kind of session the visitor wants to book",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "SessionType",
+        "example": "Discovery call"
+      },
+      {
+        "id": "FD29",
+        "noun": "Booking",
+        "label": "Slot",
+        "meaning": "Which open time the visitor books",
+        "type": "singleChoice",
+        "required": true,
+        "min": null,
+        "max": null,
+        "options": [],
+        "optionsFrom": "Slot",
+        "example": "2026-11-05 10:00"
+      },
+      {
+        "id": "FD30",
+        "noun": "",
+        "label": "Search clients",
+        "meaning": "Finds clients by name or company",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "maya"
+      },
+      {
+        "id": "FD31",
+        "noun": "",
+        "label": "Client status filter",
+        "meaning": "Shows only clients with the chosen status",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "Lead",
+          "Active",
+          "Past"
+        ],
+        "optionsFrom": "",
+        "example": "Active"
+      },
+      {
+        "id": "FD32",
+        "noun": "",
+        "label": "Search tasks",
+        "meaning": "Finds tasks by title inside a project",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "hero"
+      },
+      {
+        "id": "FD33",
+        "noun": "",
+        "label": "Task status filter",
+        "meaning": "Shows only tasks with the chosen status",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "To do",
+          "In progress",
+          "Done"
+        ],
+        "optionsFrom": "",
+        "example": "To do"
+      },
+      {
+        "id": "FD34",
+        "noun": "",
+        "label": "Task priority filter",
+        "meaning": "Shows only tasks with the chosen priority",
+        "type": "singleChoice",
+        "required": false,
+        "min": null,
+        "max": null,
+        "options": [
+          "All",
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "optionsFrom": "",
+        "example": "High"
+      },
+      {
+        "id": "FD35",
+        "noun": "",
+        "label": "Search projects",
+        "meaning": "Finds projects by name or client name",
+        "type": "text",
+        "required": false,
+        "min": null,
+        "max": 120,
+        "options": [],
+        "optionsFrom": "",
+        "example": "acme"
+      }
+    ],
+    "forms": [
+      {
+        "id": "FM01",
+        "name": "Sign-up form",
+        "fields": [
+          "FD01",
+          "FD02"
+        ]
+      },
+      {
+        "id": "FM02",
+        "name": "Sign-in form",
+        "fields": [
+          "FD01",
+          "FD02"
+        ]
+      },
+      {
+        "id": "FM03",
+        "name": "Client form",
+        "fields": [
+          "FD03",
+          "FD04",
+          "FD05",
+          "FD06",
+          "FD07"
+        ]
+      },
+      {
+        "id": "FM04",
+        "name": "Note form",
+        "fields": [
+          "FD08",
+          "FD09",
+          "FD10"
+        ]
+      },
+      {
+        "id": "FM05",
+        "name": "Project form",
+        "fields": [
+          "FD11",
+          "FD12",
+          "FD13",
+          "FD14"
+        ]
+      },
+      {
+        "id": "FM06",
+        "name": "Task form",
+        "fields": [
+          "FD15",
+          "FD16",
+          "FD17",
+          "FD18"
+        ]
+      },
+      {
+        "id": "FM07",
+        "name": "Availability form",
+        "fields": [
+          "FD19",
+          "FD20",
+          "FD21"
+        ]
+      },
+      {
+        "id": "FM08",
+        "name": "Session type form",
+        "fields": [
+          "FD22",
+          "FD23",
+          "FD24",
+          "FD25"
+        ]
+      },
+      {
+        "id": "FM09",
+        "name": "Booking details form",
+        "fields": [
+          "FD26",
+          "FD27"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "id": "A09",
+        "text": "Client list offers search by name or company and filter by status; project task list offers search by title and filters by status and priority. Client sorting follows A02 (overdue follow-ups first, then soonest due). Task overdue highlighting follows A03.",
+        "kind": "behavior",
+        "affects": [
+          "Client",
+          "Task"
+        ]
+      },
+      {
+        "id": "A10",
+        "text": "New Tasks default to status To do and priority Medium unless the designer changes them. SessionTypes cannot be deleted in MVP to protect existing Slots and Bookings; the designer edits or adds types instead. There is no profile or preferences screen beyond sign-up and sign-in for the single designer.",
+        "kind": "data",
+        "affects": [
+          "Task",
+          "SessionType"
+        ]
+      },
+      {
+        "id": "A11",
+        "text": "Weekly Availability is pre-created at sign-up as empty with no days selected and is managed only by editing in F25; until hours are set no Slots are offered.",
+        "kind": "data",
+        "affects": [
+          "Availability"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "id": "Q04",
+        "question": "Should past sessions and cancelled bookings remain visible to the designer?",
+        "whyItMatters": "This changes whether Slot and Booking history is kept or disappears after the time passes.",
+        "defaultAnswer": "Past slots and bookings stay visible in a past list and cannot be booked or cancelled.",
+        "blocking": false
+      }
+    ],
+    "skipped": [
+      {
+        "role": "designer",
+        "noun": "Note",
+        "kind": "browse",
+        "reason": "Notes are listed under their client in F07 View a client; no separate all-notes list."
+      },
+      {
+        "role": "designer",
+        "noun": "Task",
+        "kind": "browse",
+        "reason": "Tasks are found inside their project in F17 View a project with its tasks with search FD32 and filters FD33 FD34; no separate all-tasks list."
+      },
+      {
+        "role": "designer",
+        "noun": "Availability",
+        "kind": "browse",
+        "reason": "Availability is a single weekly setting shown in F25 Set weekly availability; no list to browse."
+      },
+      {
+        "role": "designer",
+        "noun": "Booking",
+        "kind": "browse",
+        "reason": "Bookings are seen with their slots in F29 See upcoming sessions; no separate all-bookings list."
+      },
+      {
+        "role": "designer",
+        "noun": "Note",
+        "kind": "view",
+        "reason": "A note is read with its client in F07 View a client; no separate note page."
+      },
+      {
+        "role": "designer",
+        "noun": "Task",
+        "kind": "view",
+        "reason": "A task is read with its project in F17 View a project with its tasks; no separate task page."
+      },
+      {
+        "role": "designer",
+        "noun": "Availability",
+        "kind": "view",
+        "reason": "Availability is seen while editing in F25 Set weekly availability; no separate read-only page."
+      },
+      {
+        "role": "designer",
+        "noun": "SessionType",
+        "kind": "view",
+        "reason": "A session type is read in the list in F26 Browse session types; no separate detail page needed."
+      },
+      {
+        "role": "designer",
+        "noun": "Availability",
+        "kind": "create",
+        "reason": "Availability already exists as one weekly setting and is changed in F25; nothing to create."
+      },
+      {
+        "role": "designer",
+        "noun": "Slot",
+        "kind": "create",
+        "reason": "Slots are generated from availability per A05, not created by hand."
+      },
+      {
+        "role": "designer",
+        "noun": "Booking",
+        "kind": "create",
+        "reason": "Bookings are created by guests in F35 Book a session; the designer does not create them."
+      },
+      {
+        "role": "designer",
+        "noun": "Slot",
+        "kind": "edit",
+        "reason": "Slots are generated; changing availability or session type affects future offers per A08 but does not edit a slot."
+      },
+      {
+        "role": "designer",
+        "noun": "Booking",
+        "kind": "edit",
+        "reason": "Bookings are not edited; a wrong booking is cancelled via F31 or F37 and rebooked."
+      },
+      {
+        "role": "designer",
+        "noun": "Availability",
+        "kind": "delete",
+        "reason": "Availability cannot be deleted; without hours no slots are offered."
+      },
+      {
+        "role": "designer",
+        "noun": "SessionType",
+        "kind": "delete",
+        "reason": "Session types are kept to protect existing slots per A10; the designer edits in F28 or adds in F27 instead."
+      },
+      {
+        "role": "designer",
+        "noun": "Slot",
+        "kind": "delete",
+        "reason": "A slot is removed by cancelling it in F31 Cancel a slot, not by delete."
+      },
+      {
+        "role": "designer",
+        "noun": "Booking",
+        "kind": "delete",
+        "reason": "A booking is removed by cancelling its slot in F31 Cancel a slot; no separate delete."
+      },
+      {
+        "role": "designer",
+        "noun": "Client",
+        "kind": "act",
+        "reason": "Clients have no action beyond create, view, edit and delete."
+      },
+      {
+        "role": "designer",
+        "noun": "Project",
+        "kind": "act",
+        "reason": "Projects have no action beyond task work; archiving is out of MVP."
+      },
+      {
+        "role": "designer",
+        "noun": "Availability",
+        "kind": "act",
+        "reason": "Availability has no action beyond setting it in F25."
+      },
+      {
+        "role": "designer",
+        "noun": "SessionType",
+        "kind": "act",
+        "reason": "Session types have no action beyond adding and editing."
+      },
+      {
+        "role": "designer",
+        "noun": "Booking",
+        "kind": "act",
+        "reason": "The designer cancels bookings by cancelling the whole slot in F31 Cancel a slot, which cancels everyone on it."
+      },
+      {
+        "role": "designer",
+        "noun": "",
+        "kind": "settings",
+        "reason": "No preferences in MVP; availability and session types are managed in their own flows."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "",
+        "kind": "auth",
+        "reason": "Booking guests never sign in; they book and cancel via the public page and private link."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "",
+        "kind": "home",
+        "reason": "Booking guests have no dashboard; the public booking page in F33 is their entry."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Client",
+        "kind": "browse",
+        "reason": "Guests never see clients; matching by email happens automatically on booking per A07."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Note",
+        "kind": "browse",
+        "reason": "Guests never see notes."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Project",
+        "kind": "browse",
+        "reason": "Guests never see projects."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Task",
+        "kind": "browse",
+        "reason": "Guests never see tasks."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Availability",
+        "kind": "browse",
+        "reason": "Guests see only resulting open slots in F34, not the underlying availability."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "SessionType",
+        "kind": "browse",
+        "reason": "Session types are picked as part of F34 Find an open slot; no separate type list."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Booking",
+        "kind": "browse",
+        "reason": "Guests have no bookings list; a booking is opened via its private link in F36."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Client",
+        "kind": "view",
+        "reason": "Guests never see clients."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Note",
+        "kind": "view",
+        "reason": "Guests never see notes."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Project",
+        "kind": "view",
+        "reason": "Guests never see projects."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Task",
+        "kind": "view",
+        "reason": "Guests never see tasks."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Availability",
+        "kind": "view",
+        "reason": "Guests never see availability."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "SessionType",
+        "kind": "view",
+        "reason": "Session type details are shown while picking in F34; no separate page."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Slot",
+        "kind": "view",
+        "reason": "Slots are seen as open times in F34; details are confirmed on booking in F35."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Client",
+        "kind": "create",
+        "reason": "Guests do not create clients directly; a Lead is auto-created on booking per A07 when the email is new."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Note",
+        "kind": "create",
+        "reason": "Guests never create notes."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Project",
+        "kind": "create",
+        "reason": "Guests never create projects."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Task",
+        "kind": "create",
+        "reason": "Guests never create tasks."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Availability",
+        "kind": "create",
+        "reason": "Guests never set availability."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "SessionType",
+        "kind": "create",
+        "reason": "Guests never create session types."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Slot",
+        "kind": "create",
+        "reason": "Slots are generated from availability; guests only book them in F35."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Client",
+        "kind": "edit",
+        "reason": "Guests never edit clients."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Note",
+        "kind": "edit",
+        "reason": "Guests never edit notes."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Project",
+        "kind": "edit",
+        "reason": "Guests never edit projects."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Task",
+        "kind": "edit",
+        "reason": "Guests never edit tasks."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Availability",
+        "kind": "edit",
+        "reason": "Guests never edit availability."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "SessionType",
+        "kind": "edit",
+        "reason": "Guests never edit session types."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Slot",
+        "kind": "edit",
+        "reason": "Guests never edit slots."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Booking",
+        "kind": "edit",
+        "reason": "Bookings are not edited; a guest cancels in F37 and rebooks in F35 to change."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Client",
+        "kind": "delete",
+        "reason": "Guests never delete clients."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Note",
+        "kind": "delete",
+        "reason": "Guests never delete notes."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Project",
+        "kind": "delete",
+        "reason": "Guests never delete projects."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Task",
+        "kind": "delete",
+        "reason": "Guests never delete tasks."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Availability",
+        "kind": "delete",
+        "reason": "Guests never delete availability."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "SessionType",
+        "kind": "delete",
+        "reason": "Guests never delete session types."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Slot",
+        "kind": "delete",
+        "reason": "Guests never delete slots."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Booking",
+        "kind": "delete",
+        "reason": "A booking is removed by cancelling in F37 Cancel own booking, not by delete."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Client",
+        "kind": "act",
+        "reason": "Guests have no action on clients."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Note",
+        "kind": "act",
+        "reason": "Guests have no action on notes."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Project",
+        "kind": "act",
+        "reason": "Guests have no action on projects."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Task",
+        "kind": "act",
+        "reason": "Guests have no action on tasks."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Availability",
+        "kind": "act",
+        "reason": "Guests have no action on availability."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "SessionType",
+        "kind": "act",
+        "reason": "Guests have no action on session types beyond picking one in F34."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "Slot",
+        "kind": "act",
+        "reason": "Guests do not act on slots; they book a seat in F35."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "",
+        "kind": "account",
+        "reason": "Booking guests have no accounts."
+      },
+      {
+        "role": "bookingGuest",
+        "noun": "",
+        "kind": "settings",
+        "reason": "Booking guests have no settings."
+      }
+    ]
+  }
+}

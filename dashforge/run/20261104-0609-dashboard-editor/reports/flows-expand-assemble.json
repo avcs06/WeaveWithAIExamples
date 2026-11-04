@@ -1,0 +1,19 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "FLOW-016",
+          "severity": "mandatory",
+          "message": "F05.A05 branches from \"F05.A04.S01\", which is not a step of F05; use one of its step ids.",
+          "at": "F05.A05"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

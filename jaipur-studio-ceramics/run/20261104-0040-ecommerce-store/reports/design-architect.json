@@ -1,0 +1,31 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Owner sign-up step F08.S01 has no place and /sign-up cannot be reached from the frame or sign-in. Fix: Add a way to reach sign-up, such as a footer or sign-in choice \"Create studio owner account\" which goes to /sign-up, and give S08 a matching \"Create account\" choice to /sign-up, covering F08.S01.",
+          "at": "FR01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The account editing alternative repeats the Edit action while already editing. Fix: Remove \"Can choose Edit\" from the \"when editing\" alternative so viewing shows Edit once and editing shows only the password field and Done.",
+          "at": "S20"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "The newest-first discount list shows expiry date but not the record date. Fix: Show each discount code's creation date in its table row in addition to expiry date, since the list is sorted newest first.",
+          "at": "S17"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,522 @@
+[
+  {
+    "id": "T01",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Dialogs used by only one screen live in app-wide blocks instead of that screen's route folder. Fix: Move dialogs used by only one screen into that screen's components/ folder and import from there; keep only AddProjectDialog, used by S06 and S07, in web/app/blocks/.",
+      "at": "web/app/blocks/ClientDialogs/AddClientDialog.tsx"
+    },
+    "by": "review-code",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T01",
+        "status": "closed",
+        "reason": "Moved AddClientDialog to S05 components, EditClientDialog and the note dialogs to S06 components, the task dialogs and EditProjectDialog to S08 components, and the session-type dialogs to S10 components, updating imports. AddProjectDialog, ProjectForm and ClientForm stay in web/app/blocks/ as the two-screen shared pieces.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T02",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Failed-load markup is copied on every screen and client status tags are re-implemented instead of reused. Fix: Extract the repeated failed-load alert with retry into one shared component or function and use it on every screen, and render client status with the existing ClientStatusTag.",
+      "at": "web/app/(routes)/(app)/clients/page.tsx"
+    },
+    "by": "review-code",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T02",
+        "status": "closed",
+        "reason": "Added web/app/components/LoadError and used it for every failed-load alert on S04-S15, and S05 now renders client status with the existing ClientStatusTag (new optional size prop for the table row).",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T03",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The change contains dead code: an unused import and exported helpers nothing imports. Fix: Remove the unused Time import and remove unused exports such as followUpState, FollowUpState and isSlotFull from web/app/blocks/Slots/slots.ts.",
+      "at": "web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx"
+    },
+    "by": "review-code",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T03",
+        "status": "closed",
+        "reason": "Removed followUpState and FollowUpState from web/app/blocks/Slots/slots.ts, made isSlotFull module-private, and removed the Time import from SlotBookings.tsx after SlotSessionLine stopped using Time.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "List screens show their empty message while records are still loading and show no loading state. Fix: Show a loading state while list hooks are loading and show the empty message with its actions only after loading finishes with zero records.",
+      "at": "S04, S05, S07, S09, S10, S11, S14"
+    },
+    "by": "review-adherence",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T04",
+        "status": "closed",
+        "reason": "S04, S05, S07, S09, S10, S11 and S14 now show a loading paragraph while their list hooks are loading with no records yet, and the empty messages with their actions render only after loading finishes. Tables keep their loading state while records load.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Record screens return NotFound while the record is still loading and show no loading state. Fix: Show a loading state while the get hooks are loading and show NotFound only after loading finishes with no record.",
+      "at": "S06, S08, S12, S13, S15"
+    },
+    "by": "review-adherence",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T05",
+        "status": "closed",
+        "reason": "S06, S08, S12, S13 and S15 now show a loading paragraph while their get hooks are loading with no record, and render NotFound only after loading finishes with no record.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Availability shows no Edit action when nothing is saved so the empty state cannot be filled. Fix: Offer Edit/Done controls when no availability is saved so empty weekly hours can be created.",
+      "at": "web/app/(routes)/(app)/availability/page.tsx"
+    },
+    "by": "review-adherence",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T06",
+        "status": "closed",
+        "reason": "Availability always offers Edit, and saving with no saved record creates the weekly availability through a new createAvailability entity operation.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Cancel-slot confirm does not show the slot's session type and time. Fix: Show the slot's session type name and time in the cancel dialog title or content.",
+      "at": "S12 D15"
+    },
+    "by": "review-adherence",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T07",
+        "status": "closed",
+        "reason": "The S12 cancel dialog content now starts with the slot's session type name and time, e.g. Discovery call, 5 Nov at 10:00, plus the note that every booking on it is cancelled.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Destructive row icon buttons use danger variant while other row actions use base. Fix: Use the same quiet base ghost icon buttons with tooltips for edit and delete row actions.",
+      "at": "web/app/(routes)/(app)/clients/[clientId]/page.tsx, web/app/(routes)/(app)/projects/[projectId]/page.tsx"
+    },
+    "by": "review-adherence",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T08",
+        "status": "closed",
+        "reason": "Row delete icon buttons on S06 notes and S08 tasks changed from danger to the quiet base ghost variant with tooltips, matching the row's other actions. Confirm dialogs keep the danger button.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T09",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "No one-line text uses Truncate so long values can wrap or overflow. Fix: Wrap one-line text such as names, cells, breadcrumbs and status lines in Truncate.",
+      "at": "Tables, cells and status lines across S04-S15"
+    },
+    "by": "review-adherence",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T09",
+        "status": "closed",
+        "reason": "Wrapped one-line names, titles and table cells in Truncate across S04-S15 table cells, page headers, card names and booking details, with inline-block max-w-full on links holding a Truncate.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T10",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The client email shows twice, as the header subtitle and again in Details. Fix: Remove description={record.email} from the PageHeader so the email shows only once, in Details.",
+      "at": "S06 at web/app/(routes)/(app)/clients/[clientId]/page.tsx"
+    },
+    "by": "review-ux-2",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T10",
+        "status": "closed",
+        "reason": "Removed description={record.email} from the S06 PageHeader so the email shows only once, in Details.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T11",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "When there are no notes Add a note shows twice, above the list and again in the empty state. Fix: Hide the Notes headerAction while the list is empty so Add a note shows only once in the empty state.",
+      "at": "S06 Notes at web/app/(routes)/(app)/clients/[clientId]/page.tsx"
+    },
+    "by": "review-ux-2",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T11",
+        "status": "closed",
+        "reason": "The S06 Notes headerAction now renders only when notes exist, so Add a note shows once in the empty state.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T12",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "When there are no projects Add a project shows twice, above the list and again in the empty state. Fix: Hide the Projects headerAction while the list is empty so Add a project shows only once in the empty state.",
+      "at": "S06 Projects at web/app/(routes)/(app)/clients/[clientId]/page.tsx"
+    },
+    "by": "review-ux-2",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T12",
+        "status": "closed",
+        "reason": "The S06 Projects headerAction now renders only when projects exist, so Add a project shows once in the empty state.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T13",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "When there are no tasks Add a task shows twice, above the list and again in the empty state. Fix: Hide the Tasks headerAction while the project has no tasks so Add a task shows only once in the empty state.",
+      "at": "S08 Tasks at web/app/(routes)/(app)/projects/[projectId]/page.tsx"
+    },
+    "by": "review-ux-2",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T13",
+        "status": "closed",
+        "reason": "The S08 Tasks headerAction now renders only when the project has tasks, so Add a task shows once in the empty state.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T14",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Details repeats the same facts as Session type plus Time plus Slot link, showing the time twice with conflicting values. Fix: Show each fact once in Details: Name, Email, Linked client, and Slot as the single link with session type name and time formatted one way; remove the separate Session type and Time rows.",
+      "at": "S13 at web/app/(routes)/(app)/bookings/[bookingId]/page.tsx"
+    },
+    "by": "review-ux-4",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T14",
+        "status": "closed",
+        "reason": "S13 Details now shows Name, Email, Linked client, and Slot as the single link with session type name and time; the separate Session type and Time rows are gone.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T15",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The same slot shows two different times: title says 10:00 while Details says 15:30. Fix: Render the header title and the Details Session line from the same formatted slot title so both show the identical date and time.",
+      "at": "S12 at web/app/(routes)/(app)/sessions/[slotId]/page.tsx"
+    },
+    "by": "review-ux-4",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T15",
+        "status": "closed",
+        "reason": "The S12 Details Session line now renders the same formatSlotTitle string as the header title, so both show the identical date and time.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T16",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Cancel dialog does not identify which slot is being cancelled. Fix: Include the slot's session type name and date/time in the confirm dialog content, e.g. the formatted slot title, plus the note that every booking on it is cancelled.",
+      "at": "D15 at web/app/(routes)/(app)/sessions/[slotId]/page.tsx"
+    },
+    "by": "review-ux-4",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T16",
+        "status": "closed",
+        "reason": "Same fix as T07: the S12 cancel dialog content includes the formatted slot title plus the note that every booking on it is cancelled.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T17",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The title reads 5 Nov at 10:00 while Details Time reads 5 Nov 2026, 15:30 for the same slot. Fix: Show one formatted slot time in both places, so the title and the Time row read the same, for example Discovery call, 5 Nov at 10:00 and Time 5 Nov at 10:00.",
+      "at": "S15 web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx title vs Details Time"
+    },
+    "by": "review-ux-5",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T17",
+        "status": "closed",
+        "reason": "The S15 Details Time row now shows formatSlotTime, e.g. 5 Nov at 10:00, matching the title's formatted slot time.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T18",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Book another time sits alone after the Details section instead of with the cancelled result. Fix: Put Book another time in the PageHeader actions with the This booking was cancelled result and remove the lone button after the Details section.",
+      "at": "S15 cancelled view web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx"
+    },
+    "by": "review-ux-5",
+    "round": 1,
+    "entries": [
+      {
+        "id": "T18",
+        "status": "closed",
+        "reason": "Book another time moved into the S15 cancelled view's PageHeader actions, and the lone button after Details is removed.",
+        "round": 2,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T19",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "TaskStatusTag file is used by only one screen but lives in app-wide components. Fix: Move TaskStatusTag and TaskPriorityTag into web/app/(routes)/(app)/projects/[projectId]/components/ and import them from there, keeping web/app/components/ for pieces used by two or more screens.",
+      "at": "web/app/components/TaskStatusTag/TaskStatusTag.tsx"
+    },
+    "by": "review-code",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T19",
+        "status": "closed",
+        "reason": "Moved TaskStatusTag and TaskPriorityTag into web/app/(routes)/(app)/projects/[projectId]/components/ and imported them from there; web/app/components/ keeps pieces used by two or more screens.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T20",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "Availability time fields use a raw input element instead of the existing Input component. Fix: Replace the raw <input type=\"time\"> inside FormControl with the design-system Input component for From time and To time.",
+      "at": "web/app/(routes)/(app)/availability/page.tsx"
+    },
+    "by": "review-code",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T20",
+        "status": "open",
+        "reason": "Left open: the design-system Input accepts only type text, email, tel or url (InputProps), so type=\"time\" fails tsc and loses the native time picker; the FormControl recipe's DoorsTime pattern is the documented way to build time fields.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T21",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "updateAccount keeps email-taken state in a non-persistent Set unlike the store beside it. Fix: Track known emails in the persistent auth store like the sibling operations do instead of a module-level Set, so the email-taken check survives reload.",
+      "at": "web/app/entities/auth/index.ts"
+    },
+    "by": "review-code",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T21",
+        "status": "closed",
+        "reason": "Known emails moved from a module-level Set into the persistent auth store state, updated on sign-up and on email change, so the email-taken check survives reload.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T22",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The dialog shows the gone alternative whenever data is missing, including while the note is still loading. Fix: Show the form while the note is loading and show 'This note is gone.' only when the load has finished without data.",
+      "at": "web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx"
+    },
+    "by": "review-adherence",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T22",
+        "status": "closed",
+        "reason": "EditNoteDialog now shows the gone message only when the note load finished without data, and shows the form while it is still loading.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T23",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The dialog shows the gone alternative whenever data is missing, including while the task is still loading. Fix: Show the form while the task is loading and show the gone message only when the load has finished without data.",
+      "at": "web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx"
+    },
+    "by": "review-adherence",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T23",
+        "status": "closed",
+        "reason": "EditTaskDialog now shows the gone message only when the task load finished without data, and shows the form while it is still loading.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T24",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The dialog shows the gone alternative whenever data is missing, including while the session type is still loading. Fix: Show the form while the session type is loading and show the gone message only when the load has finished without data.",
+      "at": "web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx"
+    },
+    "by": "review-adherence",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T24",
+        "status": "closed",
+        "reason": "EditSessionTypeDialog now shows the gone message only when the session type load finished without data, and shows the form while it is still loading.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T25",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The title calls formatSlotTitle with '' when the slot is not yet loaded, which throws on Invalid Date and crashes the view. Fix: Do not call formatSlotTitle/formatSlotTime until slot.data.startAt is present; wait for slot loading or render a fallback title when the slot is still loading.",
+      "at": "web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx"
+    },
+    "by": "review-behavior",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T25",
+        "status": "closed",
+        "reason": "The S15 title falls back to Your booking until slot.data.startAt is present, so formatSlotTitle is never called with an empty date.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  },
+  {
+    "id": "T26",
+    "issue": {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "The two task filters both show only All with no visible label so the user cannot tell status from priority. Fix: Show a visible label for each filter with the search above the task list, such as labeled selects or values reading Status: All and Priority: All.",
+      "at": "S08 at /projects/[projectId] in web/app/(routes)/(app)/projects/[projectId]/page.tsx"
+    },
+    "by": "review-ux-2",
+    "round": 2,
+    "entries": [
+      {
+        "id": "T26",
+        "status": "closed",
+        "reason": "The S08 status and priority filters now carry visible Status and Priority labels beside the search.",
+        "round": 3,
+        "by": "fix"
+      }
+    ]
+  }
+]

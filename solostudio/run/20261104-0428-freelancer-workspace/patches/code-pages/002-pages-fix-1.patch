@@ -1,0 +1,1745 @@
+From f01246125df4ebceb9f0123facc208e08861da2b Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 06:01:08 +0530
+Subject: [PATCH] code-pages: pages-fix-1
+
+---
+ web/app/(routes)/(app)/availability/page.tsx  |  62 +++++++----
+ .../(app)/bookings/[bookingId]/page.tsx       |  63 ++++-------
+ .../[clientId]/components}/AddNoteDialog.tsx  |   0
+ .../components}/EditClientDialog.tsx          |   2 +-
+ .../[clientId]/components}/EditNoteDialog.tsx |   0
+ .../[clientId]/components}/NoteForm.tsx       |   0
+ .../(app)/clients/[clientId]/page.tsx         | 104 +++++++++++-------
+ .../clients/components}/AddClientDialog.tsx   |   2 +-
+ web/app/(routes)/(app)/clients/page.tsx       |  63 +++++------
+ web/app/(routes)/(app)/home/page.tsx          |  68 ++++++++----
+ .../[projectId]/components}/AddTaskDialog.tsx |   0
+ .../components}/EditProjectDialog.tsx         |   2 +-
+ .../components}/EditTaskDialog.tsx            |   0
+ .../[projectId]/components}/TaskForm.tsx      |   0
+ .../(app)/projects/[projectId]/page.tsx       |  62 ++++++-----
+ web/app/(routes)/(app)/projects/page.tsx      |  45 +++++---
+ .../components}/AddSessionTypeDialog.tsx      |   0
+ .../components}/EditSessionTypeDialog.tsx     |   0
+ .../components}/SessionTypeForm.tsx           |   0
+ web/app/(routes)/(app)/session-types/page.tsx |  28 +++--
+ .../[slotId]/components/SlotBookings.tsx      |  26 +++--
+ .../(routes)/(app)/sessions/[slotId]/page.tsx |  46 ++++----
+ web/app/(routes)/(app)/sessions/page.tsx      |  47 ++++----
+ web/app/(routes)/(marketing)/book/page.tsx    |  46 +++++---
+ .../my-booking/[bookingId]/page.tsx           |  60 ++++++----
+ web/app/blocks/Slots/slots.ts                 |  10 +-
+ .../ClientStatusTag/ClientStatusTag.tsx       |  11 +-
+ web/app/components/LoadError/LoadError.tsx    |  18 +++
+ web/app/components/LoadError/index.ts         |   1 +
+ web/app/entities/availability/index.ts        |   2 +-
+ web/app/entities/availability/operations.ts   |   8 ++
+ 31 files changed, 465 insertions(+), 311 deletions(-)
+ rename web/app/{blocks/NoteDialogs => (routes)/(app)/clients/[clientId]/components}/AddNoteDialog.tsx (100%)
+ rename web/app/{blocks/ClientDialogs => (routes)/(app)/clients/[clientId]/components}/EditClientDialog.tsx (97%)
+ rename web/app/{blocks/NoteDialogs => (routes)/(app)/clients/[clientId]/components}/EditNoteDialog.tsx (100%)
+ rename web/app/{blocks/NoteDialogs => (routes)/(app)/clients/[clientId]/components}/NoteForm.tsx (100%)
+ rename web/app/{blocks/ClientDialogs => (routes)/(app)/clients/components}/AddClientDialog.tsx (98%)
+ rename web/app/{blocks/TaskDialogs => (routes)/(app)/projects/[projectId]/components}/AddTaskDialog.tsx (100%)
+ rename web/app/{blocks/ProjectDialogs => (routes)/(app)/projects/[projectId]/components}/EditProjectDialog.tsx (96%)
+ rename web/app/{blocks/TaskDialogs => (routes)/(app)/projects/[projectId]/components}/EditTaskDialog.tsx (100%)
+ rename web/app/{blocks/TaskDialogs => (routes)/(app)/projects/[projectId]/components}/TaskForm.tsx (100%)
+ rename web/app/{blocks/SessionTypeDialogs => (routes)/(app)/session-types/components}/AddSessionTypeDialog.tsx (100%)
+ rename web/app/{blocks/SessionTypeDialogs => (routes)/(app)/session-types/components}/EditSessionTypeDialog.tsx (100%)
+ rename web/app/{blocks/SessionTypeDialogs => (routes)/(app)/session-types/components}/SessionTypeForm.tsx (100%)
+ create mode 100644 web/app/components/LoadError/LoadError.tsx
+ create mode 100644 web/app/components/LoadError/index.ts
+
+diff --git a/web/app/(routes)/(app)/availability/page.tsx b/web/app/(routes)/(app)/availability/page.tsx
+index caa16c4..824373b 100644
+--- a/web/app/(routes)/(app)/availability/page.tsx
++++ b/web/app/(routes)/(app)/availability/page.tsx
+@@ -1,7 +1,9 @@
+ 'use client';
+ 
++import { LoadError } from '@app/components/LoadError';
+ import { PageHeader } from '@app/components/PageHeader';
+ import {
++  createAvailability,
+   deleteAvailability,
+   updateAvailability,
+   useGetAvailability,
+@@ -14,6 +16,7 @@ import { Controller, Form } from '@packages/ui/Form';
+ import { FormControl } from '@packages/ui/FormControl';
+ import { MultiSelect, SelectOption } from '@packages/ui/Select';
+ import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
+ import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
+ import React, { useState } from 'react';
+ import { useForm } from 'react-hook-form';
+@@ -45,23 +48,28 @@ export default function AvailabilityPage() {
+   const [editing, setEditing] = useState(false);
+   const [saving, setSaving] = useState(false);
+ 
++  const loading = list.loading || primary.loading;
+   const failed = list.error ?? primary.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Availability" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The availability could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              list.retry();
+-              primary.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The availability could not be loaded."
++          onRetry={() => {
++            list.retry();
++            primary.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && list.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Availability" />
++        <Paragraph>Loading availability.</Paragraph>
+       </>
+     );
+   }
+@@ -70,16 +78,20 @@ export default function AvailabilityPage() {
+   const saved = primary.data;
+ 
+   const done = async (values: AvailabilityFormValues) => {
+-    if (!saved) return;
+     setSaving(true);
+     try {
+-      await updateAvailability(saved.id, {
++      const changes = {
+         days: (values.days ?? []) as Availability['days'],
+         fromTime: values.fromTime || undefined,
+         toTime: values.toTime || undefined,
+-      });
+-      for (const record of list.data.filter((entry) => entry.id !== saved.id)) {
+-        await deleteAvailability(record.id);
++      };
++      if (saved) {
++        await updateAvailability(saved.id, changes);
++        for (const record of list.data.filter((entry) => entry.id !== saved.id)) {
++          await deleteAvailability(record.id);
++        }
++      } else {
++        await createAvailability(changes);
+       }
+       toast({ title: 'Availability saved', status: 'success' });
+       setEditing(false);
+@@ -96,20 +108,20 @@ export default function AvailabilityPage() {
+         title="Availability"
+         description="The weekly days and hours guests can book."
+         actions={
+-          !editing && saved ? (
++          !editing ? (
+             <Button onClick={() => setEditing(true)}>
+               Edit
+             </Button>
+           ) : undefined
+         }
+       />
+-      {editing && saved ? (
++      {editing ? (
+         <AvailabilityEditor
+-          key={saved.id}
++          key={saved?.id ?? 'new'}
+           initial={{
+-            days: saved.days ?? [],
+-            fromTime: saved.fromTime ?? '',
+-            toTime: saved.toTime ?? '',
++            days: saved?.days ?? [],
++            fromTime: saved?.fromTime ?? '',
++            toTime: saved?.toTime ?? '',
+           }}
+           saving={saving}
+           onCancel={() => setEditing(false)}
+@@ -124,7 +136,9 @@ export default function AvailabilityPage() {
+               {rules.map((record) => (
+                 <div key={record.id}>
+                   <DescriptionTerm>Open hours</DescriptionTerm>
+-                  <DescriptionDetails>{ruleSummary(record)}</DescriptionDetails>
++                  <DescriptionDetails>
++                    <Truncate>{ruleSummary(record)}</Truncate>
++                  </DescriptionDetails>
+                 </div>
+               ))}
+             </DescriptionList>
+diff --git a/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx b/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx
+index 7ee079e..b25de36 100644
+--- a/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx
++++ b/web/app/(routes)/(app)/bookings/[bookingId]/page.tsx
+@@ -1,6 +1,7 @@
+ 'use client';
+ 
+ import { formatSlotTitle } from '@app/blocks/Format/format';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+@@ -8,9 +9,9 @@ import { useGetBooking } from '@app/entities/booking';
+ import { useGetClient } from '@app/entities/client';
+ import { useGetSessionType } from '@app/entities/sessionType';
+ import { useGetSlot } from '@app/entities/slot';
+-import { Button } from '@packages/ui/Button';
+ import { Section } from '@packages/ui/Section';
+-import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph, Time } from '@packages/ui/Typography';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
+ import { useParams } from 'next/navigation';
+ import React from 'react';
+ 
+@@ -32,23 +33,21 @@ function SlotNameLink({
+ }) {
+   const sessionType = useGetSessionType(sessionTypeId);
+   return (
+-    <NextLink href={`/sessions/${slotId}`}>
+-      {formatSlotTitle(sessionType.data?.name ?? 'Session', startAt)}
++    <NextLink className="inline-block max-w-full" href={`/sessions/${slotId}`}>
++      <Truncate>{formatSlotTitle(sessionType.data?.name ?? 'Session', startAt)}</Truncate>
+     </NextLink>
+   );
+ }
+ 
+-/** The booking's session type name. */
+-function SessionTypeName({ sessionTypeId }: { sessionTypeId: string }) {
+-  const sessionType = useGetSessionType(sessionTypeId);
+-  return <>{sessionType.data?.name ?? 'Session'}</>;
+-}
+-
+ /** The booking's linked client: its name, or that there is none. */
+ function ClientLink({ clientId }: { clientId?: string }) {
+   const linked = useGetClient(clientId ?? '');
+   if (!clientId || !linked.data) return <Paragraph color="muted">There is no linked client.</Paragraph>;
+-  return <NextLink href={`/clients/${clientId}`}>{linked.data.name}</NextLink>;
++  return (
++    <NextLink className="inline-block max-w-full" href={`/clients/${clientId}`}>
++      <Truncate>{linked.data.name}</Truncate>
++    </NextLink>
++  );
+ }
+ 
+ /**
+@@ -62,15 +61,16 @@ export default function BookingPage() {
+     return (
+       <>
+         <PageHeader title="Booking" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The booking could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => booking.retry()}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError message="The booking could not be loaded." onRetry={() => booking.retry()} />
++      </>
++    );
++  }
++
++  if (booking.loading && !booking.data) {
++    return (
++      <>
++        <PageHeader title="Booking" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
++        <Paragraph>Loading booking.</Paragraph>
+       </>
+     );
+   }
+@@ -90,29 +90,21 @@ export default function BookingPage() {
+   return (
+     <>
+       <PageHeader
+-        title={`${record.name}'s booking`}
++        title={<Truncate>{`${record.name}'s booking`}</Truncate>}
+         breadcrumb={[{ label: 'Sessions', href: '/sessions' }]}
+       />
+       <Section title="Details">
+         <DescriptionList>
+           <div>
+             <DescriptionTerm>Name</DescriptionTerm>
+-            <DescriptionDetails>{record.name}</DescriptionDetails>
+-          </div>
+-          <div>
+-            <DescriptionTerm>Email</DescriptionTerm>
+-            <DescriptionDetails>{record.email}</DescriptionDetails>
+-          </div>
+-          <div>
+-            <DescriptionTerm>Session type</DescriptionTerm>
+             <DescriptionDetails>
+-              <SessionTypeName sessionTypeId={record.sessionType} />
++              <Truncate>{record.name}</Truncate>
+             </DescriptionDetails>
+           </div>
+           <div>
+-            <DescriptionTerm>Time</DescriptionTerm>
++            <DescriptionTerm>Email</DescriptionTerm>
+             <DescriptionDetails>
+-              <SlotTime slotId={record.slot} />
++              <Truncate>{record.email}</Truncate>
+             </DescriptionDetails>
+           </div>
+           <div>
+@@ -132,10 +124,3 @@ export default function BookingPage() {
+     </>
+   );
+ }
+-
+-/** The booking's slot date and time. */
+-function SlotTime({ slotId }: { slotId: string }) {
+-  const slot = useGetSlot(slotId);
+-  if (!slot.data) return <>—</>;
+-  return <Time value={slot.data.startAt} withTime />;
+-}
+diff --git a/web/app/blocks/NoteDialogs/AddNoteDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/AddNoteDialog.tsx
+similarity index 100%
+rename from web/app/blocks/NoteDialogs/AddNoteDialog.tsx
+rename to web/app/(routes)/(app)/clients/[clientId]/components/AddNoteDialog.tsx
+diff --git a/web/app/blocks/ClientDialogs/EditClientDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx
+similarity index 97%
+rename from web/app/blocks/ClientDialogs/EditClientDialog.tsx
+rename to web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx
+index 56ada64..6c7af33 100644
+--- a/web/app/blocks/ClientDialogs/EditClientDialog.tsx
++++ b/web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx
+@@ -1,5 +1,6 @@
+ 'use client';
+ 
++import { ClientForm, type ClientFormValues } from '@app/blocks/ClientDialogs/ClientForm';
+ import { getClient, updateClient, type Client } from '@app/entities/client';
+ import { Button } from '@packages/ui/Button';
+ import { Dialog } from '@packages/ui/Dialog';
+@@ -8,7 +9,6 @@ import { useRouter } from 'next/navigation';
+ import React, { useId, useState } from 'react';
+ import { useForm } from 'react-hook-form';
+ 
+-import { ClientForm, type ClientFormValues } from './ClientForm';
+ 
+ /** D02 Edit client: change a client's details or status. */
+ export function EditClientDialog({
+diff --git a/web/app/blocks/NoteDialogs/EditNoteDialog.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
+similarity index 100%
+rename from web/app/blocks/NoteDialogs/EditNoteDialog.tsx
+rename to web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx
+diff --git a/web/app/blocks/NoteDialogs/NoteForm.tsx b/web/app/(routes)/(app)/clients/[clientId]/components/NoteForm.tsx
+similarity index 100%
+rename from web/app/blocks/NoteDialogs/NoteForm.tsx
+rename to web/app/(routes)/(app)/clients/[clientId]/components/NoteForm.tsx
+diff --git a/web/app/(routes)/(app)/clients/[clientId]/page.tsx b/web/app/(routes)/(app)/clients/[clientId]/page.tsx
+index c7e0400..376cc05 100644
+--- a/web/app/(routes)/(app)/clients/[clientId]/page.tsx
++++ b/web/app/(routes)/(app)/clients/[clientId]/page.tsx
+@@ -1,10 +1,8 @@
+ 'use client';
+ 
+-import { EditClientDialog } from '@app/blocks/ClientDialogs/EditClientDialog';
+-import { AddNoteDialog } from '@app/blocks/NoteDialogs/AddNoteDialog';
+-import { EditNoteDialog } from '@app/blocks/NoteDialogs/EditNoteDialog';
+ import { AddProjectDialog } from '@app/blocks/ProjectDialogs/AddProjectDialog';
+ import { ClientStatusTag } from '@app/components/ClientStatusTag';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+@@ -21,11 +19,16 @@ import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
+ import { Section } from '@packages/ui/Section';
+ import { createTable } from '@packages/ui/Table';
+ import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
+ import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph, Time } from '@packages/ui/Typography';
+ import { Pencil, Plus, Trash2 } from 'lucide-react';
+ import { useParams, useRouter } from 'next/navigation';
+ import React, { useState } from 'react';
+ 
++import { AddNoteDialog } from './components/AddNoteDialog';
++import { EditClientDialog } from './components/EditClientDialog';
++import { EditNoteDialog } from './components/EditNoteDialog';
++
+ type BookingRow = {
+   id: string;
+   sessionTypeName: string;
+@@ -58,29 +61,41 @@ export default function ClientPage() {
+   const [addingProject, setAddingProject] = useState(false);
+   const [busy, setBusy] = useState(false);
+ 
++  const loading =
++    client.loading ||
++    notes.loading ||
++    projects.loading ||
++    bookings.loading ||
++    slots.loading ||
++    sessionTypes.loading ||
++    tasks.loading;
+   const failed =
+     client.error ?? notes.error ?? projects.error ?? bookings.error ?? slots.error ?? sessionTypes.error ?? tasks.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Client" breadcrumb={[{ label: 'Clients', href: '/clients' }]} />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The client could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              client.retry();
+-              notes.retry();
+-              projects.retry();
+-              bookings.retry();
+-              slots.retry();
+-              sessionTypes.retry();
+-              tasks.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The client could not be loaded."
++          onRetry={() => {
++            client.retry();
++            notes.retry();
++            projects.retry();
++            bookings.retry();
++            slots.retry();
++            sessionTypes.retry();
++            tasks.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && !client.data) {
++    return (
++      <>
++        <PageHeader title="Client" breadcrumb={[{ label: 'Clients', href: '/clients' }]} />
++        <Paragraph>Loading client.</Paragraph>
+       </>
+     );
+   }
+@@ -203,8 +218,7 @@ export default function ClientPage() {
+   return (
+     <>
+       <PageHeader
+-        title={record.name}
+-        description={record.email}
++        title={<Truncate>{record.name}</Truncate>}
+         breadcrumb={[{ label: 'Clients', href: '/clients' }]}
+         actions={
+           <>
+@@ -253,13 +267,15 @@ export default function ClientPage() {
+       <Section
+         title="Notes"
+         headerAction={
+-          <Button
+-            variant="base" // Adding a note is the section's quiet action.
+-            leftIcon={<Plus />}
+-            onClick={() => setAddingNote(true)}
+-          >
+-            Add a note
+-          </Button>
++          clientNotes.length > 0 ? (
++            <Button
++              variant="base" // Adding a note is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingNote(true)}
++            >
++              Add a note
++            </Button>
++          ) : undefined
+         }
+       >
+         {clientNotes.length === 0 ? (
+@@ -300,7 +316,7 @@ export default function ClientPage() {
+                     <Pencil />
+                   </IconButton>
+                   <IconButton
+-                    variant="danger"
++                    variant="base" // Row deletes stay as quiet as the row's other actions.
+                     look="ghost"
+                     size="xs"
+                     tooltip="Delete note"
+@@ -318,13 +334,15 @@ export default function ClientPage() {
+       <Section
+         title="Projects"
+         headerAction={
+-          <Button
+-            variant="base" // Adding a project is the section's quiet action.
+-            leftIcon={<Plus />}
+-            onClick={() => setAddingProject(true)}
+-          >
+-            Add a project
+-          </Button>
++          clientProjects.length > 0 ? (
++            <Button
++              variant="base" // Adding a project is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingProject(true)}
++            >
++              Add a project
++            </Button>
++          ) : undefined
+         }
+       >
+         {clientProjects.length === 0 ? (
+@@ -347,7 +365,7 @@ export default function ClientPage() {
+               <>
+                 <h3>
+                   <NextLink look="plain" href={`/projects/${project.id}`}>
+-                    {project.name}
++                    <Truncate>{project.name}</Truncate>
+                   </NextLink>
+                 </h3>
+                 <Paragraph color="muted">
+@@ -376,16 +394,20 @@ export default function ClientPage() {
+           }}
+         >
+           <BookingTable.Column id="session" title="Session type" dataKey="sessionTypeName" width={200}>
+-            {(name) => name}
++            {(name) => <Truncate>{name}</Truncate>}
+           </BookingTable.Column>
+           <BookingTable.Column id="time" title="Time" dataKey="startAt" width={200}>
+             {(startAt) => (startAt ? <Time value={startAt} withTime /> : '—')}
+           </BookingTable.Column>
+           <BookingTable.Column id="name" rowHeader title="Booker" dataKey="name" width={200}>
+-            {(name, row) => <NextLink href={`/bookings/${row.id}`}>{name}</NextLink>}
++            {(name, row) => (
++              <NextLink className="inline-block max-w-full" href={`/bookings/${row.id}`}>
++                <Truncate>{name}</Truncate>
++              </NextLink>
++            )}
+           </BookingTable.Column>
+           <BookingTable.Column id="email" title="Email" dataKey="email" width={220}>
+-            {(email) => email}
++            {(email) => <Truncate>{email}</Truncate>}
+           </BookingTable.Column>
+         </BookingTable>
+       </Section>
+diff --git a/web/app/blocks/ClientDialogs/AddClientDialog.tsx b/web/app/(routes)/(app)/clients/components/AddClientDialog.tsx
+similarity index 98%
+rename from web/app/blocks/ClientDialogs/AddClientDialog.tsx
+rename to web/app/(routes)/(app)/clients/components/AddClientDialog.tsx
+index cb039b0..05b26b8 100644
+--- a/web/app/blocks/ClientDialogs/AddClientDialog.tsx
++++ b/web/app/(routes)/(app)/clients/components/AddClientDialog.tsx
+@@ -1,5 +1,6 @@
+ 'use client';
+ 
++import { ClientForm, emptyClientForm, type ClientFormValues } from '@app/blocks/ClientDialogs/ClientForm';
+ import { createClient, type Client } from '@app/entities/client';
+ import { Button } from '@packages/ui/Button';
+ import { Dialog } from '@packages/ui/Dialog';
+@@ -7,7 +8,6 @@ import { toast } from '@packages/ui/Toast';
+ import React, { useId, useState } from 'react';
+ import { useForm } from 'react-hook-form';
+ 
+-import { ClientForm, emptyClientForm, type ClientFormValues } from './ClientForm';
+ 
+ /** D01 Add a client: a new client with status set to Lead by default. */
+ export function AddClientDialog({
+diff --git a/web/app/(routes)/(app)/clients/page.tsx b/web/app/(routes)/(app)/clients/page.tsx
+index aa56a36..e2bff3e 100644
+--- a/web/app/(routes)/(app)/clients/page.tsx
++++ b/web/app/(routes)/(app)/clients/page.tsx
+@@ -1,7 +1,8 @@
+ 'use client';
+ 
+-import { AddClientDialog } from '@app/blocks/ClientDialogs/AddClientDialog';
+ import { followUpNoteFor } from '@app/blocks/Slots/slots';
++import { ClientStatusTag } from '@app/components/ClientStatusTag';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { useListClients } from '@app/entities/client';
+@@ -11,13 +12,16 @@ import { Button, IconButton } from '@packages/ui/Button';
+ import { SearchInput } from '@packages/ui/Input';
+ import { Select, SelectOption } from '@packages/ui/Select';
+ import { createTable } from '@packages/ui/Table';
+-import { Tag, type TagProps } from '@packages/ui/Tag';
++import { Tag } from '@packages/ui/Tag';
+ import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
+ import { Paragraph, Time } from '@packages/ui/Typography';
+ import { CalendarPlus, Check, Plus } from 'lucide-react';
+ import { useRouter } from 'next/navigation';
+ import React, { useState } from 'react';
+ 
++import { AddClientDialog } from './components/AddClientDialog';
++
+ type ClientRow = {
+   id: string;
+   name: string;
+@@ -29,15 +33,6 @@ type ClientRow = {
+ 
+ const ClientTable = createTable<ClientRow>();
+ 
+-const statusTag: Record<string, TagProps['variant']> = {
+-  lead: 'info',
+-  active: 'success',
+-  past: 'base',
+-};
+-
+-const statusLabel = (status: string) =>
+-  ClientStatusOptions.find((option) => option.key === status)?.label ?? status;
+-
+ function addDays(dateKey: string, days: number): string {
+   const date = new Date(`${dateKey}T00:00:00.000Z`);
+   date.setUTCDate(date.getUTCDate() + days);
+@@ -119,23 +114,28 @@ export default function ClientsPage() {
+     }
+   };
+ 
++  const loading = clients.loading || notes.loading;
+   const failed = clients.error ?? notes.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Clients" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The client list could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              clients.retry();
+-              notes.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The client list could not be loaded."
++          onRetry={() => {
++            clients.retry();
++            notes.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && clients.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Clients" />
++        <Paragraph>Loading clients.</Paragraph>
+       </>
+     );
+   }
+@@ -189,20 +189,17 @@ export default function ClientsPage() {
+             }}
+           >
+             <ClientTable.Column id="name" rowHeader title="Name" dataKey="name" width={220}>
+-              {(name, row) => <NextLink href={`/clients/${row.id}`}>{name}</NextLink>}
++              {(name, row) => (
++                <NextLink className="inline-block max-w-full" href={`/clients/${row.id}`}>
++                  <Truncate>{name}</Truncate>
++                </NextLink>
++              )}
+             </ClientTable.Column>
+             <ClientTable.Column id="company" title="Company" dataKey="company" width={180}>
+-              {(company) => company || '—'}
++              {(company) => (company ? <Truncate>{company}</Truncate> : '—')}
+             </ClientTable.Column>
+             <ClientTable.Column id="status" title="Status" dataKey="status" width={120}>
+-              {(value: string) => (
+-                <Tag
+-                  size="xs" // Fits the table row without stretching it.
+-                  variant={statusTag[value] ?? 'base'} // Each status keeps its own color.
+-                >
+-                  {statusLabel(value)}
+-                </Tag>
+-              )}
++              {(value: string) => <ClientStatusTag status={value} size="xs" />}
+             </ClientTable.Column>
+             <ClientTable.Column id="followUp" title="Follow-up" dataKey="followUpDate" width={220}>
+               {(_, row) =>
+diff --git a/web/app/(routes)/(app)/home/page.tsx b/web/app/(routes)/(app)/home/page.tsx
+index 243b620..3e41840 100644
+--- a/web/app/(routes)/(app)/home/page.tsx
++++ b/web/app/(routes)/(app)/home/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { addDaysKey, todayKey, weekStartKey } from '@app/blocks/Format/format';
+ import { bookingsForSlot } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { useListBookings } from '@app/entities/booking';
+@@ -11,11 +12,11 @@ import { useListProjects } from '@app/entities/project';
+ import { useListSessionTypes } from '@app/entities/sessionType';
+ import { useListSlots } from '@app/entities/slot';
+ import { useListTasks } from '@app/entities/task';
+-import { Button } from '@packages/ui/Button';
+ import { CardList } from '@packages/ui/Card';
+ import { Numeral } from '@packages/ui/Numeral';
+ import { Section } from '@packages/ui/Section';
+ import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
+ import { Paragraph, Time } from '@packages/ui/Typography';
+ import { useRouter } from 'next/navigation';
+ import React from 'react';
+@@ -108,25 +109,37 @@ export default function HomePage() {
+     }))
+     .sort((a, b) => (a.dueDate < b.dueDate ? -1 : a.dueDate > b.dueDate ? 1 : 0));
+ 
++  const loading =
++    slots.loading || bookings.loading || notes.loading || tasks.loading;
+   const failed = slots.error ?? bookings.error ?? notes.error ?? tasks.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Home" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The home dashboard could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              slots.retry();
+-              bookings.retry();
+-              notes.retry();
+-              tasks.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The home dashboard could not be loaded."
++          onRetry={() => {
++            slots.retry();
++            bookings.retry();
++            notes.retry();
++            tasks.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (
++    loading &&
++    slots.data.length === 0 &&
++    bookings.data.length === 0 &&
++    notes.data.length === 0 &&
++    tasks.data.length === 0
++  ) {
++    return (
++      <>
++        <PageHeader title="Home" />
++        <Paragraph>Loading your day.</Paragraph>
+       </>
+     );
+   }
+@@ -185,6 +198,7 @@ export default function HomePage() {
+           caption="Today's sessions"
+           data={todaysSessions}
+           rowKey={(row) => row.id}
++          loading={loading}
+           emptyMessage="No sessions today."
+           onRowClick={(row, click) => {
+             void router.push(`/sessions/${row.id}`);
+@@ -192,13 +206,17 @@ export default function HomePage() {
+           }}
+         >
+           <SessionTable.Column id="session" rowHeader title="Session" dataKey="sessionTypeName" width={220}>
+-            {(name, row) => <NextLink href={`/sessions/${row.id}`}>{name}</NextLink>}
++            {(name, row) => (
++              <NextLink className="inline-block max-w-full" href={`/sessions/${row.id}`}>
++                <Truncate>{name}</Truncate>
++              </NextLink>
++            )}
+           </SessionTable.Column>
+           <SessionTable.Column id="time" title="Time" dataKey="startAt" width={180}>
+             {(startAt) => <Time value={startAt} withTime />}
+           </SessionTable.Column>
+           <SessionTable.Column id="bookers" title="Bookers" dataKey="bookers" width={240}>
+-            {(bookers) => bookers || 'No bookings yet'}
++            {(bookers) => (bookers ? <Truncate>{bookers}</Truncate> : 'No bookings yet')}
+           </SessionTable.Column>
+         </SessionTable>
+       </Section>
+@@ -207,6 +225,7 @@ export default function HomePage() {
+           caption="Follow-ups due this week"
+           data={followUps}
+           rowKey={(row) => row.id}
++          loading={loading}
+           emptyMessage="No follow-ups due this week."
+           onRowClick={(row, click) => {
+             void router.push(`/clients/${row.clientId}`);
+@@ -214,7 +233,11 @@ export default function HomePage() {
+           }}
+         >
+           <FollowUpTable.Column id="client" rowHeader title="Client" dataKey="clientName" width={220}>
+-            {(name, row) => <NextLink href={`/clients/${row.clientId}`}>{name}</NextLink>}
++            {(name, row) => (
++              <NextLink className="inline-block max-w-full" href={`/clients/${row.clientId}`}>
++                <Truncate>{name}</Truncate>
++              </NextLink>
++            )}
+           </FollowUpTable.Column>
+           <FollowUpTable.Column id="date" title="Follow-up date" dataKey="followUpDate" width={160}>
+             {(date) => <Time value={date} />}
+@@ -226,6 +249,7 @@ export default function HomePage() {
+           caption="Overdue tasks"
+           data={overdueTasks}
+           rowKey={(row) => row.id}
++          loading={loading}
+           emptyMessage="No overdue tasks."
+           onRowClick={(row, click) => {
+             void router.push(`/projects/${row.projectId}`);
+@@ -233,10 +257,14 @@ export default function HomePage() {
+           }}
+         >
+           <TaskTable.Column id="task" rowHeader title="Task" dataKey="title" width={240}>
+-            {(title, row) => <NextLink href={`/projects/${row.projectId}`}>{title}</NextLink>}
++            {(title, row) => (
++              <NextLink className="inline-block max-w-full" href={`/projects/${row.projectId}`}>
++                <Truncate>{title}</Truncate>
++              </NextLink>
++            )}
+           </TaskTable.Column>
+           <TaskTable.Column id="project" title="Project" dataKey="projectName" width={220}>
+-            {(name) => name}
++            {(name) => <Truncate>{name}</Truncate>}
+           </TaskTable.Column>
+           <TaskTable.Column id="due" title="Due date" dataKey="dueDate" width={160}>
+             {(date) => <Time value={date} />}
+diff --git a/web/app/blocks/TaskDialogs/AddTaskDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/AddTaskDialog.tsx
+similarity index 100%
+rename from web/app/blocks/TaskDialogs/AddTaskDialog.tsx
+rename to web/app/(routes)/(app)/projects/[projectId]/components/AddTaskDialog.tsx
+diff --git a/web/app/blocks/ProjectDialogs/EditProjectDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx
+similarity index 96%
+rename from web/app/blocks/ProjectDialogs/EditProjectDialog.tsx
+rename to web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx
+index f1781f0..e3b01a5 100644
+--- a/web/app/blocks/ProjectDialogs/EditProjectDialog.tsx
++++ b/web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx
+@@ -1,5 +1,6 @@
+ 'use client';
+ 
++import { ProjectForm, type ProjectFormValues } from '@app/blocks/ProjectDialogs/ProjectForm';
+ import { getProject, updateProject, type Project } from '@app/entities/project';
+ import { Button } from '@packages/ui/Button';
+ import { Dialog } from '@packages/ui/Dialog';
+@@ -8,7 +9,6 @@ import { useRouter } from 'next/navigation';
+ import React, { useId, useState } from 'react';
+ import { useForm } from 'react-hook-form';
+ 
+-import { ProjectForm, type ProjectFormValues } from './ProjectForm';
+ 
+ import type { Client } from '@app/entities/client';
+ 
+diff --git a/web/app/blocks/TaskDialogs/EditTaskDialog.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
+similarity index 100%
+rename from web/app/blocks/TaskDialogs/EditTaskDialog.tsx
+rename to web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx
+diff --git a/web/app/blocks/TaskDialogs/TaskForm.tsx b/web/app/(routes)/(app)/projects/[projectId]/components/TaskForm.tsx
+similarity index 100%
+rename from web/app/blocks/TaskDialogs/TaskForm.tsx
+rename to web/app/(routes)/(app)/projects/[projectId]/components/TaskForm.tsx
+diff --git a/web/app/(routes)/(app)/projects/[projectId]/page.tsx b/web/app/(routes)/(app)/projects/[projectId]/page.tsx
+index d9681a1..f1d0f6d 100644
+--- a/web/app/(routes)/(app)/projects/[projectId]/page.tsx
++++ b/web/app/(routes)/(app)/projects/[projectId]/page.tsx
+@@ -1,9 +1,7 @@
+ 'use client';
+ 
+-import { EditProjectDialog } from '@app/blocks/ProjectDialogs/EditProjectDialog';
+ import { isTaskOverdue } from '@app/blocks/Slots/slots';
+-import { AddTaskDialog } from '@app/blocks/TaskDialogs/AddTaskDialog';
+-import { EditTaskDialog } from '@app/blocks/TaskDialogs/EditTaskDialog';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+@@ -19,11 +17,16 @@ import { Select, SelectOption } from '@packages/ui/Select';
+ import { createTable } from '@packages/ui/Table';
+ import { Tag } from '@packages/ui/Tag';
+ import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
+ import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph, Time } from '@packages/ui/Typography';
+ import { Check, Pencil, Plus, Trash2 } from 'lucide-react';
+ import { useParams, useRouter } from 'next/navigation';
+ import React, { useState } from 'react';
+ 
++import { AddTaskDialog } from './components/AddTaskDialog';
++import { EditProjectDialog } from './components/EditProjectDialog';
++import { EditTaskDialog } from './components/EditTaskDialog';
++
+ const statusOrder = ['to_do', 'in_progress', 'done'];
+ 
+ type TaskRow = {
+@@ -57,24 +60,29 @@ export default function ProjectPage() {
+ 
+   const today = new Date().toISOString().slice(0, 10);
+ 
++  const loading = project.loading || tasks.loading || clients.loading;
+   const failed = project.error ?? tasks.error ?? clients.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Project" breadcrumb={[{ label: 'Projects', href: '/projects' }]} />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The project could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              project.retry();
+-              tasks.retry();
+-              clients.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The project could not be loaded."
++          onRetry={() => {
++            project.retry();
++            tasks.retry();
++            clients.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && !project.data) {
++    return (
++      <>
++        <PageHeader title="Project" breadcrumb={[{ label: 'Projects', href: '/projects' }]} />
++        <Paragraph>Loading project.</Paragraph>
+       </>
+     );
+   }
+@@ -227,7 +235,7 @@ export default function ProjectPage() {
+   return (
+     <>
+       <PageHeader
+-        title={record.name}
++        title={<Truncate>{record.name}</Truncate>}
+         description={record.description}
+         breadcrumb={[{ label: 'Projects', href: '/projects' }]}
+         actions={
+@@ -269,13 +277,15 @@ export default function ProjectPage() {
+       <Section
+         title="Tasks"
+         headerAction={
+-          <Button
+-            variant="base" // Adding a task is the section's quiet action.
+-            leftIcon={<Plus />}
+-            onClick={() => setAddingTask(true)}
+-          >
+-            Add a task
+-          </Button>
++          hasTasks ? (
++            <Button
++              variant="base" // Adding a task is the section's quiet action.
++              leftIcon={<Plus />}
++              onClick={() => setAddingTask(true)}
++            >
++              Add a task
++            </Button>
++          ) : undefined
+         }
+       >
+         {!hasTasks ? (
+@@ -326,7 +336,7 @@ export default function ProjectPage() {
+                 }
+               </TaskTable.Column>
+               <TaskTable.Column id="title" rowHeader title="Title" dataKey="title" width={240}>
+-                {(title) => title}
++                {(title) => <Truncate>{title}</Truncate>}
+               </TaskTable.Column>
+               <TaskTable.Column id="status" title="Status" dataKey="status" width={130}>
+                 {(value: string) => <TaskStatusTag status={value} />}
+@@ -370,7 +380,7 @@ export default function ProjectPage() {
+                         <Pencil />
+                       </IconButton>
+                       <IconButton
+-                        variant="danger"
++                        variant="base" // Row deletes stay as quiet as the row's other actions.
+                         look="ghost"
+                         size="xs"
+                         tooltip="Delete task"
+diff --git a/web/app/(routes)/(app)/projects/page.tsx b/web/app/(routes)/(app)/projects/page.tsx
+index 10b0e9d..a6bd5f9 100644
+--- a/web/app/(routes)/(app)/projects/page.tsx
++++ b/web/app/(routes)/(app)/projects/page.tsx
+@@ -1,6 +1,7 @@
+ 'use client';
+ 
+ import { AddProjectDialog } from '@app/blocks/ProjectDialogs/AddProjectDialog';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { useListClients } from '@app/entities/client';
+@@ -10,6 +11,7 @@ import { Button } from '@packages/ui/Button';
+ import { SearchInput } from '@packages/ui/Input';
+ import { Numeral } from '@packages/ui/Numeral';
+ import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
+ import { Paragraph, Time } from '@packages/ui/Typography';
+ import { Plus } from 'lucide-react';
+ import { useRouter } from 'next/navigation';
+@@ -58,24 +60,29 @@ export default function ProjectsPage() {
+       openTasks: tasks.data.filter((task) => task.project === project.id && task.status !== 'done').length,
+     }));
+ 
++  const loading = projects.loading || tasks.loading || clients.loading;
+   const failed = projects.error ?? tasks.error ?? clients.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Projects" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The project list could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              projects.retry();
+-              tasks.retry();
+-              clients.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The project list could not be loaded."
++          onRetry={() => {
++            projects.retry();
++            tasks.retry();
++            clients.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && projects.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Projects" />
++        <Paragraph>Loading projects.</Paragraph>
+       </>
+     );
+   }
+@@ -122,10 +129,18 @@ export default function ProjectsPage() {
+             }}
+           >
+             <ProjectTable.Column id="name" rowHeader title="Name" dataKey="name" width={240}>
+-              {(name, row) => <NextLink href={`/projects/${row.id}`}>{name}</NextLink>}
++              {(name, row) => (
++                <NextLink className="inline-block max-w-full" href={`/projects/${row.id}`}>
++                  <Truncate>{name}</Truncate>
++                </NextLink>
++              )}
+             </ProjectTable.Column>
+             <ProjectTable.Column id="client" title="Client" dataKey="clientName" width={200}>
+-              {(name, row) => <NextLink href={`/clients/${row.clientId}`}>{name}</NextLink>}
++              {(name, row) => (
++                <NextLink className="inline-block max-w-full" href={`/clients/${row.clientId}`}>
++                  <Truncate>{name}</Truncate>
++                </NextLink>
++              )}
+             </ProjectTable.Column>
+             <ProjectTable.Column id="due" title="Due date" dataKey="dueDate" width={160}>
+               {(dueDate: string | undefined) => (dueDate ? <Time value={dueDate} /> : '—')}
+diff --git a/web/app/blocks/SessionTypeDialogs/AddSessionTypeDialog.tsx b/web/app/(routes)/(app)/session-types/components/AddSessionTypeDialog.tsx
+similarity index 100%
+rename from web/app/blocks/SessionTypeDialogs/AddSessionTypeDialog.tsx
+rename to web/app/(routes)/(app)/session-types/components/AddSessionTypeDialog.tsx
+diff --git a/web/app/blocks/SessionTypeDialogs/EditSessionTypeDialog.tsx b/web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
+similarity index 100%
+rename from web/app/blocks/SessionTypeDialogs/EditSessionTypeDialog.tsx
+rename to web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx
+diff --git a/web/app/blocks/SessionTypeDialogs/SessionTypeForm.tsx b/web/app/(routes)/(app)/session-types/components/SessionTypeForm.tsx
+similarity index 100%
+rename from web/app/blocks/SessionTypeDialogs/SessionTypeForm.tsx
+rename to web/app/(routes)/(app)/session-types/components/SessionTypeForm.tsx
+diff --git a/web/app/(routes)/(app)/session-types/page.tsx b/web/app/(routes)/(app)/session-types/page.tsx
+index e8dc3c2..b8091ac 100644
+--- a/web/app/(routes)/(app)/session-types/page.tsx
++++ b/web/app/(routes)/(app)/session-types/page.tsx
+@@ -1,17 +1,20 @@
+ 'use client';
+ 
+ import { formatPrice } from '@app/blocks/Format/format';
+-import { AddSessionTypeDialog } from '@app/blocks/SessionTypeDialogs/AddSessionTypeDialog';
+-import { EditSessionTypeDialog } from '@app/blocks/SessionTypeDialogs/EditSessionTypeDialog';
++import { LoadError } from '@app/components/LoadError';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { useListSessionTypes, type SessionType } from '@app/entities/sessionType';
+ import { Button, IconButton } from '@packages/ui/Button';
+ import { Numeral } from '@packages/ui/Numeral';
+ import { createTable } from '@packages/ui/Table';
++import { Truncate } from '@packages/ui/Truncate';
+ import { Paragraph } from '@packages/ui/Typography';
+ import { Pencil, Plus } from 'lucide-react';
+ import React, { useState } from 'react';
+ 
++import { AddSessionTypeDialog } from './components/AddSessionTypeDialog';
++import { EditSessionTypeDialog } from './components/EditSessionTypeDialog';
++
+ type SessionTypeRow = {
+   id: string;
+   name: string;
+@@ -42,15 +45,16 @@ export default function SessionTypesPage() {
+     return (
+       <>
+         <PageHeader title="Session types" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The session types could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => sessionTypes.retry()}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError message="The session types could not be loaded." onRetry={() => sessionTypes.retry()} />
++      </>
++    );
++  }
++
++  if (sessionTypes.loading && sessionTypes.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Session types" />
++        <Paragraph>Loading session types.</Paragraph>
+       </>
+     );
+   }
+@@ -83,7 +87,7 @@ export default function SessionTypesPage() {
+           loading={sessionTypes.loading}
+         >
+           <SessionTypeTable.Column id="name" rowHeader title="Name" dataKey="name" width={220}>
+-            {(name) => name}
++            {(name) => <Truncate>{name}</Truncate>}
+           </SessionTypeTable.Column>
+           <SessionTypeTable.Column id="duration" title="Duration" dataKey="durationInMinutes" width={140} align="right">
+             {(minutes: number) => <Numeral>{`${minutes} min`}</Numeral>}
+diff --git a/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx b/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx
+index 925fe6d..4da9d29 100644
+--- a/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx
++++ b/web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx
+@@ -1,11 +1,13 @@
+ 'use client';
+ 
++import { formatSlotTitle } from '@app/blocks/Format/format';
+ import { NextLink } from '@app/components/NextLink';
+ import { useGetClient } from '@app/entities/client';
+ import { useGetSessionType } from '@app/entities/sessionType';
+ import { Numeral } from '@packages/ui/Numeral';
+ import { createTable } from '@packages/ui/Table';
+-import { Paragraph, Time } from '@packages/ui/Typography';
++import { Truncate } from '@packages/ui/Truncate';
++import { Paragraph } from '@packages/ui/Typography';
+ import React from 'react';
+ 
+ import type { Booking } from '@app/entities/booking';
+@@ -23,7 +25,11 @@ const SlotBookingTable = createTable<SlotBookingRow>();
+ function BookingRow({ booking }: { booking: Booking }) {
+   const linked = useGetClient(booking.client ?? '');
+   if (!booking.client || !linked.data) return <Paragraph color="muted">No linked client</Paragraph>;
+-  return <NextLink href={`/clients/${booking.client}`}>{linked.data.name}</NextLink>;
++  return (
++    <NextLink className="inline-block max-w-full" href={`/clients/${booking.client}`}>
++      <Truncate>{linked.data.name}</Truncate>
++    </NextLink>
++  );
+ }
+ 
+ /**
+@@ -55,10 +61,14 @@ export function SlotBookings({
+       }}
+     >
+       <SlotBookingTable.Column id="name" rowHeader title="Booker" dataKey="name" width={200}>
+-        {(name, row) => <NextLink href={`/bookings/${row.id}`}>{name}</NextLink>}
++        {(name, row) => (
++          <NextLink className="inline-block max-w-full" href={`/bookings/${row.id}`}>
++            <Truncate>{name}</Truncate>
++          </NextLink>
++        )}
+       </SlotBookingTable.Column>
+       <SlotBookingTable.Column id="email" title="Email" dataKey="email" width={240}>
+-        {(email) => email}
++        {(email) => <Truncate>{email}</Truncate>}
+       </SlotBookingTable.Column>
+       <SlotBookingTable.Column id="client" title="Linked client" dataKey="clientId" width={220}>
+         {(_, row) => {
+@@ -84,12 +94,8 @@ export function SlotSeatCount({
+   return <Numeral>{`${booked} of ${maximum}`}</Numeral>;
+ }
+ 
+-/** A slot's session type name and time. */
++/** A slot's session type name and time, formatted the same as the page title. */
+ export function SlotSessionLine({ sessionTypeId, startAt }: { sessionTypeId: string; startAt: string }) {
+   const sessionType = useGetSessionType(sessionTypeId);
+-  return (
+-    <>
+-      {sessionType.data?.name ?? 'Session'} · <Time value={startAt} withTime />
+-    </>
+-  );
++  return <Truncate>{formatSlotTitle(sessionType.data?.name ?? 'Session', startAt)}</Truncate>;
+ }
+diff --git a/web/app/(routes)/(app)/sessions/[slotId]/page.tsx b/web/app/(routes)/(app)/sessions/[slotId]/page.tsx
+index 2f220db..212d008 100644
+--- a/web/app/(routes)/(app)/sessions/[slotId]/page.tsx
++++ b/web/app/(routes)/(app)/sessions/[slotId]/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { formatSlotTitle } from '@app/blocks/Format/format';
+ import { bookingsForSlot } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { deleteBooking, useListBookings } from '@app/entities/booking';
+@@ -11,6 +12,7 @@ import { Button } from '@packages/ui/Button';
+ import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
+ import { Section } from '@packages/ui/Section';
+ import { toast } from '@packages/ui/Toast';
++import { Truncate } from '@packages/ui/Truncate';
+ import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
+ import { useParams, useRouter } from 'next/navigation';
+ import React, { useState } from 'react';
+@@ -26,25 +28,32 @@ export default function SlotPage() {
+   const { slotId } = useParams<{ slotId: string }>();
+   const slot = useGetSlot(slotId);
+   const bookings = useListBookings();
++  const sessionType = useGetSessionType(slot.data?.sessionType ?? '');
+   const [busy, setBusy] = useState(false);
+ 
+-  const failed = slot.error ?? bookings.error;
++  const loading = slot.loading || bookings.loading || sessionType.loading;
++  const failed = slot.error ?? bookings.error ?? sessionType.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Session" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The session could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              slot.retry();
+-              bookings.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The session could not be loaded."
++          onRetry={() => {
++            slot.retry();
++            bookings.retry();
++            sessionType.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && !slot.data) {
++    return (
++      <>
++        <PageHeader title="Session" breadcrumb={[{ label: 'Sessions', href: '/sessions' }]} />
++        <Paragraph>Loading session.</Paragraph>
+       </>
+     );
+   }
+@@ -61,11 +70,12 @@ export default function SlotPage() {
+ 
+   const record = slot.data;
+   const held = bookingsForSlot(bookings.data, record.id);
++  const title = formatSlotTitle(sessionType.data?.name ?? 'Session', record.startAt);
+ 
+   const confirmCancelSlot = async () => {
+     const result = await openConfirmationDialog({
+       title: 'Cancel this session?',
+-      content: `Cancelling the slot cancels every booking on it.`,
++      content: `${title}. Cancelling the slot cancels every booking on it.`,
+       status: 'error',
+       footer: (closeDialog) => (
+         <>
+@@ -112,7 +122,7 @@ export default function SlotPage() {
+   return (
+     <>
+       <PageHeader
+-        title={<SlotTitle sessionTypeId={record.sessionType} startAt={record.startAt} />}
++        title={<Truncate>{title}</Truncate>}
+         breadcrumb={[{ label: 'Sessions', href: '/sessions' }]}
+         actions={
+           <Button
+@@ -147,8 +157,4 @@ export default function SlotPage() {
+   );
+ }
+ 
+-/** The page's title: the slot's session type name and time. */
+-function SlotTitle({ sessionTypeId, startAt }: { sessionTypeId: string; startAt: string }) {
+-  const sessionType = useGetSessionType(sessionTypeId);
+-  return <>{formatSlotTitle(sessionType.data?.name ?? 'Session', startAt)}</>;
+-}
++
+diff --git a/web/app/(routes)/(app)/sessions/page.tsx b/web/app/(routes)/(app)/sessions/page.tsx
+index c8c2d49..b0e595b 100644
+--- a/web/app/(routes)/(app)/sessions/page.tsx
++++ b/web/app/(routes)/(app)/sessions/page.tsx
+@@ -1,22 +1,21 @@
+ 'use client';
+ 
+ import { bookingsForSlot } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+-import { useListBookings } from '@app/entities/booking';
++import { useListBookings, type Booking } from '@app/entities/booking';
+ import { useGetSessionType } from '@app/entities/sessionType';
+ import { useListSlots, type Slot } from '@app/entities/slot';
+-import { Button } from '@packages/ui/Button';
+ import { Numeral } from '@packages/ui/Numeral';
+ import { Section } from '@packages/ui/Section';
+ import { createTable } from '@packages/ui/Table';
+ import { Tag } from '@packages/ui/Tag';
++import { Truncate } from '@packages/ui/Truncate';
+ import { Paragraph, Time } from '@packages/ui/Typography';
+ import { useRouter } from 'next/navigation';
+ import React from 'react';
+ 
+-import type { Booking } from '@app/entities/booking';
+-
+ type SlotRow = {
+   id: string;
+   sessionTypeId: string;
+@@ -30,7 +29,7 @@ const SlotTable = createTable<SlotRow>();
+ /** A slot's session type name, read through the single-slot operation. */
+ function SlotTypeName({ sessionTypeId }: { sessionTypeId: string }) {
+   const sessionType = useGetSessionType(sessionTypeId);
+-  return <>{sessionType.data?.name ?? 'Session'}</>;
++  return <Truncate>{sessionType.data?.name ?? 'Session'}</Truncate>;
+ }
+ 
+ /** How many of a slot's seats are taken, and whether it is full. */
+@@ -60,7 +59,9 @@ function SlotBookers({ bookings }: { bookings: Booking[] }) {
+       {bookings.map((booking, index) => (
+         <React.Fragment key={booking.id}>
+           {index > 0 ? ', ' : null}
+-          <NextLink href={`/bookings/${booking.id}`}>{booking.name}</NextLink>
++          <NextLink className="inline-block max-w-full" href={`/bookings/${booking.id}`}>
++            <Truncate>{booking.name}</Truncate>
++          </NextLink>
+         </React.Fragment>
+       ))}
+     </>
+@@ -100,23 +101,28 @@ export default function SessionsPage() {
+     .map((slot) => toRow(slot, bookings.data))
+     .sort((a, b) => (a.startAt < b.startAt ? 1 : a.startAt > b.startAt ? -1 : 0));
+ 
++  const loading = slots.loading || bookings.loading;
+   const failed = slots.error ?? bookings.error;
+   if (failed) {
+     return (
+       <>
+         <PageHeader title="Sessions" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The sessions could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              slots.retry();
+-              bookings.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The sessions could not be loaded."
++          onRetry={() => {
++            slots.retry();
++            bookings.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (loading && slots.data.length === 0 && bookings.data.length === 0) {
++    return (
++      <>
++        <PageHeader title="Sessions" />
++        <Paragraph>Loading sessions.</Paragraph>
+       </>
+     );
+   }
+@@ -150,7 +156,7 @@ export default function SessionsPage() {
+           >
+             <SlotTable.Column id="session" rowHeader title="Session" dataKey="sessionTypeId" width={220}>
+               {(_, row) => (
+-                <NextLink href={`/sessions/${row.id}`}>
++                <NextLink className="inline-block max-w-full" href={`/sessions/${row.id}`}>
+                   <SlotTypeName sessionTypeId={row.sessionTypeId} />
+                 </NextLink>
+               )}
+@@ -175,6 +181,7 @@ export default function SessionsPage() {
+             caption="Past sessions"
+             data={past}
+             rowKey={(row) => row.id}
++            loading={loading}
+             onRowClick={(row, click) => {
+               openSlot(row);
+               click.currentTarget.querySelector('a')?.click();
+@@ -182,7 +189,7 @@ export default function SessionsPage() {
+           >
+             <SlotTable.Column id="session" rowHeader title="Session" dataKey="sessionTypeId" width={220}>
+               {(_, row) => (
+-                <NextLink href={`/sessions/${row.id}`}>
++                <NextLink className="inline-block max-w-full" href={`/sessions/${row.id}`}>
+                   <SlotTypeName sessionTypeId={row.sessionTypeId} />
+                 </NextLink>
+               )}
+diff --git a/web/app/(routes)/(marketing)/book/page.tsx b/web/app/(routes)/(marketing)/book/page.tsx
+index e848954..0e7b589 100644
+--- a/web/app/(routes)/(marketing)/book/page.tsx
++++ b/web/app/(routes)/(marketing)/book/page.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { formatPrice, formatSlotTime } from '@app/blocks/Format/format';
+ import { openSlotsFor } from '@app/blocks/Slots/slots';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { PageHeader } from '@app/components/PageHeader';
+ import { createBooking, useListBookings, type Booking } from '@app/entities/booking';
+@@ -13,6 +14,7 @@ import { Card, CardGroup } from '@packages/ui/Card';
+ import { Controller, Form } from '@packages/ui/Form';
+ import { Input } from '@packages/ui/Input';
+ import { Section } from '@packages/ui/Section';
++import { Truncate } from '@packages/ui/Truncate';
+ import { Paragraph } from '@packages/ui/Typography';
+ import React, { useId, useState } from 'react';
+ import { useForm } from 'react-hook-form';
+@@ -22,7 +24,9 @@ function TypeOption({ sessionType }: { sessionType: SessionType }) {
+   const titleId = useId();
+   return (
+     <Card value={sessionType.id} aria-labelledby={titleId}>
+-      <strong id={titleId}>{sessionType.name}</strong>
++      <strong id={titleId}>
++        <Truncate>{sessionType.name}</Truncate>
++      </strong>
+       <span>
+         {sessionType.durationInMinutes} min · {formatPrice(sessionType.displayedPrice)}
+       </span>
+@@ -35,7 +39,9 @@ function SlotOption({ slotId, startAt }: { slotId: string; startAt: string }) {
+   const titleId = useId();
+   return (
+     <Card value={slotId} aria-labelledby={titleId}>
+-      <strong id={titleId}>{formatSlotTime(startAt)}</strong>
++      <strong id={titleId}>
++        <Truncate>{formatSlotTime(startAt)}</Truncate>
++      </strong>
+     </Card>
+   );
+ }
+@@ -95,19 +101,29 @@ export default function BookPage() {
+     return (
+       <>
+         <PageHeader title="Book a session" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>The booking page could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => {
+-              sessionTypes.retry();
+-              slots.retry();
+-              bookings.retry();
+-            }}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError
++          message="The booking page could not be loaded."
++          onRetry={() => {
++            sessionTypes.retry();
++            slots.retry();
++            bookings.retry();
++          }}
++        />
++      </>
++    );
++  }
++
++  if (
++    (sessionTypes.loading && sessionTypes.data.length === 0) ||
++    (slots.loading && slots.data.length === 0)
++  ) {
++    return (
++      <>
++        <PageHeader
++          title="Book a session"
++          description="Pick a session type and an open time. No account is needed, and nobody pays in the app. Displayed prices are shown for information only."
++        />
++        <Paragraph>Loading booking options.</Paragraph>
+       </>
+     );
+   }
+diff --git a/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx b/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
+index 36caffe..d786a09 100644
+--- a/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
++++ b/web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx
+@@ -1,6 +1,7 @@
+ 'use client';
+ 
+-import { formatSlotTitle } from '@app/blocks/Format/format';
++import { formatSlotTime, formatSlotTitle } from '@app/blocks/Format/format';
++import { LoadError } from '@app/components/LoadError';
+ import { NextLink } from '@app/components/NextLink';
+ import { NotFound } from '@app/components/NotFound';
+ import { PageHeader } from '@app/components/PageHeader';
+@@ -11,7 +12,8 @@ import { Button } from '@packages/ui/Button';
+ import { DialogResult, openConfirmationDialog } from '@packages/ui/Dialog';
+ import { Section } from '@packages/ui/Section';
+ import { toast } from '@packages/ui/Toast';
+-import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph, Time } from '@packages/ui/Typography';
++import { Truncate } from '@packages/ui/Truncate';
++import { DescriptionDetails, DescriptionList, DescriptionTerm, Paragraph } from '@packages/ui/Typography';
+ import { useParams } from 'next/navigation';
+ import React, { useState } from 'react';
+ 
+@@ -30,15 +32,16 @@ export default function MyBookingPage() {
+     return (
+       <>
+         <PageHeader title="Your booking" />
+-        <div role="alert" className="flex-row-gap-3 items-center">
+-          <Paragraph>Your booking could not be loaded.</Paragraph>
+-          <Button
+-            variant="base" // The quiet way out beside the error message, not the page's main action.
+-            onClick={() => booking.retry()}
+-          >
+-            Retry
+-          </Button>
+-        </div>
++        <LoadError message="Your booking could not be loaded." onRetry={() => booking.retry()} />
++      </>
++    );
++  }
++
++  if (booking.loading && !booking.data) {
++    return (
++      <>
++        <PageHeader title="Your booking" />
++        <Paragraph>Loading your booking.</Paragraph>
+       </>
+     );
+   }
+@@ -92,7 +95,15 @@ export default function MyBookingPage() {
+   if (record.isCancelled) {
+     return (
+       <>
+-        <PageHeader title={title} description="This booking was cancelled." />
++        <PageHeader
++          title={<Truncate>{title}</Truncate>}
++          description="This booking was cancelled."
++          actions={
++            <Button as={NextLink} href="/book">
++              Book another time
++            </Button>
++          }
++        />
+         <Section title="Details">
+           <BookingDetails
+             name={record.name}
+@@ -102,9 +113,6 @@ export default function MyBookingPage() {
+             status="Cancelled"
+           />
+         </Section>
+-        <Button as={NextLink} href="/book">
+-          Book another time
+-        </Button>
+       </>
+     );
+   }
+@@ -112,7 +120,7 @@ export default function MyBookingPage() {
+   return (
+     <>
+       <PageHeader
+-        title={title}
++        title={<Truncate>{title}</Truncate>}
+         actions={
+           <Button
+             variant="danger" // Cancelling is the destructive action of this view.
+@@ -153,23 +161,33 @@ function BookingDetails({
+     <DescriptionList>
+       <div>
+         <DescriptionTerm>Session type</DescriptionTerm>
+-        <DescriptionDetails>{sessionTypeName}</DescriptionDetails>
++        <DescriptionDetails>
++          <Truncate>{sessionTypeName}</Truncate>
++        </DescriptionDetails>
+       </div>
+       <div>
+         <DescriptionTerm>Time</DescriptionTerm>
+-        <DescriptionDetails>{startAt ? <Time value={startAt} withTime /> : '—'}</DescriptionDetails>
++        <DescriptionDetails>
++          <Truncate>{startAt ? formatSlotTime(startAt) : '—'}</Truncate>
++        </DescriptionDetails>
+       </div>
+       <div>
+         <DescriptionTerm>Status</DescriptionTerm>
+-        <DescriptionDetails>{status}</DescriptionDetails>
++        <DescriptionDetails>
++          <Truncate>{status}</Truncate>
++        </DescriptionDetails>
+       </div>
+       <div>
+         <DescriptionTerm>Name</DescriptionTerm>
+-        <DescriptionDetails>{name}</DescriptionDetails>
++        <DescriptionDetails>
++          <Truncate>{name}</Truncate>
++        </DescriptionDetails>
+       </div>
+       <div>
+         <DescriptionTerm>Email</DescriptionTerm>
+-        <DescriptionDetails>{email}</DescriptionDetails>
++        <DescriptionDetails>
++          <Truncate>{email}</Truncate>
++        </DescriptionDetails>
+       </div>
+     </DescriptionList>
+   );
+diff --git a/web/app/blocks/Slots/slots.ts b/web/app/blocks/Slots/slots.ts
+index 9a52cb9..c23c3ed 100644
+--- a/web/app/blocks/Slots/slots.ts
++++ b/web/app/blocks/Slots/slots.ts
+@@ -13,7 +13,7 @@ export function bookingsForSlot(bookings: Booking[], slotId: string): Booking[]
+ }
+ 
+ /** Whether a slot holds as many bookings as its session type allows. */
+-export function isSlotFull(
++function isSlotFull(
+   slot: Slot,
+   sessionType: SessionType | undefined,
+   bookings: Booking[],
+@@ -70,14 +70,6 @@ export function followUpNoteFor(notes: Note[], clientId: string): Note | undefin
+   return dated[0];
+ }
+ 
+-export type FollowUpState = 'overdue' | 'due' | 'none';
+-
+-/** Whether a dated follow-up is overdue, due, or missing. */
+-export function followUpState(followUpDate: string | undefined, today: string): FollowUpState {
+-  if (!followUpDate) return 'none';
+-  return followUpDate < today ? 'overdue' : 'due';
+-}
+-
+ /** Whether a task stands out as overdue: due before today and not done. */
+ export function isTaskOverdue(
+   task: { dueDate?: string; status: string },
+diff --git a/web/app/components/ClientStatusTag/ClientStatusTag.tsx b/web/app/components/ClientStatusTag/ClientStatusTag.tsx
+index a2187d1..189355f 100644
+--- a/web/app/components/ClientStatusTag/ClientStatusTag.tsx
++++ b/web/app/components/ClientStatusTag/ClientStatusTag.tsx
+@@ -1,5 +1,5 @@
+ import { ClientStatusOptions } from '@app/entities/enums';
+-import { Tag } from '@packages/ui/Tag';
++import { Tag, type TagProps } from '@packages/ui/Tag';
+ import React from 'react';
+ 
+ const variantFor: Record<string, 'info' | 'success' | 'base'> = {
+@@ -9,10 +9,17 @@ const variantFor: Record<string, 'info' | 'success' | 'base'> = {
+ };
+ 
+ /** A client's status as a tag, in its own color. */
+-export function ClientStatusTag({ status }: { status: string }) {
++export function ClientStatusTag({
++  status,
++  size,
++}: {
++  status: string;
++  size?: TagProps['size'];
++}) {
+   const label = ClientStatusOptions.find((option) => option.key === status)?.label ?? status;
+   return (
+     <Tag
++      size={size} // In tables the small tag fits the row; elsewhere the default applies.
+       variant={variantFor[status] ?? 'base'} // Each client status keeps its own color.
+     >
+       {label}
+diff --git a/web/app/components/LoadError/LoadError.tsx b/web/app/components/LoadError/LoadError.tsx
+new file mode 100644
+index 0000000..80ab1c8
+--- /dev/null
++++ b/web/app/components/LoadError/LoadError.tsx
+@@ -0,0 +1,18 @@
++import { Button } from '@packages/ui/Button';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++/** A failed load with a retry, the same on every screen. */
++export function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
++  return (
++    <div role="alert" className="flex-row-gap-3 items-center">
++      <Paragraph>{message}</Paragraph>
++      <Button
++        variant="base" // The quiet way out beside the error message, not the page's main action.
++        onClick={onRetry}
++      >
++        Retry
++      </Button>
++    </div>
++  );
++}
+diff --git a/web/app/components/LoadError/index.ts b/web/app/components/LoadError/index.ts
+new file mode 100644
+index 0000000..4c91961
+--- /dev/null
++++ b/web/app/components/LoadError/index.ts
+@@ -0,0 +1 @@
++export { LoadError } from './LoadError';
+diff --git a/web/app/entities/availability/index.ts b/web/app/entities/availability/index.ts
+index 292bc31..e7a059d 100644
+--- a/web/app/entities/availability/index.ts
++++ b/web/app/entities/availability/index.ts
+@@ -1,2 +1,2 @@
+ export type { Availability, AvailabilityInput } from './types';
+-export { deleteAvailability, getAvailability, listAvailabilities, updateAvailability, useGetAvailability, useListAvailabilities } from './operations';
++export { createAvailability, deleteAvailability, getAvailability, listAvailabilities, updateAvailability, useGetAvailability, useListAvailabilities } from './operations';
+diff --git a/web/app/entities/availability/operations.ts b/web/app/entities/availability/operations.ts
+index f0e558f..5169a98 100644
+--- a/web/app/entities/availability/operations.ts
++++ b/web/app/entities/availability/operations.ts
+@@ -4,6 +4,14 @@ import { useAvailabilityStore } from './store';
+ 
+ import type { Availability, AvailabilityInput } from './types';
+ 
++export async function createAvailability(input: AvailabilityInput): Promise<Availability> {
++  await mockCall('createAvailability');
++  const now = new Date().toISOString();
++  const record: Availability = { ...input, id: crypto.randomUUID(), createdAt: now, updatedAt: now };
++  useAvailabilityStore.setState(({ records }) => ({ records: [...records, record] }));
++  return record;
++}
++
+ export async function getAvailability(id: string): Promise<Availability | undefined> {
+   await mockCall('getAvailability');
+   return useAvailabilityStore.getState().records.find((record) => record.id === id);
+-- 
+2.34.1
+

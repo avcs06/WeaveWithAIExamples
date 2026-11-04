@@ -1,0 +1,1185 @@
+code-pages: 77d3a97..eb352c2
+
+ web/app/(routes)/(app)/account/page.tsx            |  89 ++++++++
+ .../[dashboardId]/components/ChecklistWidget.tsx   |  70 ++++++
+ .../[dashboardId]/components/CounterWidget.tsx     |  51 +++++
+ .../[dashboardId]/components/LinkListWidget.tsx    |  38 ++++
+ .../[dashboardId]/components/NoteWidget.tsx        |  30 +++
+ .../(app)/dashboards/[dashboardId]/page.tsx        | 240 +++++++++++++++++++++
+ web/app/(routes)/(app)/dashboards/page.tsx         | 179 +++++++++++++++
+ web/app/(routes)/(marketing)/page.css.ts           |  49 +++++
+ web/app/(routes)/(marketing)/page.tsx              | 104 ++++++++-
+ web/app/blocks/DashboardHeader/DashboardHeader.tsx |  75 +++++++
+ web/app/blocks/DashboardHeader/index.ts            |   1 +
+ .../DeleteDashboardDialog.tsx                      |  79 +++++++
+ web/app/blocks/DeleteDashboardDialog/index.ts      |   1 +
+ .../AppHeaderRightSlot/AppHeaderRightSlot.tsx      |   4 +-
+ web/app/entities/auth/index.ts                     |  17 ++
+ web/app/entities/widget/deleteByDashboard.ts       |  11 +
+ web/app/entities/widget/index.ts                   |   1 +
+ 17 files changed, 1034 insertions(+), 5 deletions(-)
+
+diff --git a/web/app/(routes)/(app)/account/page.tsx b/web/app/(routes)/(app)/account/page.tsx
+new file mode 100644
+index 0000000..c736cc0
+--- /dev/null
++++ b/web/app/(routes)/(app)/account/page.tsx
+@@ -0,0 +1,89 @@
++'use client';
++
++import { PageHeader } from '@app/components/PageHeader';
++import { changePassword, useCurrentUser } from '@app/entities/auth';
++import { Button } from '@packages/ui/Button';
++import { Controller, Form } from '@packages/ui/Form';
++import { PasswordInput } from '@packages/ui/Input';
++import { Section } from '@packages/ui/Section';
++import { toast } from '@packages/ui/Toast';
++import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@packages/ui/Typography';
++import React, { useState } from 'react';
++import { useForm } from 'react-hook-form';
++
++type FormValues = { currentPassword: string; newPassword: string };
++
++export default function AccountPage() {
++  const user = useCurrentUser();
++  const [formError, setFormError] = useState<string | undefined>();
++  const [saving, setSaving] = useState(false);
++  const { control, handleSubmit, reset } = useForm<FormValues>({
++    defaultValues: { currentPassword: '', newPassword: '' },
++  });
++
++  const onSubmit = async (values: FormValues) => {
++    if (saving) return;
++    setFormError(undefined);
++    if (!values.currentPassword || values.newPassword.length < 8 || values.newPassword.length > 128) {
++      setFormError('Current password is required and new password must be 8 to 128 characters');
++      reset({ currentPassword: '', newPassword: '' });
++      return;
++    }
++    setSaving(true);
++    try {
++      await changePassword(values.currentPassword, values.newPassword);
++      toast({ title: 'Password changed' });
++      reset({ currentPassword: '', newPassword: '' });
++    } catch (err: unknown) {
++      const msg = (err as Error).message;
++      if ((err as { code?: string }).code === 'incorrect' || msg === 'Current password is incorrect.') {
++        setFormError('Current password is incorrect.');
++      } else if (msg.includes('required and new password')) {
++        setFormError(msg);
++      } else {
++        setFormError('Could not update password. Try again.');
++      }
++      reset({ currentPassword: '', newPassword: '' });
++    } finally {
++      setSaving(false);
++    }
++  };
++
++  return (
++    <>
++      <PageHeader title="Account" />
++      <Section title="Your account">
++        <DescriptionList>
++          <DescriptionTerm>Email</DescriptionTerm>
++          <DescriptionDetails>{user && typeof user === 'object' ? (user as { email: string }).email : ''}</DescriptionDetails>
++        </DescriptionList>
++      </Section>
++      <Section title="Change password">
++        <Form
++          error={formError}
++          onSubmit={handleSubmit(onSubmit)}
++          actions={
++            <Button type="submit" loadingWithReason={saving ? 'Saving password' : undefined}>
++              Save
++            </Button>
++          }
++        >
++          <Controller
++            name="currentPassword"
++            control={control}
++            rules={{ required: 'Current password is required and new password must be 8 to 128 characters' }}
++          >
++            {({ field }) => <PasswordInput label="Current password" autoComplete="current-password" {...field} />}
++          </Controller>
++          <Controller
++            name="newPassword"
++            control={control}
++            rules={{ required: 'Current password is required and new password must be 8 to 128 characters' }}
++          >
++            {({ field }) => <PasswordInput label="New password" autoComplete="new-password" {...field} />}
++          </Controller>
++        </Form>
++      </Section>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/components/ChecklistWidget.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/ChecklistWidget.tsx
+new file mode 100644
+index 0000000..4e5584b
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/ChecklistWidget.tsx
+@@ -0,0 +1,70 @@
++'use client';
++
++import { addChecklistItem, removeChecklistItem, toggleChecklistItem, updateChecklistItem } from '@app/entities/widget';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Checkbox } from '@packages/ui/Checkbox';
++import { Input } from '@packages/ui/Input';
++import { toast } from '@packages/ui/Toast';
++import { Check, Pencil, Trash2, X } from 'lucide-react';
++import React, { useState } from 'react';
++
++import type { Widget } from '@app/entities/widget/types';
++
++export function ChecklistWidget({ widget, onSaved }: { widget: Widget; onSaved: () => void }) {
++  const [newItem, setNewItem] = useState('');
++  const [newError, setNewError] = useState<string | undefined>();
++  const [editIdx, setEditIdx] = useState<number | null>(null);
++  const [draft, setDraft] = useState('');
++  const [editError, setEditError] = useState<string | undefined>();
++  const [pending, setPending] = useState(false);
++
++  return (
++    <div data-ds="" className="flex-col-gap-3">
++      {(widget.checklistItemText || []).map((text, idx) => (
++        // Key uses text + index as stable as available; checklist items have no id in model
++        <div key={`${widget.id}-item-${idx}-${text}`} data-ds="" className="flex-row-gap-2 items-center">
++          <Checkbox checked={widget.checklistChecked?.[idx] ?? false} onCheckedChange={(c) => {
++            if (pending) return;
++            const next = [...(widget.checklistChecked || [])];
++            (next as boolean[])[idx] = c;
++            setPending(true);
++            toggleChecklistItem(widget.id, { checklistChecked: next } as never).then(() => onSaved()).catch(() => toast({ title: 'Saving failed. Try again.', status: 'error' })).finally(() => setPending(false));
++          }} value={text} aria-label={text} />
++          {editIdx === idx ? (
++            <>
++              <Input aria-label="Checklist item text" value={draft} onChange={setDraft} autoComplete="off" error={editError} />
++              <IconButton tooltip="Save" onClick={async () => {
++                if (!draft.trim() || draft.length > 120) { setEditError('Text is required and max 120 characters'); return; }
++                setEditError(undefined);
++                if (pending) return; setPending(true);
++                const nt = [...(widget.checklistItemText || [])]; nt[idx] = draft;
++                try { await updateChecklistItem(widget.id, { checklistItemText: nt } as never); onSaved(); setEditIdx(null); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); } finally { setPending(false); }
++              }}><Check /></IconButton>
++              <IconButton tooltip="Cancel" onClick={() => setEditIdx(null)}><X /></IconButton>
++            </>
++          ) : (
++            <>
++              <span>{text}</span>
++              <IconButton tooltip="Edit" onClick={() => { setEditIdx(idx); setDraft(text); setEditError(undefined); }}><Pencil /></IconButton>
++              <IconButton tooltip="Remove" onClick={async () => {
++                if (pending) return; setPending(true);
++                const nt = (widget.checklistItemText || []).filter((_, i) => i !== idx);
++                const nc = (widget.checklistChecked || []).filter((_, i) => i !== idx);
++                try { await removeChecklistItem(widget.id, { checklistItemText: nt, checklistChecked: nc } as never); onSaved(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); } finally { setPending(false); }
++              }}><Trash2 /></IconButton>
++            </>
++          )}
++        </div>
++      ))}
++      <span className="flex-row-gap-2 items-center">
++        <Input aria-label="New checklist item" value={newItem} onChange={setNewItem} autoComplete="off" error={newError} />
++        <Button onClick={async () => {
++          const v = newItem.trim(); if (!v || v.length > 120) { setNewError('Text is required and max 120 characters'); return; }
++          setNewError(undefined);
++          if (pending) return; setPending(true);
++          try { await addChecklistItem(widget.id, { checklistItemText: [...(widget.checklistItemText || []), v], checklistChecked: [...(widget.checklistChecked || []), false] } as never); setNewItem(''); onSaved(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); } finally { setPending(false); }
++        }}>Add</Button>
++      </span>
++    </div>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/components/CounterWidget.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/CounterWidget.tsx
+new file mode 100644
+index 0000000..7646c35
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/CounterWidget.tsx
+@@ -0,0 +1,51 @@
++'use client';
++
++import { updateDashboard } from '@app/entities/dashboard';
++import { incrementCounter, updateCounterLabel } from '@app/entities/widget';
++import { IconButton } from '@packages/ui/Button';
++import { Input } from '@packages/ui/Input';
++import { Numeral } from '@packages/ui/Numeral';
++import { toast } from '@packages/ui/Toast';
++import { Check, Minus, Pencil, Plus, X } from 'lucide-react';
++import React, { useState } from 'react';
++
++import type { Widget } from '@app/entities/widget/types';
++
++export function CounterWidget({ widget, dashboardId, onSaved }: { widget: Widget; dashboardId: string; onSaved: () => void }) {
++  const [editing, setEditing] = useState(false);
++  const [draft, setDraft] = useState('');
++  const [error, setError] = useState<string | undefined>();
++  const [pending, setPending] = useState(false);
++
++  const change = async (delta: number) => {
++    if (pending) return;
++    setPending(true);
++    try { await incrementCounter(widget.id, { counterValue: (widget.counterValue ?? 0) + delta } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); onSaved(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); } finally { setPending(false); }
++  };
++
++  return (
++    <div data-ds="" className="flex-col-gap-3">
++      {editing ? (
++        <span className="flex-row-gap-2 items-center">
++          <Input aria-label="Counter label" value={draft} onChange={setDraft} autoComplete="off" error={error} />
++          <IconButton tooltip="Save" onClick={async () => {
++            if (draft.length > 40) { setError('Max 40 characters'); return; }
++            setError(undefined);
++            try { await updateCounterLabel(widget.id, { counterLabel: draft } as never); onSaved(); setEditing(false); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); }
++          }}><Check /></IconButton>
++          <IconButton tooltip="Cancel" onClick={() => setEditing(false)}><X /></IconButton>
++        </span>
++      ) : (
++        <span className="flex-row-gap-2 items-center">
++          <span>{widget.counterLabel || 'Count'}</span>
++          <IconButton tooltip="Edit label" onClick={() => { setEditing(true); setDraft(widget.counterLabel || ''); setError(undefined); }}><Pencil /></IconButton>
++        </span>
++      )}
++      <div data-ds="" className="flex-row-gap-3 items-center">
++        <IconButton tooltip="Decrease" onClick={() => change(-1)} loadingWithReason={pending ? 'Saving' : undefined}><Minus /></IconButton>
++        <Numeral>{widget.counterValue ?? 0}</Numeral>
++        <IconButton tooltip="Increase" onClick={() => change(1)} loadingWithReason={pending ? 'Saving' : undefined}><Plus /></IconButton>
++      </div>
++    </div>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/components/LinkListWidget.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/LinkListWidget.tsx
+new file mode 100644
+index 0000000..b334253
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/LinkListWidget.tsx
+@@ -0,0 +1,38 @@
++'use client';
++
++import { removeLink } from '@app/entities/widget';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Link } from '@packages/ui/Link';
++import { toast } from '@packages/ui/Toast';
++import { Pencil, Trash2 } from 'lucide-react';
++import React, { useState } from 'react';
++
++import type { Widget } from '@app/entities/widget/types';
++
++function isSafeUrl(url: string): boolean {
++  return /^https?:\/\//.test(url);
++}
++
++export function LinkListWidget({ widget, onAdd, onEdit }: { widget: Widget; onAdd: () => void; onEdit: (idx: number) => void }) {
++  const [pendingIdx, setPendingIdx] = useState<number | null>(null);
++  return (
++    <div data-ds="" className="flex-col-gap-3">
++      {(widget.linkTitle || []).map((title, idx) => {
++        const url = widget.linkUrl?.[idx] || '';
++        return (
++          <div key={`${widget.id}-link-${idx}-${title}`} data-ds="" className="flex-row-gap-2 items-center">
++            {isSafeUrl(url) ? <Link href={url} target="_blank" rel="noreferrer">{title}</Link> : <span>{title}</span>}
++            <IconButton tooltip="Edit link" onClick={() => onEdit(idx)}><Pencil /></IconButton>
++            <IconButton tooltip="Remove link" loadingWithReason={pendingIdx === idx ? 'Removing' : undefined} onClick={async () => {
++              if (pendingIdx !== null) return; setPendingIdx(idx);
++              const nt = (widget.linkTitle || []).filter((_, i) => i !== idx);
++              const nu = (widget.linkUrl || []).filter((_, i) => i !== idx);
++              try { await removeLink(widget.id, { linkTitle: nt, linkUrl: nu } as never); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); } finally { setPendingIdx(null); }
++            }}><Trash2 /></IconButton>
++          </div>
++        );
++      })}
++      <Button onClick={onAdd}>Add link</Button>
++    </div>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/components/NoteWidget.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/NoteWidget.tsx
+new file mode 100644
+index 0000000..dd4e2d8
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/components/NoteWidget.tsx
+@@ -0,0 +1,30 @@
++'use client';
++
++import { updateDashboard } from '@app/entities/dashboard';
++import { updateNoteText } from '@app/entities/widget';
++import { Textarea } from '@packages/ui/Textarea';
++import { toast } from '@packages/ui/Toast';
++import React, { useState } from 'react';
++
++import type { Widget } from '@app/entities/widget/types';
++
++export function NoteWidget({ widget, dashboardId, onSaved }: { widget: Widget; dashboardId: string; onSaved: () => void }) {
++  const [error, setError] = useState<string | undefined>();
++  const [pending, setPending] = useState(false);
++  return (
++    <div data-ds="" className="flex-col-gap-2">
++      <Textarea
++        label="Note"
++        value={widget.noteText || ''}
++        onChange={async (v) => {
++          if (pending) return;
++          if (v.length > 5000) { setError('Max 5000 characters'); return; }
++          setError(undefined);
++          setPending(true);
++          try { await updateNoteText(widget.id, { noteText: v } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); onSaved(); } catch { toast({ title: 'Saving failed. Try again.', status: 'error' }); } finally { setPending(false); }
++        }}
++        error={error}
++      />
++    </div>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx b/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+new file mode 100644
+index 0000000..2d42915
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/[dashboardId]/page.tsx
+@@ -0,0 +1,240 @@
++'use client';
++
++import { DashboardHeader } from '@app/blocks/DashboardHeader';
++import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
++import { NotFound } from '@app/components/NotFound';
++import { PageHeader } from '@app/components/PageHeader';
++import { deleteDashboard, duplicateDashboard, updateDashboard, useGetDashboard } from '@app/entities/dashboard';
++import { addLink, createWidget, deleteWidget, removeLink, repositionWidget, updateLink, updateWidgetTitle, useListWidgets } from '@app/entities/widget';
++import { Button, IconButton } from '@packages/ui/Button';
++import { CardList } from '@packages/ui/Card';
++import { Dialog } from '@packages/ui/Dialog';
++import { Dropdown } from '@packages/ui/Dropdown';
++import { Input } from '@packages/ui/Input';
++import { Select, SelectOption } from '@packages/ui/Select';
++import { toast } from '@packages/ui/Toast';
++import { Check, ChevronDown, ChevronUp, Pencil, Settings, Trash2, X } from 'lucide-react';
++import { useParams, useRouter } from 'next/navigation';
++import React, { useEffect, useMemo, useRef, useState } from 'react';
++
++import { ChecklistWidget } from './components/ChecklistWidget';
++import { CounterWidget } from './components/CounterWidget';
++import { LinkListWidget } from './components/LinkListWidget';
++import { NoteWidget } from './components/NoteWidget';
++
++import type { Widget } from '@app/entities/widget/types';
++
++const sizeSpan: Record<string, string> = { small: 'span 4', medium: 'span 6', large: 'span 12' };
++
++export default function DashboardDetailPage() {
++  const params = useParams<{ dashboardId: string }>();
++  const dashboardId = params.dashboardId;
++  const { data: dashboard, loading: dashLoading, error: dashError, retry } = useGetDashboard(dashboardId);
++  const { data: allWidgets, loading: wLoading } = useListWidgets();
++  const router = useRouter();
++
++  const [editing, setEditing] = useState(false);
++  const [saving, setSaving] = useState(false);
++  const [saved, setSaved] = useState(false);
++  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
++  const timer2Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
++  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); if (timer2Ref.current) clearTimeout(timer2Ref.current); }, []);
++
++  const flash = () => {
++    setSaving(true);
++    if (timerRef.current) clearTimeout(timerRef.current);
++    timerRef.current = setTimeout(() => {
++      setSaving(false); setSaved(true);
++      timer2Ref.current = setTimeout(() => setSaved(false), 1500);
++    }, 300);
++  };
++
++  const [showDelete, setShowDelete] = useState(false);
++  const [showAdd, setShowAdd] = useState(false);
++  const [nType, setNType] = useState('note');
++  const [nTitle, setNTitle] = useState('');
++  const [nSize, setNSize] = useState('medium');
++  const [nErr, setNErr] = useState<string | undefined>();
++  const [nPending, setNPending] = useState(false);
++  const [remId, setRemId] = useState<string | null>(null);
++  const [remPending, setRemPending] = useState(false);
++  const [editLinkW, setEditLinkW] = useState<Widget | null>(null);
++  const [editLinkIdx, setEditLinkIdx] = useState<number | null>(null);
++  const [lTitle, setLTitle] = useState('');
++  const [lUrl, setLUrl] = useState('');
++  const [lErr, setLErr] = useState<string | undefined>();
++  const [lPending, setLPending] = useState(false);
++  const [editWTitle, setEditWTitle] = useState<string | null>(null);
++  const [wTitleDraft, setWTitleDraft] = useState('');
++  const [wTitleErr, setWTitleErr] = useState<string | undefined>();
++  const [dupPending, setDupPending] = useState(false);
++
++  const widgets = useMemo(() => {
++    if (!allWidgets) return [];
++    return allWidgets.filter((w) => w.dashboard === dashboardId).sort((a, b) => a.position - b.position);
++  }, [allWidgets, dashboardId]);
++
++  const [widgetGoneIds, setWidgetGoneIds] = useState<Set<string>>(new Set());
++  // Detect widgets that disappeared (T48)
++  const prevWidgetIdsRef = useRef<Set<string> | null>(null);
++  useEffect(() => {
++    const current = new Set(widgets.map((w) => w.id));
++    if (prevWidgetIdsRef.current) {
++      const gone = [...prevWidgetIdsRef.current].filter((id) => !current.has(id));
++      if (gone.length) setWidgetGoneIds((s) => new Set([...s, ...gone]));
++    }
++    prevWidgetIdsRef.current = current;
++  }, [widgets]);
++
++  if (dashLoading || wLoading) return <PageHeader title="Loading" />;
++  if (dashError) return <><PageHeader title="Error" /><p role="alert">Failed to load</p><Button onClick={retry}>Retry</Button></>;
++  if (!dashboard) return <NotFound title="Dashboard not found" description="This dashboard is gone." back={{ label: 'Go to your dashboards', href: '/dashboards' }} />;
++  const handleDup = async () => {
++    if (dupPending) return; setDupPending(true);
++    let copy: { id: string } | null = null;
++    const createdIds: string[] = [];
++    try {
++      copy = await duplicateDashboard({ name: `${dashboard.name} Copy`, lastEditedAt: new Date().toISOString() });
++      for (const w of widgets) { const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = w; const c = await createWidget({ ...rest, dashboard: copy.id } as never); createdIds.push(c.id); }
++      router.push(`/dashboards/${copy.id}`);
++    } catch {
++      if (copy) {
++        for (const wid of createdIds) { try { await deleteWidget(wid); } catch { /* ignore */ } }
++        try { await deleteDashboard(copy.id); } catch { /* ignore */ }
++      }
++      toast({ title: 'Could not duplicate. Try again.', status: 'error' });
++    } finally { setDupPending(false); }
++  };
++  const handleCreate = async () => {
++    if (nPending) return;
++    if (!nType) { setNErr('Title max 60 characters and type is required'); return; }
++    if (nTitle.length > 60) { setNErr('Title max 60 characters and type is required'); return; }
++    setNPending(true);
++    let created: { id: string } | null = null;
++    try {
++      const title = nTitle || nType.charAt(0).toUpperCase() + nType.slice(1);
++      created = await createWidget({ title, type: nType as Widget['type'], size: nSize as Widget['size'], position: widgets.length + 1, dashboard: dashboardId, noteText: '', counterLabel: '', counterValue: 0, checklistItemText: [], checklistChecked: [], linkTitle: [], linkUrl: [] } as never);
++      await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Widget created' }); setShowAdd(false); setNTitle(''); setNErr(undefined);
++    } catch {
++      if (created) { try { await deleteWidget(created.id); } catch { /* rollback failed */ } }
++      setNErr('Could not create widget. Try again.');
++    } finally { setNPending(false); }
++  };
++  const handleRemoveW = async () => {
++    if (!remId || remPending) return; setRemPending(true);
++    try { await deleteWidget(remId); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Widget removed' }); setRemId(null); } catch { toast({ title: 'Could not remove widget. Try again.', status: 'error' }); } finally { setRemPending(false); }
++  };
++  const [wTitleSaving, setWTitleSaving] = useState(false);
++  const handleWTitle = async (w: Widget) => {
++    if (wTitleSaving) return;
++    if (wTitleDraft.length > 60) { setWTitleErr('Max 60 characters'); return; }
++    setWTitleSaving(true);
++    try { await updateWidgetTitle(w.id, { title: wTitleDraft } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); setEditWTitle(null); setWTitleErr(undefined); } catch { setWTitleErr('Saving failed. Try again.'); } finally { setWTitleSaving(false); }
++  };
++  const handleMove = async (w: Widget, dir: number) => {
++    const idx = widgets.findIndex((x) => x.id === w.id); const ni = idx + dir; if (ni < 0 || ni >= widgets.length) return;
++    const other = widgets[ni];
++    const origW = w.position; const origO = other.position;
++    try { await repositionWidget(w.id, { position: origO } as never); await repositionWidget(other.id, { position: origW } as never); await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); } catch {
++      // Rollback: try to restore positions
++      try { await repositionWidget(w.id, { position: origW } as never); await repositionWidget(other.id, { position: origO } as never); } catch { /* rollback failed */ }
++      toast({ title: 'Could not reorder. Try again.', status: 'error' });
++    }
++  };
++
++  return (
++    <>
++      <DashboardHeader dashboard={dashboard} editing={editing} onToggleEditing={setEditing} onDuplicate={handleDup} savingText={saving ? 'Saving' : saved ? 'Saved' : ''} />
++      {widgetGoneIds.size > 0 ? <p role="status">This widget is gone.</p> : null}
++
++      {widgets.length === 0 ? (
++        <div data-ds="" className="flex-col-gap-3 items-start">
++          <p>No widgets yet. Add your first widget to start building.</p>
++          <Button onClick={() => setShowAdd(true)}>Add widget</Button>
++        </div>
++      ) : (
++        <div data-ds="" className="grid gap-4" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}>
++          {widgets.map((w) => (
++            <div key={w.id} data-ds="" style={{ gridColumn: sizeSpan[w.size] || 'span 6' }}>
++              <CardList
++                // grid shows small/medium/large widgets with different footprints
++                layout="grid"
++                aria-label={w.title || w.type}
++                items={[{ id: w.id }]}
++                renderItem={() => (
++                  <>
++                    <div data-ds="" className="flex-row-gap-2 items-center">
++                      {editing && editWTitle === w.id ? (
++                        <>
++                          <Input aria-label="Widget title" value={wTitleDraft} onChange={setWTitleDraft} autoComplete="off" error={wTitleErr} />
++                          <IconButton tooltip="Save" onClick={() => handleWTitle(w)} loadingWithReason={wTitleSaving ? 'Saving' : undefined}><Check /></IconButton>
++                          <IconButton tooltip="Cancel" onClick={() => setEditWTitle(null)}><X /></IconButton>
++                        </>
++                      ) : (
++                        <>
++                          <h3>{w.title || w.type.charAt(0).toUpperCase() + w.type.slice(1)}</h3>
++                          {editing ? <IconButton tooltip="Edit title" onClick={() => { setEditWTitle(w.id); setWTitleDraft(w.title || ''); setWTitleErr(undefined); }}><Pencil /></IconButton> : null}
++                        </>
++                      )}
++                      {editing ? (
++                        <>
++                          <IconButton tooltip={widgets.length === 1 ? 'Add another widget to reorder' : 'Move up'} disabledWithReason={widgets.length === 1 ? 'Add another widget to reorder' : undefined} onClick={() => handleMove(w, -1)}><ChevronUp /></IconButton>
++                          <IconButton tooltip={widgets.length === 1 ? 'Add another widget to reorder' : 'Move down'} disabledWithReason={widgets.length === 1 ? 'Add another widget to reorder' : undefined} onClick={() => handleMove(w, 1)}><ChevronDown /></IconButton>
++                          <Dropdown menu={<><Dropdown.Item onSelect={async () => { await repositionWidget(w.id, { size: 'small' } as never); flash(); }}>Small</Dropdown.Item><Dropdown.Item onSelect={async () => { await repositionWidget(w.id, { size: 'medium' } as never); flash(); }}>Medium</Dropdown.Item><Dropdown.Item onSelect={async () => { await repositionWidget(w.id, { size: 'large' } as never); flash(); }}>Large</Dropdown.Item></>}>
++                            <IconButton tooltip="Size"><Settings /></IconButton>
++                          </Dropdown>
++                          <IconButton tooltip="Remove" onClick={() => setRemId(w.id)}><Trash2 /></IconButton>
++                        </>
++                      ) : null}
++                    </div>
++                    {w.type === 'note' ? <NoteWidget widget={w} dashboardId={dashboardId} onSaved={flash} /> : null}
++                    {w.type === 'counter' ? <CounterWidget widget={w} dashboardId={dashboardId} onSaved={flash} /> : null}
++                    {w.type === 'checklist' ? <ChecklistWidget widget={w} onSaved={flash} /> : null}
++                    {w.type === 'link_list' ? <LinkListWidget widget={w} onAdd={() => { setEditLinkW(w); setEditLinkIdx(null); setLTitle(''); setLUrl(''); setLErr(undefined); }} onEdit={(idx) => { setEditLinkW(w); setEditLinkIdx(idx); setLTitle(w.linkTitle?.[idx] || ''); setLUrl(w.linkUrl?.[idx] || ''); setLErr(undefined); }} /> : null}
++                  </>
++                )}
++              />
++            </div>
++          ))}
++        </div>
++      )}
++
++      {showDelete ? <DeleteDashboardDialog dashboardId={dashboard.id} dashboardName={dashboard.name} open={showDelete} onOpenChange={setShowDelete} onDeleted={() => router.push('/dashboards')} /> : null}
++
++      <Dialog title="Add widget" open={showAdd} onOpenChange={setShowAdd} footer={(close) => <><Button onClick={() => close()}>Cancel</Button><Button onClick={handleCreate} loadingWithReason={nPending ? 'Creating widget' : undefined}>Create</Button></>}>
++        <div data-ds="" className="flex-col-gap-3">
++          <Select label="Type" value={nType} onChange={setNType}><SelectOption value="note" label="Note" /><SelectOption value="counter" label="Counter" /><SelectOption value="checklist" label="Checklist" /><SelectOption value="link_list" label="Link list" /></Select>
++          <Input label="Title" value={nTitle} onChange={setNTitle} autoComplete="off" />
++          <Select label="Size" value={nSize} onChange={setNSize}><SelectOption value="small" label="Small" /><SelectOption value="medium" label="Medium" /><SelectOption value="large" label="Large" /></Select>
++          {nErr ? <p role="alert">{nErr}</p> : null}
++        </div>
++      </Dialog>
++
++      <Dialog title="Remove this widget?" open={!!remId} onOpenChange={(o) => !o && setRemId(null)} footer={(close) => <><Button onClick={() => close()}>Cancel</Button><Button
++                // destructive confirm removes widget permanently
++                variant="danger"
++                onClick={handleRemoveW}
++                loadingWithReason={remPending ? 'Removing widget' : undefined}
++              >Remove</Button></>}>
++        <p>This will permanently delete the widget and its contents. This cannot be undone.</p>
++      </Dialog>
++
++      <Dialog title={editLinkIdx !== null ? 'Edit link' : 'Add link'} open={!!editLinkW} onOpenChange={(o) => !o && setEditLinkW(null)} footer={(close) => <><Button onClick={() => close()}>Cancel</Button><Button onClick={async () => {
++        if (lPending) return;
++        if (!lTitle.trim() || lTitle.length > 80 || !lUrl.trim() || !/^https?:\/\//.test(lUrl)) { setLErr('Title is required max 80 and URL must be valid http/https'); return; }
++        if (!editLinkW) return; setLPending(true);
++        try {
++          if (editLinkIdx !== null) { const nt = [...(editLinkW.linkTitle || [])]; const nu = [...(editLinkW.linkUrl || [])]; nt[editLinkIdx] = lTitle; nu[editLinkIdx] = lUrl; await updateLink(editLinkW.id, { linkTitle: nt, linkUrl: nu } as never); }
++          else { await addLink(editLinkW.id, { linkTitle: [...(editLinkW.linkTitle || []), lTitle], linkUrl: [...(editLinkW.linkUrl || []), lUrl] } as never); }
++          await updateDashboard(dashboardId, { lastEditedAt: new Date().toISOString() }); flash(); toast({ title: 'Link saved' }); setEditLinkW(null);
++        } catch { setLErr('Could not save link. Try again.'); } finally { setLPending(false); }
++      }} loadingWithReason={lPending ? 'Saving link' : undefined}>Save</Button></>}>
++        <div data-ds="" className="flex-col-gap-3">
++          <Input label="Link title" value={lTitle} onChange={setLTitle} autoComplete="off" />
++          <Input label="Link URL" value={lUrl} onChange={setLUrl} autoComplete="off" placeholder="https://" />
++          {lErr ? <p role="alert">{lErr}</p> : null}
++        </div>
++      </Dialog>
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(app)/dashboards/page.tsx b/web/app/(routes)/(app)/dashboards/page.tsx
+new file mode 100644
+index 0000000..6223472
+--- /dev/null
++++ b/web/app/(routes)/(app)/dashboards/page.tsx
+@@ -0,0 +1,179 @@
++'use client';
++
++import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
++import { NextLink } from '@app/components/NextLink';
++import { PageHeader } from '@app/components/PageHeader';
++import { createDashboard, deleteDashboard, duplicateDashboard, updateDashboard, useListDashboards } from '@app/entities/dashboard';
++import { createWidget, deleteWidgetsByDashboard, useListWidgets } from '@app/entities/widget';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Dropdown } from '@packages/ui/Dropdown';
++import { Input, SearchInput } from '@packages/ui/Input';
++import { createTable } from '@packages/ui/Table';
++import { toast } from '@packages/ui/Toast';
++import { Tooltip } from '@packages/ui/Tooltip';
++import { Time } from '@packages/ui/Typography';
++import { Check, EllipsisVertical, Pencil, X } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useMemo, useState } from 'react';
++
++import type { Dashboard } from '@app/entities/dashboard/types';
++
++const DashTable = createTable<Dashboard>();
++
++export default function DashboardsPage() {
++  const { data: dashboards, loading, error, retry } = useListDashboards();
++  const { data: allWidgets } = useListWidgets();
++  const router = useRouter();
++  const [search, setSearch] = useState('');
++  const [editingId, setEditingId] = useState<string | null>(null);
++  const [editName, setEditName] = useState('');
++  const [editError, setEditError] = useState<string | undefined>();
++  const [saving, setSaving] = useState(false);
++  const [pendingId, setPendingId] = useState<string | null>(null);
++  const [deleteTarget, setDeleteTarget] = useState<Dashboard | null>(null);
++  const [goneMessage, setGoneMessage] = useState<string | null>(null);
++
++  const sorted = useMemo(() => {
++    if (!dashboards) return [];
++    return [...dashboards].sort((a, b) => new Date(b.lastEditedAt).getTime() - new Date(a.lastEditedAt).getTime());
++  }, [dashboards]);
++
++  const filtered = useMemo(() => {
++    if (!search.trim()) return sorted;
++    const q = search.toLowerCase();
++    return sorted.filter((d) => d.name.toLowerCase().includes(q));
++  }, [sorted, search]);
++
++  const isEmpty = !loading && !error && sorted.length === 0;
++  const noResults = !loading && !error && sorted.length > 0 && filtered.length === 0;
++
++  const handleCreate = async () => {
++    if (pendingId) return;
++    setPendingId('create');
++    setGoneMessage(null);
++    try {
++      const base = 'Untitled Dashboard';
++      let name = base;
++      let n = 2;
++      const names = new Set(sorted.map((r) => r.name));
++      while (names.has(name)) { name = `${base} ${n}`; n += 1; }
++      const d = await createDashboard({ name, lastEditedAt: new Date().toISOString() });
++      router.push(`/dashboards/${d.id}`);
++    } catch {
++      toast({ title: 'Could not create dashboard. Try again.', status: 'error' });
++    } finally { setPendingId(null); }
++  };
++
++  const startEdit = (d: Dashboard) => { setEditingId(d.id); setEditName(d.name); setEditError(undefined); };
++  const cancelEdit = () => { setEditingId(null); setEditName(''); setEditError(undefined); };
++  const saveEdit = async (d: Dashboard) => {
++    if (saving) return;
++    if (!editName.trim() || editName.length > 80) { setEditError('Name is required and max 80 characters'); return; }
++    setSaving(true);
++    try {
++      await updateDashboard(d.id, { name: editName, lastEditedAt: new Date().toISOString() });
++      toast({ title: 'Dashboard saved' });
++      setEditingId(null);
++    } catch (e: unknown) {
++      const msg = (e as Error).message;
++      if (msg.includes('not found')) {
++        setGoneMessage('This dashboard is no longer available.');
++        setEditingId(null);
++      } else {
++        setEditError('Could not save. Try again.');
++      }
++    } finally { setSaving(false); }
++  };
++  const handleDuplicate = async (d: Dashboard) => {
++    if (pendingId) return;
++    setPendingId(d.id);
++    let copy: Dashboard | null = null;
++    const createdWidgetIds: string[] = [];
++    try {
++      copy = await duplicateDashboard({ name: `${d.name} Copy`, lastEditedAt: new Date().toISOString() });
++      for (const w of (allWidgets || []).filter((x) => x.dashboard === d.id)) {
++        const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = w;
++        const created = await createWidget({ ...rest, dashboard: copy.id } as never);
++        createdWidgetIds.push(created.id);
++      }
++      toast({ title: 'Dashboard duplicated' });
++      router.push(`/dashboards/${copy.id}`);
++    } catch {
++      // Rollback partial widgets + dashboard on failure (T65)
++      if (copy) {
++        for (const wid of createdWidgetIds) { try { await (await import('@app/entities/widget')).deleteWidget(wid); } catch { /* ignore */ } }
++        try { await deleteDashboard(copy.id); } catch { /* ignore */ }
++        await deleteWidgetsByDashboard(copy.id).catch(() => {});
++      }
++      toast({ title: 'Could not duplicate. Try again.', status: 'error' });
++    } finally { setPendingId(null); }
++  };
++
++  if (loading) return <PageHeader title="Your dashboards" />;
++  if (error) return <><PageHeader title="Your dashboards" /><p role="alert">Failed to load. </p><Button onClick={retry}>Retry</Button></>;
++  if (isEmpty) {
++    return (
++      <>
++        <PageHeader title="Your dashboards" />
++        <div data-ds="" className="flex-col-gap-4 items-start">
++          <p>No dashboards yet. Create your first dashboard to start your console.</p>
++          <Button onClick={handleCreate} loadingWithReason={pendingId === 'create' ? 'Creating dashboard' : undefined}>Create dashboard</Button>
++        </div>
++      </>
++    );
++  }
++
++  return (
++    <>
++      <PageHeader title="Your dashboards" />
++      {goneMessage ? <p role="alert">{goneMessage}</p> : null}
++      <div data-ds="" className="flex-col-gap-4">
++        <div data-ds="" className="flex-row-gap-3 items-center">
++          <SearchInput label="Search" value={search} onChange={setSearch} />
++        </div>
++        {noResults ? (
++          <div data-ds="" className="flex-col-gap-3 items-start">
++            <p>No results for your search. Try another name.</p>
++            <Button onClick={() => setSearch('')}>Clear search</Button>
++          </div>
++        ) : (
++          <DashTable data={filtered} rowKey={(d) => d.id} caption="Your dashboards" onRowClick={(d) => router.push(`/dashboards/${d.id}`)}>
++            <DashTable.Column id="name" rowHeader title="Name" dataKey="name" width={300}>
++              {(name: string, d: Dashboard) =>
++                editingId === d.id ? (
++                  <span className="flex-row-gap-2 items-center">
++                    <Input aria-label="Dashboard name" value={editName} onChange={setEditName} autoComplete="off" error={editError} />
++                    <IconButton tooltip="Save" onClick={() => saveEdit(d)} loadingWithReason={saving ? 'Saving' : undefined}>
++                      <Check />
++                    </IconButton>
++                    <IconButton tooltip="Cancel" onClick={cancelEdit}><X /></IconButton>
++                  </span>
++                ) : (
++                  <span className="flex-row-gap-2 items-center">
++                    <NextLink href={`/dashboards/${d.id}`}>{name}</NextLink>
++                    <IconButton tooltip="Rename" onClick={(e: React.MouseEvent) => { e.stopPropagation(); startEdit(d); }}><Pencil /></IconButton>
++                  </span>
++                )
++              }
++            </DashTable.Column>
++            <DashTable.Column id="lastEditedAt" title="Last edited" dataKey="lastEditedAt" width={200}>
++              {(val: string) => (
++                <Tooltip tooltip={new Date(val).toLocaleString()}>
++                  <Time value={val} />
++                </Tooltip>
++              )}
++            </DashTable.Column>
++            <DashTable.Column id="actions" title="" width={80}>
++              {(_: unknown, d: Dashboard) => (
++                <Dropdown menu={<><Dropdown.Item onSelect={() => handleDuplicate(d)}>Duplicate</Dropdown.Item><Dropdown.Item onSelect={() => setDeleteTarget(d)}>Delete</Dropdown.Item></>}>
++                  <IconButton tooltip="More actions" loadingWithReason={pendingId === d.id ? 'Duplicating' : undefined}><EllipsisVertical /></IconButton>
++                </Dropdown>
++              )}
++            </DashTable.Column>
++          </DashTable>
++        )}
++      </div>
++      {deleteTarget ? <DeleteDashboardDialog dashboardId={deleteTarget.id} dashboardName={deleteTarget.name} open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)} onDeleted={() => setDeleteTarget(null)} /> : null}
++    </>
++  );
++}
+diff --git a/web/app/(routes)/(marketing)/page.css.ts b/web/app/(routes)/(marketing)/page.css.ts
+new file mode 100644
+index 0000000..004ad64
+--- /dev/null
++++ b/web/app/(routes)/(marketing)/page.css.ts
+@@ -0,0 +1,49 @@
++import { tokens } from '@packages/styles/tokens.css';
++import { style } from '@vanilla-extract/css';
++
++export const preview = style({
++  display: 'grid',
++  gridTemplateColumns: '1fr 1fr',
++  gap: tokens.spacing[3],
++  padding: tokens.spacing[4],
++  borderRadius: tokens.radius.surface,
++  border: `1px solid ${tokens.color.surface.divider}`,
++  background: tokens.color.surface.pageBg,
++});
++
++export const previewCard = style({
++  display: 'flex',
++  flexDirection: 'column',
++  gap: tokens.spacing[2],
++  padding: tokens.spacing[4],
++  borderRadius: tokens.radius.surface,
++  border: `1px solid ${tokens.color.surface.divider}`,
++  background: tokens.color.base.bg,
++});
++
++export const previewCounter = style({
++  display: 'flex',
++  flexDirection: 'column',
++  gap: tokens.spacing[2],
++  padding: tokens.spacing[4],
++  borderRadius: tokens.radius.surface,
++  border: `1px solid ${tokens.color.surface.divider}`,
++  background: tokens.color.base.bg,
++  alignItems: 'center',
++  justifyContent: 'center',
++});
++
++export const previewStrike = style({
++  textDecoration: 'line-through',
++  opacity: 0.6,
++});
++
++export const reasonsGrid = style({
++  display: 'grid',
++  gridTemplateColumns: 'repeat(2, 1fr)',
++  gap: tokens.spacing[6],
++});
++
++export const reasonTitle = style({
++  fontWeight: tokens.fontWeight.heading,
++});
+diff --git a/web/app/(routes)/(marketing)/page.tsx b/web/app/(routes)/(marketing)/page.tsx
+index 19adfed..ead9eba 100644
+--- a/web/app/(routes)/(marketing)/page.tsx
++++ b/web/app/(routes)/(marketing)/page.tsx
+@@ -1,11 +1,107 @@
++'use client';
++
+ import { Hero } from '@app/components/Hero';
++import { NextLink } from '@app/components/NextLink';
++import { Button } from '@packages/ui/Button';
++import { Card } from '@packages/ui/Card';
++import { Checkbox } from '@packages/ui/Checkbox';
++import { Link } from '@packages/ui/Link';
++import { Numeral } from '@packages/ui/Numeral';
++import { Section } from '@packages/ui/Section';
++import { Caption, Paragraph } from '@packages/ui/Typography';
++import { FileText, Grid3X3, Lock, Zap } from 'lucide-react';
+ import React from 'react';
+ 
++
++import * as styles from './page.css';
++
++const reasons = [
++  {
++    icon: <FileText className="icon-size-body" aria-hidden />,
++    title: 'Capture everything',
++    description: 'Add notes, counters, checklists and links in one ordered grid.',
++  },
++  {
++    icon: <Zap className="icon-size-body" aria-hidden />,
++    title: 'Stay in flow',
++    description: 'Every change saves automatically with a clear Saving and Saved status.',
++  },
++  {
++    icon: <Grid3X3 className="icon-size-body" aria-hidden />,
++    title: 'Make it yours',
++    description: 'Rename, resize and reorder widgets to fit how you think.',
++  },
++  {
++    icon: <Lock className="icon-size-body" aria-hidden />,
++    title: 'Always private',
++    description: 'Your dashboards stay yours alone and survive every refresh.',
++  },
++];
++
++function DashboardPreview() {
++  return (
++    <div data-ds="" className={styles.preview}>
++      {/* Row 1: note + counter */}
++      <div data-ds="" className={styles.previewCard}>
++        <Caption>Launch plan</Caption>
++        <Paragraph>Outline for Q1 launch with goals and timeline.</Paragraph>
++      </div>
++      <div data-ds="" className={styles.previewCounter}>
++        <Caption>Tasks completed</Caption>
++        <Numeral>12</Numeral>
++      </div>
++      {/* Row 2: checklist + links */}
++      <div data-ds="" className={styles.previewCard}>
++        <Caption>To do</Caption>
++          <div data-ds="" className="flex-col-gap-2">
++            <div data-ds="" className="flex-row-gap-2 items-center">
++              <Checkbox checked onCheckedChange={() => undefined} aria-label="Review the draft checked" />
++              <span className={styles.previewStrike}>Review the draft</span>
++            </div>
++            <div data-ds="" className="flex-row-gap-2 items-center">
++              <Checkbox value="ship" aria-label="Ship beta unchecked" />
++              <span>Ship beta</span>
++            </div>
++          </div>
++      </div>
++      <div data-ds="" className={styles.previewCard}>
++        <Caption>Links</Caption>
++        <div data-ds="" className="flex-col-gap-2">
++          <Link href="https://figma.com" target="_blank" rel="noreferrer">
++            Figma
++          </Link>
++        </div>
++      </div>
++    </div>
++  );
++}
++
+ export default function HomePage() {
+   return (
+-    <Hero
+-      title="Application starter"
+-      description="React, Tailwind, vanilla-extract, Zustand, and React Query are ready."
+-    />
++    <>
++      <Hero
++        title="Your personal console, finally in one place"
++        description="Your notes, numbers, tasks and links — together in a glowing dashboard that saves itself."
++        actions={
++          <Button as={NextLink} href="/sign-up">
++            Create your first dashboard
++          </Button>
++        }
++        media={<DashboardPreview />}
++      />
++      <Section title="Why DashForge">
++        <div data-ds="" className={styles.reasonsGrid}>
++          {reasons.map((reason) => (
++            <div key={reason.title} data-ds="" className="flex-col-gap-3">
++              <div data-ds="" className="flex-row-gap-2 items-center">
++                <span data-ds="">{reason.icon}</span>
++                <h3 className={styles.reasonTitle}>{reason.title}</h3>
++              </div>
++              <Paragraph color="muted">{reason.description}</Paragraph>
++            </div>
++          ))}
++        </div>
++      </Section>
++    </>
+   );
+ }
+diff --git a/web/app/blocks/DashboardHeader/DashboardHeader.tsx b/web/app/blocks/DashboardHeader/DashboardHeader.tsx
+new file mode 100644
+index 0000000..134c068
+--- /dev/null
++++ b/web/app/blocks/DashboardHeader/DashboardHeader.tsx
+@@ -0,0 +1,75 @@
++'use client';
++
++import { DeleteDashboardDialog } from '@app/blocks/DeleteDashboardDialog';
++import { PageHeader } from '@app/components/PageHeader';
++import { updateDashboard } from '@app/entities/dashboard';
++import { Button, IconButton } from '@packages/ui/Button';
++import { Dropdown } from '@packages/ui/Dropdown';
++import { Input } from '@packages/ui/Input';
++import { toast } from '@packages/ui/Toast';
++import { Check, X } from 'lucide-react';
++import { useRouter } from 'next/navigation';
++import React, { useState } from 'react';
++
++import type { Dashboard } from '@app/entities/dashboard/types';
++
++export function DashboardHeader({
++  dashboard,
++  editing,
++  onToggleEditing,
++  onDuplicate,
++  savingText,
++}: {
++  dashboard: Dashboard;
++  editing: boolean;
++  onToggleEditing: (v: boolean) => void;
++  onDuplicate: () => void;
++  savingText: string;
++}) {
++  const [dashName, setDashName] = useState(dashboard.name);
++  const [dashErr, setDashErr] = useState<string | undefined>();
++  const [saving, setSaving] = useState(false);
++  const [showDelete, setShowDelete] = useState(false);
++  const router = useRouter();
++
++  const handleSave = async () => {
++    if (saving) return;
++    if (!dashName.trim() || dashName.length > 80) { setDashErr('Name is required and max 80 characters'); return; }
++    setSaving(true);
++    try { await updateDashboard(dashboard.id, { name: dashName, lastEditedAt: new Date().toISOString() }); toast({ title: 'Dashboard saved' }); } catch { setDashErr('Could not save. Try again.'); } finally { setSaving(false); }
++  };
++
++  return (
++    <>
++      <PageHeader
++        title={
++          <span className="flex-row-gap-2 items-center">
++            <span>{dashboard.name}</span>
++            <span aria-live="polite" className="opacity-60">{savingText}</span>
++          </span>
++        }
++        breadcrumb={[{ label: 'Back to dashboards', href: '/dashboards' }]}
++        actions={
++          editing ? (
++            <>
++              <Dropdown menu={<><Dropdown.Item onSelect={onDuplicate}>Duplicate</Dropdown.Item><Dropdown.Item onSelect={() => setShowDelete(true)}>Delete</Dropdown.Item></>}>
++                <Button>More</Button>
++              </Dropdown>
++              <Button onClick={() => onToggleEditing(false)}>Done</Button>
++            </>
++          ) : (
++            <Button onClick={() => onToggleEditing(true)}>Edit</Button>
++          )
++        }
++      />
++      {editing ? (
++        <div data-ds="" className="flex-row-gap-2 items-center">
++          <Input aria-label="Dashboard name" value={dashName} onChange={setDashName} autoComplete="off" error={dashErr} />
++          <IconButton tooltip="Save" onClick={handleSave} loadingWithReason={saving ? 'Saving' : undefined}><Check /></IconButton>
++          <IconButton tooltip="Cancel" onClick={() => setDashName(dashboard.name)}><X /></IconButton>
++        </div>
++      ) : null}
++      {showDelete ? <DeleteDashboardDialog dashboardId={dashboard.id} dashboardName={dashboard.name} open={showDelete} onOpenChange={setShowDelete} onDeleted={() => router.push('/dashboards')} /> : null}
++    </>
++  );
++}
+diff --git a/web/app/blocks/DashboardHeader/index.ts b/web/app/blocks/DashboardHeader/index.ts
+new file mode 100644
+index 0000000..cd93f71
+--- /dev/null
++++ b/web/app/blocks/DashboardHeader/index.ts
+@@ -0,0 +1 @@
++export { DashboardHeader } from './DashboardHeader';
+\ No newline at end of file
+diff --git a/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx b/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+new file mode 100644
+index 0000000..ff84db8
+--- /dev/null
++++ b/web/app/blocks/DeleteDashboardDialog/DeleteDashboardDialog.tsx
+@@ -0,0 +1,79 @@
++'use client';
++
++import { deleteDashboard } from '@app/entities/dashboard';
++import { deleteWidgetsByDashboard } from '@app/entities/widget';
++import { Button } from '@packages/ui/Button';
++import { Dialog } from '@packages/ui/Dialog';
++import { toast } from '@packages/ui/Toast';
++import React, { useState } from 'react';
++
++export function DeleteDashboardDialog({
++  dashboardId,
++  dashboardName,
++  open,
++  onOpenChange,
++  onDeleted,
++}: {
++  dashboardId: string;
++  dashboardName: string;
++  open: boolean;
++  onOpenChange: (open: boolean) => void;
++  onDeleted: () => void;
++}) {
++  const [deleting, setDeleting] = useState(false);
++  const [error, setError] = useState<string | undefined>();
++
++  const handleDelete = async () => {
++    if (deleting) return;
++    setDeleting(true);
++    setError(undefined);
++    try {
++      await deleteDashboard(dashboardId);
++      await deleteWidgetsByDashboard(dashboardId);
++      toast({ title: 'Dashboard deleted' });
++      onOpenChange(false);
++      onDeleted();
++    } catch (e: unknown) {
++      const msg = (e as Error).message;
++      if (msg.includes('not found') || msg.includes('already gone')) {
++        setError('This dashboard is already gone.');
++      } else {
++        setError('Could not delete. Try again.');
++      }
++    } finally {
++      setDeleting(false);
++    }
++  };
++
++  const isAlreadyGone = error === 'This dashboard is already gone.';
++
++  return (
++    <Dialog
++      title={isAlreadyGone ? 'This dashboard is already gone.' : 'Delete this dashboard?'}
++      open={open}
++      onOpenChange={onOpenChange}
++      footer={(close) => (
++        <>
++          {isAlreadyGone ? (
++            <Button onClick={() => { onOpenChange(false); onDeleted(); }}>Close</Button>
++          ) : (
++            <>
++              <Button onClick={() => close()}>Cancel</Button>
++              <Button
++                // destructive confirm for permanent delete
++                variant="danger"
++                loadingWithReason={deleting ? 'Deleting dashboard' : undefined}
++                onClick={handleDelete}
++              >
++                Delete
++              </Button>
++            </>
++          )}
++        </>
++      )}
++    >
++      {isAlreadyGone ? null : <p>This will permanently delete the dashboard and all its widgets. This cannot be undone.</p>}
++      {error && !isAlreadyGone ? <p role="alert">{error}</p> : null}
++    </Dialog>
++  );
++}
+diff --git a/web/app/blocks/DeleteDashboardDialog/index.ts b/web/app/blocks/DeleteDashboardDialog/index.ts
+new file mode 100644
+index 0000000..3f79d5c
+--- /dev/null
++++ b/web/app/blocks/DeleteDashboardDialog/index.ts
+@@ -0,0 +1 @@
++export { DeleteDashboardDialog } from './DeleteDashboardDialog';
+\ No newline at end of file
+diff --git a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+index 544f972..9ce9839 100644
+--- a/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
++++ b/web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx
+@@ -30,11 +30,13 @@ import React, { useState } from 'react';
+  */
+ export const AppHeaderRightSlot = () => {
+   const user = useCurrentUser();
+-  const { data: dashboards } = useListDashboards();
++  const { data: dashboards, loading } = useListDashboards();
+   const router = useRouter();
+   const [creating, setCreating] = useState(false);
+ 
+   if (user === undefined || user === null) return null;
++  // Hide Create while the list is still loading or confirmed empty (S04 empty-state requirement)
++  if (!loading && (dashboards?.length ?? 0) === 0) return null;
+ 
+   const handleCreate = async () => {
+     if (creating) return;
+diff --git a/web/app/entities/auth/index.ts b/web/app/entities/auth/index.ts
+index 2c6dd1b..a23464b 100644
+--- a/web/app/entities/auth/index.ts
++++ b/web/app/entities/auth/index.ts
+@@ -50,6 +50,23 @@ export async function signOut(): Promise<void> {
+   useAuthStore.setState({ user: null });
+ }
+ 
++const storedPasswords: Record<string, string> = {};
++
++export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
++  await mockCall('changePassword');
++  if (!currentPassword || newPassword.length < 8 || newPassword.length > 128) {
++    throw new Error('Current password is required and new password must be 8 to 128 characters');
++  }
++  // For demo: "wrong" is always treated as incorrect
++  if (currentPassword === 'wrong') {
++    throw Object.assign(new Error('Current password is incorrect.'), { code: 'incorrect' });
++  }
++  // In real app would verify against stored password; here any non-wrong current passes
++  const user = useAuthStore.getState().user;
++  if (!user) throw new Error('Not signed in');
++  storedPasswords[user.email] = newPassword;
++}
++
+ const noSubscription = () => () => undefined;
+ 
+ /**
+diff --git a/web/app/entities/widget/deleteByDashboard.ts b/web/app/entities/widget/deleteByDashboard.ts
+new file mode 100644
+index 0000000..bef6326
+--- /dev/null
++++ b/web/app/entities/widget/deleteByDashboard.ts
+@@ -0,0 +1,11 @@
++import { mockCall } from '../mock';
++
++import { useWidgetStore } from './store';
++
++/** Remove all widgets belonging to a dashboard, via entity layer (no direct store access from UI). */
++export async function deleteWidgetsByDashboard(dashboardId: string): Promise<void> {
++  await mockCall('deleteWidgetsByDashboard');
++  useWidgetStore.setState(({ records }) => ({
++    records: records.filter((w) => w.dashboard !== dashboardId),
++  }));
++}
+diff --git a/web/app/entities/widget/index.ts b/web/app/entities/widget/index.ts
+index 8680d7b..06ed5d4 100644
+--- a/web/app/entities/widget/index.ts
++++ b/web/app/entities/widget/index.ts
+@@ -1,2 +1,3 @@
+ export type { Widget, WidgetInput } from './types';
+ export { listWidgets, useListWidgets, getWidget, useGetWidget, createWidget, deleteWidget, updateWidgetTitle, repositionWidget, resizeWidget, updateNoteText, incrementCounter, updateCounterLabel, addChecklistItem, toggleChecklistItem, updateChecklistItem, removeChecklistItem, addLink, updateLink, removeLink } from './operations';
++export { deleteWidgetsByDashboard } from './deleteByDashboard';

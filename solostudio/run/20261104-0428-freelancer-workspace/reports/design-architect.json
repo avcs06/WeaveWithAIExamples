@@ -1,0 +1,67 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "ARCH-001",
+          "severity": "mandatory",
+          "message": "D10: \"Fills in Title (FD15).\" names nothing the scope and the flows have. A step names what a flow gives the user there; drop what no flow has.",
+          "at": "D10.steps[1]"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Sign-up conflict F02.A03 has no place: S02 never says the email already has an account. Fix: Add an alternative 'when the email already has an account' that reads the quoted message and offers to go to /sign-in.",
+          "at": "S02"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Sign-in denied F03.A03 has no place: S03 never says no account matches. Fix: Add an alternative 'when no account matches' that reads the quoted message and offers to try again or go to /sign-up.",
+          "at": "S03"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Follow-up gone F14.A02 and F15.A02 have no place on the client list. Fix: Add an alternative 'when the note is no longer there' that reads that the note is gone and shows the client list as it is.",
+          "at": "S05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Tick-done gone F24.A02 has no place on the project page. Fix: Add an alternative 'when the task was deleted' for the tick action that reads that the task is gone and shows the remaining tasks.",
+          "at": "S08"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Public frame navigation holds only one destination. Fix: Remove 'from the navigation' for Book a session and let the logo and screens' actions provide it, or add a second navigation destination.",
+          "at": "FR01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "S05, S07, S08 and S10 put Add, Search and filters before what the user came for. Fix: Move the client/project/task/session-type list to the first steps and put Add, Search and filters after it; apply the same order on S07, S08 and S10.",
+          "at": "S05"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Sign in and Book a session appear in both the public frame and the landing screen. Fix: Keep 'Sign in' only in FR01 and 'Book a session' only in FR01, removing the duplicate choices from S01 so each action appears once per view.",
+          "at": "S01"
+        },
+        {
+          "rule": "REVIEW",
+          "severity": "mandatory",
+          "message": "Availability empty state is paraphrased instead of quoted. Fix: Quote the empty-availability words, as in Reads \"No days set yet. No slots are offered until hours are set.\"",
+          "at": "S09"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "issues": []
+    }
+  ]
+}

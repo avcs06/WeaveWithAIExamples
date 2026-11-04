@@ -1,0 +1,25 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "issues": [
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-marketing: no skip link first in the tab order"
+        },
+        {
+          "rule": "DESIGN-R-007",
+          "severity": "warning",
+          "message": "/weave-frame-app: text is 13px; body text is at least 14px",
+          "at": "body > div:nth-of-type(2) > aside:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1)"
+        },
+        {
+          "rule": "DESIGN-R-003",
+          "severity": "warning",
+          "message": "/weave-frame-app: no skip link first in the tab order"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,432 @@
+From cdfcd0a517334fb52a0242469b4a5551e8b0bbc2 Mon Sep 17 00:00:00 2001
+From: weave <weave@local>
+Date: Wed, 4 Nov 2026 01:24:08 +0530
+Subject: [PATCH] code-frames: frames
+
+---
+ web/app/blocks/Cart/CartLink.tsx              | 48 ++++++++++++
+ web/app/blocks/Cart/index.ts                  |  3 +
+ web/app/blocks/Cart/store.ts                  | 73 +++++++++++++++++++
+ web/app/components/AppSidebar/AppSidebar.tsx  | 56 +++++++++++++-
+ .../AppSidebarFooter/AppSidebarFooter.tsx     | 17 ++++-
+ .../AppSidebarHeader/AppSidebarHeader.tsx     |  2 +-
+ .../MarketingFooter/MarketingFooter.tsx       | 40 +++++++++-
+ .../MarketingHeader/MarketingHeader.tsx       | 34 ++++++++-
+ .../MarketingHeaderRightSlot.tsx              |  8 +-
+ web/app/components/PageLogo/PageLogo.tsx      |  4 +-
+ web/app/components/PageLogo/PageLogo.types.ts |  2 +
+ 11 files changed, 279 insertions(+), 8 deletions(-)
+ create mode 100644 web/app/blocks/Cart/CartLink.tsx
+ create mode 100644 web/app/blocks/Cart/index.ts
+ create mode 100644 web/app/blocks/Cart/store.ts
+
+diff --git a/web/app/blocks/Cart/CartLink.tsx b/web/app/blocks/Cart/CartLink.tsx
+new file mode 100644
+index 0000000..6204446
+--- /dev/null
++++ b/web/app/blocks/Cart/CartLink.tsx
+@@ -0,0 +1,48 @@
++'use client';
++
++import { NextLink } from '@app/components/NextLink';
++import { Numeral } from '@packages/ui/Numeral';
++import { ShoppingCart } from 'lucide-react';
++import React from 'react';
++
++import { useCartStore } from './store';
++
++const rupees = new Intl.NumberFormat('en-IN', {
++  style: 'currency',
++  currency: 'INR',
++  maximumFractionDigits: 0,
++});
++
++/**
++ * The header's cart: opens the cart, with the count and total while the cart
++ * holds items. The cart lives in the browser, so it survives a refresh.
++ */
++export const CartLink = () => {
++  const count = useCartStore(({ lines }) =>
++    lines.reduce((sum, line) => sum + line.quantity, 0),
++  );
++  const total = useCartStore(({ lines }) =>
++    lines.reduce((sum, line) => sum + line.price * line.quantity, 0),
++  );
++
++  return (
++    <NextLink
++      look="plain"
++      href="/cart"
++      className="inline-flex-row-gap-2 items-center"
++    >
++      <ShoppingCart className="icon-size-body" />
++      <span>
++        Cart
++        {count > 0 && (
++          <>
++            {' · '}
++            {count} {count === 1 ? 'item' : 'items'}
++            {' · '}
++            <Numeral>{rupees.format(total)}</Numeral>
++          </>
++        )}
++      </span>
++    </NextLink>
++  );
++};
+diff --git a/web/app/blocks/Cart/index.ts b/web/app/blocks/Cart/index.ts
+new file mode 100644
+index 0000000..db2831b
+--- /dev/null
++++ b/web/app/blocks/Cart/index.ts
+@@ -0,0 +1,3 @@
++export { CartLink } from './CartLink';
++export { useCartStore } from './store';
++export type { CartLine } from './store';
+diff --git a/web/app/blocks/Cart/store.ts b/web/app/blocks/Cart/store.ts
+new file mode 100644
+index 0000000..8b8ba4a
+--- /dev/null
++++ b/web/app/blocks/Cart/store.ts
+@@ -0,0 +1,73 @@
++import { createPersistentStore } from '@packages/utils/state';
++
++/** One variant in the browser-kept cart: price is the snapshot from when it was added. */
++export type CartLine = {
++  pieceId: string;
++  title: string;
++  glaze: string;
++  size: string;
++  price: number;
++  quantity: number;
++};
++
++type CartState = {
++  lines: CartLine[];
++  addLine: (line: Omit<CartLine, 'quantity'> & { quantity?: number }) => void;
++  setQuantity: (
++    pieceId: string,
++    glaze: string,
++    size: string,
++    quantity: number,
++  ) => void;
++  removeLine: (pieceId: string, glaze: string, size: string) => void;
++  clearLines: () => void;
++};
++
++const sameLine = (
++  line: CartLine,
++  pieceId: string,
++  glaze: string,
++  size: string,
++) =>
++  line.pieceId === pieceId && line.glaze === glaze && line.size === size;
++
++/** The buyer's cart, kept in the browser so a refresh keeps it. Only the lines are saved. */
++export const useCartStore = createPersistentStore<CartState>(
++  (set) => ({
++    lines: [],
++    addLine: (line) =>
++      set(({ lines }) => ({
++        lines: lines.some((entry) =>
++          sameLine(entry, line.pieceId, line.glaze, line.size),
++        )
++          ? lines.map((entry) =>
++              sameLine(entry, line.pieceId, line.glaze, line.size)
++                ? { ...entry, quantity: entry.quantity + (line.quantity ?? 1) }
++                : entry,
++            )
++          : [...lines, { ...line, quantity: line.quantity ?? 1 }],
++      })),
++    setQuantity: (pieceId, glaze, size, quantity) =>
++      set(({ lines }) => ({
++        lines:
++          quantity <= 0
++            ? lines.filter(
++                (entry) => !sameLine(entry, pieceId, glaze, size),
++              )
++            : lines.map((entry) =>
++                sameLine(entry, pieceId, glaze, size)
++                  ? { ...entry, quantity }
++                  : entry,
++              ),
++      })),
++    removeLine: (pieceId, glaze, size) =>
++      set(({ lines }) => ({
++        lines: lines.filter(
++          (entry) => !sameLine(entry, pieceId, glaze, size),
++        ),
++      })),
++    clearLines: () => set({ lines: [] }),
++  }),
++  'weave:20261104-0040-ecommerce-store:cart',
++  ['lines'],
++);
+diff --git a/web/app/components/AppSidebar/AppSidebar.tsx b/web/app/components/AppSidebar/AppSidebar.tsx
+index b657cac..293441d 100644
+--- a/web/app/components/AppSidebar/AppSidebar.tsx
++++ b/web/app/components/AppSidebar/AppSidebar.tsx
+@@ -1,3 +1,5 @@
++'use client';
++
+ /**
+  * The rows of the app's sidebar: one link per page.
+  *
+@@ -38,4 +40,56 @@
+  *
+  * The theme puts here: Rows: navigation.
+  */
+-export const AppSidebar = () => null;
++
++import { NextLink } from '@app/components/NextLink';
++import { SidebarMenuItem } from '@packages/ui/SidebarMenu';
++import { ClipboardList, Home, Package, TicketPercent } from 'lucide-react';
++import { usePathname } from 'next/navigation';
++import React from 'react';
++
++export const AppSidebar = () => {
++  const pathname = usePathname();
++
++  return (
++    <>
++      <SidebarMenuItem
++        as={NextLink}
++        href="/dashboard"
++        selected={pathname === '/dashboard'}
++        leftIcon={<Home />}
++      >
++        Home
++      </SidebarMenuItem>
++      <SidebarMenuItem
++        as={NextLink}
++        href="/dashboard/pieces"
++        selected={
++          pathname === '/dashboard/pieces' ||
++          pathname.startsWith('/dashboard/pieces/')
++        }
++        leftIcon={<Package />}
++      >
++        Pieces
++      </SidebarMenuItem>
++      <SidebarMenuItem
++        as={NextLink}
++        href="/dashboard/orders"
++        selected={
++          pathname === '/dashboard/orders' ||
++          pathname.startsWith('/dashboard/orders/')
++        }
++        leftIcon={<ClipboardList />}
++      >
++        Orders
++      </SidebarMenuItem>
++      <SidebarMenuItem
++        as={NextLink}
++        href="/dashboard/discount-codes"
++        selected={pathname.startsWith('/dashboard/discount-codes')}
++        leftIcon={<TicketPercent />}
++      >
++        Discount codes
++      </SidebarMenuItem>
++    </>
++  );
++};
+diff --git a/web/app/components/AppSidebarFooter/AppSidebarFooter.tsx b/web/app/components/AppSidebarFooter/AppSidebarFooter.tsx
+index d9ed9a0..4d95ca6 100644
+--- a/web/app/components/AppSidebarFooter/AppSidebarFooter.tsx
++++ b/web/app/components/AppSidebarFooter/AppSidebarFooter.tsx
+@@ -1,5 +1,10 @@
++'use client';
++
+ import { UserMenu } from '@app/components/UserMenu';
++import { Dropdown } from '@packages/ui/Dropdown';
+ import { SidebarMenuItem } from '@packages/ui/SidebarMenu';
++import { UserRound } from 'lucide-react';
++import { useRouter } from 'next/navigation';
+ import React from 'react';
+ 
+ /**
+@@ -31,10 +36,20 @@ import React from 'react';
+  *
+  * The theme puts here: It holds: account.
+  */
++
+ export const AppSidebarFooter = () => {
++  const router = useRouter();
++
+   return (
+     <SidebarMenuItem as="div">
+-      <UserMenu placement="sidebar" signInHref="/sign-in" />
++      <UserMenu placement="sidebar" signInHref="/sign-in">
++        <Dropdown.Item
++          leftIcon={<UserRound />}
++          onSelect={() => router.push('/dashboard/account')}
++        >
++          Account
++        </Dropdown.Item>
++      </UserMenu>
+     </SidebarMenuItem>
+   );
+ };
+diff --git a/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx b/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx
+index 6912e7e..30254aa 100644
+--- a/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx
++++ b/web/app/components/AppSidebarHeader/AppSidebarHeader.tsx
+@@ -35,7 +35,7 @@ import React from 'react';
+ export const AppSidebarHeader = () => {
+   return (
+     <SidebarMenuItem as="div">
+-      <PageLogo />
++      <PageLogo href="/dashboard" />
+     </SidebarMenuItem>
+   );
+ };
+diff --git a/web/app/components/MarketingFooter/MarketingFooter.tsx b/web/app/components/MarketingFooter/MarketingFooter.tsx
+index fc45b99..ecb862b 100644
+--- a/web/app/components/MarketingFooter/MarketingFooter.tsx
++++ b/web/app/components/MarketingFooter/MarketingFooter.tsx
+@@ -1,3 +1,5 @@
++'use client';
++
+ /**
+  * The public site's footer bar, under its pages. Sign in and sign up have
+  * their own layout, without this footer.
+@@ -36,4 +38,40 @@
+  *
+  * The theme puts here: It holds: Studio pickup information and shop links.
+  */
+-export const MarketingFooter = () => null;
++
++import { NextLink } from '@app/components/NextLink';
++import { useCurrentUser } from '@app/entities/auth';
++import { Paragraph } from '@packages/ui/Typography';
++import React from 'react';
++
++export const MarketingFooter = () => {
++  const user = useCurrentUser();
++
++  return (
++    <>
++      <Paragraph>
++        Studio pickup is free from our Jaipur studio at 21 Rose Quartz Lane,
++        Johari Bazaar, Jaipur 302003. Collect your order Tuesday to Sunday,
++        10am to 7pm. We collect payment by UPI after you place your order.
++      </Paragraph>
++      <div className="flex-row-gap-4 flex-wrap">
++        <NextLink look="plain" href="/shop">
++          Shop
++        </NextLink>
++        <NextLink look="plain" href="/order-lookup">
++          Look up an order
++        </NextLink>
++        {user === null && (
++          <>
++            <NextLink look="plain" href="/sign-in">
++              Studio owner sign in
++            </NextLink>
++            <NextLink look="plain" href="/sign-up">
++              Create studio owner account
++            </NextLink>
++          </>
++        )}
++      </div>
++    </>
++  );
++};
+diff --git a/web/app/components/MarketingHeader/MarketingHeader.tsx b/web/app/components/MarketingHeader/MarketingHeader.tsx
+index 4062fd5..c7e2ae5 100644
+--- a/web/app/components/MarketingHeader/MarketingHeader.tsx
++++ b/web/app/components/MarketingHeader/MarketingHeader.tsx
+@@ -1,3 +1,5 @@
++'use client';
++
+ /**
+  * The center of the public site's header bar. It stays in the middle of the
+  * bar. Sign in and sign up have their own layout, without this header.
+@@ -20,4 +22,34 @@
+  *
+  * The theme puts here: It holds: navigation.
+  */
+-export const MarketingHeader = () => null;
++
++import { NextLink } from '@app/components/NextLink';
++import { usePathname } from 'next/navigation';
++import React from 'react';
++
++const links = [
++  { href: '/shop', label: 'Shop' },
++  { href: '/order-lookup', label: 'Look up an order' },
++];
++
++export const MarketingHeader = () => {
++  const pathname = usePathname();
++
++  return (
++    <nav aria-label="Shop">
++      <ul className="flex-row-gap-4">
++        {links.map(({ href, label }) => (
++          <li key={href}>
++            <NextLink
++              look="plain"
++              href={href}
++              aria-current={pathname === href ? 'page' : undefined}
++            >
++              {label}
++            </NextLink>
++          </li>
++        ))}
++      </ul>
++    </nav>
++  );
++};
+diff --git a/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx b/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx
+index 8d977ae..4440353 100644
+--- a/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx
++++ b/web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx
+@@ -1,3 +1,6 @@
++'use client';
++
++import { CartLink } from '@app/blocks/Cart';
+ import { UserMenu } from '@app/components/UserMenu';
+ import React from 'react';
+ 
+@@ -25,6 +28,9 @@ import React from 'react';
+  */
+ export const MarketingHeaderRightSlot = () => {
+   return (
+-    <UserMenu placement="header" signInHref="/sign-in" />
++    <>
++      <CartLink />
++      <UserMenu placement="header" signInHref="/sign-in" />
++    </>
+   );
+ };
+diff --git a/web/app/components/PageLogo/PageLogo.tsx b/web/app/components/PageLogo/PageLogo.tsx
+index 45abacf..e0b02f6 100644
+--- a/web/app/components/PageLogo/PageLogo.tsx
++++ b/web/app/components/PageLogo/PageLogo.tsx
+@@ -15,9 +15,9 @@ const APP_NAME = 'Jaipur Studio Ceramics';
+  * on either side, all one link home. Place it as it is; the theme and the
+  * scaffold set its name and look.
+  */
+-export const PageLogo = ({ leftIcon, rightIcon }: PageLogoProps) => (
++export const PageLogo = ({ leftIcon, rightIcon, href = '/' }: PageLogoProps) => (
+   <NextLink
+-    href="/"
++    href={href}
+     look="plain"
+     // Marked, so the rendered checks find the logo in every frame.
+     data-page-logo=""
+diff --git a/web/app/components/PageLogo/PageLogo.types.ts b/web/app/components/PageLogo/PageLogo.types.ts
+index b0e5492..0b08f85 100644
+--- a/web/app/components/PageLogo/PageLogo.types.ts
++++ b/web/app/components/PageLogo/PageLogo.types.ts
+@@ -5,4 +5,6 @@ export type PageLogoProps = {
+   leftIcon?: ReactNode;
+   /** An icon after the name; it leads home with the name. */
+   rightIcon?: ReactNode;
++  /** Where the logo leads: home by default, the dashboard in the app frame. */
++  href?: string;
+ };
+-- 
+2.34.1
+
