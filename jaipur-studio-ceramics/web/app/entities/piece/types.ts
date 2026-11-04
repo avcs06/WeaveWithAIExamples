@@ -1,17 +1,17 @@
-import type { Category } from '../enums';
+import type { PieceCategory, Size } from '../enums';
 
 export type Piece = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  name: string;
+  title: string;
   description?: string;
   price: number;
   photos: string[];
-  category: Category;
+  category: PieceCategory;
   glaze: string[];
-  size: string[];
-  variantStockQuantity: number[];
+  size: Size[];
+  stockQuantity: number[];
 };
 
 /** What a create takes: everything but the fields the store sets. */

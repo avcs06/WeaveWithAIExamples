@@ -1,8 +1,36 @@
-The checks after your work, and the two reviewers who read your change, found the issues below. Fix them in the code you wrote for this unit.
+The checks after your work, and the reviewers who read your change, found the issues below. Fix them in the code you wrote for this unit.
 
 You built this unit earlier in this session, so you know what you changed. You need no git history. Your guidelines are in `.weave/01-scaffold/guidelines.md` and in these folders: `.weave/01-scaffold/`, `.weave/02-contract/`, `.weave/03-frames/`, `.weave/04-pages/`. Read one again only when you need a detail you no longer have.
 
-Every issue below is a blocker. Each one is a failed check, or a reviewer's finding with the fix it asks for. Fix each one, and keep everything else as it is. End with the summary the guidelines ask for.
+Each issue below is a failed check, or a reviewer's finding with the fix it asks for. Fix each one, and keep everything else as it is. End with the summary the guidelines ask for.
+
+## Your replies
+
+Each issue below has an id, such as T01, and the replies given on it in earlier rounds. Each line under an issue is one reply, oldest first: its round, who gave it, its status and its reason. `fix` is you, in an earlier round. `review-<name>` is a reviewer. When a reviewer answered your reason, answer that reviewer's point.
+
+When you finish, write `.weave/replies.json` with one reply per issue:
+
+```json
+[
+  { "id": "T01", "status": "closed", "reason": "Moved the Edit button into the page header." },
+  { "id": "T02", "status": "open", "reason": "T01 moves the same button; the header is where the user looks for it." }
+]
+```
+
+- `closed` when you fixed it. Say what you changed.
+- `open` when you did not fix it. Give your reason in one or two sentences.
+
+## When you leave an issue open
+
+Fix every issue. Leave an issue `open` only in one of three cases:
+
+- Its fix would break an instruction you were given: your task, the guidelines, `UX.md` or the design. Quote that instruction in your reason.
+- It asks for the opposite of another issue, such as one that moves a link and one that keeps it where it is. Fix the one that serves the user better. In the other's reason, name the one you fixed.
+- Its fix would bring in a new error, such as a failed check, a step that stops working or a screen that breaks. Name what would break.
+
+Taste, or a fix that is hard or long, is no reason to leave an issue open. For example, "The guidelines say the way up to a list is the breadcrumb, so I added no back link" is a reason. "The current layout looks cleaner" is not: fix the issue.
+
+A failed check you answer `open` is not sent to you again. The reviewers read your replies when they review this fix. They accept a reason that quotes an instruction, names the opposite issue you fixed, or names what the fix would break. They answer any other reason `open`.
 
 ## How the checks ran
 
@@ -12,9 +40,7 @@ Every issue below is a blocker. Each one is a failed check, or a reviewer's find
 
 ## The issues
 
-- DESIGN-R-003: /discount-codes/new: focus stays among 3 controls and never leaves
-- REVIEW at web/app/blocks/LinePhoto/LinePhoto.tsx: Block reads records through its own hook instead of receiving them from the screen, and order-confirmation and order-lookup never call the required getPiece hook in their route folder. Fix: Call the getPiece/list operation hook inside each screen's route folder and pass the photo/name to a presentational LinePhoto instead of calling useGetPiece inside the block
-- REVIEW at web/app/(routes)/(app)/studio/pieces/[pieceId]/components/RemovePieceDialog.tsx: Dialog reads records through entity functions in an effect instead of through the operation hook. Fix: Receive the piece and its blocking orders as props loaded by the screen's useGetPiece/useListOrders hooks instead of calling getPiece/listOrders functions and copying results into effect state
-- REVIEW at web/app/(routes)/(marketing)/checkout/page.tsx: Loading and failed-load markup every screen shows is duplicated in every page instead of written once. Fix: Share one loading and one failed-load component across all screens instead of repeating the same Paragraph plus Try-again markup in every page
-- REVIEW at web/app/entities/cart/index.ts: Entity layer adds cart operations that the summary does not list. Fix: List useCartLines, addCartLine, updateCartLine, removeCartLine and clearCart in the summary as added operations written like the ones beside them
-- REVIEW at web/app/blocks/PieceCard/PieceCard.tsx: Change exports components and helpers that no importer uses. Fix: Remove the unused PieceCardContent export and the unused valuesToPieceInput export from PieceForm or use them, so every export is used
+- T22: REVIEW at web/app/(routes)/(marketing)/page.tsx: S01 hero preview filters to in-stock pieces only, so the sold-out featured piece from step 4 can never appear. Fix: Show the first three pieces including sold-out pieces in the hero preview so the Sage Green sold-out card appears with its sold-out state.
+- T23: REVIEW at web/app/(routes)/(marketing)/orders/[orderReference]/page.tsx: S06 shows the fulfilment status raw key for every status except New instead of its readable label. Fix: Render the fulfilment status by its label (New, Packed, Shipped, Picked Up, Cancelled) instead of the stored key.
+- T24: REVIEW at web/app/(routes)/(app)/dashboard/account/page.tsx: S20 alternative for a visitor not signed in is not built and the page renders an empty email while the session loads. Fix: When there is no signed-in owner show a Sign in link to /sign-in, and show nothing while the saved session is still being read.
+- T25: REVIEW at web/app/entities/order/operations.ts: Cancelling restores stock by matching piece title and silently skips missing or renamed pieces, leaving stock inconsistent. Fix: Restore cancelled stock by the ordered piece's id (persisted on the order) and, when a variant or piece cannot be restored, leave the order unchanged or tell the user what was not restored instead of silently skipping it.

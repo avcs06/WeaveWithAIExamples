@@ -19,27 +19,5 @@
       "from": "scope"
     }
   ],
-  "known": [
-    {
-      "rule": "CONTRACT-007",
-      "severity": "mandatory",
-      "message": "lookupOrder is a get with 2 inputs (FD24, FD11). A get takes no inputs, or the one field the user types to find its record. Keep that field and move the others to the operation that saves or lists.",
-      "at": "lookupOrder",
-      "stage": "contract"
-    },
-    {
-      "rule": "REVIEW",
-      "severity": "mandatory",
-      "message": "createOrder creates Order lines with pieces, glaze, size and quantity but has only quantity FD09 and no glaze FD06, size FD07 or piece inputs. Fix: Add inputs for the chosen variants that create the order lines, such as FD06 as orderedGlaze and FD07 as orderedSize together with the Piece link, so createOrder knows which glaze-and-size variants and quantities were ordered.",
-      "at": "operations.createOrder.inputs",
-      "stage": "contract"
-    },
-    {
-      "rule": "REVIEW",
-      "severity": "mandatory",
-      "message": "updatePiece requires the full piece-form inputs but also serves the system stock reduce and restore updates where the user fills in nothing. Fix: List only F22.S02 in updatePiece and serve the F07.S02 reduce-stock and F18.S01 restore-stock Piece updates with separate update operations that do not require the full piece-form inputs.",
-      "at": "operations.updatePiece.flowSteps",
-      "stage": "contract"
-    }
-  ]
+  "known": []
 }

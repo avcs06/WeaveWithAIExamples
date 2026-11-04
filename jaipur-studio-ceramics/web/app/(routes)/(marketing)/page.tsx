@@ -1,103 +1,108 @@
 'use client';
 
-// Loads its records through listPieces.
-import { PieceCardGrid } from '@app/blocks/PieceCard';
-import { pieceTotalStock } from '@app/blocks/stock';
+import { PieceCards } from '@app/blocks/pieces';
 import { Hero } from '@app/components/Hero';
-import { LoadFailedView, LoadingView } from '@app/components/LoadingView';
 import { NextLink } from '@app/components/NextLink';
+import { PageState } from '@app/components/PageState';
 import { useListPieces } from '@app/entities/piece';
 import { Button } from '@packages/ui/Button';
 import { CardList } from '@packages/ui/Card';
+import { Section } from '@packages/ui/Section';
 import { Paragraph } from '@packages/ui/Typography';
-import { Package, ShoppingBag, Truck, Wallet } from 'lucide-react';
+import { Leaf, MessagesSquare, PackageCheck, Truck } from 'lucide-react';
 import React from 'react';
 
 const reasons = [
   {
-    id: 'small-batches',
-    icon: <Package aria-hidden size={'25px'} />,
+    id: 'batches',
     title: 'Made in small batches',
     line: 'Each glaze and size shows the real stock left, so what you order is what we have.',
+    icon: <Leaf />,
   },
   {
-    id: 'no-messaging',
-    icon: <ShoppingBag aria-hidden />,
+    id: 'messaging',
     title: 'Order without messaging',
-    line: 'Add pieces to your cart and place your order here in a few calm steps.',
+    line: 'Choose your glaze and size, place your order, and we will collect payment by UPI later.',
+    icon: <MessagesSquare />,
   },
   {
-    id: 'upi-later',
-    icon: <Wallet aria-hidden />,
-    title: 'Pay by UPI later',
-    line: 'No online payment is taken. The studio will collect payment by UPI after you order.',
-  },
-  {
-    id: 'pickup-courier',
-    icon: <Truck aria-hidden />,
+    id: 'pickup',
     title: 'Pickup or courier',
-    line: 'Pick up at the Jaipur studio for free, or choose courier delivery for ₹99, free on discounted orders of more than ₹1,500.',
+    line: 'Collect from our Jaipur studio for free, or choose courier for ₹99, free when your discounted subtotal is above ₹1,500.',
+    icon: <Truck />,
+  },
+  {
+    id: 'honest',
+    title: 'Honest availability',
+    line: 'Sold-out glazes are marked sold out and cannot be ordered until a new batch is ready.',
+    icon: <PackageCheck />,
   },
 ];
 
+/** The studio's own shop: the headline, why to buy here, and featured pieces. */
 export default function HomePage() {
-  const { data: pieces, loading, error, retry } = useListPieces();
-  const inStock = (pieces ?? []).filter((piece) => pieceTotalStock(piece) > 0);
-  const featured = inStock.slice(0, 3);
-
-  if (loading) {
-    return <LoadingView message="Loading the shop…" />;
-  }
-
-  if (error) {
-    return (
-      <LoadFailedView
-        message="Something went wrong while loading the shop."
-        onRetry={retry}
-      />
-    );
-  }
+  const pieces = useListPieces();
+  const all = pieces.data ?? [];
+  const featured = all.slice(0, 3);
 
   return (
     <>
       <Hero
         title="Handmade ceramics from our Jaipur studio"
-        description="Small-batch mugs, bowls, planters and vases, made in Jaipur and sold only while they are in stock. Order here, no messaging needed."
+        description="Mugs, bowls, planters and vases made in small batches. Order what is actually in stock, with no account and no messaging."
         actions={
-          <Button as={NextLink} href="/pieces">
-            Browse pieces
-          </Button>
+          <>
+            <Button as={NextLink} href="/shop">
+              Browse the shop
+            </Button>
+            <Button
+              // The way to sign in sits beside the main action, as the hero asks.
+              variant="base"
+              as={NextLink}
+              href="/sign-in"
+            >
+              Studio owner sign in
+            </Button>
+          </>
+        }
+        media={
+          <div className="flex-col-gap-3">
+            <PageState
+              loading={pieces.loading}
+              loadingText="Loading the latest pieces."
+              errorText={
+                pieces.error ? 'The pieces could not be loaded.' : undefined
+              }
+              onRetry={pieces.retry}
+            />
+            {!pieces.loading && !pieces.error && featured.length === 0 ? (
+              <Paragraph>
+                No pieces are available right now. New small batches are on
+                the way, please check back later.
+              </Paragraph>
+            ) : null}
+            {!pieces.loading && !pieces.error && featured.length > 0 ? (
+              <PieceCards pieces={featured} />
+            ) : null}
+          </div>
         }
       />
-      {featured.length > 0 ? (
-        <PieceCardGrid
-          pieces={featured}
-          hrefFor={(piece) => `/pieces/${piece.id}`}
-          label="Featured pieces"
+      <Section title="Why buy from the studio">
+        <CardList
+          aria-label="Why buy from the studio"
+          items={reasons}
+          layout="grid"
+          // Four reasons take two rows of two, so none sits alone.
+          columns={2}
+          renderItem={(reason) => (
+            <>
+              <span aria-hidden>{reason.icon}</span>
+              <h3>{reason.title}</h3>
+              <p>{reason.line}</p>
+            </>
+          )}
         />
-      ) : (
-        <div className="flex-col-gap-4 items-start">
-          <Paragraph>
-            Everything is sold out and a new batch is being made.
-          </Paragraph>
-          <Button as={NextLink} href="/pieces">
-            Browse pieces
-          </Button>
-        </div>
-      )}
-      <CardList
-        aria-label="Why order from the studio"
-        items={reasons}
-        layout="grid" // Four reasons sit side by side in two rows, so none sits alone.
-        columns={2}
-        renderItem={(reason) => (
-          <>
-            {reason.icon}
-            <h3>{reason.title}</h3>
-            <p>{reason.line}</p>
-          </>
-        )}
-      />
+      </Section>
     </>
   );
 }

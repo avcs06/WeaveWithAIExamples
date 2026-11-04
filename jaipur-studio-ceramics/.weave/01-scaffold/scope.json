@@ -30,7 +30,7 @@
     {
       "noun": "Order",
       "description": "A buyer's placed order with their name, phone, pickup-or-courier choice, delivery address when needed, ordered variants and quantities, discount and shipping totals, payment status and fulfilment status.",
-      "belongsTo": "shopOwner"
+      "belongsTo": "buyer"
     },
     {
       "noun": "DiscountCode",
@@ -47,7 +47,7 @@
     "Apply one DiscountCode per Order at checkout; an invalid, expired or deactivated code is rejected with a message and the Order can still be placed without it.",
     "Stock rule: placing an Order immediately reduces the stock of the ordered variants so the shop never oversells, and cancelling an Order before shipping or pickup restores the stock.",
     "After placing an Order the buyer sees a confirmation with an order reference, the pieces, glaze, size and quantities ordered, the total including any discount and shipping, the fulfilment choice, and the UPI-later note; the buyer can look the Order up again with the reference and their phone number.",
-    "The shop owner signs in to add, edit and remove Pieces, including photos, description, price, glaze and size variants, and the stock quantity of each variant; removing a Piece never deletes existing Orders, a Piece in a New or Packed Order cannot be removed, and Orders keep their item snapshot.",
+    "The shop owner signs in to add, edit and remove Pieces, including photos, description, price, glaze and size variants, and the stock quantity of each variant.",
     "The shop owner sees a list of Orders with new orders clearly identifiable, opens an Order to see the buyer, phone, items, totals, discount used and fulfilment choice, and marks the Order Paid when UPI payment is collected.",
     "The shop owner moves each Order from New to Packed and then to Shipped for courier orders or Picked Up for studio pickups, and can Cancel a New or Packed Order.",
     "The shop owner creates, deactivates and reviews DiscountCodes with a code, a percentage or fixed-amount discount, and an expiry date, for promotions such as a weekend Instagram offer.",

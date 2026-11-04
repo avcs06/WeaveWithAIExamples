@@ -3,135 +3,131 @@ import type { Piece } from './types';
 export const pieceSeed: Piece[] = [
   {
     "id": "piece-1",
-    "createdAt": "2026-10-24T11:54:11.023Z",
-    "updatedAt": "2026-10-24T12:54:11.023Z",
-    "name": "Speckled Stoneware Mug",
-    "description": "Hand-thrown mug with speckled matte glaze, 300 ml.",
+    "createdAt": "2026-10-24T19:43:11.773Z",
+    "updatedAt": "2026-10-24T20:43:11.773Z",
+    "title": "Speckled Chai Mug",
+    "description": "Wheel-thrown stoneware mug with speckled glaze, 300ml. Perfect for cutting chai.",
     "price": 650,
     "photos": [
-      "https://picsum.photos/seed/speckled-stoneware-mug-1/800/600",
-      "https://picsum.photos/seed/speckled-stoneware-mug-2/800/600"
+      "https://picsum.photos/seed/speckled-chai-mug-1/800/600",
+      "https://picsum.photos/seed/speckled-chai-mug-2/800/600"
     ],
-    "category": "mugs",
+    "category": "mug",
     "glaze": [
-      "Matte White",
-      "Speckled Oatmeal"
+      "Sage Green",
+      "Mustard Speckle"
     ],
     "size": [
-      "300 ml",
-      "450 ml"
+      "small",
+      "medium"
     ],
-    "variantStockQuantity": [
-      12,
-      8,
-      5,
-      3
+    "stockQuantity": [
+      14,
+      6
     ]
   },
   {
     "id": "piece-2",
-    "createdAt": "2026-10-26T11:54:11.023Z",
-    "updatedAt": "2026-10-26T13:54:11.023Z",
-    "name": "Jaipur Blue Ramen Bowl",
-    "description": "Deep ramen bowl with Jaipur blue glaze and hand-painted border.",
+    "createdAt": "2026-10-26T19:43:11.773Z",
+    "updatedAt": "2026-10-26T21:43:11.773Z",
+    "title": "Indigo Ramen Bowl",
+    "description": "Hand-thrown ramen bowl with deep indigo dip glaze, 700ml. Food-safe and chip resistant.",
     "price": 850,
     "photos": [
-      "https://picsum.photos/seed/jaipur-blue-ramen-bowl-1/800/600",
-      "https://picsum.photos/seed/jaipur-blue-ramen-bowl-2/800/600",
-      "https://picsum.photos/seed/jaipur-blue-ramen-bowl-3/800/600"
+      "https://picsum.photos/seed/indigo-ramen-bowl-1/800/600",
+      "https://picsum.photos/seed/indigo-ramen-bowl-2/800/600",
+      "https://picsum.photos/seed/indigo-ramen-bowl-3/800/600"
     ],
-    "category": "bowls",
+    "category": "bowl",
     "glaze": [
-      "Jaipur Blue",
-      "Terracotta Rust"
+      "Indigo Blue",
+      "Oatmeal White"
     ],
     "size": [
-      "500 ml",
-      "800 ml"
+      "medium",
+      "large"
     ],
-    "variantStockQuantity": [
-      10,
-      6,
-      4,
-      2
+    "stockQuantity": [
+      8,
+      3
     ]
   },
   {
     "id": "piece-3",
-    "createdAt": "2026-10-28T11:54:11.023Z",
-    "updatedAt": "2026-10-28T14:54:11.023Z",
-    "name": "Hand-Painted Planter",
-    "description": "Small-batch planter with drainage hole, ideal for succulents.",
-    "price": 550,
+    "createdAt": "2026-10-28T19:43:11.773Z",
+    "updatedAt": "2026-10-28T22:43:11.773Z",
+    "title": "Terracotta Tulsi Planter",
+    "description": "Unglazed terracotta planter with drainage hole and saucer, for tulsi and herbs.",
+    "price": 950,
     "photos": [
-      "https://picsum.photos/seed/hand-painted-planter-1/800/600",
-      "https://picsum.photos/seed/hand-painted-planter-2/800/600"
+      "https://picsum.photos/seed/terracotta-tulsi-planter-1/800/600",
+      "https://picsum.photos/seed/terracotta-tulsi-planter-2/800/600"
     ],
-    "category": "planters",
+    "category": "planter",
     "glaze": [
-      "Indigo Bloom",
+      "Terracotta Natural",
       "Sage Green"
     ],
     "size": [
-      "4 inch",
-      "6 inch"
+      "medium",
+      "large"
     ],
-    "variantStockQuantity": [
-      15,
-      9,
-      7,
-      1
+    "stockQuantity": [
+      5,
+      2
     ]
   },
   {
     "id": "piece-4",
-    "createdAt": "2026-10-30T11:54:11.023Z",
-    "updatedAt": "2026-10-30T15:54:11.023Z",
-    "name": "Tall Bud Vase",
-    "description": "Slim hand-thrown bud vase for single stems and dried flowers.",
-    "price": 950,
+    "createdAt": "2026-10-30T19:43:11.773Z",
+    "updatedAt": "2026-10-30T23:43:11.773Z",
+    "title": "Amber Bud Vase",
+    "description": "Slender bud vase in warm amber glaze, ideal for single marigold stems.",
+    "price": 1200,
     "photos": [
-      "https://picsum.photos/seed/tall-bud-vase-1/800/600",
-      "https://picsum.photos/seed/tall-bud-vase-2/800/600"
+      "https://picsum.photos/seed/amber-bud-vase-1/800/600",
+      "https://picsum.photos/seed/amber-bud-vase-2/800/600"
     ],
-    "category": "vases",
+    "category": "vase",
     "glaze": [
-      "Matte Black",
-      "Sandstone"
+      "Amber",
+      "Charcoal Black",
+      "Ivory Matte"
     ],
     "size": [
-      "8 inch",
-      "10 inch"
+      "small",
+      "medium",
+      "large"
     ],
-    "variantStockQuantity": [
-      6,
-      3,
+    "stockQuantity": [
+      9,
       4,
-      2
+      1
     ]
   },
   {
     "id": "piece-5",
-    "createdAt": "2026-11-01T11:54:11.023Z",
-    "updatedAt": "2026-11-01T16:54:11.023Z",
-    "name": "Rustic Serving Bowl",
-    "description": "Large rustic serving bowl with creamy glaze, perfect for family meals.",
-    "price": 1200,
+    "createdAt": "2026-11-01T19:43:11.773Z",
+    "updatedAt": "2026-11-02T00:43:11.773Z",
+    "title": "Jaipur Blue Serving Bowl",
+    "description": "Traditional Jaipur blue pottery serving bowl with turquoise jaal work, 1.2L.",
+    "price": 1450,
     "photos": [
-      "https://picsum.photos/seed/rustic-serving-bowl-1/800/600",
-      "https://picsum.photos/seed/rustic-serving-bowl-2/800/600"
+      "https://picsum.photos/seed/jaipur-blue-serving-bowl-1/800/600",
+      "https://picsum.photos/seed/jaipur-blue-serving-bowl-2/800/600"
     ],
-    "category": "bowls",
+    "category": "bowl",
     "glaze": [
-      "Cream",
-      "Olive Speckle"
+      "Jaipur Blue",
+      "Turquoise Jaal"
     ],
     "size": [
-      "Large"
+      "medium",
+      "large"
     ],
-    "variantStockQuantity": [
-      5,
-      2
+    "stockQuantity": [
+      0,
+      7
     ]
   }
 ];

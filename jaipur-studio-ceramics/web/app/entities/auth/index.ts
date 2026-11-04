@@ -11,16 +11,10 @@ export type User = { email: string; role?: string };
 export type Role = { id: string; name: string };
 
 // `roles` keeps each email's role from sign up, so signing in again restores it.
-// `passwords` keeps each email's password from the account page, so saving the
-// account persists both the edited email and password.
-type AuthState = {
-  user: User | null;
-  roles: Record<string, string>;
-  passwords: Record<string, string>;
-};
+type AuthState = { user: User | null; roles: Record<string, string> };
 
 // The scaffold writes the run's key over this, so no two apps on one origin share a session.
-const AUTH_KEY = "weave:20261103-1640-ecommerce-store:auth";
+const AUTH_KEY = "weave:20261104-0040-ecommerce-store:auth";
 
 // The scaffold writes the app's signed-in roles over this; sign up asks for one when there are several.
 export const ROLES: Role[] = [{"id":"shopOwner","name":"Shop Owner"}];
@@ -29,7 +23,7 @@ export const ROLES: Role[] = [{"id":"shopOwner","name":"Shop Owner"}];
 export const HOME_ROUTE = "/dashboard";
 
 const useAuthStore = createPersistentStore<AuthState>(
-  () => ({ user: null, roles: {}, passwords: {} }),
+  () => ({ user: null, roles: {} }),
   AUTH_KEY,
 );
 
@@ -55,23 +49,15 @@ export function signOut(): void {
   useAuthStore.setState({ user: null });
 }
 
-/** Save the owner's edited email and password through the entity layer. */
-export async function updateAccount(
-  email: string,
-  password: string,
-): Promise<User> {
-  await mockCall('updateAccount');
-  const previous = useAuthStore.getState().user?.email;
-  const role =
-    useAuthStore.getState().roles[email] ??
-    (previous ? useAuthStore.getState().roles[previous] : undefined);
-  const user = role ? { email, role } : { email };
-  useAuthStore.setState((state) => ({
-    user,
-    roles: role ? { ...state.roles, [email]: role } : state.roles,
-    passwords: { ...state.passwords, [email]: password },
-  }));
-  return user;
+/**
+ * Change the signed-in owner's password. There is no backend yet, so the
+ * secret is never written to browser storage, a log, the URL, or shown back.
+ */
+export async function changePassword(password: string): Promise<void> {
+  await mockCall('changePassword');
+  const email = useAuthStore.getState().user?.email;
+  if (!email) throw new Error('Not signed in');
+  void password;
 }
 
 const noSubscription = () => () => undefined;

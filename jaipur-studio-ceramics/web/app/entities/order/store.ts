@@ -9,5 +9,5 @@ type OrderState = { records: Order[] };
 /** Every Order, saved in the browser so a reload keeps what the user changed. */
 export const useOrderStore = createPersistentStore<OrderState>(
   () => ({ records: orderSeed }),
-  'weave:20261103-1640-ecommerce-store:order',
+  'weave:20261104-0040-ecommerce-store:order',
 );

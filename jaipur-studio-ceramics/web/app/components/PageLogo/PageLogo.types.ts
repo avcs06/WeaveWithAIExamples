@@ -5,4 +5,6 @@ export type PageLogoProps = {
   leftIcon?: ReactNode;
   /** An icon after the name; it leads home with the name. */
   rightIcon?: ReactNode;
+  /** Where the logo leads: home by default, the dashboard in the app frame. */
+  href?: string;
 };

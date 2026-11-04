@@ -1,40 +1,77 @@
-import { NextLink } from '@app/components/NextLink';
-import { Caption, Paragraph } from '@packages/ui/Typography';
-import React from 'react';
+'use client';
 
 /**
- * The public site's footer items, under its pages. Sign in and sign up have
- * a layout of their own, without this footer. PageLayout renders the bar:
- * its height, padding, background and separation. It lays these items in a
- * row with the theme's gap.
+ * The public site's footer bar, under its pages. Sign in and sign up have
+ * their own layout, without this footer.
  *
- * Holds, as the theme names them:
- * - Links to the site's own pages, such as About or Contact: a `NextLink`
- *   from `@app/components/NextLink` with `look="plain"` each.
- * - Links to other sites or an email: `Link` from `@packages/ui/Link` with
- *   `look="plain"`.
- * - A line of small print, such as the copyright: a `Paragraph` from
- *   `@packages/ui/Typography` with `color="muted"`.
- * - `<div className="flex-1" />` before the items that sit at the end.
- * - Code places `PageLogo` here when the theme puts the logo in the footer.
- *   Keep it as it is.
+ * Put here:
+ * - Links to the site's own pages. Use a `NextLink` from
+ *   `@app/components/NextLink` with `look="plain"`. Example: About,
+ *   Contact. Each link opens a route from
+ *   `.weave/01-scaffold/routes.json`.
+ * - Links to other sites or an email. Use `Link` from `@packages/ui/Link`
+ *   with `look="plain"`. Example: a `mailto:` link to the support address.
+ * - A line of small print. Use a `Paragraph` from `@packages/ui/Typography`
+ *   with `color="muted"`. Example: "© 2026" and the site's name.
  *
- * Leaves out:
- * - A `footer` element, height, padding, background or border: PageLayout
+ * PageLayout draws the bar and stacks its lines, one under the other, with
+ * the theme's gap. Return each line as one element, such as a row of links
+ * or a line of small print.
+ *
+ * Example:
+ *   <div className="flex-row-gap-4 flex-wrap">
+ *     <NextLink look="plain" href="/about">About</NextLink>
+ *     <NextLink look="plain" href="/contact">Contact</NextLink>
+ *   </div>
+ *   <Paragraph color="muted">© 2026 Hillside Bakery</Paragraph>
+ *
+ * Never put here:
+ * - The logo or the account. They sit in the header.
+ * - A `footer` element, height, padding, background or border. PageLayout
  *   draws the bar.
- * - The header's links again, and pages, policies or social links the scope
- *   and the flows don't have.
+ * - The header's links again.
+ * - A page, a policy or a social link that the scope and the flows do not
+ *   have.
  *
- * The theme puts here: Start: Studio pickup information. End: Order lookup.
+ * The line "The theme puts here" below names this app's items. Build those
+ * and nothing else.
+ *
+ * The theme puts here: It holds: Studio pickup information and shop links.
  */
-export const MarketingFooter = () => (
-  <>
-    <div className="flex-col-gap-1">
-      <Paragraph>Free studio pickup from our Jaipur studio: 21 Gangwal Park, Jaipur 302001.</Paragraph>
-      <Caption>Pick up Tuesday to Sunday, 10am to 6pm. We confirm your pickup slot after you order.</Caption>
-    </div>
-    <NextLink href="/order-lookup" look="plain">
-      Find your order
-    </NextLink>
-  </>
-);
+
+import { NextLink } from '@app/components/NextLink';
+import { useCurrentUser } from '@app/entities/auth';
+import { Paragraph } from '@packages/ui/Typography';
+import React from 'react';
+
+export const MarketingFooter = () => {
+  const user = useCurrentUser();
+
+  return (
+    <>
+      <Paragraph>
+        Studio pickup is free from our Jaipur studio at 21 Rose Quartz Lane,
+        Johari Bazaar, Jaipur 302003. Collect your order Tuesday to Sunday,
+        10am to 7pm. We collect payment by UPI after you place your order.
+      </Paragraph>
+      <div className="flex-row-gap-4 flex-wrap">
+        <NextLink look="plain" href="/shop">
+          Shop
+        </NextLink>
+        <NextLink look="plain" href="/order-lookup">
+          Look up an order
+        </NextLink>
+        {user === null && (
+          <>
+            <NextLink look="plain" href="/sign-in">
+              Studio owner sign in
+            </NextLink>
+            <NextLink look="plain" href="/sign-up">
+              Create studio owner account
+            </NextLink>
+          </>
+        )}
+      </div>
+    </>
+  );
+};

@@ -1,1 +1,0 @@
-export { LinePhoto } from './LinePhoto';

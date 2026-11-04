@@ -21,3 +21,116 @@ way to see new orders, mark what I've packed and shipped, and know when a glaze
 is nearly gone so I can plan the next batch.
 
 Earthy, lots of white space, the photos should do the talking.
+
+## Screenshots
+
+Each screen at 1280px wide, with the app's seed data. The dashboard screens are
+signed in as the shop owner.
+
+### Home
+
+`/`
+
+![Home](screenshots/s01-home.png)
+
+### Shop
+
+`/shop`
+
+![Shop](screenshots/s02-shop.png)
+
+### A piece
+
+`/shop/piece-1`
+
+![A piece](screenshots/s03-piece.png)
+
+### Cart
+
+`/cart`
+
+![Cart](screenshots/s04-cart.png)
+
+### Checkout
+
+`/checkout`
+
+![Checkout](screenshots/s05-checkout.png)
+
+### An order that is not found
+
+`/orders/demo`
+
+![An order that is not found](screenshots/s06-order-not-found.png)
+
+### Look up an order
+
+`/order-lookup`
+
+![Look up an order](screenshots/s07-look-up-an-order.png)
+
+### Dashboard
+
+`/dashboard`
+
+![Dashboard](screenshots/s10-dashboard.png)
+
+### Pieces
+
+`/dashboard/pieces`
+
+![Pieces](screenshots/s11-pieces.png)
+
+### Add a piece
+
+`/dashboard/pieces/new`
+
+![Add a piece](screenshots/s12-add-a-piece.png)
+
+### A piece, for the owner
+
+`/dashboard/pieces/piece-1`
+
+![A piece, for the owner](screenshots/s13-piece-details.png)
+
+### Edit a piece
+
+`/dashboard/pieces/piece-1/edit`
+
+![Edit a piece](screenshots/s14-edit-a-piece.png)
+
+### Orders
+
+`/dashboard/orders`
+
+![Orders](screenshots/s15-orders.png)
+
+### An order, for the owner
+
+`/dashboard/orders/order-1`
+
+![An order, for the owner](screenshots/s16-order.png)
+
+### Discount codes
+
+`/dashboard/discount-codes`
+
+![Discount codes](screenshots/s17-discount-codes.png)
+
+### Create a discount code
+
+`/dashboard/discount-codes/new`
+
+![Create a discount code](screenshots/s18-create-a-discount-code.png)
+
+### A discount code
+
+`/dashboard/discount-codes/discountCode-1`
+
+![A discount code](screenshots/s19-discount-code.png)
+
+### Account
+
+`/dashboard/account`
+
+![Account](screenshots/s20-account.png)

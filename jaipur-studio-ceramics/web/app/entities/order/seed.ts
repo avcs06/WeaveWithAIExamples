@@ -3,230 +3,174 @@ import type { Order } from './types';
 export const orderSeed: Order[] = [
   {
     "id": "order-1",
-    "createdAt": "2026-10-22T11:54:11.023Z",
-    "updatedAt": "2026-10-22T12:54:11.023Z",
-    "buyerName": "Priya Sharma",
+    "createdAt": "2026-10-24T19:43:11.773Z",
+    "updatedAt": "2026-10-24T20:43:11.773Z",
+    "name": "Meera Sharma",
     "phoneNumber": "9829012345",
     "fulfilmentChoice": "courier_delivery",
-    "deliveryAddress": "14 Rose Lane, C-Scheme",
+    "deliveryAddress": "14 Rose Lane, Malviya Nagar",
     "city": "Jaipur",
-    "pinCode": "302001",
+    "pinCode": "302017",
+    "discountCode": "WEEKEND10",
+    "orderReference": "JSC-4821",
+    "itemPieceId": ["piece-1"],
     "quantity": [
       2
     ],
-    "orderReference": "JSC-1024",
-    "pieces": [
-      "piece-1"
+    "itemTitle": [
+      "Speckled Chai Mug"
     ],
-    "fulfilmentStatus": "new",
-    "paymentStatus": "unpaid",
-    "subtotal": 1300,
-    "discountTotal": 130,
-    "shippingTotal": 120,
-    "total": 1290,
-    "discountCode": "discountCode-1",
-    "orderedPieceName": [
-      "Speckled Stoneware Mug"
+    "itemGlaze": [
+      "Sage Green"
     ],
-    "orderedGlaze": [
-      "Matte White"
+    "itemSize": [
+      "small"
     ],
-    "orderedSize": [
-      "300 ml"
-    ],
-    "orderedPrice": [
+    "itemPrice": [
       650
-    ]
+    ],
+    "subtotal": 1300,
+    "discountAmount": 130,
+    "shippingCost": 120,
+    "total": 1290,
+    "paymentStatus": "paid",
+    "fulfilmentStatus": "packed"
   },
   {
     "id": "order-2",
-    "createdAt": "2026-10-24T11:54:11.023Z",
-    "updatedAt": "2026-10-24T13:54:11.023Z",
-    "buyerName": "Rahul Verma",
+    "createdAt": "2026-10-26T19:43:11.773Z",
+    "updatedAt": "2026-10-26T21:43:11.773Z",
+    "name": "Arjun Mehta",
     "phoneNumber": "9414056789",
     "fulfilmentChoice": "studio_pickup",
+    "orderReference": "JSC-4825",
+    "itemPieceId": ["piece-4"],
     "quantity": [
-      1,
       1
     ],
-    "orderReference": "JSC-1025",
-    "pieces": [
-      "piece-2",
-      "piece-4"
+    "itemTitle": [
+      "Amber Bud Vase"
     ],
-    "fulfilmentStatus": "packed",
-    "paymentStatus": "paid",
-    "subtotal": 1800,
-    "discountTotal": 90,
-    "shippingTotal": 0,
-    "total": 1710,
-    "discountCode": "discountCode-3",
-    "orderedPieceName": [
-      "Jaipur Blue Ramen Bowl",
-      "Tall Bud Vase"
+    "itemGlaze": [
+      "Amber"
     ],
-    "orderedGlaze": [
-      "Jaipur Blue",
-      "Matte Black"
+    "itemSize": [
+      "medium"
     ],
-    "orderedSize": [
-      "500 ml",
-      "8 inch"
+    "itemPrice": [
+      1200
     ],
-    "orderedPrice": [
-      850,
-      950
-    ]
+    "subtotal": 1200,
+    "discountAmount": 0,
+    "shippingCost": 0,
+    "total": 1200,
+    "paymentStatus": "unpaid",
+    "fulfilmentStatus": "new"
   },
   {
     "id": "order-3",
-    "createdAt": "2026-10-26T11:54:11.023Z",
-    "updatedAt": "2026-10-26T14:54:11.023Z",
-    "buyerName": "Ananya Iyer",
+    "createdAt": "2026-10-28T19:43:11.773Z",
+    "updatedAt": "2026-10-28T22:43:11.773Z",
+    "name": "Priya Nair",
     "phoneNumber": "9982011223",
     "fulfilmentChoice": "courier_delivery",
     "deliveryAddress": "B-402 Sea Breeze, Bandra West",
     "city": "Mumbai",
     "pinCode": "400050",
-    "quantity": [
-      2
-    ],
-    "orderReference": "JSC-1026",
-    "pieces": [
-      "piece-3"
-    ],
-    "fulfilmentStatus": "shipped",
-    "paymentStatus": "paid",
-    "subtotal": 1100,
-    "discountTotal": 200,
-    "shippingTotal": 150,
-    "total": 1050,
-    "discountCode": "discountCode-2",
-    "orderedPieceName": [
-      "Hand-Painted Planter"
-    ],
-    "orderedGlaze": [
-      "Indigo Bloom"
-    ],
-    "orderedSize": [
-      "6 inch"
-    ],
-    "orderedPrice": [
-      550
-    ]
-  },
-  {
-    "id": "order-4",
-    "createdAt": "2026-10-28T11:54:11.023Z",
-    "updatedAt": "2026-10-28T15:54:11.023Z",
-    "buyerName": "Kabir Mehta",
-    "phoneNumber": "9001897654",
-    "fulfilmentChoice": "studio_pickup",
-    "quantity": [
-      1
-    ],
-    "orderReference": "JSC-1027",
-    "pieces": [
-      "piece-5"
-    ],
-    "fulfilmentStatus": "picked_up",
-    "paymentStatus": "paid",
-    "subtotal": 1200,
-    "discountTotal": 60,
-    "shippingTotal": 0,
-    "total": 1140,
-    "discountCode": "discountCode-3",
-    "orderedPieceName": [
-      "Rustic Serving Bowl"
-    ],
-    "orderedGlaze": [
-      "Cream"
-    ],
-    "orderedSize": [
-      "Large"
-    ],
-    "orderedPrice": [
-      1200
-    ]
-  },
-  {
-    "id": "order-5",
-    "createdAt": "2026-10-30T11:54:11.023Z",
-    "updatedAt": "2026-10-30T16:54:11.023Z",
-    "buyerName": "Neha Gupta",
-    "phoneNumber": "9810456789",
-    "fulfilmentChoice": "courier_delivery",
-    "deliveryAddress": "27 Green Park Extension",
-    "city": "New Delhi",
-    "pinCode": "110016",
+    "discountCode": "DIWALI200",
+    "orderReference": "JSC-4830",
+    "itemPieceId": ["piece-2", "piece-1"],
     "quantity": [
       1,
       2
     ],
-    "orderReference": "JSC-1028",
-    "pieces": [
-      "piece-4",
-      "piece-1"
+    "itemTitle": [
+      "Indigo Ramen Bowl",
+      "Speckled Chai Mug"
     ],
-    "fulfilmentStatus": "new",
-    "paymentStatus": "unpaid",
-    "subtotal": 2250,
-    "discountTotal": 225,
-    "shippingTotal": 120,
-    "total": 2145,
-    "discountCode": "discountCode-1",
-    "orderedPieceName": [
-      "Tall Bud Vase",
-      "Speckled Stoneware Mug"
+    "itemGlaze": [
+      "Indigo Blue",
+      "Mustard Speckle"
     ],
-    "orderedGlaze": [
-      "Sandstone",
-      "Speckled Oatmeal"
+    "itemSize": [
+      "medium",
+      "medium"
     ],
-    "orderedSize": [
-      "10 inch",
-      "300 ml"
-    ],
-    "orderedPrice": [
-      950,
+    "itemPrice": [
+      850,
       650
-    ]
+    ],
+    "subtotal": 2150,
+    "discountAmount": 200,
+    "shippingCost": 150,
+    "total": 2100,
+    "paymentStatus": "paid",
+    "fulfilmentStatus": "shipped"
   },
   {
-    "id": "order-6",
-    "createdAt": "2026-11-01T11:54:11.023Z",
-    "updatedAt": "2026-11-01T17:54:11.023Z",
-    "buyerName": "Arjun Singhania",
-    "phoneNumber": "9829054321",
+    "id": "order-4",
+    "createdAt": "2026-10-30T19:43:11.773Z",
+    "updatedAt": "2026-10-30T23:43:11.773Z",
+    "name": "Kabir Singh Rathore",
+    "phoneNumber": "9001894567",
     "fulfilmentChoice": "courier_delivery",
-    "deliveryAddress": "C-11 Malviya Nagar",
-    "city": "Jaipur",
-    "pinCode": "302017",
+    "deliveryAddress": "C-56 Defence Colony",
+    "city": "New Delhi",
+    "pinCode": "110024",
+    "discountCode": "FIRSTBUY15",
+    "orderReference": "JSC-4834",
+    "itemPieceId": ["piece-3"],
+    "quantity": [
+      3
+    ],
+    "itemTitle": [
+      "Terracotta Tulsi Planter"
+    ],
+    "itemGlaze": [
+      "Terracotta Natural"
+    ],
+    "itemSize": [
+      "large"
+    ],
+    "itemPrice": [
+      950
+    ],
+    "subtotal": 2850,
+    "discountAmount": 427.5,
+    "shippingCost": 180,
+    "total": 2602.5,
+    "paymentStatus": "paid",
+    "fulfilmentStatus": "new"
+  },
+  {
+    "id": "order-5",
+    "createdAt": "2026-11-01T19:43:11.773Z",
+    "updatedAt": "2026-11-02T00:43:11.773Z",
+    "name": "Ananya Iyer",
+    "phoneNumber": "9799398765",
+    "fulfilmentChoice": "studio_pickup",
+    "orderReference": "JSC-4840",
+    "itemPieceId": ["piece-5"],
     "quantity": [
       1
     ],
-    "orderReference": "JSC-1029",
-    "pieces": [
-      "piece-3"
+    "itemTitle": [
+      "Jaipur Blue Serving Bowl"
     ],
-    "fulfilmentStatus": "cancelled",
+    "itemGlaze": [
+      "Turquoise Jaal"
+    ],
+    "itemSize": [
+      "large"
+    ],
+    "itemPrice": [
+      1450
+    ],
+    "subtotal": 1450,
+    "discountAmount": 0,
+    "shippingCost": 0,
+    "total": 1450,
     "paymentStatus": "unpaid",
-    "subtotal": 550,
-    "discountTotal": 100,
-    "shippingTotal": 120,
-    "total": 570,
-    "discountCode": "discountCode-4",
-    "orderedPieceName": [
-      "Hand-Painted Planter"
-    ],
-    "orderedGlaze": [
-      "Sage Green"
-    ],
-    "orderedSize": [
-      "4 inch"
-    ],
-    "orderedPrice": [
-      550
-    ]
+    "fulfilmentStatus": "cancelled"
   }
 ];

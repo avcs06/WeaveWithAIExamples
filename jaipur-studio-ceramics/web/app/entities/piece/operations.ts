@@ -39,6 +39,15 @@ export async function updatePiece(id: string, changes: Partial<PieceInput>): Pro
   return record;
 }
 
+export async function updatePieceStock(id: string, changes: Partial<PieceInput>): Promise<Piece> {
+  await mockCall('updatePieceStock');
+  const current = usePieceStore.getState().records.find((record) => record.id === id);
+  if (!current) throw new Error('Piece not found');
+  const record: Piece = { ...current, ...changes, updatedAt: new Date().toISOString() };
+  usePieceStore.setState(({ records }) => ({ records: records.map((r) => (r.id === id ? record : r)) }));
+  return record;
+}
+
 export async function deletePiece(id: string): Promise<void> {
   await mockCall('deletePiece');
   usePieceStore.setState(({ records }) => ({ records: records.filter((record) => record.id !== id) }));

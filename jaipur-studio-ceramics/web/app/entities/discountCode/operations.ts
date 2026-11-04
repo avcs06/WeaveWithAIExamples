@@ -13,13 +13,22 @@ export function useListDiscountCodes(): Read<DiscountCode[]> {
   return useRead('listDiscountCodes', useDiscountCodeStore('records'));
 }
 
-export async function getDiscountCode(discountCode: DiscountCode['discountCode']): Promise<DiscountCode | undefined> {
+export async function getDiscountCode(id: string): Promise<DiscountCode | undefined> {
   await mockCall('getDiscountCode');
-  return useDiscountCodeStore.getState().records.find((record) => record.discountCode === discountCode);
+  return useDiscountCodeStore.getState().records.find((record) => record.id === id);
 }
 
-export function useGetDiscountCode(discountCode: DiscountCode['discountCode']): Read<DiscountCode | undefined> {
-  return useRead('getDiscountCode', useDiscountCodeStore(({ records }) => records.find((record) => record.discountCode === discountCode)));
+export function useGetDiscountCode(id: string): Read<DiscountCode | undefined> {
+  return useRead('getDiscountCode', useDiscountCodeStore(({ records }) => records.find((record) => record.id === id)));
+}
+
+export async function getDiscountCodeByCode(code: DiscountCode['code']): Promise<DiscountCode | undefined> {
+  await mockCall('getDiscountCodeByCode');
+  return useDiscountCodeStore.getState().records.find((record) => record.code === code);
+}
+
+export function useGetDiscountCodeByCode(code: DiscountCode['code']): Read<DiscountCode | undefined> {
+  return useRead('getDiscountCodeByCode', useDiscountCodeStore(({ records }) => records.find((record) => record.code === code)));
 }
 
 export async function createDiscountCode(input: DiscountCodeInput): Promise<DiscountCode> {

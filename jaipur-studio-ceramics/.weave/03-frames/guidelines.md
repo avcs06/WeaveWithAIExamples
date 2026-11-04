@@ -6,12 +6,13 @@
 - Code wrote each frame's layout,
   `web/app/(routes)/(<route group>)/layout.tsx`. It renders `PageLayout`
   from `@app/components/PageLayout` with the theme's app or marketing
-  layout. `PageLayout` sets the header's height, the sidebar's width, what
-  stays in view, the separations and the page container. In the app layout
+  layout. `PageLayout` sets the bars' padding and gaps, the sidebar's width,
+  what stays in view, the separations and the page container. In the app layout
   the frame stays in place, and only the main region scrolls. The sidebar
   is a `SidebarMenu` that `PageLayout` renders itself. The layout of a
   frame around signed-in screens also sends a visitor to the landing page.
-  Never change the layout or `PageLayout`. A session that does fails.
+  Change the layout or `PageLayout` only as "Change with care" in
+  `.weave/01-scaffold/guidelines.md` says.
 - The layout imports one part for each area of the theme's layout, such as
   `web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx` and
   `web/app/components/AppSidebar/AppSidebar.tsx`. Fill each part. Its
@@ -26,13 +27,18 @@
   items around them.
 - A part returns its items, not a bar. It has no `header`, `aside`,
   `footer` or `SidebarMenu` of its own, and no height, padding, background
-  or border around its items. A footer lays its items in a row. Push the
-  end items over with `<div className="flex-1" />`.
+  or border around its items. An app's footer lays its items in a row. Push
+  the end items over with `<div className="flex-1" />`. A site's footer
+  stacks its lines, one under the other. Each line is one element, such as
+  a row of links or a line of small print. A footer never holds the logo or
+  the account.
 - In the sidebar, `AppSidebar` returns the rows. Each destination is a
   `SidebarMenuItem` with `as={NextLink}` and its `href`. `AppSidebarHeader`
   holds what stays fixed above the rows, such as a Create button.
   `AppSidebarFooter` holds what stays fixed below them, such as the account
-  menu. The menu's list scrolls between them.
+  menu. Each of their pieces sits in its own `SidebarMenuItem` with
+  `as="div"`, which lines it up with the rows. The menu's list scrolls
+  between them.
 - A piece a part uses goes in `web/app/components/<Name>/`, or in
   `web/app/blocks/<Name>/` when it loads or changes records.
 - A step that leads somewhere opens its route with `NextLink`, even when

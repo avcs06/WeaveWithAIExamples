@@ -1,138 +1,218 @@
 'use client';
 
-// Loads its records through listPieces and getDiscountCode.
+import { useCartStore } from '@app/blocks/Cart';
 import {
-  COURIER_FEE,
-  FREE_SHIPPING_ABOVE,
-  cartTotals,
-  usableDiscount,
-} from '@app/blocks/cartTotals';
-import { formatINR } from '@app/blocks/money';
-import {
-  STUDIO_PICKUP_ADDRESS,
-  STUDIO_PICKUP_INSTRUCTIONS,
-} from '@app/blocks/shopInfo';
-import { stockAfterOrderLines, stockFor } from '@app/blocks/stock';
-import { LoadFailedView, LoadingView } from '@app/components/LoadingView';
+  OrderItems,
+  OrderTotals,
+  PickupInfo,
+  discountFor,
+  isCodeUsable,
+  isValidIndianPhone,
+  isValidPinCode,
+  nextOrderReference,
+  shippingFor,
+} from '@app/blocks/orders';
+import { findVariant, sizeLabel } from '@app/blocks/pieces';
 import { NextLink } from '@app/components/NextLink';
 import { PageHeader } from '@app/components/PageHeader';
-import { clearCart, useCartLines } from '@app/entities/cart';
-import { getDiscountCode } from '@app/entities/discountCode';
-import { FulfilmentChoiceOptions } from '@app/entities/enums';
-import { createOrder, useListOrders } from '@app/entities/order';
-import { updatePiece, useListPieces } from '@app/entities/piece';
+import { PageState } from '@app/components/PageState';
+import { useGetDiscountCodeByCode } from '@app/entities/discountCode';
+import { createOrderWithStock, useListOrders } from '@app/entities/order';
+import { useListPieces } from '@app/entities/piece';
 import { Button } from '@packages/ui/Button';
 import { Controller, Form } from '@packages/ui/Form';
 import { Input } from '@packages/ui/Input';
-import { Numeral } from '@packages/ui/Numeral';
 import { Radio, RadioGroup } from '@packages/ui/Radio';
-import {
-  Caption,
-  DescriptionDetails,
-  DescriptionList,
-  DescriptionTerm,
-  List,
-  ListItem,
-  Paragraph,
-} from '@packages/ui/Typography';
+import { Paragraph } from '@packages/ui/Typography';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import type { DiscountCode } from '@app/entities/discountCode';
-import type { FulfilmentChoice } from '@app/entities/enums';
-import type { OrderInput } from '@app/entities/order';
-
 type CheckoutValues = {
-  buyerName: string;
-  phoneNumber: string;
+  name: string;
+  phone: string;
   fulfilmentChoice: string;
   deliveryAddress: string;
   city: string;
   pinCode: string;
+  discountCode: string;
 };
 
-const emptyCheckout: CheckoutValues = {
-  buyerName: '',
-  phoneNumber: '',
-  fulfilmentChoice: '',
-  deliveryAddress: '',
-  city: '',
-  pinCode: '',
-};
-
-const phoneOk = (value: string): boolean =>
-  value.replace(/\D/g, '').length >= 10;
-
-const todayIso = (): string => new Date().toISOString().slice(0, 10);
-
-const nextReference = (references: string[]): string => {
-  const max = references.reduce((top, reference) => {
-    const match = /(\d+)\s*$/.exec(reference);
-    return match ? Math.max(top, Number(match[1])) : top;
-  }, 1023);
-  return `JSC-${max + 1}`;
-};
-
+/** Checkout: contact, fulfilment and an optional discount code, then order. */
 export default function CheckoutPage() {
   const router = useRouter();
-  const {
-    data: pieces,
-    loading: piecesLoading,
-    error: piecesError,
-    retry: retryPieces,
-  } = useListPieces();
-  const { data: orders } = useListOrders();
-  const lines = useCartLines();
-  const {
-    control: discountControl,
-    handleSubmit: handleDiscountSubmit,
-  } = useForm<{ discountCode: string }>({
-    defaultValues: { discountCode: '' },
-  });
-  const [applied, setApplied] = useState<DiscountCode | null>(null);
-  const [discountError, setDiscountError] = useState<string | null>(null);
-  const [checkingCode, setCheckingCode] = useState(false);
-  const [shorts, setShorts] = useState<
-    { name: string; glaze: string; size: string; stock: number }[]
-  >([]);
+  const pieces = useListPieces();
+  const orders = useListOrders();
+  const references = (orders.data ?? []).map((order) => order.orderReference);
+  const lines = useCartStore((state) => state.lines);
+  const clearLines = useCartStore((state) => state.clearLines);
+  const [appliedCode, setAppliedCode] = useState('');
+  const [stockProblems, setStockProblems] = useState('');
 
   const {
     control,
     handleSubmit,
-    watch,
-    clearErrors,
+    getValues,
     setError,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm<CheckoutValues>({ defaultValues: emptyCheckout });
-  const fulfilmentChoice = watch('fulfilmentChoice');
-  const isCourier = fulfilmentChoice === 'courier_delivery';
+  } = useForm<CheckoutValues>({
+    defaultValues: {
+      name: '',
+      phone: '',
+      fulfilmentChoice: '',
+      deliveryAddress: '',
+      city: '',
+      pinCode: '',
+      discountCode: '',
+    },
+  });
 
-  if (piecesLoading) {
-    return <LoadingView title="Checkout" message="Loading your cart…" />;
-  }
+  const choice = watch('fulfilmentChoice');
+  const codeLookup = useGetDiscountCodeByCode(appliedCode);
+  const usableCode =
+    codeLookup.data && isCodeUsable(codeLookup.data)
+      ? codeLookup.data
+      : undefined;
+  const codeInvalid =
+    appliedCode !== '' && !codeLookup.loading && !usableCode;
 
-  if (piecesError) {
+  const subtotal = lines.reduce(
+    (sum, line) => sum + line.price * line.quantity,
+    0,
+  );
+  const discount = discountFor(subtotal, usableCode);
+  const shipping = shippingFor(
+    subtotal - discount,
+    choice as 'studio_pickup' | 'courier_delivery' | '',
+  );
+  const total = subtotal - discount + shipping;
+
+  const applyDiscount = () => {
+    setAppliedCode(getValues('discountCode').trim().toUpperCase());
+  };
+
+  const submit = async (values: CheckoutValues) => {
+    setStockProblems('');
+    const records = pieces.data ?? [];
+
+    if (values.discountCode.trim() !== '') {
+      if (!usableCode) {
+        setError('discountCode', {
+          message:
+            'That code is invalid, expired or deactivated. Correct it or place the order without it.',
+        });
+        return;
+      }
+    }
+
+    const problems = lines.filter((line) => {
+      const piece = records.find((entry) => entry.id === line.pieceId);
+      const stock = piece
+        ? (findVariant(piece, line.glaze, line.size)?.stock ?? 0)
+        : 0;
+      return stock < line.quantity;
+    });
+    if (problems.length > 0) {
+      setStockProblems(
+        `No longer available in the wanted quantity: ${problems
+          .map((line) => `${line.title}, ${line.glaze} in ${sizeLabel(line.size)}`)
+          .join('; ')}.`,
+      );
+      return;
+    }
+
+    try {
+      const order = await createOrderWithStock(
+        {
+          name: values.name.trim(),
+          phoneNumber: values.phone.trim(),
+          fulfilmentChoice: values.fulfilmentChoice as
+            | 'studio_pickup'
+            | 'courier_delivery',
+          ...(values.fulfilmentChoice === 'courier_delivery'
+            ? {
+                deliveryAddress: values.deliveryAddress.trim(),
+                city: values.city.trim(),
+                pinCode: values.pinCode.trim(),
+              }
+            : {}),
+          ...(usableCode ? { discountCode: usableCode.code } : {}),
+          orderReference: nextOrderReference(references),
+          itemPieceId: lines.map((line) => line.pieceId),
+          quantity: lines.map((line) => line.quantity),
+          itemTitle: lines.map((line) => line.title),
+          itemGlaze: lines.map((line) => line.glaze),
+          itemSize: lines.map(
+            (line) => line.size as 'small' | 'medium' | 'large',
+          ),
+          itemPrice: lines.map((line) => line.price),
+          subtotal,
+          discountAmount: discount,
+          shippingCost: shipping,
+          total,
+          paymentStatus: 'unpaid',
+          fulfilmentStatus: 'new',
+        },
+        lines.map((line) => ({
+          pieceId: line.pieceId,
+          glaze: line.glaze,
+          size: line.size,
+          quantity: line.quantity,
+        })),
+      );
+      clearLines();
+      router.push(`/orders/${order.orderReference}`);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (/no longer available/.test(error.message) ||
+          /left for/.test(error.message))
+      ) {
+        setStockProblems(`${error.message} Return to cart and adjust it.`);
+      } else {
+        setError('root', {
+          message:
+            'The order could not be placed. Nothing was saved. Try again.',
+        });
+      }
+    }
+  };
+
+  if (pieces.loading || pieces.error || orders.loading || orders.error) {
     return (
-      <LoadFailedView
-        title="Checkout"
-        message="Something went wrong while loading the pieces."
-        onRetry={retryPieces}
-      />
+      <>
+        <PageHeader
+          title="Checkout"
+          description="Place your order as a guest. No online payment is taken."
+        />
+        <PageState
+          loading={pieces.loading || orders.loading}
+          loadingText="Loading checkout."
+          errorText={
+            pieces.error || orders.error
+              ? 'Checkout could not be loaded.'
+              : undefined
+          }
+          onRetry={() => {
+            pieces.retry();
+            orders.retry();
+          }}
+        />
+      </>
     );
   }
-
-  const all = pieces ?? [];
 
   if (lines.length === 0) {
     return (
       <>
-        <PageHeader title="Checkout" />
-        <div className="flex-col-gap-4 items-start">
-          <Paragraph>
-            Your cart is empty. Browse pieces to start your order.
-          </Paragraph>
-          <Button as={NextLink} href="/pieces">
+        <PageHeader
+          title="Checkout"
+          description="Place your order as a guest. No online payment is taken."
+        />
+        <div className="flex-col-gap-3 items-start">
+          <Paragraph role="status">Your cart is empty.</Paragraph>
+          <Button as={NextLink} href="/shop">
             Browse pieces
           </Button>
         </div>
@@ -140,200 +220,29 @@ export default function CheckoutPage() {
     );
   }
 
-  const detailed = lines.map((line) => ({
-    line,
-    piece: all.find((entry) => entry.id === line.pieceId),
-  }));
-  const priced = detailed.map(({ line, piece }) => ({
-    quantity: line.quantity,
-    unitPrice: piece?.price ?? 0,
-  }));
-  const choice: FulfilmentChoice =
-    fulfilmentChoice === 'courier_delivery' ||
-    fulfilmentChoice === 'studio_pickup'
-      ? fulfilmentChoice
-      : 'studio_pickup';
-  const totals = cartTotals(priced, choice, applied);
-
-  const applyCode = async ({ discountCode }: { discountCode: string }) => {
-    const code = discountCode.trim();
-    if (!code || checkingCode) return;
-    setCheckingCode(true);
-    try {
-      const found = await getDiscountCode(code);
-      if (!found) {
-        setApplied(null);
-        setDiscountError('That code is not recognized.');
-      } else if (found.expiryDate < todayIso()) {
-        setApplied(null);
-        setDiscountError('That code has expired.');
-      } else if (found.status !== 'active') {
-        setApplied(null);
-        setDiscountError('That code is no longer active.');
-      } else {
-        setApplied(found);
-        setDiscountError(null);
-      }
-    } catch {
-      setDiscountError('Could not check the code. Try applying it again.');
-    } finally {
-      setCheckingCode(false);
-    }
-  };
-
-  const place = async (values: CheckoutValues) => {
-    const missing = detailed
-      .map(({ line, piece }) => ({
-        name: piece?.name ?? 'A piece that is no longer available',
-        glaze: line.glaze,
-        size: line.size,
-        stock: piece ? (stockFor(piece, line.glaze, line.size) ?? 0) : 0,
-        quantity: line.quantity,
-      }))
-      .filter((entry) => entry.quantity > entry.stock);
-    if (missing.length > 0) {
-      setShorts(missing);
-      return;
-    }
-    setShorts([]);
-
-    let discount = applied;
-    if (discount && !usableDiscount(discount)) {
-      discount = null;
-      setApplied(null);
-      setDiscountError('That code cannot be used.');
-      return;
-    }
-
-    const finalTotals = cartTotals(
-      priced,
-      values.fulfilmentChoice as FulfilmentChoice,
-      discount,
-    );
-    const input: OrderInput = {
-      buyerName: values.buyerName.trim(),
-      phoneNumber: values.phoneNumber.trim(),
-      fulfilmentChoice: values.fulfilmentChoice as FulfilmentChoice,
-      ...(values.fulfilmentChoice === 'courier_delivery'
-        ? {
-            deliveryAddress: values.deliveryAddress.trim(),
-            city: values.city.trim(),
-            pinCode: values.pinCode.trim(),
-          }
-        : {}),
-      quantity: lines.map((line) => line.quantity),
-      orderReference: nextReference(
-        (orders ?? []).map((order) => order.orderReference),
-      ),
-      pieces: lines.map((line) => line.pieceId),
-      fulfilmentStatus: 'new',
-      paymentStatus: 'unpaid',
-      subtotal: finalTotals.subtotal,
-      discountTotal: finalTotals.discountTotal,
-      shippingTotal: finalTotals.shippingTotal,
-      total: finalTotals.total,
-      ...(discount ? { discountCode: discount.id } : {}),
-      orderedPieceName: detailed.map(
-        ({ line, piece }) => piece?.name ?? line.pieceId,
-      ),
-      orderedGlaze: lines.map((line) => line.glaze),
-      orderedSize: lines.map((line) => line.size),
-      orderedPrice: detailed.map(({ piece }) => piece?.price ?? 0),
-    };
-
-    try {
-      const order = await createOrder(input);
-      const byPiece = new Map<string, typeof lines>();
-      for (const line of lines) {
-        byPiece.set(line.pieceId, [...(byPiece.get(line.pieceId) ?? []), line]);
-      }
-      for (const [pieceId, pieceLines] of byPiece) {
-        const piece = all.find((entry) => entry.id === pieceId);
-        if (piece) {
-          await updatePiece(pieceId, {
-            variantStockQuantity: stockAfterOrderLines(
-              piece,
-              pieceLines,
-              -1,
-            ),
-          });
-        }
-      }
-      clearCart();
-      router.push(`/order-confirmation/${order.id}`);
-    } catch {
-      setError('root.place', {
-        message: 'Could not place the order. Try placing it again.',
-      });
-    }
-  };
-
   return (
     <>
-      <PageHeader title="Checkout" />
-      <div className="flex-row-gap-6 flex-wrap items-start">
-        <div className="flex-col-gap-6 flex-1">
-          {shorts.length > 0 ? (
-            <div className="flex-col-gap-2 items-start">
-              {shorts.map((entry) => (
-                <Paragraph key={`${entry.name}-${entry.glaze}-${entry.size}`}>
-                  Only {entry.stock} left for {entry.name} in {entry.glaze},{' '}
-                  {entry.size}.
-                </Paragraph>
-              ))}
-              <Button
-                variant="base" // Quiet way back to fix quantities.
-                as={NextLink}
-                href="/cart"
-              >
-                Open cart
-              </Button>
-            </div>
-          ) : null}
-          <Form onSubmit={handleDiscountSubmit(applyCode)}>
-            <Controller name="discountCode" control={discountControl}>
-              {({ field }) => (
-                <Input
-                  label="Discount code"
-                  autoComplete="off"
-                  {...field}
-                  onChange={(next) => {
-                    field.onChange(next);
-                    setDiscountError(null);
-                  }}
-                  error={discountError ?? undefined}
-                  success={
-                    applied && !discountError
-                      ? `Applied ${applied.discountCode ?? 'code'}.`
-                      : undefined
-                  }
-                  action={
-                    <Button
-                      type="submit"
-                      loadingWithReason={
-                        checkingCode ? 'Checking the code' : undefined
-                      }
-                    >
-                      Apply
-                    </Button>
-                  }
-                />
-              )}
-            </Controller>
-          </Form>
+      <PageHeader
+        title="Checkout"
+        description="Place your order as a guest. No online payment is taken."
+      />
+      <div className="grid gap-6 grid-cols-2 items-start">
           <Form
-            onSubmit={handleSubmit(place)}
-            error={errors.root?.place?.message}
+            onSubmit={handleSubmit(submit)}
+            error={errors.root?.message}
             actions={
               <>
-                <NextLink look="plain" href="/cart">
-                  Open cart
-                </NextLink>
+                <Button
+                  // Going back to the cart is the quiet way out beside ordering.
+                  variant="base"
+                  as={NextLink}
+                  href="/cart"
+                >
+                  Back to cart
+                </Button>
                 <Button
                   type="submit"
-                  loadingWithReason={
-                    isSubmitting ? 'Placing the order' : undefined
-                  }
+                  loadingWithReason={isSubmitting ? 'Placing your order' : undefined}
                 >
                   Place order
                 </Button>
@@ -341,26 +250,31 @@ export default function CheckoutPage() {
             }
           >
             <Controller
-              name="buyerName"
+              name="name"
               control={control}
               rules={{ required: 'Enter your name' }}
             >
               {({ field }) => (
-                <Input label="Buyer name" autoComplete="name" {...field} />
+                <Input label="Name" autoComplete="name" {...field} />
               )}
             </Controller>
             <Controller
-              name="phoneNumber"
+              name="phone"
               control={control}
               rules={{
                 required: 'Enter your phone number',
-                validate: (value) =>
-                  phoneOk(value) ||
-                  'Enter a phone number with at least 10 digits.',
+                validate: (phone) =>
+                  isValidIndianPhone(phone) ||
+                  'Enter a valid 10-digit Indian mobile number',
               }}
             >
               {({ field }) => (
-                <Input label="Phone number" autoComplete="tel" {...field} />
+                <Input
+                  label="Phone number"
+                  type="tel"
+                  autoComplete="tel"
+                  {...field}
+                />
               )}
             </Controller>
             <Controller
@@ -370,33 +284,24 @@ export default function CheckoutPage() {
             >
               {({ field }) => (
                 <RadioGroup
-                  label="Fulfilment"
+                  label="Fulfilment choice"
                   {...field}
-                  onChange={(next) => {
-                    field.onChange(next);
-                    if (next !== 'courier_delivery') {
-                      clearErrors(['deliveryAddress', 'city', 'pinCode']);
-                    }
-                  }}
                   className="flex-col-gap-2"
                 >
-                  {FulfilmentChoiceOptions.map((option) => (
-                    <Radio key={option.key} value={option.key}>
-                      {option.label}
-                    </Radio>
-                  ))}
+                  <Radio value="studio_pickup">Studio pickup</Radio>
+                  <Radio value="courier_delivery">Courier delivery</Radio>
                 </RadioGroup>
               )}
             </Controller>
-            {isCourier ? (
+            {choice === 'courier_delivery' ? (
               <>
                 <Controller
                   name="deliveryAddress"
                   control={control}
                   rules={{
-                    validate: (value) =>
-                      !isCourier ||
-                      value.trim().length > 0 ||
+                    validate: (address) =>
+                      choice !== 'courier_delivery' ||
+                      address.trim() !== '' ||
                       'Enter the delivery address',
                   }}
                 >
@@ -412,9 +317,9 @@ export default function CheckoutPage() {
                   name="city"
                   control={control}
                   rules={{
-                    validate: (value) =>
-                      !isCourier ||
-                      value.trim().length > 0 ||
+                    validate: (city) =>
+                      choice !== 'courier_delivery' ||
+                      city.trim() !== '' ||
                       'Enter the city',
                   }}
                 >
@@ -430,78 +335,107 @@ export default function CheckoutPage() {
                   name="pinCode"
                   control={control}
                   rules={{
-                    validate: (value) =>
-                      !isCourier ||
-                      value.trim().length > 0 ||
-                      'Enter the PIN code',
+                    validate: (pin) => {
+                      if (choice !== 'courier_delivery') return true;
+                      if (pin.trim() === '') return 'Enter the PIN code';
+                      return (
+                        isValidPinCode(pin) ||
+                        'Enter the 6-digit PIN code'
+                      );
+                    },
                   }}
                 >
                   {({ field }) => (
                     <Input
                       label="PIN code"
                       autoComplete="postal-code"
+                      inputMode="numeric"
                       {...field}
                     />
                   )}
                 </Controller>
               </>
             ) : null}
-          </Form>
-        </div>
-        <div className="flex-col-gap-4">
-          <List aria-label="Order lines">
-            {detailed.map(({ line, piece }, at) => (
-              <ListItem key={`${line.pieceId}-${line.glaze}-${line.size}-${at}`}>
-                {line.quantity} × {piece?.name ?? line.pieceId} in{' '}
-                {line.glaze}, {line.size} ·{' '}
-                <Numeral>
-                  {formatINR((piece?.price ?? 0) * line.quantity)}
-                </Numeral>
-              </ListItem>
-            ))}
-          </List>
-          <DescriptionList>
-            <div>
-              <DescriptionTerm>Subtotal</DescriptionTerm>
-              <DescriptionDetails>
-                <Numeral>{formatINR(totals.subtotal)}</Numeral>
-              </DescriptionDetails>
-            </div>
-            {totals.discountTotal > 0 ? (
-              <div>
-                <DescriptionTerm>Discount</DescriptionTerm>
-                <DescriptionDetails>
-                  <Numeral>{`−${formatINR(totals.discountTotal)}`}</Numeral>
-                </DescriptionDetails>
+            <Controller name="discountCode" control={control}>
+              {({ field }) => (
+                <Input
+                  label="Discount code"
+                  autoComplete="off"
+                  placeholder="Optional"
+                  {...field}
+                  action={
+                    <Button
+                      // Applying the code is the quiet step beside the field.
+                      variant="base"
+                      onClick={applyDiscount}
+                    >
+                      Apply
+                    </Button>
+                  }
+                />
+              )}
+            </Controller>
+            {appliedCode !== '' ? (
+              usableCode ? (
+                <Paragraph color="success" role="status">
+                  {usableCode.code} applied:{' '}
+                  {usableCode.discountType === 'percentage'
+                    ? `${usableCode.discountValue}% off`
+                    : `${usableCode.discountValue} off`}.
+                </Paragraph>
+              ) : codeInvalid ? (
+                <Paragraph color="error" role="alert">
+                  That code is invalid, expired or deactivated. Correct it or
+                  place the order without it.
+                </Paragraph>
+              ) : null
+            ) : null}
+            {stockProblems ? (
+              <div className="flex-col-gap-2 items-start">
+                <Paragraph color="error" role="alert">
+                  {stockProblems}
+                </Paragraph>
+                <Button
+                  // Returning to the cart is the way out when stock fell short.
+                  variant="base"
+                  as={NextLink}
+                  href="/cart"
+                >
+                  Return to cart
+                </Button>
               </div>
             ) : null}
-            <div>
-              <DescriptionTerm>Shipping</DescriptionTerm>
-              <DescriptionDetails>
-                {totals.shippingTotal === 0 ? (
-                  'Free'
-                ) : (
-                  <Numeral>{formatINR(totals.shippingTotal)}</Numeral>
-                )}
-              </DescriptionDetails>
-            </div>
-            <div>
-              <DescriptionTerm>Total</DescriptionTerm>
-              <DescriptionDetails>
-                <Numeral>{formatINR(totals.total)}</Numeral>
-              </DescriptionDetails>
-            </div>
-          </DescriptionList>
-          <Paragraph>
-            Courier delivery is {formatINR(COURIER_FEE)}, free when the
-            discounted subtotal is more than {formatINR(FREE_SHIPPING_ABOVE)}.
-            Studio pickup is free.
-          </Paragraph>
-          <Paragraph>
-            Pickup from {STUDIO_PICKUP_ADDRESS}. {STUDIO_PICKUP_INSTRUCTIONS}
-          </Paragraph>
-          <Caption>No online payment is taken at checkout.</Caption>
-        </div>
+          </Form>
+          <div className="flex-col-gap-4">
+            <OrderItems
+              items={lines.map((line) => ({
+                key: `${line.pieceId}|${line.glaze}|${line.size}`,
+                title: line.title,
+                glaze: line.glaze,
+                size: line.size,
+                quantity: line.quantity,
+                price: line.price,
+              }))}
+            />
+            <OrderTotals
+              subtotal={subtotal}
+              discountAmount={discount}
+              shippingCost={shipping}
+              total={total}
+            />
+            <Paragraph color="muted">
+              Courier delivery is ₹99, free when your discounted subtotal is
+              above ₹1,500. Studio pickup is free.
+            </Paragraph>
+            {choice === 'studio_pickup' ? (
+              <PickupInfo />
+            ) : (
+              <Paragraph color="muted">
+                No online payment is taken. The owner will collect payment by
+                UPI after you place your order.
+              </Paragraph>
+            )}
+          </div>
       </div>
     </>
   );

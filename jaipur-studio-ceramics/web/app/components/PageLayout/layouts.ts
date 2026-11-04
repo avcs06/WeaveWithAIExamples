@@ -9,8 +9,8 @@ export const layouts: Record<'app' | 'marketing', PageLayoutConfig> = {
       "start": "",
       "center": "",
       "end": "",
-      "padding": "0",
-      "gap": "0",
+      "padding": "4",
+      "gap": "4",
       "separation": "none",
       "overlay": false,
       "sticky": false
@@ -21,7 +21,7 @@ export const layouts: Record<'app' | 'marketing', PageLayoutConfig> = {
       "top": "logo",
       "items": "navigation",
       "bottom": "account",
-      "widthPx": 248,
+      "widthPx": 264,
       "separation": "divider"
     },
     "footer": {
@@ -29,14 +29,14 @@ export const layouts: Record<'app' | 'marketing', PageLayoutConfig> = {
       "start": "",
       "center": "",
       "end": "",
-      "padding": "0",
-      "gap": "0",
+      "padding": "4",
+      "gap": "4",
       "separation": "none"
     },
     "main": {
-      "container": "fixed",
-      "maxWidthPx": 1000,
-      "padding": "9",
+      "container": "fluid",
+      "maxWidthPx": 1400,
+      "padding": "8",
       "align": "start",
       "separation": "none"
     },
@@ -49,11 +49,11 @@ export const layouts: Record<'app' | 'marketing', PageLayoutConfig> = {
       "needed": true,
       "start": "logo",
       "center": "navigation",
-      "end": "cart, account",
-      "padding": "4",
-      "gap": "4",
-      "separation": "divider",
-      "overlay": false,
+      "end": "Cart, account",
+      "padding": "6",
+      "gap": "6",
+      "separation": "none",
+      "overlay": true,
       "sticky": true
     },
     "sidebar": {
@@ -67,14 +67,14 @@ export const layouts: Record<'app' | 'marketing', PageLayoutConfig> = {
     },
     "footer": {
       "needed": true,
-      "content": "Studio pickup information, then the Order lookup link",
-      "padding": "6",
-      "gap": "4",
+      "content": "Studio pickup information and shop links",
+      "padding": "8",
+      "gap": "6",
       "separation": "divider"
     },
     "main": {
       "container": "fixed",
-      "maxWidthPx": 1240,
+      "maxWidthPx": 1200,
       "padding": "10",
       "align": "center",
       "separation": "none"

@@ -15,9 +15,9 @@ const APP_NAME = 'Jaipur Studio Ceramics';
  * on either side, all one link home. Place it as it is; the theme and the
  * scaffold set its name and look.
  */
-export const PageLogo = ({ leftIcon, rightIcon }: PageLogoProps) => (
+export const PageLogo = ({ leftIcon, rightIcon, href = '/' }: PageLogoProps) => (
   <NextLink
-    href="/"
+    href={href}
     look="plain"
     // Marked, so the rendered checks find the logo in every frame.
     data-page-logo=""

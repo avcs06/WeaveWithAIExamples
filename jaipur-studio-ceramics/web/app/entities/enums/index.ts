@@ -1,11 +1,19 @@
-export const CategoryOptions = [
-  { key: 'mugs', label: "Mugs" },
-  { key: 'bowls', label: "Bowls" },
-  { key: 'planters', label: "Planters" },
-  { key: 'vases', label: "Vases" },
+export const PieceCategoryOptions = [
+  { key: 'mug', label: "Mug" },
+  { key: 'bowl', label: "Bowl" },
+  { key: 'planter', label: "Planter" },
+  { key: 'vase', label: "Vase" },
 ] as const;
 
-export type Category = (typeof CategoryOptions)[number]['key'];
+export type PieceCategory = (typeof PieceCategoryOptions)[number]['key'];
+
+export const SizeOptions = [
+  { key: 'small', label: "Small" },
+  { key: 'medium', label: "Medium" },
+  { key: 'large', label: "Large" },
+] as const;
+
+export type Size = (typeof SizeOptions)[number]['key'];
 
 export const FulfilmentChoiceOptions = [
   { key: 'studio_pickup', label: "Studio pickup" },
@@ -21,6 +29,13 @@ export const DiscountTypeOptions = [
 
 export type DiscountType = (typeof DiscountTypeOptions)[number]['key'];
 
+export const PaymentStatusOptions = [
+  { key: 'unpaid', label: "Unpaid" },
+  { key: 'paid', label: "Paid" },
+] as const;
+
+export type PaymentStatus = (typeof PaymentStatusOptions)[number]['key'];
+
 export const FulfilmentStatusOptions = [
   { key: 'new', label: "New" },
   { key: 'packed', label: "Packed" },
@@ -30,13 +45,6 @@ export const FulfilmentStatusOptions = [
 ] as const;
 
 export type FulfilmentStatus = (typeof FulfilmentStatusOptions)[number]['key'];
-
-export const PaymentStatusOptions = [
-  { key: 'unpaid', label: "Unpaid" },
-  { key: 'paid', label: "Paid" },
-] as const;
-
-export type PaymentStatus = (typeof PaymentStatusOptions)[number]['key'];
 
 export const DiscountCodeStatusOptions = [
   { key: 'active', label: "Active" },

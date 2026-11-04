@@ -10,7 +10,7 @@ export const tokens = {
     fontFamily: fontFamily.display,
     fontWeight: '600',
     textTransform: 'none',
-    letterSpacing: '-0.02em',
+    letterSpacing: '0em',
   },
   lineHeight: {
     0: '0px',

@@ -1,6 +1,2 @@
-export {
-  emptyPieceValues,
-  PieceForm,
-  pieceToValues,
-} from './PieceForm';
-export type { PieceFormValues } from './PieceForm';
+export { PieceForm, emptyPieceForm } from './PieceForm';
+export type { PieceFormValues, PieceVariantValue } from './PieceForm';

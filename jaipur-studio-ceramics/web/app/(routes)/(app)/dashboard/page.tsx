@@ -1,120 +1,113 @@
 'use client';
 
-// Loads its records through listOrders, listPieces.
-import { formatINR } from '@app/blocks/money';
-import {
-  fulfilmentLabel,
-  fulfilmentTone,
-  paymentLabel,
-  paymentTone,
-} from '@app/blocks/orderStatus';
-import { LOW_STOCK_AT, variantCombos } from '@app/blocks/stock';
-import { LoadFailedView, LoadingView } from '@app/components/LoadingView';
+import { rupees } from '@app/blocks/orders';
+import { pieceVariants, sizeLabel } from '@app/blocks/pieces';
 import { NextLink } from '@app/components/NextLink';
 import { PageHeader } from '@app/components/PageHeader';
+import { PageState } from '@app/components/PageState';
 import { useListOrders } from '@app/entities/order';
 import { useListPieces } from '@app/entities/piece';
 import { Button } from '@packages/ui/Button';
+import { CardList } from '@packages/ui/Card';
 import { Numeral } from '@packages/ui/Numeral';
 import { Section } from '@packages/ui/Section';
 import { createTable } from '@packages/ui/Table';
 import { Tag } from '@packages/ui/Tag';
-import { Paragraph, Time } from '@packages/ui/Typography';
+import { Truncate } from '@packages/ui/Truncate';
+import { Paragraph } from '@packages/ui/Typography';
 import React from 'react';
 
-type OrderRow = {
-  key: string;
+type NewOrderRow = {
   id: string;
-  reference: string;
-  createdAt: string;
-  buyerName: string;
+  orderReference: string;
+  name: string;
   total: number;
-  paymentStatus: string;
-  fulfilmentStatus: string;
+  fulfilmentChoice: 'studio_pickup' | 'courier_delivery';
 };
 
-type LowRow = {
+type AttentionRow = {
   key: string;
   pieceId: string;
-  name: string;
+  title: string;
   glaze: string;
   size: string;
   stock: number;
 };
 
-const OrderTable = createTable<OrderRow>();
-const LowTable = createTable<LowRow>();
+const NewOrdersTable = createTable<NewOrderRow>();
+const AttentionTable = createTable<AttentionRow>();
 
-export default function DashboardPage() {
-  const {
-    data: orders,
-    loading: ordersLoading,
-    error: ordersError,
-    retry: retryOrders,
-  } = useListOrders();
-  const {
-    data: pieces,
-    loading: piecesLoading,
-    error: piecesError,
-    retry: retryPieces,
-  } = useListPieces();
+const fulfilmentLabel = (choice: NewOrderRow['fulfilmentChoice']) =>
+  choice === 'studio_pickup' ? 'Studio pickup' : 'Courier delivery';
 
-  const loading = ordersLoading || piecesLoading;
-  const error = ordersError || piecesError;
+/** Home: new orders and pieces running low, at a glance. */
+export default function DashboardHomePage() {
+  const orders = useListOrders();
+  const pieces = useListPieces();
 
-  if (loading) {
+  const loading = orders.loading || pieces.loading;
+  const failed = Boolean(orders.error ?? pieces.error);
+
+  if (loading || failed) {
     return (
-      <LoadingView
-        title="Dashboard"
-        description="Today's shop summary"
-        message="Loading today's shop summary…"
-      />
+      <>
+        <PageHeader title="Home" />
+        <PageState
+          loading={loading}
+          loadingText="Loading the dashboard."
+          errorText={failed ? 'The dashboard could not be loaded.' : undefined}
+          onRetry={() => {
+            orders.retry();
+            pieces.retry();
+          }}
+        />
+      </>
     );
   }
 
-  if (error) {
-    return (
-      <LoadFailedView
-        title="Dashboard"
-        description="Today's shop summary"
-        message="Something went wrong while loading the dashboard."
-        onRetry={() => {
-          retryOrders();
-          retryPieces();
-        }}
-      />
-    );
-  }
-
-  const allOrders = [...(orders ?? [])].sort((a, b) =>
+  const allOrders = [...(orders.data ?? [])].sort((a, b) =>
     b.createdAt.localeCompare(a.createdAt),
   );
   const newOrders = allOrders.filter(
     (order) => order.fulfilmentStatus === 'new',
   );
-  const totalSales = allOrders.reduce((sum, order) => sum + order.total, 0);
+  const allPieces = pieces.data ?? [];
+  const lowVariants: AttentionRow[] = [];
+  for (const piece of allPieces) {
+    for (const variant of pieceVariants(piece)) {
+      if (variant.stock <= 3) {
+        lowVariants.push({
+          key: `${piece.id}|${variant.glaze}|${variant.size}`,
+          pieceId: piece.id,
+          title: piece.title,
+          glaze: variant.glaze,
+          size: variant.size,
+          stock: variant.stock,
+        });
+      }
+    }
+  }
+  const soldOutCount = lowVariants.filter(
+    (row) => row.stock <= 0,
+  ).length;
 
-  const lowVariants: LowRow[] = (pieces ?? []).flatMap((piece) =>
-    variantCombos(piece)
-      .filter((combo) => combo.stock <= LOW_STOCK_AT)
-      .map((combo) => ({
-        key: `${piece.id}-${combo.glazeIndex}-${combo.sizeIndex}`,
-        pieceId: piece.id,
-        name: piece.name,
-        glaze: combo.glaze,
-        size: combo.size,
-        stock: combo.stock,
-      })),
-  );
-
-  if (allOrders.length === 0 && (pieces ?? []).length === 0) {
+  if (allOrders.length === 0 && allPieces.length === 0) {
     return (
       <>
-        <PageHeader title="Dashboard" description="Today's shop summary" />
-        <div className="flex-col-gap-4 items-start">
-          <Paragraph>No orders yet and no pieces yet.</Paragraph>
-          <Button as={NextLink} href="/studio/pieces/new">
+        <PageHeader title="Home" />
+        <Paragraph>No orders yet.</Paragraph>
+        <Paragraph>No pieces yet.</Paragraph>
+        <div className="flex-row-gap-2 flex-wrap items-center">
+          <Button as={NextLink} href="/dashboard/pieces/new">
             Add a piece
+          </Button>
+          <Button
+            // Opening orders is the quiet way out beside adding the first piece.
+            variant="base"
+            as={NextLink}
+            href="/dashboard/orders"
+          >
+            Open orders
           </Button>
         </div>
       </>
@@ -123,205 +116,199 @@ export default function DashboardPage() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="Today's shop summary" />
-      <div className="flex-row-gap-6 flex-wrap">
-        <div className="flex-col-gap-1">
-          <Paragraph>New orders</Paragraph>
-          <span className="text-heading">
-            <Numeral>{newOrders.length}</Numeral>
-          </span>
-        </div>
-        <div className="flex-col-gap-1">
-          <Paragraph>Total sales</Paragraph>
-          <span className="text-heading">
-            <Numeral>{formatINR(totalSales)}</Numeral>
-          </span>
-        </div>
-        <div className="flex-col-gap-1">
-          <Paragraph>Variants low on stock</Paragraph>
-          <span className="text-heading">
-            <Numeral>{lowVariants.length}</Numeral>
-          </span>
-        </div>
-      </div>
-      <div className="flex-row-gap-6 flex-wrap items-start">
-        <Section title="New orders">
-          {newOrders.length === 0 ? (
-            <Paragraph>
-              No new orders. New guest orders will appear here.
-            </Paragraph>
-          ) : (
-            <>
-              <OrderTable
-                caption="New orders"
-                data={newOrders.map((order) => ({
-                  key: order.id,
-                  id: order.id,
-                  reference: order.orderReference,
-                  createdAt: order.createdAt,
-                  buyerName: order.buyerName,
-                  total: order.total,
-                  paymentStatus: order.paymentStatus,
-                  fulfilmentStatus: order.fulfilmentStatus,
-                }))}
-                rowKey={(row) => row.key}
-                onRowClick={(_, click) =>
-                  click.currentTarget.querySelector('a')?.click()
-                }
-              >
-                <OrderTable.Column
-                  id="reference"
-                  rowHeader
-                  title="Order"
-                  dataKey="reference"
-                  width={120}
+      <PageHeader title="Home" />
+      <CardList
+        aria-label="Shop at a glance"
+        items={[
+          { id: 'new', label: 'New orders', value: newOrders.length },
+          { id: 'low', label: 'Low stock variants', value: lowVariants.length },
+          { id: 'out', label: 'Sold out variants', value: soldOutCount },
+        ]}
+        layout="grid"
+        // Three figures take one row of three, so none sits alone.
+        columns={3}
+        renderItem={(stat) => (
+          <>
+            <span>{stat.label}</span>
+            <span className="text-heading">
+              <Numeral>{stat.value}</Numeral>
+            </span>
+          </>
+        )}
+      />
+      <Section
+        title="New orders"
+        headerAction={
+          <Button
+            // Seeing every order is the section's own action.
+            variant="base"
+            as={NextLink}
+            href="/dashboard/orders"
+          >
+            View all orders
+          </Button>
+        }
+      >
+        {newOrders.length === 0 ? (
+          <Paragraph role="status">
+            No new orders. New orders will appear here.
+          </Paragraph>
+        ) : (
+          <NewOrdersTable
+            caption="New orders"
+            data={newOrders.map((order) => ({
+              id: order.id,
+              orderReference: order.orderReference,
+              name: order.name,
+              total: order.total,
+              fulfilmentChoice: order.fulfilmentChoice,
+            }))}
+            rowKey={(order) => order.id}
+            onRowClick={(_, click) =>
+              click.currentTarget.querySelector('a')?.click()
+            }
+          >
+            <NewOrdersTable.Column
+              id="orderReference"
+              rowHeader
+              title="Order"
+              dataKey="orderReference"
+              width={140}
+            >
+              {(reference, order) => (
+                <NextLink
+                  href={`/dashboard/orders/${order.id}`}
+                  className="inline-block max-w-full"
                 >
-                  {(reference, row) => (
-                    <NextLink href={`/orders/${row.id}`}>
-                      {reference}
-                    </NextLink>
-                  )}
-                </OrderTable.Column>
-                <OrderTable.Column
-                  id="createdAt"
-                  title="Date"
-                  dataKey="createdAt"
-                  width={130}
+                  <Truncate>{reference}</Truncate>
+                </NextLink>
+              )}
+            </NewOrdersTable.Column>
+            <NewOrdersTable.Column
+              id="name"
+              title="Buyer"
+              dataKey="name"
+              width={200}
+            >
+              {(name) => <Truncate>{name}</Truncate>}
+            </NewOrdersTable.Column>
+            <NewOrdersTable.Column
+              id="total"
+              title="Total"
+              dataKey="total"
+              width={130}
+              align="right"
+            >
+              {(total) => <Numeral>{rupees.format(total)}</Numeral>}
+            </NewOrdersTable.Column>
+            <NewOrdersTable.Column
+              id="fulfilmentChoice"
+              title="Fulfilment"
+              dataKey="fulfilmentChoice"
+              width={170}
+            >
+              {(choice: NewOrderRow['fulfilmentChoice']) =>
+                fulfilmentLabel(choice)
+              }
+            </NewOrdersTable.Column>
+            <NewOrdersTable.Column
+              id="status"
+              title="Status"
+              dataKey="id"
+              width={110}
+            >
+              {() => (
+                <Tag
+                  // New orders must stand out from the rest.
+                  variant="info"
                 >
-                  {(value) => <Time value={value} />}
-                </OrderTable.Column>
-                <OrderTable.Column
-                  id="buyerName"
-                  title="Buyer"
-                  dataKey="buyerName"
-                  width={180}
-                />
-                <OrderTable.Column
-                  id="total"
-                  title="Total"
-                  dataKey="total"
-                  width={120}
-                  align="right"
+                  New
+                </Tag>
+              )}
+            </NewOrdersTable.Column>
+          </NewOrdersTable>
+        )}
+      </Section>
+      <Section title="Pieces needing attention">
+        {lowVariants.length === 0 ? (
+          <Paragraph role="status">
+            Every variant is well stocked.
+          </Paragraph>
+        ) : (
+          <AttentionTable
+            caption="Pieces needing attention"
+            data={lowVariants}
+            rowKey={(row) => row.key}
+            onRowClick={(_, click) =>
+              click.currentTarget.querySelector('a')?.click()
+            }
+          >
+            <AttentionTable.Column
+              id="title"
+              rowHeader
+              title="Piece"
+              dataKey="title"
+              width={240}
+            >
+              {(title, row) => (
+                <NextLink
+                  href={`/dashboard/pieces/${row.pieceId}`}
+                  className="inline-block max-w-full"
                 >
-                  {(total) => <Numeral>{formatINR(total)}</Numeral>}
-                </OrderTable.Column>
-                <OrderTable.Column
-                  id="paymentStatus"
-                  title="Payment"
-                  dataKey="paymentStatus"
-                  width={110}
-                >
-                  {(status) => (
-                    <Tag
-                      size="xs" // Fits the dense table row.
-                      variant={paymentTone(status)} // Paid reads as done, unpaid as waiting.
-                    >
-                      {paymentLabel(status)}
-                    </Tag>
-                  )}
-                </OrderTable.Column>
-                <OrderTable.Column
-                  id="fulfilmentStatus"
-                  title="Fulfilment"
-                  dataKey="fulfilmentStatus"
-                  width={160}
-                >
-                  {(status) => (
-                    <span className="flex-row-gap-1 flex-wrap items-center">
-                      <Tag
-                        size="xs" // Fits the dense table row.
-                        variant={fulfilmentTone(status)} // Each fulfilment state reads in its own tone.
-                      >
-                        {fulfilmentLabel(status)}
-                      </Tag>
-                      {status === 'new' ? (
-                        <Tag
-                          size="xs" // Fits the dense table row.
-                          variant="info" // New stands out from the other states.
-                        >
-                          New
-                        </Tag>
-                      ) : null}
-                    </span>
-                  )}
-                </OrderTable.Column>
-              </OrderTable>
-              <NextLink look="plain" href="/orders">
-                Orders
-              </NextLink>
-            </>
-          )}
-        </Section>
-        <Section title="Low stock">
-          {lowVariants.length === 0 ? (
-            <Paragraph>Nothing is low on stock.</Paragraph>
-          ) : (
-            <>
-              <LowTable
-                caption="Low stock warnings"
-                data={lowVariants}
-                rowKey={(row) => row.key}
-                onRowClick={(_, click) =>
-                  click.currentTarget.querySelector('a')?.click()
-                }
-              >
-                <LowTable.Column
-                  id="name"
-                  rowHeader
-                  title="Piece"
-                  dataKey="name"
-                  width={220}
-                >
-                  {(name, row) => (
-                    <NextLink href={`/studio/pieces/${row.pieceId}`}>
-                      {name}
-                    </NextLink>
-                  )}
-                </LowTable.Column>
-                <LowTable.Column
-                  id="glaze"
-                  title="Glaze"
-                  dataKey="glaze"
-                  width={140}
-                />
-                <LowTable.Column
-                  id="size"
-                  title="Size"
-                  dataKey="size"
-                  width={110}
-                />
-                <LowTable.Column
-                  id="stock"
-                  title="Left"
-                  dataKey="stock"
-                  width={90}
-                  align="right"
-                >
-                  {(stock) => <Numeral>{stock}</Numeral>}
-                </LowTable.Column>
-                <LowTable.Column
-                  id="status"
-                  title="Status"
-                  dataKey="stock"
-                  width={120}
-                >
-                  {(stock) => (
-                    <Tag
-                      size="xs" // Fits the dense table row.
-                      variant={stock <= 0 ? 'error' : 'warning'} // Sold out reads as urgent, low stock as waiting.
-                    >
-                      {stock <= 0 ? 'Sold out' : 'Low stock'}
-                    </Tag>
-                  )}
-                </LowTable.Column>
-              </LowTable>
-              <NextLink look="plain" href="/studio/pieces">
-                Pieces
-              </NextLink>
-            </>
-          )}
-        </Section>
-      </div>
+                  <Truncate>{title}</Truncate>
+                </NextLink>
+              )}
+            </AttentionTable.Column>
+            <AttentionTable.Column
+              id="glaze"
+              title="Glaze"
+              dataKey="glaze"
+              width={170}
+            />
+            <AttentionTable.Column
+              id="size"
+              title="Size"
+              dataKey="size"
+              width={110}
+            >
+              {(size) => sizeLabel(size)}
+            </AttentionTable.Column>
+            <AttentionTable.Column
+              id="stock"
+              title="Left"
+              dataKey="stock"
+              width={90}
+              align="right"
+            >
+              {(stock) => <Numeral>{stock}</Numeral>}
+            </AttentionTable.Column>
+            <AttentionTable.Column
+              id="state"
+              title="State"
+              dataKey="stock"
+              width={130}
+            >
+              {(stock) =>
+                stock <= 0 ? (
+                  <Tag
+                    // Sold out decides the next batch, so it reads as an error.
+                    variant="error"
+                  >
+                    Sold out
+                  </Tag>
+                ) : (
+                  <Tag
+                    // Three or fewer left is the owner's restock signal.
+                    variant="warning"
+                  >
+                    Low stock
+                  </Tag>
+                )
+              }
+            </AttentionTable.Column>
+          </AttentionTable>
+        )}
+      </Section>
     </>
   );
 }

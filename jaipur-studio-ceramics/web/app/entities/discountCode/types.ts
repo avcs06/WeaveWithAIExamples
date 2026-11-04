@@ -4,7 +4,7 @@ export type DiscountCode = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  discountCode?: string;
+  code: string;
   discountType: DiscountType;
   discountValue: number;
   expiryDate: string;
