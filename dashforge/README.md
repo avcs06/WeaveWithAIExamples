@@ -1,5 +1,12 @@
 # DashForge
 
+| | |
+|---|---|
+| Model | Muse Spark Open (`meta-models/muse-spark-open-1026`), open weights served on Baseten |
+| Coding agent | OpenCode, on Muse Spark Open |
+| End-to-end time | 56 min: scope to contract 13 min, frames to pages 43 min |
+| Total cost | $8.60 on Baseten, the coding sessions included |
+
 Weave generated this app from the prompt below.
 
 ## Prompt

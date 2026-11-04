@@ -1,5 +1,13 @@
 # SoloStudio
 
+| | |
+|---|---|
+| Model | Muse Spark 1.3 (`muse-spark-1.3`) on the Meta Model API, with Muse Wonder 1.0 (`muse-wonder-1.0`) for the scope |
+| Coding agent | Muse Code, on Muse Spark 1.3 |
+| End-to-end time | 1 h 41 min |
+| Total cost | $6.62 for the model calls; the coding sessions ran on the Muse Code subscription |
+| Muse Code subscription | 5% of the weekly allowance (28% to 33%) |
+
 Weave generated this app from the prompt below.
 
 ## Prompt

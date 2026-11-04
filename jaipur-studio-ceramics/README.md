@@ -1,5 +1,13 @@
 # Jaipur Studio Ceramics
 
+| | |
+|---|---|
+| Model | Muse Spark 1.3 (`muse-spark-1.3`) on the Meta Model API, with Muse Wonder 1.0 (`muse-wonder-1.0`) for the scope |
+| Coding agent | Muse Code, on Muse Spark 1.3 |
+| End-to-end time | 2 h 20 min |
+| Total cost | $4.39 for the model calls; the coding sessions ran on the Muse Code subscription |
+| Muse Code subscription | 4% of the weekly allowance (24% to 28%) |
+
 Weave generated this app from the prompt below.
 
 ## Prompt
