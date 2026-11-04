@@ -20,9 +20,8 @@
 | Design-system validation errors | 0 |
 | Duplicated code | 5.8% |
 | Code size | 139 files, 8,380 lines |
-| Page load, median screen (dev server) | FCP 692 ms, LCP 748 ms |
 
-Accessibility, keyboard and load numbers are from the app's dev server (`next dev`), not a production build. Load would be faster in production; the other numbers would not change.
+Accessibility and keyboard numbers are from the app's dev server (`next dev`), not a production build.
 
 Weave generated this app from the prompt below.
 

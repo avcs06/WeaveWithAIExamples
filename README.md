@@ -23,9 +23,8 @@ Three apps that [Weave](https://github.com/avcs06/WeaveWithAI) generated, each f
 | Design-system validation errors | 0 | 0 | 0 |
 | Duplicated code | 2.1% | 5.8% | 3.8% |
 | Code size | 110 files, 7,606 lines | 139 files, 8,380 lines | 88 files, 3,905 lines |
-| Page load, median screen (dev server) | FCP 688 ms, LCP 764 ms | FCP 692 ms, LCP 748 ms | FCP 686 ms, LCP 730 ms |
 
-Accessibility, keyboard and load numbers are from the app's dev server (`next dev`), not a production build. Load would be faster in production; the other numbers would not change. The cost of the two Meta Model API apps covers the model calls; their coding sessions ran on the Muse Code subscription. Muse Wonder 1.0 wrote their scope. DashForge's time is scope to contract plus frames to pages.
+Accessibility and keyboard numbers are from the app's dev server (`next dev`), not a production build. The cost of the two Meta Model API apps covers the model calls; their coding sessions ran on the Muse Code subscription. Muse Wonder 1.0 wrote their scope. DashForge's time is scope to contract plus frames to pages.
 
 ## Home pages
 
