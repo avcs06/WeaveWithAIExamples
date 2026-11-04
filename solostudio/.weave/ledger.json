@@ -1,0 +1,980 @@
+[
+  {
+    "path": "colors.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "tokens.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/styles/src/fonts.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/.storybook/preview-head.html",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/PageLayout/layouts.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Switch/Switch.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Radio/Radio.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/FormControl/FormControl.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Chip/Chip.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Checkbox/Checkbox.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "packages/ui/src/Button/Button.recipes.css.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/PageLogo/PageLogo.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/entities/auth/index.ts",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebarHeader/AppSidebarHeader.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebar/AppSidebar.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/(app)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeaderLeftSlot/MarketingHeaderLeftSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeader/MarketingHeader.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/(routes)/(marketing)/layout.tsx",
+    "status": "M",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderLeftSlot/AppHeaderLeftSlot.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderLeftSlot/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeader/AppHeader.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeader/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderRightSlot/AppHeaderRightSlot.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppHeaderRightSlot/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppFooter/AppFooter.tsx",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/components/AppFooter/index.ts",
+    "status": "D",
+    "origin": "code",
+    "stage": "code-scaffold"
+  },
+  {
+    "path": "web/app/entities/enums/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/client/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/client/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/client/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/client/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/client/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/note/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/note/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/note/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/note/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/note/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/project/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/project/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/project/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/project/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/project/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/task/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/task/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/task/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/task/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/task/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/availability/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/availability/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/availability/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/availability/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/availability/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/sessionType/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/sessionType/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/sessionType/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/sessionType/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/sessionType/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/slot/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/slot/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/slot/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/slot/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/slot/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/booking/types.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/booking/seed.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/booking/store.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/booking/operations.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "path": "web/app/entities/booking/index.ts",
+    "status": "A",
+    "origin": "code",
+    "stage": "code-contract"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebar/AppSidebar.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebarFooter/AppSidebarFooter.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/AppSidebarHeader/AppSidebarHeader.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingFooter/MarketingFooter.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingHeader/MarketingHeader.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/MarketingHeaderRightSlot/MarketingHeaderRightSlot.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/PageLogo/PageLogo.tsx",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/PageLogo/PageLogo.types.ts",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "M",
+    "path": "web/next-env.d.ts",
+    "origin": "model",
+    "session": "frames"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/account/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/availability/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/bookings/[bookingId]/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/clients/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/home/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/projects/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/session-types/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/sessions/[slotId]/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(app)/sessions/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/book/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/page.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/ClientDialogs/AddClientDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/ClientDialogs/ClientForm.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/ClientDialogs/EditClientDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/Format/format.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/NoteDialogs/AddNoteDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/NoteDialogs/EditNoteDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/NoteDialogs/NoteForm.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/ProjectDialogs/AddProjectDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/ProjectDialogs/EditProjectDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/ProjectDialogs/ProjectForm.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/SessionTypeDialogs/AddSessionTypeDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/SessionTypeDialogs/EditSessionTypeDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/SessionTypeDialogs/SessionTypeForm.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/Slots/slots.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/TaskDialogs/AddTaskDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/TaskDialogs/EditTaskDialog.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/blocks/TaskDialogs/TaskForm.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/ClientStatusTag/ClientStatusTag.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/ClientStatusTag/index.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/TaskStatusTag/TaskStatusTag.tsx",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/TaskStatusTag/index.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/auth/index.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/availability/index.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/availability/operations.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/client/operations.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "M",
+    "path": "web/next-env.d.ts",
+    "origin": "model",
+    "session": "pages"
+  },
+  {
+    "status": "A",
+    "path": ".weave/replies.json",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/availability/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/bookings/[bookingId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/components/AddNoteDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/components/EditClientDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/components/NoteForm.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/clients/components/AddClientDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/clients/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/home/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/components/AddTaskDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/components/EditProjectDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/components/TaskForm.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/projects/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/session-types/components/AddSessionTypeDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/session-types/components/SessionTypeForm.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/session-types/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/sessions/[slotId]/components/SlotBookings.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/sessions/[slotId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/sessions/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/book/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/blocks/Slots/slots.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/components/ClientStatusTag/ClientStatusTag.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/LoadError/LoadError.tsx",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": "web/app/components/LoadError/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/availability/index.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/availability/operations.ts",
+    "origin": "model",
+    "session": "pages-fix-1"
+  },
+  {
+    "status": "A",
+    "path": ".weave/replies.json",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/clients/[clientId]/components/EditNoteDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/components/EditTaskDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "R",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/components/TaskStatusTag.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/projects/[projectId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(app)/session-types/components/EditSessionTypeDialog.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/(routes)/(marketing)/my-booking/[bookingId]/page.tsx",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "D",
+    "path": "web/app/components/TaskStatusTag/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  },
+  {
+    "status": "M",
+    "path": "web/app/entities/auth/index.ts",
+    "origin": "model",
+    "session": "pages-fix-2"
+  }
+]

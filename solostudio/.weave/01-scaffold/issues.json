@@ -1,0 +1,58 @@
+{
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "When different session types share the same availability, can they be booked at overlapping times?",
+      "answer": "A booked time blocks overlapping Slots for every other session type, so the designer is never double-booked.",
+      "from": "scope"
+    },
+    {
+      "id": "Q02",
+      "question": "Are the three session types fixed, or can the designer edit and add session types?",
+      "answer": "The three named session types are pre-created and the designer can edit their duration, displayed price and maximum people, and add her own.",
+      "from": "scope"
+    },
+    {
+      "id": "Q03",
+      "question": "When a Client with Bookings is deleted, should those Bookings also be deleted?",
+      "answer": "Bookings stay in the upcoming and past session list without a client link; the Client's Notes, Projects and Tasks are deleted.",
+      "from": "scope"
+    },
+    {
+      "id": "Q04",
+      "question": "Should past sessions and cancelled bookings remain visible to the designer?",
+      "answer": "Past slots and bookings stay visible in a past list and cannot be booked or cancelled.",
+      "from": "flows"
+    }
+  ],
+  "known": [
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "listClients lists project steps that have no Client list effect to serve. Fix: Keep only F06.S01 and F06.S02; remove F18.S02 and F19.S01 which have no Client list effect. (addressed in the final fix, not re-reviewed)",
+      "at": "operations.listClients.flowSteps",
+      "stage": "contract"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "createClient serves F35.S03 but its inputs are the client-form fields, not the booking name and email the guest fills. Fix: Serve the booking flow with the fields the guest fills there, i.e. FD26 as name and FD27 as email, not only FD03 and FD04. (addressed in the final fix, not re-reviewed)",
+      "at": "operations.createClient.inputs",
+      "stage": "contract"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "getClient serves a Client read matched by email in the booking flow but takes no inputs. Fix: Add input FD27 as email so the Client read by matching email in F35.S03 is found by the typed email. (addressed in the final fix, not re-reviewed)",
+      "at": "operations.getClient.inputs",
+      "stage": "contract"
+    },
+    {
+      "rule": "REVIEW",
+      "severity": "mandatory",
+      "message": "All Availability fields are required, so empty availability cannot be saved, contradicting A11 and the rule that without hours no slots are offered. Fix: Make Days (FD19), From time (FD20) and To time (FD21) required false so the designer can keep weekly Availability empty with no days/hours and offer no slots per A11. (addressed in the final fix, not re-reviewed)",
+      "at": "FD19, FD20, FD21",
+      "stage": "flows-catalog"
+    }
+  ]
+}

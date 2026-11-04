@@ -1,0 +1,610 @@
+{
+  "brief": {
+    "audience": "A solo freelance UX designer managing her own clients, projects, tasks and bookings, plus visitors booking her sessions without an account.",
+    "personality": [
+      "calm",
+      "warm",
+      "focused",
+      "organised",
+      "personal"
+    ],
+    "voice": "plain, warm, second person",
+    "density": "comfortable",
+    "signature": "A warm cream page background against a deeper warm-tinted frame, with Fraunces display headings and a soft halo focus ring.",
+    "feel": [
+      "warm",
+      "minimal"
+    ],
+    "colorScheme": "both",
+    "seedHue": 290,
+    "seedChroma": "balanced",
+    "frameHue": 45,
+    "frameChroma": "muted",
+    "baseHue": 45,
+    "baseChroma": "muted",
+    "statusHues": {
+      "success": 155,
+      "warning": 84,
+      "error": 29,
+      "info": 240
+    },
+    "fonts": {
+      "ui": [
+        {
+          "family": "Figtree",
+          "reason": "Friendly, clear geometric sans that feels warmer than a stark productivity tool while staying highly legible."
+        },
+        {
+          "family": "Manrope",
+          "reason": "Modern, calm grotesque with open forms suited to dense daily client and task lists."
+        },
+        {
+          "family": "Inter",
+          "reason": "Neutral screen-tuned sans familiar from calm productivity tools and excellent for small UI text."
+        }
+      ],
+      "display": [
+        {
+          "family": "Fraunces",
+          "reason": "Soft, warm editorial serif that makes headings feel personal and calm rather than corporate."
+        },
+        {
+          "family": "DM Serif Display",
+          "reason": "Refined and warm at large sizes, a calmer alternative if Fraunces feels too expressive."
+        },
+        {
+          "family": "Montserrat",
+          "reason": "Confident geometric sans for a cleaner, more Linear-like heading fallback."
+        }
+      ],
+      "mono": [
+        {
+          "family": "DM Mono",
+          "reason": "Clean geometric mono that keeps dates, prices, times and counts aligned without feeling technical."
+        },
+        {
+          "family": "JetBrains Mono",
+          "reason": "Tall, highly legible mono for figures and identifiers used all day."
+        },
+        {
+          "family": "IBM Plex Mono",
+          "reason": "Engineered, neutral mono that pairs calmly with warm UI text."
+        }
+      ]
+    },
+    "radius": "soft",
+    "focusRing": "halo",
+    "entities": [
+      {
+        "noun": "Client",
+        "colored": true,
+        "hue": 195
+      },
+      {
+        "noun": "Note",
+        "colored": false,
+        "hue": 0
+      },
+      {
+        "noun": "Project",
+        "colored": true,
+        "hue": 53
+      },
+      {
+        "noun": "Task",
+        "colored": false,
+        "hue": 0
+      },
+      {
+        "noun": "Availability",
+        "colored": false,
+        "hue": 0
+      },
+      {
+        "noun": "SessionType",
+        "colored": true,
+        "hue": 328
+      },
+      {
+        "noun": "Slot",
+        "colored": false,
+        "hue": 0
+      },
+      {
+        "noun": "Booking",
+        "colored": false,
+        "hue": 0
+      }
+    ],
+    "imagery": "icons",
+    "references": [
+      "Linear"
+    ]
+  },
+  "theme": {
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "colors": {
+      "light": {
+        "theme": {
+          "bg": "#F1F0FF",
+          "fg": "#1D1737",
+          "fgMuted": "#584995",
+          "border": "#695BA9",
+          "hoverBg": "#E7E4FF",
+          "accentBg": "#695BA9",
+          "accentFg": "#FAF9FF",
+          "accentBorder": "#695BA9",
+          "accentHoverBg": "#584995",
+          "focus": "#584995",
+          "accentFocus": "#FAF9FF",
+          "shadow": "#1D1737"
+        },
+        "base": {
+          "bg": "#FBEFEA",
+          "fg": "#291811",
+          "fgMuted": "#744D3C",
+          "border": "#865E4C",
+          "hoverBg": "#F5E4DD",
+          "accentBg": "#865E4C",
+          "accentFg": "#FFF9F6",
+          "accentBorder": "#865E4C",
+          "accentHoverBg": "#744D3C",
+          "focus": "#744D3C",
+          "accentFocus": "#FFF9F6",
+          "shadow": "#291811"
+        },
+        "page": {
+          "pageBg": "#FFF9F6",
+          "pageFg": "#291811",
+          "pageFgMuted": "#744D3C",
+          "frameBg": "#F5E4DD",
+          "divider": "#EBD6CC",
+          "backdrop": "#291811",
+          "skeleton": "#EBD6CC",
+          "pageBackground": "#FAF6F0"
+        },
+        "entity": {
+          "client": {
+            "bg": "#DCF9F8",
+            "fg": "#002223",
+            "fgMuted": "#006566",
+            "border": "#007879",
+            "hoverBg": "#C9F1F0",
+            "accentBg": "#007879",
+            "accentFg": "#EDFEFE",
+            "accentBorder": "#007879",
+            "accentHoverBg": "#006566",
+            "focus": "#006566",
+            "accentFocus": "#EDFEFE",
+            "shadow": "#002223"
+          },
+          "project": {
+            "bg": "#FFEEE4",
+            "fg": "#311300",
+            "fgMuted": "#894100",
+            "border": "#9D5218",
+            "hoverBg": "#FFE1CF",
+            "accentBg": "#9D5218",
+            "accentFg": "#FFF9F5",
+            "accentBorder": "#9D5218",
+            "accentHoverBg": "#894100",
+            "focus": "#894100",
+            "accentFocus": "#FFF9F5",
+            "shadow": "#311300"
+          },
+          "sessionType": {
+            "bg": "#FEEBFC",
+            "fg": "#2B112B",
+            "fgMuted": "#7B3C79",
+            "border": "#8D4D8C",
+            "hoverBg": "#F8DFF6",
+            "accentBg": "#8D4D8C",
+            "accentFg": "#FFF7FE",
+            "accentBorder": "#8D4D8C",
+            "accentHoverBg": "#7B3C79",
+            "focus": "#7B3C79",
+            "accentFocus": "#FFF7FE",
+            "shadow": "#2B112B"
+          }
+        },
+        "status": {
+          "success": {
+            "bg": "#E3F8E9",
+            "fg": "#002410",
+            "fgMuted": "#006A3A",
+            "border": "#187C49",
+            "hoverBg": "#D3F1DC",
+            "accentBg": "#187C49",
+            "accentFg": "#F1FEF5",
+            "accentBorder": "#187C49",
+            "accentHoverBg": "#006A3A",
+            "focus": "#006A3A",
+            "accentFocus": "#F1FEF5",
+            "shadow": "#002410"
+          },
+          "warning": {
+            "bg": "#FBF1DC",
+            "fg": "#271B00",
+            "fgMuted": "#715200",
+            "border": "#866200",
+            "hoverBg": "#F5E6C9",
+            "accentBg": "#866200",
+            "accentFg": "#FFFAEF",
+            "accentBorder": "#866200",
+            "accentHoverBg": "#715200",
+            "focus": "#715200",
+            "accentFocus": "#FFFAEF",
+            "shadow": "#271B00"
+          },
+          "error": {
+            "bg": "#FFEDEA",
+            "fg": "#34100B",
+            "fgMuted": "#8F382E",
+            "border": "#A34A3F",
+            "hoverBg": "#FFE0DA",
+            "accentBg": "#A34A3F",
+            "accentFg": "#FFF8F7",
+            "accentBorder": "#A34A3F",
+            "accentHoverBg": "#8F382E",
+            "focus": "#8F382E",
+            "accentFocus": "#FFF8F7",
+            "shadow": "#34100B"
+          },
+          "info": {
+            "bg": "#E6F4FF",
+            "fg": "#001F33",
+            "fgMuted": "#005E8C",
+            "border": "#0070A6",
+            "hoverBg": "#D2ECFF",
+            "accentBg": "#0070A6",
+            "accentFg": "#F6FBFF",
+            "accentBorder": "#0070A6",
+            "accentHoverBg": "#005E8C",
+            "focus": "#005E8C",
+            "accentFocus": "#F6FBFF",
+            "shadow": "#001F33"
+          }
+        }
+      },
+      "dark": {
+        "theme": {
+          "bg": "#161423",
+          "fg": "#EEECFF",
+          "fgMuted": "#A194E7",
+          "border": "#6E63A6",
+          "hoverBg": "#211E34",
+          "accentBg": "#9284D6",
+          "accentFg": "#0F0E17",
+          "accentBorder": "#9284D6",
+          "accentHoverBg": "#A194E7",
+          "focus": "#A194E7",
+          "accentFocus": "#0F0E17",
+          "shadow": "#0F0E17"
+        },
+        "base": {
+          "bg": "#1C1410",
+          "fg": "#FFE9E0",
+          "fgMuted": "#C29683",
+          "border": "#886656",
+          "hoverBg": "#2A1F19",
+          "accentBg": "#B28774",
+          "accentFg": "#130E0C",
+          "accentBorder": "#B28774",
+          "accentHoverBg": "#C29683",
+          "focus": "#C29683",
+          "accentFocus": "#130E0C",
+          "shadow": "#130E0C"
+        },
+        "page": {
+          "pageBg": "#2A1F19",
+          "pageFg": "#FFE9E0",
+          "pageFgMuted": "#C29683",
+          "frameBg": "#1C1410",
+          "divider": "#372720",
+          "backdrop": "#130E0C",
+          "skeleton": "#443027",
+          "pageBackground": "#26211D"
+        },
+        "entity": {
+          "client": {
+            "bg": "#031A1A",
+            "fg": "#C0FCFB",
+            "fgMuted": "#0AB8B9",
+            "border": "#007F7F",
+            "hoverBg": "#012828",
+            "accentBg": "#00A7A7",
+            "accentFg": "#061212",
+            "accentBorder": "#00A7A7",
+            "accentHoverBg": "#0AB8B9",
+            "focus": "#0AB8B9",
+            "accentFocus": "#061212",
+            "shadow": "#061212"
+          },
+          "project": {
+            "bg": "#211209",
+            "fg": "#FFEADD",
+            "fgMuted": "#DC8B56",
+            "border": "#9C5C31",
+            "hoverBg": "#311C0D",
+            "accentBg": "#CB7C47",
+            "accentFg": "#160D08",
+            "accentBorder": "#CB7C47",
+            "accentHoverBg": "#DC8B56",
+            "focus": "#DC8B56",
+            "accentFocus": "#160D08",
+            "shadow": "#160D08"
+          },
+          "sessionType": {
+            "bg": "#1D111D",
+            "fg": "#FFE5FD",
+            "fgMuted": "#CA86C7",
+            "border": "#8E588D",
+            "hoverBg": "#2C1A2C",
+            "accentBg": "#BA76B7",
+            "accentFg": "#140D13",
+            "accentBorder": "#BA76B7",
+            "accentHoverBg": "#CA86C7",
+            "focus": "#CA86C7",
+            "accentFocus": "#140D13",
+            "shadow": "#140D13"
+          }
+        },
+        "status": {
+          "success": {
+            "bg": "#0A1A10",
+            "fg": "#D0FBDD",
+            "fgMuted": "#5DB780",
+            "border": "#358054",
+            "hoverBg": "#0F2819",
+            "accentBg": "#4CA871",
+            "accentFg": "#09120C",
+            "accentBorder": "#4CA871",
+            "accentHoverBg": "#5DB780",
+            "focus": "#5DB780",
+            "accentFocus": "#09120C",
+            "shadow": "#09120C"
+          },
+          "warning": {
+            "bg": "#1C1506",
+            "fg": "#FFECC8",
+            "fgMuted": "#C59A3E",
+            "border": "#8B6918",
+            "hoverBg": "#2B2007",
+            "accentBg": "#B58B2B",
+            "accentFg": "#130F07",
+            "accentBorder": "#B58B2B",
+            "accentHoverBg": "#C59A3E",
+            "focus": "#C59A3E",
+            "accentFocus": "#130F07",
+            "shadow": "#130F07"
+          },
+          "error": {
+            "bg": "#22110E",
+            "fg": "#FFE9E5",
+            "fgMuted": "#E28376",
+            "border": "#A2564B",
+            "hoverBg": "#331916",
+            "accentBg": "#D17467",
+            "accentFg": "#170C0B",
+            "accentBorder": "#D17467",
+            "accentHoverBg": "#E28376",
+            "focus": "#E28376",
+            "accentFocus": "#170C0B",
+            "shadow": "#170C0B"
+          },
+          "info": {
+            "bg": "#081822",
+            "fg": "#DFF1FF",
+            "fgMuted": "#52ABE5",
+            "border": "#2B76A4",
+            "hoverBg": "#0C2434",
+            "accentBg": "#419BD4",
+            "accentFg": "#081016",
+            "accentBorder": "#419BD4",
+            "accentHoverBg": "#52ABE5",
+            "focus": "#52ABE5",
+            "accentFocus": "#081016",
+            "shadow": "#081016"
+          }
+        }
+      }
+    },
+    "fonts": {
+      "ui": "Figtree",
+      "display": "Fraunces",
+      "mono": "DM Mono"
+    },
+    "radius": {
+      "surface": "8px",
+      "control": "6px"
+    },
+    "focusRing": "halo",
+    "logo": {
+      "family": "Fraunces",
+      "weight": "600",
+      "case": "as written",
+      "letterSpacing": "-0.02em",
+      "colors": {
+        "light": "#584995",
+        "dark": "#A194E7"
+      }
+    },
+    "layouts": {
+      "app": {
+        "docksFirst": "sidebars",
+        "header": {
+          "needed": false,
+          "start": "",
+          "center": "",
+          "end": "",
+          "separation": "none",
+          "overlay": false,
+          "sticky": false
+        },
+        "sidebar": {
+          "needed": true,
+          "side": "left",
+          "top": "logo",
+          "items": "navigation",
+          "bottom": "account",
+          "widthPx": 248,
+          "separation": "divider"
+        },
+        "footer": {
+          "needed": false,
+          "start": "",
+          "center": "",
+          "end": "",
+          "padding": "4",
+          "gap": "4",
+          "separation": "none"
+        },
+        "main": {
+          "container": "fluid",
+          "maxWidthPx": 1120,
+          "padding": "6",
+          "align": "start",
+          "separation": "none"
+        },
+        "logo": "sidebar",
+        "account": "sidebar"
+      },
+      "marketing": {
+        "docksFirst": "header",
+        "header": {
+          "needed": true,
+          "start": "logo",
+          "center": "navigation",
+          "end": "account",
+          "separation": "divider",
+          "overlay": false,
+          "sticky": true
+        },
+        "sidebar": {
+          "needed": false,
+          "side": "left",
+          "top": "",
+          "items": "",
+          "bottom": "",
+          "widthPx": 0,
+          "separation": "none"
+        },
+        "footer": {
+          "needed": true,
+          "content": "Site links in columns, then a line of small print",
+          "padding": "6",
+          "gap": "4",
+          "separation": "divider"
+        },
+        "main": {
+          "container": "fixed",
+          "maxWidthPx": 1120,
+          "padding": "9",
+          "align": "center",
+          "separation": "none"
+        },
+        "logo": "header",
+        "account": "header"
+      }
+    },
+    "defaults": {
+      "Textarea": {
+        "look": "outline"
+      },
+      "Tag": {
+        "variant": "base",
+        "size": "sm",
+        "look": "bordered"
+      },
+      "Tabs": {
+        "variant": "default"
+      },
+      "Switch": {
+        "variant": "default",
+        "size": "md"
+      },
+      "MultiSelect": {
+        "look": "outline"
+      },
+      "Select": {
+        "look": "outline"
+      },
+      "Radio": {
+        "variant": "default",
+        "size": "md"
+      },
+      "PopoverButton": {
+        "look": "ghost"
+      },
+      "Link": {
+        "variant": "default",
+        "look": ""
+      },
+      "Input": {
+        "look": "outline"
+      },
+      "DateInput": {
+        "look": "outline"
+      },
+      "NumberInput": {
+        "look": "outline"
+      },
+      "PasswordInput": {
+        "look": "outline"
+      },
+      "QuantitySelector": {
+        "look": "outline"
+      },
+      "SearchInput": {
+        "look": "outline"
+      },
+      "FormControl": {
+        "variant": "default",
+        "size": "md",
+        "look": "outline"
+      },
+      "Dialog": {
+        "size": "md"
+      },
+      "Chip": {
+        "variant": "default",
+        "size": "md",
+        "look": "outline rounded"
+      },
+      "ChipGroup": {
+        "look": "collapsed"
+      },
+      "Checkbox": {
+        "variant": "default",
+        "size": "md"
+      },
+      "Card": {
+        "variant": "default",
+        "look": "outline"
+      },
+      "Button": {
+        "variant": "default",
+        "size": "md",
+        "look": "rounded"
+      },
+      "IconButton": {
+        "look": "rounded ghost"
+      },
+      "Avatar": {
+        "size": "md"
+      },
+      "Accordion": {
+        "look": "bordered"
+      },
+      "Collapsible": {
+        "look": "bordered"
+      },
+      "Toast": {
+        "status": "info"
+      }
+    }
+  }
+}

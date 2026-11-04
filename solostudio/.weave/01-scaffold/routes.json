@@ -1,0 +1,98 @@
+[
+  {
+    "id": "S01",
+    "title": "SoloStudio",
+    "route": "/",
+    "folder": "web/app/(routes)/(marketing)"
+  },
+  {
+    "id": "S02",
+    "title": "Create your workspace",
+    "route": "/sign-up",
+    "folder": "web/app/(routes)/(marketing)/sign-up"
+  },
+  {
+    "id": "S03",
+    "title": "Sign in",
+    "route": "/sign-in",
+    "folder": "web/app/(routes)/(marketing)/sign-in"
+  },
+  {
+    "id": "S04",
+    "title": "Home",
+    "route": "/home",
+    "folder": "web/app/(routes)/(app)/home"
+  },
+  {
+    "id": "S05",
+    "title": "Clients",
+    "route": "/clients",
+    "folder": "web/app/(routes)/(app)/clients"
+  },
+  {
+    "id": "S06",
+    "title": "The client's name",
+    "route": "/clients/[clientId]",
+    "folder": "web/app/(routes)/(app)/clients/[clientId]"
+  },
+  {
+    "id": "S07",
+    "title": "Projects",
+    "route": "/projects",
+    "folder": "web/app/(routes)/(app)/projects"
+  },
+  {
+    "id": "S08",
+    "title": "The project's name",
+    "route": "/projects/[projectId]",
+    "folder": "web/app/(routes)/(app)/projects/[projectId]"
+  },
+  {
+    "id": "S09",
+    "title": "Availability",
+    "route": "/availability",
+    "folder": "web/app/(routes)/(app)/availability"
+  },
+  {
+    "id": "S10",
+    "title": "Session types",
+    "route": "/session-types",
+    "folder": "web/app/(routes)/(app)/session-types"
+  },
+  {
+    "id": "S11",
+    "title": "Sessions",
+    "route": "/sessions",
+    "folder": "web/app/(routes)/(app)/sessions"
+  },
+  {
+    "id": "S12",
+    "title": "The slot's session type name and time, as in \"Discovery call, 5 Nov at 10:00\"",
+    "route": "/sessions/[slotId]",
+    "folder": "web/app/(routes)/(app)/sessions/[slotId]"
+  },
+  {
+    "id": "S13",
+    "title": "The booker's name, as in \"Ravi Patel's booking\"",
+    "route": "/bookings/[bookingId]",
+    "folder": "web/app/(routes)/(app)/bookings/[bookingId]"
+  },
+  {
+    "id": "S14",
+    "title": "Book a session",
+    "route": "/book",
+    "folder": "web/app/(routes)/(marketing)/book"
+  },
+  {
+    "id": "S15",
+    "title": "The booking's session type name and time, as in \"Discovery call, 5 Nov at 10:00\"",
+    "route": "/my-booking/[bookingId]",
+    "folder": "web/app/(routes)/(marketing)/my-booking/[bookingId]"
+  },
+  {
+    "id": "S16",
+    "title": "Account settings",
+    "route": "/account",
+    "folder": "web/app/(routes)/(app)/account"
+  }
+]
