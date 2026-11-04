@@ -6,6 +6,22 @@
 | Coding agent | OpenCode, on Muse Spark Open |
 | End-to-end time | 56 min: scope to contract 13 min, frames to pages 43 min |
 | Total cost | $8.60 on Baseten, the coding sessions included |
+| Screens measured | 4 |
+| Issues raised | 129 |
+| Issues fixed | 101 |
+| AI discussion threads | 3 |
+| Accessibility violations (axe, WCAG 2.2 AA) | 0 |
+| Contrast failures | 0 |
+| Controls without a name | 0 |
+| Keyboard: controls reachable with Tab | 100% of 51 |
+| Keyboard: focus visible | 92.2% |
+| Type and lint errors | 0 |
+| Design-system validation errors | 0 |
+| Duplicated code | 3.8% |
+| Code size | 88 files, 3,905 lines |
+| Page load, median screen (dev server) | FCP 686 ms, LCP 730 ms |
+
+Accessibility, keyboard and load numbers are from the app's dev server (`next dev`), not a production build. Load would be faster in production; the other numbers would not change.
 
 Weave generated this app from the prompt below.
 

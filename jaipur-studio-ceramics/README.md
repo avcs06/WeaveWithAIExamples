@@ -7,6 +7,22 @@
 | End-to-end time | 2 h 20 min |
 | Total cost | $4.39 for the model calls; the coding sessions ran on the Muse Code subscription |
 | Muse Code subscription | 4% of the weekly allowance (24% to 28%) |
+| Screens measured | 18 |
+| Issues raised | 37 |
+| Issues fixed | 33 |
+| AI discussion threads | 0 |
+| Accessibility violations (axe, WCAG 2.2 AA) | 0 |
+| Contrast failures | 0 |
+| Controls without a name | 0 |
+| Keyboard: controls reachable with Tab | 99.6% of 233 |
+| Keyboard: focus visible | 87.9% |
+| Type and lint errors | 0 |
+| Design-system validation errors | 0 |
+| Duplicated code | 2.1% |
+| Code size | 110 files, 7,606 lines |
+| Page load, median screen (dev server) | FCP 688 ms, LCP 764 ms |
+
+Accessibility, keyboard and load numbers are from the app's dev server (`next dev`), not a production build. Load would be faster in production; the other numbers would not change.
 
 Weave generated this app from the prompt below.
 

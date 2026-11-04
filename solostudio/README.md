@@ -4,9 +4,25 @@
 |---|---|
 | Model | Muse Spark 1.3 (`muse-spark-1.3`) on the Meta Model API, with Muse Wonder 1.0 (`muse-wonder-1.0`) for the scope |
 | Coding agent | Muse Code, on Muse Spark 1.3 |
-| End-to-end time | 1 h 41 min |
+| End-to-end time | 1 h 40 min |
 | Total cost | $6.62 for the model calls; the coding sessions ran on the Muse Code subscription |
 | Muse Code subscription | 5% of the weekly allowance (28% to 33%) |
+| Screens measured | 14 |
+| Issues raised | 53 |
+| Issues fixed | 41 |
+| AI discussion threads | 1 |
+| Accessibility violations (axe, WCAG 2.2 AA) | 0 |
+| Contrast failures | 0 |
+| Controls without a name | 0 |
+| Keyboard: controls reachable with Tab | 97.8% of 184 |
+| Keyboard: focus visible | 98.3% |
+| Type and lint errors | 0 |
+| Design-system validation errors | 0 |
+| Duplicated code | 5.8% |
+| Code size | 139 files, 8,380 lines |
+| Page load, median screen (dev server) | FCP 692 ms, LCP 748 ms |
+
+Accessibility, keyboard and load numbers are from the app's dev server (`next dev`), not a production build. Load would be faster in production; the other numbers would not change.
 
 Weave generated this app from the prompt below.
 
